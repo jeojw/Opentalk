@@ -4,6 +4,7 @@ import com.example.opentalk.entity.MemberEntity;
 import lombok.*;
 
 import java.util.Date;
+import java.util.Optional;
 
 @NoArgsConstructor
 @Data

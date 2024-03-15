@@ -10,8 +10,7 @@ import javax.persistence.*;
 @Entity
 @Setter
 @Getter
-@Table(name = "member")
-@Data
+@Table(name = "OpentalkMember")
 public class MemberEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
