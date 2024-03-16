@@ -1,33 +1,27 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>list</title>
+    <title>detail</title>
 </head>
 <body>
-<h2>list.html</h2>
 <table>
     <tr>
         <th>id</th>
         <th>memberId</th>
-        <th>memberPassword</th>
-        <th>memberName</th>
-        <th>memberNickName</th>
-        <th>memberEmail</th>
+        <th>password</th>
+        <th>name</th>
+        <th>nickname</th>
+        <th>email</th>
     </tr>
-    <tr th:each="member: ${memberList}">
+    <tr>
         <td th:text="${member.id}"></td>
         <td th:text="${member.memberId}"></td>
         <td th:text="${member.memberPassword}"></td>
         <td th:text="${member.memberName}"></td>
         <td th:text="${member.memberNickName}"></td>
         <td th:text="${member.memberEmail}"></td>
-        <td>
-            <a th:href="@{|/member/${member.id}|}">조회</a>
-        </td>
-        <td>
-            <a th:href="@{|/member/delete/${member.id}|}">삭제</a>
-        </td>
     </tr>
 </table>
 </body>

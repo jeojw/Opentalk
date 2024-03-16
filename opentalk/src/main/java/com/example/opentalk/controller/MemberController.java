@@ -51,4 +51,18 @@ public class MemberController {
         model.addAttribute("memberList", memberDTOList);
         return "list";
     }
+
+    @GetMapping("/member/{id}")
+    public String findById(@PathVariable Long id, Model model){
+        MemberDTO memberDTO = memberService.findById(id);
+        model.addAttribute("member", memberDTO);
+        return "detail";
+    }
+
+    @GetMapping("/member/delete/{id}")
+    public String delelteById(@PathVariable Long id){
+        memberService.deleteById(id);
+
+        return "redirect:/member/";
+    }
 }
