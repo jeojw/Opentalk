@@ -1,7 +1,6 @@
 package com.example.opentalk.entity;
 
 import com.example.opentalk.dto.MemberDTO;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Setter
 @Getter
-@Table(name = "OpentalkMember")
+@Table(name = "OpenTalkMember")
 public class MemberEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +29,7 @@ public class MemberEntity {
         MemberEntity memberEntity = new MemberEntity();
         memberEntity.setId(memberDTO.getId());
         memberEntity.setMemberId(memberDTO.getMemberId());
-        memberEntity.setMemberPassword(memberDTO.getMemeberPassword());
+        memberEntity.setMemberPassword(memberDTO.getMemberPassword());
         memberEntity.setMemberName(memberDTO.getMemberName());
         memberEntity.setMemberNickName(memberDTO.getMemberNickName());
         memberEntity.setMemberEmail(memberDTO.getMemberEmail());
