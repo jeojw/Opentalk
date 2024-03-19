@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>login</title>
-    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="frontend\src\css\login.css">
 </head>
 <body>
 <h1> 로그인</h1>
@@ -14,13 +14,11 @@
     비밀번호 : <label>
     <input type="password" name="memberPassword">
 </label> <br>
-    <label for="remember-check">
-        <input type="checkbox" id="remember-check">아이디 저장하기
-    </label>
-    <script src="/js/login.js"></script>
-    <input type="submit" value="로그인" onclick="Login">
-    <button type="button" onclick="location.href='/member/save'">회원가입</button>
-
+<label for="remember-check">
+    <input type="checkbox" id="remember-check">아이디 저장하기
+</label>
+    <input type="submit" value="로그인"/>
+<button type="button" onclick="location.href='member/save'">회원가입</button>
 </form>
 </body>
 </html>

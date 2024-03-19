@@ -4,7 +4,6 @@ import com.example.opentalk.dto.MemberDTO;
 import com.example.opentalk.entity.MemberEntity;
 import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public class MemberService {
     }
 
 
-    public MemberDTO login(@NotNull MemberDTO memberDTO){
+    public MemberDTO login(MemberDTO memberDTO){
         Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(memberDTO.getMemberId());
         if (byMemberId.isPresent()){
             MemberEntity memberEntity = byMemberId.get();

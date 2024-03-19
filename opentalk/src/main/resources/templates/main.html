@@ -5,6 +5,16 @@
     <title>main</title>
 </head>
 <body>
-    session 값 확인 : <p th:text="${session.loginEmail}"></p>
+<script src="/main.js"></script>
+<table>
+    닉네임 : <p th:text="${session.NickName}"></p>
+</table>
+    <label>
+        <input type="button" value="톡방 생성" onclick="Popup_MakeRoom()"  />
+    </label>
+    <br>
+    <label>
+        <input type="button" value="로그아웃" onclick="LogOut()" />
+    </label>
 </body>
 </html>
