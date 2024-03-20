@@ -1,10 +1,33 @@
-function LogOut(){
-    if (confirm("로그아웃 하시겠습니까?")){
-        alert("로그아웃 되었습니다.")
-        location.href='member/login';
-    }
+import React, {useState} from 'react';
+
+const MainComponent = () => {
+
+    const [memberNickName, setMemberNickName] = useState("");
+
+    const MakeRoom = () => {
+        
+    };
+
+    const LogOut = () => {
+        if (window.confirm("로그아웃 하시겠습니까?")){
+            window.alert("로그아웃 되었습니다.")
+        }
+    };
+
+   return (
+    <div>
+        <table>
+            <tbody>
+                <tr>
+                    <td>{memberNickName}</td>
+                </tr>
+            </tbody>
+        </table>
+        <button onClick={MakeRoom}>방 생성하기</button>
+        <button onClick={LogOut}>로그아웃</button>
+    </div>
+
+    );
 }
 
-function MakeRoom(){
-    
-}
+export default MainComponent;

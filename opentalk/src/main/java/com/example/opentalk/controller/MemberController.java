@@ -13,17 +13,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
-    @GetMapping("/opentalk/member/save")
+    @GetMapping("/opentalk/save")
     public String saveForm(){
         return "save";
     }
 
-    @PostMapping("/opentalk/member/save")
+    @PostMapping("/opentalk/save")
     public String save(@ModelAttribute MemberDTO memberDTO){
         System.out.println("MemberController.save");
         System.out.println("memberDTO = " + memberDTO);
@@ -31,12 +31,12 @@ public class MemberController {
         return "login";
     }
 
-    @GetMapping("/opentalk/member/login")
+    @GetMapping("/opentalk/login")
     public String loginForm(){
         return "login";
     }
 
-    @PostMapping("/opentalk/member/login")
+    @PostMapping("/opentalk/login")
     public String login(@ModelAttribute MemberDTO memberDTO, HttpSession session){
         MemberDTO loginResult = memberService.login(memberDTO);
         if (loginResult != null){
