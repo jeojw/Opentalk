@@ -5,6 +5,34 @@
     <title>Save</title>
 </head>
 <body>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#id").on("focusout", function(){
+            var id = $("#id").val();
+            if (id == "" || id.length == 0){
+                $("#label1").css("color", "red").text("공백은 ID로 사용할 수 없습니다.");
+                return false;
+            }
+
+            $.ajax({
+                url: './ConfirmId',
+                data : {
+                    id : id
+                },
+                type : 'POST',
+                dataType : 'json',
+                success : function(result){
+                    if (result == true){
+                        $("#label1").css("color", "blue").text("사용 가능한 ID 입니다.");
+                    }else{
+                        $("#label1").css("color", "red").text("사용 불가능한 ID 입니다.");
+                        $("#id").val('');
+                    }
+                }
+            })
+        })
+    })
+</script>
 <h1> 회원가입</h1>
 <!-- action : form에 작성한 데이터를 어디로 보낼지 지정 -->
 <form action="/member/save" method="post">
@@ -13,6 +41,8 @@
     <input type="text" name="memberId" id="memberId">
 </label>
     <button type="button">아이디 중복 확인</button>
+    <br>
+    아이디 중복 여부를 확인해 주십시오.
     <br>
     비밀번호: <label>
     <input type="password" name="memberPassword" id="memberPassword">
@@ -24,11 +54,15 @@
     <br>
     이름: <label>
     <input type="text" name="memberName" id="memberName">
-</label> <br>
+</label><br>
+    이메일을 인증해 주십시오
+    <br>
     닉네임: <label>
     <input type="text" name="memberNickName" id="memberNickName">
 </label>
     <button type="button">닉네임 중복 확인</button>
+    <br>
+    닉네임 중복 여부를 확인해 주십시오.
     <br>
     <input type="submit" value="회원가입">
 </form>

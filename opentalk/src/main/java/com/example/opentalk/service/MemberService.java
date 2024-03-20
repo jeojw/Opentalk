@@ -6,6 +6,7 @@ import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -57,12 +58,15 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
+    @Transactional
     public boolean checkIdDuplicate(String memberId){
         return memberRepository.existsByMemberId(memberId);
     }
+    @Transactional
     public boolean checkNickNameDuplicate(String memberNickName){
         return memberRepository.existsByMemberNickName(memberNickName);
     }
+    @Transactional
     public boolean checkEmailDuplicate(String memberEmail){
         return memberRepository.existsByMemberEmail(memberEmail);
     }

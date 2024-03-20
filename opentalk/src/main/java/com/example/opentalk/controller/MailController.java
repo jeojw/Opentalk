@@ -17,18 +17,18 @@ import javax.validation.Valid;
 public class MailController {
     private final MailSendService mailService;
 
-    @GetMapping("/mailSend")
+    @GetMapping("/opentalk/member/save/mailSend")
     public String mailSendForm(){
         return "mailSend";
     }
-    @PostMapping("/mailSend")
+    @PostMapping("opentalk/member/save/mailSend")
     public String mailSend(@RequestBody @Valid EmailRequestDTO emailDto) {
         System.out.println("이메일 인증 요청이 들어옴");
         System.out.println("이메일 인증 이메일 :" + emailDto.getEmail());
         return mailService.joinEmail(emailDto.getEmail());
     }
 
-    @PostMapping("/mailauthCheck")
+    @PostMapping("opentalk/member/save/mailauthCheck")
     public String AuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto) {
         boolean Checked = mailService.CheckAuthNum(emailCheckDto.getEmail(), emailCheckDto.getAuthNum());
         if (Checked) {
