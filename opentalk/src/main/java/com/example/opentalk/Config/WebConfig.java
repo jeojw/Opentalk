@@ -1,4 +1,4 @@
-package com.example.opentalk;
+package com.example.opentalk.Config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

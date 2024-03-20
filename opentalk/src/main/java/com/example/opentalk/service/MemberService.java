@@ -56,4 +56,14 @@ public class MemberService {
     public void deleteById(Long id){
         memberRepository.deleteById(id);
     }
+
+    public boolean checkIdDuplicate(String memberId){
+        return memberRepository.existsByMemberId(memberId);
+    }
+    public boolean checkNickNameDuplicate(String memberNickName){
+        return memberRepository.existsByMemberNickName(memberNickName);
+    }
+    public boolean checkEmailDuplicate(String memberEmail){
+        return memberRepository.existsByMemberEmail(memberEmail);
+    }
 }

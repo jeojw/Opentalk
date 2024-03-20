@@ -3,6 +3,8 @@ package com.example.opentalk.dto;
 import com.example.opentalk.entity.MemberEntity;
 import lombok.*;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.Optional;
 
@@ -10,11 +12,22 @@ import java.util.Optional;
 @Data
 public class MemberDTO {
     private Long id;
+    @NotBlank(message = "아이디를 입력해주세요.")
     private String memberId;
+
+    @NotBlank(message = "비밀번호를 입력해주세요.")
     private String memberPassword;
+
+    @NotBlank(message = "이름을 입력해주세요.")
     private String memberName;
+
+    @NotBlank(message = "닉네임을 입력해주세요.")
     private String memberNickName;
+
+    @Email(message = "올바른 이메일 주소를 입력해주세요.")
+    @NotBlank(message = "이메일 주소를 입력해주세요.")
     private String memberEmail;
+
     private Date join_date;
 
     public static MemberDTO toMemberDTO(MemberEntity memberEntity){

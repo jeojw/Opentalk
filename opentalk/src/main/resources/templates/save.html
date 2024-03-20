@@ -10,20 +10,26 @@
 <form action="/member/save" method="post">
     <!-- name : 서버로 전송 할 때 변수이름의 역할 -->
     아이디: <label>
-    <input type="text" name="memberId">
-</label> <br>
+    <input type="text" name="memberId" id="memberId">
+</label>
+    <button type="button">아이디 중복 확인</button>
+    <br>
     비밀번호: <label>
-    <input type="password" name="memberPassword">
-</label> <br>
+    <input type="password" name="memberPassword" id="memberPassword">
+</label><br>
     이메일: <label>
-    <input type="text" name="memberEmail">
-</label> <br>
+    <input type="text" name="memberEmail" id="memberEmail">
+</label>
+    <button type="button">이메일 인증</button>
+    <br>
     이름: <label>
-    <input type="text" name="memberName">
+    <input type="text" name="memberName" id="memberName">
 </label> <br>
     닉네임: <label>
-    <input type="text" name="memberNickName">
-</label> <br>
+    <input type="text" name="memberNickName" id="memberNickName">
+</label>
+    <button type="button">닉네임 중복 확인</button>
+    <br>
     <input type="submit" value="회원가입">
 </form>
 </body>

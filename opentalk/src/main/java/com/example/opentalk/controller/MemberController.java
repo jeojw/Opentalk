@@ -3,6 +3,7 @@ package com.example.opentalk.controller;
 import com.example.opentalk.dto.MemberDTO;
 import com.example.opentalk.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -65,5 +66,18 @@ public class MemberController {
         memberService.deleteById(id);
 
         return "redirect:/member/";
+    }
+
+    @GetMapping("/member-Id/{memberId}/exists")
+    public ResponseEntity<Boolean> checkIdDuplicate(@PathVariable String memberId){
+        return ResponseEntity.ok(memberService.checkIdDuplicate(memberId));
+    }
+    @GetMapping("/member-NickName/{memberNickName}/exists")
+    public ResponseEntity<Boolean> checkNickNameDuplicate(@PathVariable String memberNickName){
+        return ResponseEntity.ok(memberService.checkNickNameDuplicate(memberNickName));
+    }
+    @GetMapping("/member-Email/{memberEmail}/exists")
+    public ResponseEntity<Boolean> checkEmailDuplicate(@PathVariable String memberEmail){
+        return ResponseEntity.ok(memberService.checkEmailDuplicate(memberEmail));
     }
 }
