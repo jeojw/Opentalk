@@ -1,9 +1,11 @@
 package com.example.opentalk.service;
 
 import com.example.opentalk.dto.MemberDTO;
+import com.example.opentalk.dto.MemberLoginDTO;
 import com.example.opentalk.entity.MemberEntity;
 import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MainController {
-    @GetMapping("/opentalk/main")
+    @GetMapping("/api/opentalk/main")
     public String MainFrom(){
         return "main";
     }

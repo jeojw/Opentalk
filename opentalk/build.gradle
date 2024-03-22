@@ -41,7 +41,7 @@ dependencies {
 
 	implementation 'javax.mail:mail:1.4.7'
 	implementation 'org.springframework:spring-context-support:5.3.9'
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.5'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.7.4'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
@@ -49,12 +49,12 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-def reactDir = "$projectDir/src/main/frontend";
+def frontendDir = "$projectDir/src/main/frontend";
 
 sourceSets{
 	main{
 		resources{
-			srcDirs = ["$projectDir/src/main/resources"]
+			srcDirs = ["$frontendDir/build", "$projectDir/src/main/resources"]
 		}
 	}
 }
@@ -64,8 +64,8 @@ processResources{
 }
 
 task installReact(type:Exec){
-	workingDir "$reactDir"
-	inputs.dir "$reactDir"
+	workingDir "$frontendDir"
+	inputs.dir "$frontendDir"
 	group = BasePlugin.BUILD_GROUP
 
 	if(System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')){
@@ -79,8 +79,8 @@ task installReact(type:Exec){
 
 task buildReact(type:Exec){
 	dependsOn "installReact"
-	workingDir "$reactDir"
-	inputs.dir "$reactDir"
+	workingDir "$frontendDir"
+	inputs.dir "$frontendDir"
 	group = BasePlugin.BUILD_GROUP
 
 	if(System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')){
@@ -92,6 +92,6 @@ task buildReact(type:Exec){
 
 task copyReactBuildFiles(type:Copy){
 	dependsOn "buildReact"
-	from "$reactDir/build"
+	from "$frontendDir/build"
 	into "$projectDir/src/main/resources/static"
 }

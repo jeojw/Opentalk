@@ -1,11 +1,12 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import axios from 'axios';
 
-const MainComponent = () => {
+const MainComponent = (props) => {
 
     const [memberNickName, setMemberNickName] = useState("");
 
     const MakeRoom = () => {
-        
+        window()
     };
 
     const LogOut = () => {
