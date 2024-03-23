@@ -1,7 +1,6 @@
 package com.example.opentalk.service;
 
 import com.example.opentalk.dto.MemberDTO;
-import com.example.opentalk.dto.MemberLoginDTO;
 import com.example.opentalk.entity.MemberEntity;
 import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +57,16 @@ public class MemberService {
 
     public void deleteById(Long id){
         memberRepository.deleteById(id);
+    }
+
+    @Transactional
+    public boolean checkLoginAgree(String memberId, String memberPassword){
+        return memberRepository.compareByMemberPassword(memberId, memberPassword);
+    }
+
+    @Transactional
+    public String searchId(String memberEmail){
+        return memberRepository.SearchId(memberEmail);
     }
 
     @Transactional

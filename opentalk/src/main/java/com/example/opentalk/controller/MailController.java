@@ -3,12 +3,12 @@ package com.example.opentalk.controller;
 
 import com.example.opentalk.dto.EmailCheckDto;
 import com.example.opentalk.dto.EmailRequestDTO;
+import com.example.opentalk.dto.MemberDTO;
 import com.example.opentalk.service.MailSendService;
+import com.example.opentalk.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 

@@ -70,6 +70,16 @@ public class MemberController {
         return "redirect:/member/";
     }
 
+    @GetMapping("/api/opentalk/member/checkId/{memberId}")
+    public ResponseEntity<Boolean> checkLoginId(@PathVariable String memberId){
+        return ResponseEntity.ok(memberService.checkIdDuplicate(memberId));
+    }
+
+    @GetMapping("/api/opentalk/member/checkLogin/{memberId}/{memberPassword}")
+    public ResponseEntity<Boolean> checkLogin(@PathVariable String memberId, @PathVariable String memberPassword){
+        return ResponseEntity.ok(memberService.checkLoginAgree(memberId, memberPassword));
+    }
+
     @GetMapping("/api/opentalk/member/id/{memberId}")
     public ResponseEntity<Boolean> checkIdDuplicate(@PathVariable String memberId){
         return ResponseEntity.ok(memberService.checkIdDuplicate(memberId));
