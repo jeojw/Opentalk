@@ -39,17 +39,35 @@ public class MailSendService {
 
         authNumber = Integer.parseInt(randomNumber);
     }
-    public String joinEmail(String email){
+
+    public String joinTitle(String type){
+        if (type.equals("enroll")){
+            return "회원 가입 인증 이메일 입니다.";
+        }
+        if (type.equals("findId")){
+            return "아이디 찾기 인증 이메일 입니다.";
+        }
+        if (type.equals("findPw")){
+            return "비밀번호 찾기 인증 이메일 입니다.";
+        }
+
+        return null;
+    }
+    public String joinEmail(String email, String sendType){
         makeRandomNumber();
         String setFrom = "jeawookjeong@gmail.com";
         String toMail = email;
-        String title = "회원 가입 인증 이메일 입니다.";
+        String title = joinTitle(sendType);
         String content =
                 "인증 번호는 " + authNumber + "입니다." +
                         "<br>" +
                         "인증번호를 제대로 입력해주세요.";
         mailSend(setFrom, toMail, title, content);
         return Integer.toString(authNumber);
+    }
+
+    public void deleteKey(){
+        redisUtil.deleteData(Integer.toString(authNumber));
     }
 
     public void mailSend(String setFrom, String toMail, String title, String content){

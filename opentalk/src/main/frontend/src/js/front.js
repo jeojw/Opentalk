@@ -5,11 +5,11 @@ const FrontComponent = (props) => {
     const navigate = useNavigate();
 
     const LinkToLogin = () =>{
-        navigate("opentalk/member/login")
+        navigate("/opentalk/member/login")
     }
 
     const LinkToEnroll = () => {
-        navigate("opentalk/member/enroll")
+        navigate("/opentalk/member/enroll")
     }
 
    return (

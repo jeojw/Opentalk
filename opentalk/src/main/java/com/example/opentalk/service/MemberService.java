@@ -4,7 +4,6 @@ import com.example.opentalk.dto.MemberDTO;
 import com.example.opentalk.entity.MemberEntity;
 import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,7 +20,6 @@ public class MemberService {
         MemberEntity memberEntity = MemberEntity.toMemberEntity(memberDTO);
         memberRepository.save(memberEntity);
     }
-
 
     public MemberDTO login(MemberDTO memberDTO){
         Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(memberDTO.getMemberId());
@@ -59,14 +57,37 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
+    public boolean authId(String memberId){
+        return memberRepository.existsByMemberId(memberId);
+    }
+
     @Transactional
     public boolean checkLoginAgree(String memberId, String memberPassword){
-        return memberRepository.compareByMemberPassword(memberId, memberPassword);
+        String pw = memberRepository.compareByMemberPassword(memberId);
+        return memberPassword.equals(pw);
     }
 
     @Transactional
     public String searchId(String memberEmail){
-        return memberRepository.SearchId(memberEmail);
+        if (memberEmail == null || memberEmail.isEmpty()) {
+            throw new IllegalArgumentException("Member email cannot be null or empty");
+        }
+        return memberRepository.SearchMemberId(memberEmail);
+    }
+
+    @Transactional
+    public String searchPw(String memberId, String memberEmail){
+        return memberRepository.SearchMemberPassword(memberId, memberEmail);
+    }
+
+    @Transactional
+    public void ChangePassword(String exPassword, String newPassword){
+        memberRepository.ChangePw(exPassword, newPassword);
+    }
+
+    @Transactional
+    public String ReturnPrePassword(String memberId){
+        return memberRepository.ReturnExPw(memberId);
     }
 
     @Transactional
@@ -81,4 +102,5 @@ public class MemberService {
     public boolean checkEmailDuplicate(String memberEmail){
         return memberRepository.existsByMemberEmail(memberEmail);
     }
+
 }

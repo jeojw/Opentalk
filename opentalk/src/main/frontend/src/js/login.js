@@ -19,6 +19,7 @@ const LoginComponent = (props) => {
             alert("비밀번호를 입력해주세요.")
         }
         else{
+            const assessToken = ""
             axios.get(checkloginUrl)
             .then((res) => {
                     if (!res.data){
@@ -27,6 +28,7 @@ const LoginComponent = (props) => {
                     }
                     else{
                         setloginCheck(true);
+                        assessToken = res.data.token;
                     }
                 })
             .catch((error)=>console.log(error));
@@ -63,10 +65,16 @@ const LoginComponent = (props) => {
                 <input type='submit' value="로그인" onClick={CheckLogin}></input>
             </label>
             <label>
-                <input type='submit' value="아이디/비밀번호 찾기" onClick={()=>navigate("opentalk/front")}></input>
+                <input type='submit' value="아이디 찾기" onClick={()=>navigate("/opentalk/member/findId")}></input>
+            </label>
+            <label>
+                <input type='submit' value="비밀번호 찾기" onClick={()=>navigate("/opentalk/member/authId")}></input>
+            </label>
+            <label>
+                <input type='submit' value="회원가입" onClick={()=>navigate("/opentalk/member/enroll")}></input>
             </label>
             <br></br>
-            <button onClick={()=>navigate("opentalk/front")}>시작화면으로</button>
+            <button onClick={()=>navigate("/opentalk/front")}>시작화면으로</button>
         </div>
     </div>
 

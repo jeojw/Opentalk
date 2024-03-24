@@ -1,6 +1,7 @@
 package com.example.opentalk.entity;
 
 import com.example.opentalk.dto.MemberDTO;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @Setter
 @Getter
+@Builder
 @Table(name = "OpenTalkMember")
 public class MemberEntity {
     @Id
@@ -25,15 +27,23 @@ public class MemberEntity {
     @Column
     private String memberEmail;
 
+    @Builder
+    public MemberEntity(Long id, String memberId, String memberPassword, String memberName, String memberNickName, String memberEmail){
+        this.id = id;
+        this.memberId = memberId;
+        this.memberPassword = memberPassword;
+        this.memberName = memberName;
+        this.memberNickName = memberNickName;
+        this.memberEmail = memberEmail;
+    }
     public static MemberEntity toMemberEntity(MemberDTO memberDTO){
-        MemberEntity memberEntity = new MemberEntity();
-        memberEntity.setId(memberDTO.getId());
-        memberEntity.setMemberId(memberDTO.getMemberId());
-        memberEntity.setMemberPassword(memberDTO.getMemberPassword());
-        memberEntity.setMemberName(memberDTO.getMemberName());
-        memberEntity.setMemberNickName(memberDTO.getMemberNickName());
-        memberEntity.setMemberEmail(memberDTO.getMemberEmail());
-
+        MemberEntity memberEntity = new MemberEntity(
+                memberDTO.getId(),
+                memberDTO.getMemberId(),
+                memberDTO.getMemberPassword(),
+                memberDTO.getMemberName(),
+                memberDTO.getMemberNickName(),
+                memberDTO.getMemberEmail());
         return memberEntity;
     }
 

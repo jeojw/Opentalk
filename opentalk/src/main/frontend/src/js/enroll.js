@@ -38,11 +38,11 @@ const EnrollComponent = (props) =>{
         const checkUrl = `/api/opentalk/member/id/${memberId}`
         axios.get(checkUrl).then((res)=>{
             if (res.data == true){
-                alert("중복된 아이디입니다.")
+                alert("중복된 아이디입니다.");
                 setCheckId(false);
             }
             else{
-                alert("사용 가능한 아이디입니다.")
+                alert("사용 가능한 아이디입니다.");
                 setCheckId(true);
             }
         }).catch((error)=>console.log(error))
@@ -52,11 +52,11 @@ const EnrollComponent = (props) =>{
         const checkUrl = `/api/opentalk/member/nickname/${memberNickName}`
         axios.get(checkUrl).then((res)=>{
             if (res.data == true){
-                alert("중복된 닉네임입니다.")
+                alert("중복된 닉네임입니다.");
                 setCheckNickName(false);
             }
             else{
-                alert("사용 가능한 닉네임입니다.")
+                alert("사용 가능한 닉네임입니다.");
                 setCheckNickName(true);
             }
         }).catch((error)=>console.log(error))
@@ -64,7 +64,10 @@ const EnrollComponent = (props) =>{
 
     const CheckMail = () =>{
         const checkUrl = `/api/opentalk/enroll/mailSend`
-        axios.post(checkUrl, {email: memberEmail}).then((res)=>{
+        axios.post(checkUrl, {
+            email: memberEmail,
+            sendType: "enroll"
+        }).then((res)=>{
             setAuthNum(res.data);
         })
     }
@@ -76,25 +79,30 @@ const EnrollComponent = (props) =>{
             authNum: String(authNum)
         }).then((res)=>{
             if (res.data == "ok"){
-                alert("인증되었습니다.")
+                alert("인증되었습니다.");
                 setCheckEmail(true);
             }
             else{
-                alert("인증이 실패하였습니다. 다시 시도해주십시오.")
-                setCheckEmail(false);
+                if (checkEmail){
+                    alert("이미 인증되었습니다.");
+                }
+                else{
+                    alert("인증이 실패하였습니다. 다시 시도해주십시오.");
+                    setCheckEmail(false);
+                }
             }
         })
     }
 
     const CheckAll = () =>{
         if (!checkId){
-            alert("아이디 중복 체크를 진행해 주십시오.")
+            alert("아이디 중복 체크를 진행해 주십시오.");
         }
         else if (!checkNickName){
-            alert("닉네임 중복 체크를 진행해 주십시오.")
+            alert("닉네임 중복 체크를 진행해 주십시오.");
         }
         else if (!checkEmail){
-            alert("이메일 인증을 진행해 주십시오.")
+            alert("이메일 인증을 진행해 주십시오.");
         }
         else{
             const url = `/api/opentalk/member/enroll`;
