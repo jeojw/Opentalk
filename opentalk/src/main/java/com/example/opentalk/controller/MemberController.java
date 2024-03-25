@@ -10,8 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.lang.reflect.Member;
 import java.util.List;
 
 @RestController
@@ -19,42 +22,51 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
-
-    @GetMapping("api/opentalk/member/enroll")
-    public String enrollForm(){
-        return "{}";
-    }
     @PostMapping("/api/opentalk/member/enroll")
-    public String save(@RequestBody MemberDTO memberDTO){
-        System.out.println("MemberController.save");
-        System.out.println("memberDTO = " + memberDTO);
-        memberService.save(memberDTO);
-        return "login";
+    public ResponseEntity<String> enroll(@RequestBody MemberDTO memberDTO){
+        memberService.enroll(memberDTO);
+        return ResponseEntity.ok("enroll");
     }
     @PostMapping("/api/opentalk/member/login")
-    public MemberDTO login(@RequestBody MemberDTO memberDTO, HttpSession session){
-        System.out.println("getMemberId: ");
-        System.out.println(memberDTO.getMemberId());
+    public ResponseEntity<MemberDTO> login(@RequestBody MemberDTO memberDTO, HttpSession session,
+                                        HttpServletResponse response){
         MemberDTO loginResult = memberService.login(memberDTO);
 
         if (loginResult != null){
-            System.out.println(loginResult.getMemberNickName());
-            session.setAttribute("NickName", loginResult.getMemberNickName());
-            return loginResult;
+            session.setAttribute("member", loginResult);
+            Cookie cookie = new Cookie("member", String.valueOf(loginResult.getMemberId()));
+            cookie.setMaxAge(60*60);
+            response.addCookie(cookie);
+
+            return ResponseEntity.ok(loginResult);
         }
         else{
-            MemberDTO tmpDTO = new MemberDTO();
-            return tmpDTO;
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+    }
+
+    @GetMapping("/api/opentalk/member/status")
+    public ResponseEntity<MemberDTO> checkLogin(HttpSession session){
+        MemberDTO member = (MemberDTO) session.getAttribute("member");
+        if (member != null){
+            return ResponseEntity.ok(member);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
 
     @PostMapping("/api/opentalk/member/logout")
-    public String logout(HttpServletRequest request){
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession(false);
+        Cookie cookie = new Cookie("member", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
         if (session != null){
             session.invalidate();
         }
-        return "logout";
+        return ResponseEntity.ok("logout");
     }
 
     @GetMapping("/api/opentalk/member")
@@ -92,7 +104,7 @@ public class MemberController {
     }
 
     //로그인 정보 일치여부 확인
-    @GetMapping("/api/opentalk/member/checkLogin/{memberId}/{memberPassword}")
+    @PostMapping("/api/opentalk/member/checkLogin/{memberId}/{memberPassword}")
     public ResponseEntity<Boolean> checkLogin(@PathVariable String memberId, @PathVariable String memberPassword){
         return ResponseEntity.ok(memberService.checkLoginAgree(memberId, memberPassword));
     }
@@ -113,6 +125,7 @@ public class MemberController {
         return ResponseEntity.ok(memberService.ReturnPrePassword(memberEmail));
     }
 
+    //비밀번호 변경
     @PostMapping("/api/opentalk/member/changePw/{exPassword}/{newPassword}")
     public void changePw(@PathVariable String exPassword, @PathVariable String newPassword){
         memberService.ChangePassword(exPassword, newPassword);

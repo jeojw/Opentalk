@@ -1,16 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
+import { useCookies } from 'react-cookie';
 
 const LoginComponent = (props) => {
     
+    const [cookies, setCookie] = useCookies([]);
     const [memberId, setMemberId] = useState("");
     const [memberPw, setMemberPw] = useState("");
-    const [loginCheck, setloginCheck] = useState(false);
     const navigate = useNavigate();
     
     const CheckLogin = (e) => {
-        const checkloginUrl = `/api/opentalk/member/checkLogin/${memberId}/${memberPw}`
+        const checkloginUrl = '/api/opentalk/member/login'
 
         if (memberId == ""){
             alert("아이디를 입력해주세요.")
@@ -19,28 +20,30 @@ const LoginComponent = (props) => {
             alert("비밀번호를 입력해주세요.")
         }
         else{
-            const assessToken = ""
-            axios.get(checkloginUrl)
+            axios.post(checkloginUrl, {
+                "id":"null",
+                "memberId": memberId,
+                "memberPassword": memberPw,
+                "memberName": "null",
+                "memberNickName": "null",
+                "memberEmail": "null",
+                "joinDate": "null"
+            })
             .then((res) => {
-                    if (!res.data){
-                        alert("아이디 혹은 비밀번호가 잘못되었습니다.")
-                        setloginCheck(false);
-                    }
-                    else{
-                        setloginCheck(true);
-                        assessToken = res.data.token;
-                    }
-                })
-            .catch((error)=>console.log(error));
-        }
-        if (loginCheck) {
-            navigate("/opentalk/main")
+                if (res.status == 200){
+                    setCookie('member', `${memberId}`);
+                    navigate("/opentalk/main");
+                }
+            })
+            .catch((error)=>{
+                if (error.response && error.response.status === 401) {
+                    alert("아이디 혹은 비밀번호가 잘못되었습니다.");
+                } else {
+                    console.error('Error:', error);
+                }
+            });
         }
         
-    }
-
-    const SearchMember = (e) =>{
-
     }
 
     const InputId = (e) => {
