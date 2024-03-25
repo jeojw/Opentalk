@@ -8,6 +8,20 @@ const MainComponent = (props) => {
     const [member, setMember] = useState("");
     const naviagte = useNavigate();
 
+    useEffect(() => {
+        const fetchMemberStatus = async () => {
+            try{
+                const response = await axios.get('/api/opentalk/member/status');
+                setMember(response.data);
+                console.log(member);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchMemberStatus();
+    }, []);
+
     const LogOut = () => {
         if (cookies.member){
             if (window.confirm("로그아웃 하시겠습니까?")){
