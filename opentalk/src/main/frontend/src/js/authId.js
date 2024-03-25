@@ -2,13 +2,13 @@ import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-export const AuthIdComponent = ({ onMemberIdChange }) =>{
+const AuthIdComponent = () =>{
     const [memberId, setMemberId] = useState("");
     const navigate = useNavigate();
 
     const GetInputId = (e) => {
-        setMemberId(e.target.value);
-        onMemberIdChange(e.target.value);
+        const memberId = e.target.value;
+        setMemberId(memberId);
     }
 
     const AuthId = (e) => {

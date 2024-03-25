@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const FindMemberPassword = () =>{
+const FindMemberPassword = (props) =>{
     const [memberEmail, setMemberEmail] = useState('');
     const [authNum, setAuthNum] = useState('');
     const navigate = useNavigate();
@@ -28,7 +28,7 @@ const FindMemberPassword = () =>{
             authNum: String(authNum)
         }).then((res)=>{
             if (res.data == "ok"){
-                navigate("/opentalk/member/changePw")
+                navigate("/opentalk/member/changePw", {state: {memberEmail: memberEmail}});
             }
             else{
                 alert("인증이 실패하였습니다. 다시 시도해주십시오.")

@@ -2,6 +2,7 @@ package com.example.opentalk.repository;
 
 import com.example.opentalk.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -23,13 +24,14 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     @Query(value = "SELECT member_password FROM Opentalk.open_talk_member WHERE member_id=:memberId AND member_email=:memberEmail",
             nativeQuery = true)
     String SearchMemberPassword(@Param("memberId") String memberId, @Param("memberEmail") String memberEmail);
+    @Modifying
     @Query(value = "UPDATE Opentalk.open_talk_member SET member_password = :newPassword WHERE member_password = :exPassword",
             nativeQuery = true)
     void ChangePw(@Param("exPassword") String exPassword, @Param("newPassword") String newPassword);
 
-    @Query(value = "SELECT member_password FROM Opentalk.open_talk_member WHERE member_id=:memberId",
+    @Query(value = "SELECT member_password FROM Opentalk.open_talk_member WHERE member_email=:memberEmail",
             nativeQuery = true)
-    String ReturnExPw(@Param("memberId") String memberId);
+    String ReturnExPw(@Param("memberEmail") String memberEmail);
     boolean existsByMemberId(String memberId);
     boolean existsByMemberNickName(String memberNickName);
     boolean existsByMemberEmail(String memberEmail);

@@ -86,8 +86,8 @@ public class MemberService {
     }
 
     @Transactional
-    public String ReturnPrePassword(String memberId){
-        return memberRepository.ReturnExPw(memberId);
+    public String ReturnPrePassword(String memberEmail){
+        return memberRepository.ReturnExPw(memberEmail);
     }
 
     @Transactional

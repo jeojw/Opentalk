@@ -108,9 +108,9 @@ public class MemberController {
         return ResponseEntity.ok(memberService.searchPw(memberId, memberEmail));
     }
     //현재 비밀번호 찾기
-    @PostMapping("/api/opentalk/member/changePw/{memberId}")
-    public ResponseEntity<String> exPassword(@PathVariable String memberId){
-        return ResponseEntity.ok(memberService.ReturnPrePassword(memberId));
+    @PostMapping("/api/opentalk/member/changePw/{memberEmail}")
+    public ResponseEntity<String> exPassword(@PathVariable String memberEmail){
+        return ResponseEntity.ok(memberService.ReturnPrePassword(memberEmail));
     }
 
     @PostMapping("/api/opentalk/member/changePw/{exPassword}/{newPassword}")
