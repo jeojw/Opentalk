@@ -45,6 +45,7 @@ public class MemberController {
         }
     }
 
+    //멤버의 상태를 반환하는 메서드
     @GetMapping("/api/opentalk/member/status")
     public ResponseEntity<MemberDTO> checkLogin(HttpSession session){
         MemberDTO member = (MemberDTO) session.getAttribute("member");

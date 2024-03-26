@@ -1,2 +1,12 @@
-package com.example.opentalk.dto;public class ChatMessageDTO {
+package com.example.opentalk.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class ChatMessageDTO {
+    private String roomId;
+    private String writer;
+    private String message;
 }

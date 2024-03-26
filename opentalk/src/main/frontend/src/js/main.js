@@ -2,10 +2,12 @@ import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
+import SetRoomComponent from './setroom';
 
-const MainComponent = (props) => {
+const MainComponent = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['member']);
     const [member, setMember] = useState("");
+    const [chatList, setChetList] = useState([]);
     const naviagte = useNavigate();
 
     useEffect(() => {
@@ -21,6 +23,20 @@ const MainComponent = (props) => {
 
         fetchMemberStatus();
     }, []);
+
+    useEffect(() => {
+        const Rooms = async () => {
+            try{
+                const response = await axios.post('/api/opentalk/rooms', {})
+                setChetList(response.data);
+            } catch(error){
+                console.error(error);
+            }
+        };
+
+        Rooms();
+    }, []);
+
 
     const LogOut = () => {
         if (cookies.member){
@@ -40,18 +56,17 @@ const MainComponent = (props) => {
         
     };
 
-    const MakeRoom = () => {
-        window()
-    };
-
    return (
     <div>
         <table>
-            <tbody>
-                <p>환영합니다, {member.memberNickName}</p>
-            </tbody>
+            <p>환영합니다, {member.memberNickName}님</p>
+            <ul>
+                {chatList.map(room=>(
+                    <li key={room.id}>{room.name}</li>
+                ))}
+            </ul>
         </table>
-        <button onClick={MakeRoom}>방 생성하기</button>
+        <SetRoomComponent target={member} />
         <button onClick={LogOut}>로그아웃</button>
     </div>
 
