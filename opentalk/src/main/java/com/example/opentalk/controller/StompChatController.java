@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class StompChatController {
     private final SimpMessagingTemplate template;
 
-    @MessageMapping("/opentalk/chat/enter")
+    @MessageMapping("/api/opentalk/chat/enter")
     public void enter(ChatMessageDTO message){
         message.setMessage(message.getWriter() + "님이 채팅방에 참여하였습니다.");
         template.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
     }
 
-    @MessageMapping("/opentalk/chat/message")
+    @MessageMapping("/api/opentalk/chat/message")
     public void message(ChatMessageDTO message){
         template.convertAndSend("sub/chat/room/" + message.getRoomId(), message);
     }

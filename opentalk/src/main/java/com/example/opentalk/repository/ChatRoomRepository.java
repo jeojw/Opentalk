@@ -26,8 +26,10 @@ public class ChatRoomRepository {
         return chatRoomDTOMap.get(id);
     }
 
-    public void createChatRoomDTO(String name, String password, String manager, Integer count){
+    public String createChatRoomDTO(String name, String password, String manager, Integer count){
         ChatRoomDTO room = ChatRoomDTO.create(name, password, manager, count);
         chatRoomDTOMap.put(room.getRoomId(), room);
+
+        return room.getRoomId();
     }
 }

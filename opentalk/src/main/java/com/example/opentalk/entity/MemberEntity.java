@@ -28,15 +28,18 @@ public class MemberEntity {
     private String memberNickName;
     @Column
     private String memberEmail;
+    @Column
+    private String authority;
 
     @Builder
-    public MemberEntity(Long id, String memberId, String memberPassword, String memberName, String memberNickName, String memberEmail){
+    public MemberEntity(Long id, String memberId, String memberPassword, String memberName, String memberNickName, String memberEmail, String authority){
         this.id = id;
         this.memberId = memberId;
         this.memberPassword = memberPassword;
         this.memberName = memberName;
         this.memberNickName = memberNickName;
         this.memberEmail = memberEmail;
+        this.authority = authority;
     }
     public static MemberEntity toMemberEntity(MemberDTO memberDTO){
         MemberEntity memberEntity = new MemberEntity(
@@ -45,7 +48,8 @@ public class MemberEntity {
                 memberDTO.getMemberPassword(),
                 memberDTO.getMemberName(),
                 memberDTO.getMemberNickName(),
-                memberDTO.getMemberEmail());
+                memberDTO.getMemberEmail(),
+                memberDTO.getAuthority());
         return memberEntity;
     }
 

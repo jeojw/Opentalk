@@ -5,10 +5,13 @@ import axios from'axios';
 export const SetRoomComponent = ({target}) =>{
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
+    const [roomId, setRoomId] = useState("");
     const [participants, setParticipants] = useState(0);
     const [existLock, setExistLock] = useState(false);
     const [password, setPassword] = useState("");
     const [manager, setManger] = useState("");
+    
+    let typingTimer;
 
     useState(() => {
         setManger(target);
@@ -24,33 +27,22 @@ export const SetRoomComponent = ({target}) =>{
         setParticipants(0);
         setIsOpen(false);
     }
-    
-    const GetInputName = (event) => setRoomName(event.target.value);
-    const GetInputCounts = (event) => setParticipants(event.target.value);
-    const GetInputPassword = (event) => setPassword(event.target.value);
-    const GetCheckExistPw = (event) => setExistLock(event.target.value);
 
-    const SetOption = () => {
-        return (
-            <div>
-                방 이름: <input type="text" value={roomName} onChange={GetInputName}></input>
-                <br></br>
-                인원수: <input type="number" value={participants} onChange={GetInputCounts}></input>
-                <br></br>
-                비밀번호: <input 
-                    type="checkbox" 
-                    checked={existLock}
-                    onChange={GetCheckExistPw}></input>
-                <input 
-                    type="password" 
-                    value={password} 
-                    onChange={GetInputPassword}
-                    disabled={!existLock}></input>
-                <br></br>
-                <input type="submit" value="방 생성하기" onClick={MakeRoom}></input>
-            </div>
-        );
-    };
+    const GetInputName = (event) => {
+        setRoomName(event.target.value);
+    }
+    const GetInputCounts = (event) => {
+        setParticipants(event.target.value);
+    }
+    const GetInputPassword = (event) => {
+        setPassword(event.target.value);
+    }
+    const GetCheckExistPw = (event) => {
+        setExistLock(event.target.checked);
+        if (!event.target.checked){
+            setPassword('');
+        }
+    }
 
     const MakeRoom = () => {
         const params = new FormData();
@@ -63,6 +55,7 @@ export const SetRoomComponent = ({target}) =>{
         .then((res)=>{
             if (res.status == 200){
                 alert("방이 생성되었습니다.");
+                setRoomId(res.data);
                 closeModal();
             }
         })
@@ -73,8 +66,24 @@ export const SetRoomComponent = ({target}) =>{
         <div>
             <button onClick={openModal}>방 생성하기</button>
             <Modal isOpen={isOpen} onRequestClose={closeModal}>
-            <SetOption/>
-            <button onClick={closeModal}>생성 취소</button>
+                <div>
+                    방 이름: <input type="text" value={roomName} onChange={GetInputName}></input>
+                    <br></br>
+                    인원수: <input type="number" value={participants} onChange={GetInputCounts}></input>
+                    <br></br>
+                    비밀번호: <input 
+                        type="checkbox" 
+                        checked={existLock}
+                        onChange={GetCheckExistPw}></input>
+                    <input 
+                        type="password" 
+                        value={password} 
+                        onChange={GetInputPassword}
+                        disabled={!existLock}></input>
+                    <br></br>
+                    <input type="submit" value="방 생성하기" onClick={MakeRoom}></input>
+                </div>
+                <button onClick={closeModal}>생성 취소</button>
             </Modal>
         </div>
     );

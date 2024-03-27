@@ -33,8 +33,8 @@ public class RoomController {
     public ResponseEntity<String> create(@RequestParam("name") String name, @RequestParam("password") String password,
                                          @RequestParam("manager") String manager, @RequestParam("count") Integer count){
         log.info("# Create Chat Room, name: " + name);
-        repository.createChatRoomDTO(name, password, manager, count);
-        return ResponseEntity.ok("rooms");
+        String roomId = repository.createChatRoomDTO(name, password, manager, count);
+        return ResponseEntity.ok(roomId);
     }
 
     @GetMapping("/api/opentalk/room")

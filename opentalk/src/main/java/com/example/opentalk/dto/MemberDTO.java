@@ -28,6 +28,9 @@ public class MemberDTO {
     @NotBlank(message = "이메일 주소를 입력해주세요.")
     private String memberEmail;
 
+    @NotBlank
+    private String authority;
+
     private Date join_date;
 
     public static MemberDTO toMemberDTO(MemberEntity memberEntity){
@@ -38,6 +41,7 @@ public class MemberDTO {
         memberDTO.setMemberName(memberEntity.getMemberName());
         memberDTO.setMemberNickName(memberEntity.getMemberNickName());
         memberDTO.setMemberEmail(memberEntity.getMemberEmail());
+        memberDTO.setAuthority(memberEntity.getAuthority());
 
         return memberDTO;
     }

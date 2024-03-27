@@ -1,14 +1,34 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
+import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import SetRoomComponent from './setroom';
+import RoomComponent from './room';
 
 const MainComponent = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['member']);
     const [member, setMember] = useState("");
     const [chatList, setChetList] = useState([]);
+    const [isProtalOpen, setIsPortalOpen] = useState(false);
     const naviagte = useNavigate();
+
+
+    const EnterRoom = (room) => {
+        const roomProtal = (
+            <div>
+                <RoomComponent target={room}/>
+            </div>
+        );
+
+        naviagte(`/opentalk/room/${room.roomId}`);
+
+        return roomProtal;
+    }
+
+    const closePortal = () => {
+        setIsPortalOpen(false);
+    }
 
     useEffect(() => {
         const fetchMemberStatus = async () => {
@@ -62,7 +82,7 @@ const MainComponent = () => {
             <p>환영합니다, {member.memberNickName}님</p>
             <ul>
                 {chatList.map(room=>(
-                    <li key={room.id}>{room.name}</li>
+                    <li key={room.roomId}>{room.name}&nbsp;<button onClick={() => EnterRoom(room)}>입장하기</button></li>
                 ))}
             </ul>
         </table>
