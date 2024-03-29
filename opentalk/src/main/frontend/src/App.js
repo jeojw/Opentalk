@@ -15,7 +15,7 @@ const App = () => {
     <Router>
       <div>
         <Routes>
-          <Route path="opentalk/room/:apply_id" element={<Room/>}></Route>
+          <Route path="opentalk/room/:room_Id" element={<Room/>}></Route>
           <Route path ="opentalk/member/authId" element={<AuthId/>}></Route>
           <Route path = "opentalk/member/changePw" element={<ChangePw/>}></Route>
           <Route path = "opentalk/member/findId" element={<FindId/>}></Route>

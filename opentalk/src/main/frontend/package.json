@@ -19,7 +19,8 @@
     "react-scripts": "^5.0.1",
     "react-session-api": "^1.1.0",
     "sockjs-client": "^1.6.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "ws": "^8.16.0"
   },
   "proxy": "http://localhost:8081",
   "scripts": {
