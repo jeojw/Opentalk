@@ -12,3 +12,4 @@ root.render(
     </CookiesProvider>
   </React.StrictMode>
 );
+
