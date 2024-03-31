@@ -50,6 +50,12 @@ const MainComponent = () => {
         Rooms();
     }, []);
 
+    const GoProfile = () => {
+        if (cookies.member){
+            naviagte("/opentalk/profile");
+        }
+    }
+
 
     const LogOut = () => {
         if (cookies.member){
@@ -80,6 +86,7 @@ const MainComponent = () => {
             </ul>
         </table>
         <SetRoomComponent target={member} />
+        <button onClick={GoProfile}>프로필 설정</button>
         <button onClick={LogOut}>로그아웃</button>
     </div>
 

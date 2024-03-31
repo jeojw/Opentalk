@@ -44,6 +44,16 @@ public class MemberService {
         return memberDTOList;
     }
 
+    public MemberDTO getProfile(String memberId){
+        Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(memberId);
+        if (byMemberId.isPresent()){
+            MemberEntity memberEntity = byMemberId.get();
+            return MemberDTO.toMemberDTO(memberEntity);
+        }
+        else{
+            return null;
+        }
+    }
     public MemberDTO findById(Long id){
         Optional<MemberEntity> optionalMemberEntity = memberRepository.findById(id);
         if (optionalMemberEntity.isPresent()){
@@ -59,6 +69,11 @@ public class MemberService {
 
     public boolean authId(String memberId){
         return memberRepository.existsByMemberId(memberId);
+    }
+
+    @Transactional
+    public void ChangeNickName(String memberId, String newNickName){
+        memberRepository.ChangeNickName(memberId, newNickName);
     }
 
     @Transactional

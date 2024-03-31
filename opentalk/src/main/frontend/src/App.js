@@ -9,13 +9,14 @@ import FindPw from './js/findPw'
 import ChangePw from './js/changePw'
 import AuthId from './js/authId'
 import Room from './js/room'
-im
+import Profile from './js/profile'
 
 const App = () => {
   return (
     <Router>
       <div>
         <Routes>
+        <Route path="opentalk/profile" element={<Profile/>}></Route>
           <Route path="opentalk/room/:room_Id" element={<Room/>}></Route>
           <Route path ="opentalk/member/authId" element={<AuthId/>}></Route>
           <Route path = "opentalk/member/changePw" element={<ChangePw/>}></Route>

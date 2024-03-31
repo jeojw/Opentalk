@@ -4,6 +4,7 @@ import com.example.opentalk.dto.MemberDTO;
 import com.example.opentalk.entity.MemberEntity;
 import com.example.opentalk.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -70,18 +71,11 @@ public class MemberController {
         return ResponseEntity.ok("logout");
     }
 
-    @GetMapping("/api/opentalk/member")
-    public String findAll(Model model){
-        List<MemberDTO> memberDTOList = memberService.findAll();
-        model.addAttribute("memberList", memberDTOList);
-        return "list";
-    }
+    @PostMapping("/api/opentalk/profile")
+    public ResponseEntity<MemberDTO> findById(@RequestParam("memberId") String memberId){
+        MemberDTO memberDTO = memberService.getProfile(memberId);
 
-    @GetMapping("/api/opentalk/member/{id}")
-    public String findById(@PathVariable Long id, Model model){
-        MemberDTO memberDTO = memberService.findById(id);
-        model.addAttribute("member", memberDTO);
-        return "detail";
+        return ResponseEntity.ok(memberDTO);
     }
 
     @GetMapping("/api/opentalk/member/delete/{id}")
@@ -124,6 +118,12 @@ public class MemberController {
     @PostMapping("/api/opentalk/member/changePw/{memberEmail}")
     public ResponseEntity<String> exPassword(@PathVariable String memberEmail){
         return ResponseEntity.ok(memberService.ReturnPrePassword(memberEmail));
+    }
+
+    //닉네임 변경
+    @PostMapping("/api/opentalk/member/changeNickName")
+    public void changeNickName(@RequestParam("memberId") String memberId, @RequestParam("newNickName") String newNickName){
+        memberService.ChangeNickName(memberId, newNickName);
     }
 
     //비밀번호 변경
