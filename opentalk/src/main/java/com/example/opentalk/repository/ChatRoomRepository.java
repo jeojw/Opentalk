@@ -34,4 +34,10 @@ public class ChatRoomRepository {
 
         return room.getRoomId();
     }
+
+    public HashTagDTO createHashTag(String tagName){
+        HashTagDTO tag = HashTagDTO.create(tagName);
+
+        return tag;
+    }
 }

@@ -75,7 +75,7 @@ export const SetRoomComponent = ({target}) =>{
         params.append("count", participants)
         params.append("info", info)
         params.append("tags", tags)
-        const makeUrl = `/api/opentalk/room`
+        const makeUrl = `/api/opentalk/makeRoom`
         axios.post(makeUrl, params)
         .then((res)=>{
             if (res.status === 200){
@@ -106,31 +106,34 @@ export const SetRoomComponent = ({target}) =>{
                         onChange={GetInputPassword}
                         disabled={!existLock}>   
                     </input>
+                    <br></br>
                     <input 
                         type="text" 
                         value={info} 
+                        placeholder={"방 소개문"}
+                        size={100}
                         onChange={GetInputInfo}>
                     </input>
+                    <br></br>
                     <input 
                         type="text" 
                         value={tag} 
                         onChange={GetInputTag}>    
                     </input>
-                        <br>
-                        </br>
                     <input
                         type="button"
                         value="태그 추가"
                         onClick={()=>AppendTag(tag)}>
                     </input>
                     {tags.map((t)=> (
-                        <li>{t}</li>
+                        <li>#{t}</li>
                     )
                     )}
                     <br></br>
                     <input type="submit" value="방 생성하기" onClick={MakeRoom}></input>
+                    <button onClick={closeModal}>생성 취소</button>
                 </div>
-                <button onClick={closeModal}>생성 취소</button>
+                
             </Modal>
         </div>
     );

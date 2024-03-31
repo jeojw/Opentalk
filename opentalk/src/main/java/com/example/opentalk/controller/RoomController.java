@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,13 +27,16 @@ public class RoomController {
 
         return ResponseEntity.ok(repository.findAllRooms());
     }
-
-    @PostMapping("/api/opentalk/room")
+    @PostMapping("/api/opentalk/makeRoom")
     public ResponseEntity<String> create(@RequestParam("name") String name, @RequestParam("password") String password,
                                          @RequestParam("manager") String manager, @RequestParam("count") Integer count,
-                                         @RequestParam("info") String info, @RequestParam("tags") List<HashTagDTO> tags){
+                                         @RequestParam("info") String info, @RequestParam("tags") List<String> tags){
         log.info("# Create Chat Room, name: " + name);
-        String roomId = repository.createChatRoomDTO(name, password, manager, count, info, tags);
+        List<HashTagDTO> tagList = new ArrayList<>();
+        for (String tag : tags){
+            tagList.add(HashTagDTO.create(tag));
+        }
+        String roomId = repository.createChatRoomDTO(name, password, manager, count, info, tagList);
         return ResponseEntity.ok(roomId);
     }
 

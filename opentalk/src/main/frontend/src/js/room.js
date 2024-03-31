@@ -13,50 +13,53 @@ const RoomComponent = (props) => {
     const [chat, setChat] = useState("");
 
     let {room_Id} = useParams();
-
     
     const client = useRef({});
 
     useEffect(() =>{
+        const connect = () => {
+            client.current = new StompJs.Client({
+                brokerURL: "ws://localhost:8000/stomp-ws",
+                connectHeaders: {
+                    "auth-token": "spring-chat-auth-token",
+                },
+                debug: function (str) {
+                    console.log(str);
+                },
+                reconnectDelay: 5000,
+                heartbeatIncoming: 4000,
+                heartbeatOutgoing: 4000,
+                onConnect: () => {
+                    subscribe();
+                },
+                onStompError: (frame) => {
+                    console.error(frame);
+                }
+            });
+            client.current.activate();  
+        };
+    
+        const disconnect = () => {
+            client.current.deactivate();
+        };
+
+        const subscribe = () => {
+            client.current.subscribe(`/sub/chat/${room_Id}`, ({body}) => {
+                setChetList((_chatList)=>[..._chatList , JSON.parse(body)])
+            });
+        };
+        
         connect();
         return () => disconnect();
-    }, []);
+    }, [room_Id]);
 
     // useEffect(() => {
     //     setRoomName(props.roomInfo.name);
     //     setParticipates(props.roomInfo.participates);
     // }, [props]);
 
-
-    const connect = () => {
-        client.current = new StompJs.Client({
-            brokerURL: "ws://localhost:8000/stomp-ws",
-            connectHeaders: {
-                "auth-token": "spring-chat-auth-token",
-            },
-            debug: function (str) {
-                console.log(str);
-            },
-            reconnectDelay: 5000,
-            heartbeatIncoming: 4000,
-            heartbeatOutgoing: 4000,
-            onConnect: () => {
-                console.log('success');
-                subscribe();
-            },
-            onStompError: (frame) => {
-                console.error(frame);
-            }
-        });
-        client.current.activate();  
-    };
-
-    const disconnect = () => {
-        client.current.deactivate();
-    };
-
+    
     const publish = (chat) => {
-        console.log("전송!");
         if (!client.current.connected) return;
 
         client.current.publish({
@@ -70,12 +73,6 @@ const RoomComponent = (props) => {
 
         setChat("");
     }
-
-    const subscribe = () => {
-        client.current.subscribe(`/sub/chat/${room_Id}`, ({body}) => {
-            setChetList((_chatList)=>[..._chatList , JSON.parse(body)])
-        });
-    };
 
     const handleChange = (event) => {
         setChat(event.target.value);
