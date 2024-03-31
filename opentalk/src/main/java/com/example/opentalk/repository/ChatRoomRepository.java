@@ -1,6 +1,7 @@
 package com.example.opentalk.repository;
 
 import com.example.opentalk.dto.ChatRoomDTO;
+import com.example.opentalk.dto.HashTagDTO;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
@@ -26,8 +27,9 @@ public class ChatRoomRepository {
         return chatRoomDTOMap.get(id);
     }
 
-    public String createChatRoomDTO(String name, String password, String manager, Integer count){
-        ChatRoomDTO room = ChatRoomDTO.create(name, password, manager, count);
+    public String createChatRoomDTO(String name, String password, String manager, Integer count, String info,
+                                    List<HashTagDTO> tags){
+        ChatRoomDTO room = ChatRoomDTO.create(name, password, manager, count, info, tags);
         chatRoomDTOMap.put(room.getRoomId(), room);
 
         return room.getRoomId();

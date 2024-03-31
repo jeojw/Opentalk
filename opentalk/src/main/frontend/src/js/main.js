@@ -9,26 +9,19 @@ import RoomComponent from './room';
 const MainComponent = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['member']);
     const [member, setMember] = useState("");
-    const [chatList, setChetList] = useState([]);
-    const [isProtalOpen, setIsPortalOpen] = useState(false);
+    const [chatList, setChatList] = useState([]);
     const naviagte = useNavigate();
 
 
-    const EnterRoom = (room) => {
-        const roomProtal = (
+    const EnterRoom = ({room}) => {
+        return (
             <div>
-                <RoomComponent target={room}/>
+                <RoomComponent roomInfo={room}/>
+                {naviagte(`/opentalk/room/${room.roomId}`)}
             </div>
         );
-
-        naviagte(`/opentalk/room/${room.roomId}`);
-
-        return roomProtal;
     }
 
-    const closePortal = () => {
-        setIsPortalOpen(false);
-    }
 
     useEffect(() => {
         const fetchMemberStatus = async () => {
@@ -48,7 +41,7 @@ const MainComponent = () => {
         const Rooms = async () => {
             try{
                 const response = await axios.post('/api/opentalk/rooms', {})
-                setChetList(response.data);
+                setChatList(response.data);
             } catch(error){
                 console.error(error);
             }
@@ -82,7 +75,7 @@ const MainComponent = () => {
             <p>환영합니다, {member.memberNickName}님</p>
             <ul>
                 {chatList.map(room=>(
-                    <li key={room.roomId}>{room.name}&nbsp;<button onClick={() => EnterRoom(room)}>입장하기</button></li>
+                    <li key={room.roomId}>{room.name}&nbsp;<button onClick={() => EnterRoom({room})}>입장하기</button></li>
                 ))}
             </ul>
         </table>

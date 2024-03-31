@@ -2,28 +2,30 @@ import React, {useRef, useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 import * as StompJs from "@stomp/stompjs";
 
-const RoomComponent = ({target}) => {
+const RoomComponent = (props) => {
 
     const [manager, setManager] = useState('');
     const [password, setPassword] = useState('');
     const [roomName, setRoomName] = useState('');
     const [participates, setParticipates] = useState(0);
-    const [roomId, setRoomId] = useState('');
 
     const [chatList, setChetList] = useState([]);
     const [chat, setChat] = useState("");
 
     let {room_Id} = useParams();
+
     
     const client = useRef({});
-    const socket = useRef<WebSocket>({});
 
     useEffect(() =>{
         connect();
-        GetInfo();
-
         return () => disconnect();
     }, []);
+
+    // useEffect(() => {
+    //     setRoomName(props.roomInfo.name);
+    //     setParticipates(props.roomInfo.participates);
+    // }, [props]);
 
 
     const connect = () => {
@@ -54,12 +56,15 @@ const RoomComponent = ({target}) => {
     };
 
     const publish = (chat) => {
+        console.log("전송!");
         if (!client.current.connected) return;
+
         client.current.publish({
             destination: '/pub/chat',
             body: JSON.stringify({
-                applyId: room_Id,
-                chat: chat,
+                roomId: room_Id,
+                writer: "null",
+                message: chat
             }),
         });
 
@@ -76,27 +81,12 @@ const RoomComponent = ({target}) => {
         setChat(event.target.value);
     }
 
-    const handleSubmit = (event, chat) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
-
-        publish(chat);
     }
-
-    
-
-    const GetInfo = () => {
-        console.log(target);
-        // setRoomName(target.name);
-        // setParticipates(target.count);
-        // setManager(target.manager);
-        // setPassword(target.password);
-        // setRoomId(target.roomId);
-    };
-    
     return(
         <div>
             <div>
-                <h1>RoomID: {room_Id}</h1>
                 <h1>{roomName}</h1>
                 <h2>참여자 수: {participates}</h2>
             </div>
@@ -104,13 +94,12 @@ const RoomComponent = ({target}) => {
                 {chatList && chatList.length > 0 && (
                     <ul>
                         {chatList.map((_chatMessage, index) => (
-                            <li key={index}>{_chatMessage.message}</li>
+                            <li key={index}>{_chatMessage.writer}&nbsp;: {_chatMessage.message}</li>
                         ))}
                     </ul>
                 )}
             </div>
-            <div className='chat-list'>{chatList}</div>
-            <form onSubmit={(event)=>handleSubmit(event, chat)}>
+            <form onSubmit={(event)=>handleSubmit(event)}>
                 <div>
                     입력하기: <input type="text" name="chatInput" onChange={handleChange} value={chat}></input>
                 </div>

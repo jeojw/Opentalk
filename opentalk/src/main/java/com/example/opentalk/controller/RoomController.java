@@ -1,16 +1,14 @@
 package com.example.opentalk.controller;
 
 import com.example.opentalk.dto.ChatRoomDTO;
+import com.example.opentalk.dto.HashTagDTO;
 import com.example.opentalk.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -31,9 +29,10 @@ public class RoomController {
 
     @PostMapping("/api/opentalk/room")
     public ResponseEntity<String> create(@RequestParam("name") String name, @RequestParam("password") String password,
-                                         @RequestParam("manager") String manager, @RequestParam("count") Integer count){
+                                         @RequestParam("manager") String manager, @RequestParam("count") Integer count,
+                                         @RequestParam("info") String info, @RequestParam("tags") List<HashTagDTO> tags){
         log.info("# Create Chat Room, name: " + name);
-        String roomId = repository.createChatRoomDTO(name, password, manager, count);
+        String roomId = repository.createChatRoomDTO(name, password, manager, count, info, tags);
         return ResponseEntity.ok(roomId);
     }
 

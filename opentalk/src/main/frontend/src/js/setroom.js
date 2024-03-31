@@ -10,6 +10,9 @@ export const SetRoomComponent = ({target}) =>{
     const [existLock, setExistLock] = useState(false);
     const [password, setPassword] = useState("");
     const [manager, setManger] = useState("");
+    const [info, setInfo] = useState("");
+    const [tag, setTag] = useState("");
+    const [tags, setTags] = useState([]);
     
     let typingTimer;
 
@@ -26,6 +29,7 @@ export const SetRoomComponent = ({target}) =>{
         setPassword('');
         setParticipants(0);
         setIsOpen(false);
+        setTags([]);
     }
 
     const GetInputName = (event) => {
@@ -43,6 +47,25 @@ export const SetRoomComponent = ({target}) =>{
             setPassword('');
         }
     }
+    const GetInputInfo = (event) => {
+        setInfo(event.target.value);
+    }
+    const GetInputTag = (event) => {
+        setTag(event.target.value);
+    }
+
+    const AppendTag = (getTag) => {
+        tags.push(getTag);
+        setTag("");
+    }
+
+    const AllTags = ({tag}) =>{
+        return (
+            <div>
+                <b>{tag}</b>
+            </div>
+        )
+    }
 
     const MakeRoom = () => {
         const params = new FormData();
@@ -50,10 +73,12 @@ export const SetRoomComponent = ({target}) =>{
         params.append("password", password)
         params.append("manager", manager)
         params.append("count", participants)
+        params.append("info", info)
+        params.append("tags", tags)
         const makeUrl = `/api/opentalk/room`
         axios.post(makeUrl, params)
         .then((res)=>{
-            if (res.status == 200){
+            if (res.status === 200){
                 alert("방이 생성되었습니다.");
                 setRoomId(res.data);
                 closeModal();
@@ -79,7 +104,29 @@ export const SetRoomComponent = ({target}) =>{
                         type="password" 
                         value={password} 
                         onChange={GetInputPassword}
-                        disabled={!existLock}></input>
+                        disabled={!existLock}>   
+                    </input>
+                    <input 
+                        type="text" 
+                        value={info} 
+                        onChange={GetInputInfo}>
+                    </input>
+                    <input 
+                        type="text" 
+                        value={tag} 
+                        onChange={GetInputTag}>    
+                    </input>
+                        <br>
+                        </br>
+                    <input
+                        type="button"
+                        value="태그 추가"
+                        onClick={()=>AppendTag(tag)}>
+                    </input>
+                    {tags.map((t)=> (
+                        <li>{t}</li>
+                    )
+                    )}
                     <br></br>
                     <input type="submit" value="방 생성하기" onClick={MakeRoom}></input>
                 </div>
