@@ -4,7 +4,6 @@ import * as StompJs from "@stomp/stompjs";
 import * as SockJS from "sockjs-client";
 
 const RoomComponent = ({target}) => {
-
     const [manager, setManager] = useState('');
     const [password, setPassword] = useState('');
     const [roomName, setRoomName] = useState('');
@@ -17,7 +16,6 @@ const RoomComponent = ({target}) => {
     let {room_Id} = useParams();
     
     const client = useRef({});
-    const socket = useRef<WebSocket>({});
 
     useEffect(() =>{
         connect();
@@ -29,7 +27,7 @@ const RoomComponent = ({target}) => {
 
     const connect = () => {
         client.current = new StompJs.Client({
-            brokerURL: "ws://localhost:8000/stomp-ws",
+            webSocketFactory: () => new SockJS("/ws"),
             connectHeaders: {
                 "auth-token": "spring-chat-auth-token",
             },

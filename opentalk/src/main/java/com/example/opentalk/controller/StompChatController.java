@@ -1,8 +1,8 @@
 package com.example.opentalk.controller;
 
 import com.example.opentalk.dto.ChatMessageDTO;
+import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,7 +22,6 @@ public class StompChatController {
 
     @MessageMapping("/chat")
     public void publishChat(ChatMessageDTO chatMessage){
-        log.info("publishChat : {}", chatMessage);
         template.convertAndSend("/sub/chat/" + chatMessage.getRoomId(), chatMessage);
     }
 
@@ -30,13 +29,12 @@ public class StompChatController {
     public void onConnect(SessionConnectedEvent event){
         String sessionId = event.getMessage().getHeaders().get("simpleSessionId").toString();
         SESSION_IDS.add(sessionId);
-        log.info("[connect] connections : {}", SESSION_IDS.size());
+
     }
 
     @EventListener(SessionConnectedEvent.class)
     public void onDisconnect(SessionDisconnectEvent event){
         String sessionId = event.getSessionId();
         SESSION_IDS.remove(sessionId);
-        log.info("[disconnect] connections : {}", SESSION_IDS.size());
     }
 }

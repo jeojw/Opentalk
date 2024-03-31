@@ -1,18 +1,19 @@
-import { createProxyMiddleware } from 'http-proxy-middleware';
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
-export default (app) => {
+module.exports = (app) => {
   app.use(
-    "/api",
+    '/api',
     createProxyMiddleware({
       target: 'http://localhost:8081',	// 서버 URL or localhost:설정한포트번호
-      changeOrigin: true
+      changeOrigin: true,
     })
   );
+
   app.use(
-    "/stomp-ws",
-    createProxyMiddleware({
-      target: 'http://localhost:8081',	// 서버 URL or localhost:설정한포트번호
-      ws: true
-    })
+    createProxyMiddleware("/ws", { 
+      target: "http://localhost:8081", 
+      ws: true,
+      changeOrigin: true,
+     })
   );
 };
