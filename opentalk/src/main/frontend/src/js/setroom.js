@@ -50,7 +50,7 @@ export const SetRoomComponent = ({target}) =>{
         params.append("password", password)
         params.append("manager", manager)
         params.append("count", participants)
-        const makeUrl = "/api/opentalk/room"
+        const makeUrl = `/api/opentalk/room`
         axios.post(makeUrl, params)
         .then((res)=>{
             if (res.status == 200){
