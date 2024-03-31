@@ -36,7 +36,6 @@ public class MemberController {
             session.setAttribute("member", loginResult);
             Cookie cookie = new Cookie("member", String.valueOf(loginResult.getMemberId()));
             cookie.setMaxAge(60*60);
-            cookie.setPath("/");
             response.addCookie(cookie);
 
             return ResponseEntity.ok(loginResult);
@@ -63,7 +62,6 @@ public class MemberController {
         HttpSession session = request.getSession(false);
         Cookie cookie = new Cookie("member", null);
         cookie.setMaxAge(0);
-        cookie.setPath("/");
         response.addCookie(cookie);
 
         if (session != null){
