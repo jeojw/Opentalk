@@ -8,4 +8,12 @@ module.exports = (app) => {
       changeOrigin: true,
     })
   );
+
+  app.use(
+    createProxyMiddleware("/ws", { 
+      target: "http://localhost:8081", 
+      ws: true,
+      changeOrigin: true,
+     })
+  );
 };
