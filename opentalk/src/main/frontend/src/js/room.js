@@ -1,7 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 import * as StompJs from "@stomp/stompjs";
-import * as SockJS from "sockjs-client";
 
 const RoomComponent = ({target}) => {
 
