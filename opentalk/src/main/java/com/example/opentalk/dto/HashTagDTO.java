@@ -1,5 +1,6 @@
 package com.example.opentalk.dto;
 
+import com.example.opentalk.entity.HashTagEntity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +17,11 @@ public class HashTagDTO {
         tagDTO.tagName = tagName;
 
         return tagDTO;
+    }
+    public static HashTagDTO toHashTagDTO(HashTagEntity hashTagEntity){
+        HashTagDTO hashTagDTO = new HashTagDTO();
+        hashTagDTO.setTagName(hashTagDTO.getTagName());
+
+        return hashTagDTO;
     }
 }

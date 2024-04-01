@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Modal from 'react-modal';
 import axios from'axios';
 
@@ -13,10 +13,8 @@ export const SetRoomComponent = ({target}) =>{
     const [info, setInfo] = useState("");
     const [tag, setTag] = useState("");
     const [tags, setTags] = useState([]);
-    
-    let typingTimer;
 
-    useState(() => {
+    useEffect(() => {
         setManger(target);
     }, [target]);
     
@@ -30,6 +28,7 @@ export const SetRoomComponent = ({target}) =>{
         setParticipants(0);
         setIsOpen(false);
         setTags([]);
+        setInfo('');
     }
 
     const GetInputName = (event) => {
@@ -68,15 +67,18 @@ export const SetRoomComponent = ({target}) =>{
     }
 
     const MakeRoom = () => {
-        const params = new FormData();
-        params.append("name", roomName)
-        params.append("password", password)
-        params.append("manager", manager)
-        params.append("count", participants)
-        params.append("info", info)
-        params.append("tags", tags)
         const makeUrl = `/api/opentalk/makeRoom`
-        axios.post(makeUrl, params)
+        axios.post(makeUrl, {
+            "roomId":roomId,
+            "name": roomName,
+            "password": password,
+            "manager": manager,
+            "participates": 0,
+            "limitParticipates": participants,
+            "introduction": info,
+            "existLock": existLock,
+            "roomTags": tags 
+        })
         .then((res)=>{
             if (res.status === 200){
                 alert("방이 생성되었습니다.");

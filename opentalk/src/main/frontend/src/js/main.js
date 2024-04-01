@@ -39,9 +39,9 @@ const MainComponent = () => {
     useEffect(() => {
         const Rooms = async () => {
             try{
-                const response = await axios.post('/api/opentalk/rooms', {})
+                const response = await axios.get('/api/opentalk/rooms');
                 setChatList(response.data);
-            } catch(error){
+            } catch (error) {
                 console.error(error);
             }
         };

@@ -12,7 +12,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Setter
 @Getter
-@Builder
 @Table(name = "OpenTalkMember")
 public class MemberEntity {
     @Id

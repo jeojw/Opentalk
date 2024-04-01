@@ -1,6 +1,9 @@
 package com.example.opentalk.entity;
 
+import com.example.opentalk.dto.HashTagDTO;
+import com.example.opentalk.dto.MemberDTO;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +14,7 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "tag")
+@NoArgsConstructor
 public class HashTagEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +24,17 @@ public class HashTagEntity {
     @Column(name = "tag_name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "hashTag", cascade = CascadeType.ALL)
-    private List<ChatRoomHashTagEntity> chatRoomHashTags = new ArrayList<>();
+    @Builder
+    public HashTagEntity(Long id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
+    public static HashTagEntity toHashTagEntity(HashTagDTO hashTagDTO){
+        HashTagEntity hashTagEntity = HashTagEntity.builder()
+                .name(hashTagDTO.getTagName())
+                .build();
+
+        return hashTagEntity;
+    }
 }
