@@ -27,7 +27,7 @@ const FindMemberComponent = () => {
             email: memberEmail,
             authNum: String(authNum)
         }).then((res)=>{
-            if (res.data == "ok"){
+            if (res.data === "ok"){
                 axios.post(`/api/opentalk/member/findId/${memberEmail}`, {
                     memberEmail: memberEmail
                 })

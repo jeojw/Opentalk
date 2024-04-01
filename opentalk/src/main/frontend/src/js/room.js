@@ -1,6 +1,7 @@
 import React, {useRef, useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 import * as StompJs from "@stomp/stompjs";
+import SockJs from "sockjs-client"
 
 const RoomComponent = (props) => {
 
@@ -19,7 +20,7 @@ const RoomComponent = (props) => {
     useEffect(() =>{
         const connect = () => {
             client.current = new StompJs.Client({
-                brokerURL: "ws://localhost:8000/stomp-ws",
+                webSocketFactory: () => new SockJs('/ws'),
                 connectHeaders: {
                     "auth-token": "spring-chat-auth-token",
                 },

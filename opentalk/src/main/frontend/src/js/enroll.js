@@ -37,7 +37,7 @@ const EnrollComponent = (props) =>{
     const CheckIdDuplicate = () => {
         const checkUrl = `/api/opentalk/member/id/${memberId}`
         axios.get(checkUrl).then((res)=>{
-            if (res.data == true){
+            if (res.data === true){
                 alert("중복된 아이디입니다.");
                 setCheckId(false);
             }
@@ -51,7 +51,7 @@ const EnrollComponent = (props) =>{
     const CheckNickNameDuplicate = () =>{
         const checkUrl = `/api/opentalk/member/nickname/${memberNickName}`
         axios.get(checkUrl).then((res)=>{
-            if (res.data == true){
+            if (res.data === true){
                 alert("중복된 닉네임입니다.");
                 setCheckNickName(false);
             }
@@ -78,7 +78,7 @@ const EnrollComponent = (props) =>{
             email: memberEmail,
             authNum: String(authNum)
         }).then((res)=>{
-            if (res.data == "ok"){
+            if (res.data === "ok"){
                 alert("인증되었습니다.");
                 setCheckEmail(true);
             }

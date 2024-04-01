@@ -27,7 +27,7 @@ const FindMemberPassword = (props) =>{
             email: memberEmail,
             authNum: String(authNum)
         }).then((res)=>{
-            if (res.data == "ok"){
+            if (res.data === "ok"){
                 navigate("/opentalk/member/changePw", {state: {memberEmail: memberEmail}});
             }
             else{

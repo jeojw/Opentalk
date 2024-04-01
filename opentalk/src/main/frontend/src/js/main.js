@@ -28,7 +28,6 @@ const MainComponent = () => {
             try{
                 const response = await axios.get('/api/opentalk/member/status');
                 setMember(response.data);
-                console.log(member);
             } catch (error) {
                 console.error(error);
             }
@@ -78,6 +77,7 @@ const MainComponent = () => {
    return (
     <div>
         <table>
+            <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
             <p>환영합니다, {member.memberNickName}님</p>
             <ul>
                 {chatList.map(room=>(

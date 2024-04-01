@@ -28,7 +28,7 @@ public class StompChatController {
 
     @EventListener(SessionConnectedEvent.class)
     public void onConnect(SessionConnectedEvent event){
-        String sessionId = event.getMessage().getHeaders().get("simpleSessionId").toString();
+        String sessionId = event.getMessage().getHeaders().get("simpSessionId").toString();
         SESSION_IDS.add(sessionId);
         log.info("[connect] connections : {}", SESSION_IDS.size());
     }

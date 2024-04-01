@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileComponent = (props) => {
     const [member, setMember] = useState('');
@@ -9,6 +10,8 @@ const ProfileComponent = (props) => {
     const [newNickName, setNewNickName] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [checkPassword, setCheckPassword] = useState("");
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchMemberStatus = async () => {
@@ -56,7 +59,7 @@ const ProfileComponent = (props) => {
     }
 
     const ChangePassword = () =>{
-        if (newPassword != checkPassword){
+        if (newPassword !== checkPassword){
             alert("비밀번호가 일치하지 않습니다.");
         }
         else{
@@ -91,6 +94,7 @@ const ProfileComponent = (props) => {
     
     return(
         <div>
+            <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
             <ul>
                 <li>{member.memberName}</li>
                 <li>{member.memberNickName}</li>
@@ -124,6 +128,8 @@ const ProfileComponent = (props) => {
 
             <button onClick={ChangeNickNamePopup}>닉네임 변경</button>
             <button onClick={ChangePasswordPopup}>비밀번호 변경</button>
+            <br></br>
+            <button onClick={() => navigate("/opentalk/main")}>이전 페이지</button>
         </div>
     );
 

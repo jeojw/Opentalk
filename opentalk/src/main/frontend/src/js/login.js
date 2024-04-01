@@ -13,10 +13,10 @@ const LoginComponent = (props) => {
     const CheckLogin = (e) => {
         const checkloginUrl = '/api/opentalk/member/login'
 
-        if (memberId == ""){
+        if (memberId === ""){
             alert("아이디를 입력해주세요.")
         }
-        else if (memberPw == ""){
+        else if (memberPw === ""){
             alert("비밀번호를 입력해주세요.")
         }
         else{
@@ -30,7 +30,7 @@ const LoginComponent = (props) => {
                 "joinDate": "null"
             })
             .then((res) => {
-                if (res.status == 200){
+                if (res.status === 200){
                     setCookie('member', `${memberId}`);
                     navigate("/opentalk/main");
                 }
