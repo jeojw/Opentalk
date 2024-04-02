@@ -20,6 +20,9 @@ public class ChatRoomEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String roomName;
+
     @Column(unique = true)
     private String roomId;
 
@@ -49,35 +52,53 @@ public class ChatRoomEntity implements Serializable {
     @Column
     private String roomPassword;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name= " member_id")
-    private MemberEntity member;
+    @ManyToMany
+    @JoinTable(
+            name = "chatroom_member",
+            joinColumns = @JoinColumn(name = "chatroom_id"),
+            inverseJoinColumns = @JoinColumn(name = "member_id")
+    )
+    private List<MemberEntity> members;
 
     @Builder
-    public ChatRoomEntity(Long id, String roomId, String manager,
+    public ChatRoomEntity(Long id, String roomId, String roomName, String manager,
                           Integer participates, Integer limitParticipates,
                           String introduction, boolean existLock, String roomPassword,
-                          List<HashTagEntity> roomTags){
+                          List<MemberEntity> members, List<HashTagEntity> roomTags){
         this.id = id;
         this.roomId = roomId;
+        this.roomName = roomName;
         this.manager = manager;
         this.participates = participates;
         this.limitParticipates = limitParticipates;
         this.introduction = introduction;
         this.existLock = existLock;
         this.roomPassword = roomPassword;
+        this.members = members;
         this.hashtags = roomTags;
 
     }
 
     public static ChatRoomEntity toChatRoomEntity(ChatRoomDTO chatRoomDTO){
         List<HashTagEntity> hashTagEntities = new ArrayList<>();
+        List<MemberEntity> memberEntities = new ArrayList<>();
         for (HashTagDTO tag : chatRoomDTO.getRoomTags()){
             hashTagEntities.add(HashTagEntity.builder()
-                                                .name(tag.getTagName())
-                                                .build());
+                    .name(tag.getTagName())
+                    .build());
+        }
+        for (MemberDTO m : chatRoomDTO.getMembers()){
+            memberEntities.add(MemberEntity.builder()
+                    .memberId(m.getMemberId())
+                    .memberPassword(m.getMemberPassword())
+                    .memberName(m.getMemberName())
+                    .memberName(m.getMemberNickName())
+                    .memberEmail(m.getMemberEmail())
+                    .authority(m.getAuthority())
+                    .build());
         }
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.builder()
+                .roomName(chatRoomDTO.getRoomName())
                 .roomId(chatRoomDTO.getRoomId())
                 .manager(chatRoomDTO.getManager())
                 .participates(chatRoomDTO.getParticipates())
@@ -86,6 +107,7 @@ public class ChatRoomEntity implements Serializable {
                 .existLock(chatRoomDTO.isExistLock())
                 .roomPassword(chatRoomDTO.getRoomPassword())
                 .roomTags(hashTagEntities)
+                .members(memberEntities)
                 .build();
         return chatRoomEntity;
     }

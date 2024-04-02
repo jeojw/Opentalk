@@ -2,10 +2,11 @@ import React, {useState, useEffect} from 'react';
 import Modal from 'react-modal';
 import axios from'axios';
 
-export const SetRoomComponent = ({target}) =>{
+export const SetRoomComponent = ({getManager}) =>{
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [roomId, setRoomId] = useState("");
+    const [members, setMembers] = useState();
     const [participants, setParticipants] = useState(0);
     const [existLock, setExistLock] = useState(false);
     const [password, setPassword] = useState("");
@@ -15,13 +16,14 @@ export const SetRoomComponent = ({target}) =>{
     const [tags, setTags] = useState([]);
 
     useEffect(() => {
-        setManger(target);
-    }, [target]);
+        setManger(getManager);
+        console.log(getManager.memberId);
+    }, [getManager]);
     
-
-    const openModal = () => setIsOpen(true);
+    const openModal = () => {
+        setIsOpen(true)
+    };
     const closeModal = () => {
-        setManger('');
         setRoomName('');
         setExistLock(false);
         setPassword('');
@@ -58,26 +60,19 @@ export const SetRoomComponent = ({target}) =>{
         setTag("");
     }
 
-    const AllTags = ({tag}) =>{
-        return (
-            <div>
-                <b>{tag}</b>
-            </div>
-        )
-    }
 
     const MakeRoom = () => {
         const makeUrl = `/api/opentalk/makeRoom`
         axios.post(makeUrl, {
-            "roomId":roomId,
-            "name": roomName,
-            "password": password,
-            "manager": manager,
+            "roomName": roomName,
+            "roomPassword": password,
+            "manager": manager.memberId,
             "participates": 0,
             "limitParticipates": participants,
             "introduction": info,
             "existLock": existLock,
-            "roomTags": tags 
+            "members": [manager],
+            "roomTags": tags
         })
         .then((res)=>{
             if (res.status === 200){

@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import SetRoomComponent from './setroom';
@@ -31,13 +30,14 @@ const MainComponent = () => {
             } catch (error) {
                 console.error(error);
             }
+            console.log(member);
         };
 
         fetchMemberStatus();
     }, []);
 
     useEffect(() => {
-        const Rooms = async () => {
+        const fetchChatRooms = async () => {
             try{
                 const response = await axios.get('/api/opentalk/rooms');
                 setChatList(response.data);
@@ -46,7 +46,7 @@ const MainComponent = () => {
             }
         };
 
-        Rooms();
+        fetchChatRooms();
     }, []);
 
     const GoProfile = () => {
@@ -85,7 +85,7 @@ const MainComponent = () => {
                 ))}
             </ul>
         </table>
-        <SetRoomComponent target={member} />
+        <SetRoomComponent getManager={member} />
         <button onClick={GoProfile}>프로필 설정</button>
         <button onClick={LogOut}>로그아웃</button>
     </div>

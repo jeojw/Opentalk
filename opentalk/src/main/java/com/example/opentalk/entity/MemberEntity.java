@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -19,16 +20,18 @@ public class MemberEntity {
     private Long id;
     @Column(unique = true)
     private String memberId;
-    @Column
+    @Column(nullable = false)
     private String memberPassword;
-    @Column
+    @Column(nullable = false)
     private String memberName;
-    @Column
+    @Column(nullable = false)
     private String memberNickName;
-    @Column
+    @Column(nullable = false)
     private String memberEmail;
     @Column
     private String authority;
+    @ManyToMany(mappedBy = "members")
+    private List<ChatRoomEntity> chatRooms;
 
     @Builder
     public MemberEntity(Long id, String memberId, String memberPassword, String memberName, String memberNickName, String memberEmail, String authority){
