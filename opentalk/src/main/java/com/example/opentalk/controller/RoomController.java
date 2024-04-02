@@ -2,6 +2,7 @@ package com.example.opentalk.controller;
 
 import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.HashTagDTO;
+import com.example.opentalk.dto.MemberDTO;
 import com.example.opentalk.entity.ChatRoomEntity;
 import com.example.opentalk.repository.ChatRoomRepository;
 import com.example.opentalk.service.ChatRoomService;
@@ -28,7 +29,7 @@ public class RoomController {
     @GetMapping("/api/opentalk/rooms")
     public ResponseEntity<List<ChatRoomDTO>> getRooms(){
         List<ChatRoomDTO> rooms = chatRoomService.findAllRooms();
-        System.out.print(rooms); // 결과 출력
+        System.out.println(rooms); // 결과 출력
         return ResponseEntity.ok(rooms);
     }
     @PostMapping("/api/opentalk/makeRoom")
@@ -37,6 +38,13 @@ public class RoomController {
         String roomId = chatRoomService.createRoom(chatRoomDTO);
         return ResponseEntity.ok(roomId);
     }
+
+//    @PostMapping("/api/opentalk/enterRoom")
+//    public ResponseEntity<MemberDTO> enterRoom(@RequestParam("room_id") String room_id){
+//
+//    }
+
+
 
 //    @PostMapping("/api/opentalk/appendTag")
 //    public ResponseEntity<HashTagDTO> createTag(@RequestBody @Valid HashTagDTO hashTagDTO){

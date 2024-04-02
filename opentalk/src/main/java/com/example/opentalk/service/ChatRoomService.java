@@ -31,7 +31,7 @@ public class ChatRoomService {
     }
 
     public List<ChatRoomDTO> findAllRooms(){
-        List<ChatRoomEntity> chatRoomEntityList = chatRoomRepository.findAllRoom();
+        List<ChatRoomEntity> chatRoomEntityList = chatRoomRepository.findAll();
         System.out.print(chatRoomEntityList);
         List<ChatRoomDTO> chatRoomDTOList = new ArrayList<>();
         for (ChatRoomEntity chatRoomEntity : chatRoomEntityList){

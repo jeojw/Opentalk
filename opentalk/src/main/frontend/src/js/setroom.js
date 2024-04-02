@@ -17,7 +17,7 @@ export const SetRoomComponent = ({getManager}) =>{
 
     useEffect(() => {
         setManger(getManager);
-        console.log(getManager.memberId);
+        console.log(manager)
     }, [getManager]);
     
     const openModal = () => {
@@ -71,7 +71,7 @@ export const SetRoomComponent = ({getManager}) =>{
             "limitParticipates": participants,
             "introduction": info,
             "existLock": existLock,
-            "members": [manager],
+            "members": [],
             "roomTags": tags
         })
         .then((res)=>{

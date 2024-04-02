@@ -40,6 +40,7 @@ const MainComponent = () => {
         const fetchChatRooms = async () => {
             try{
                 const response = await axios.get('/api/opentalk/rooms');
+                console.log(response.data);
                 setChatList(response.data);
             } catch (error) {
                 console.error(error);
@@ -81,7 +82,7 @@ const MainComponent = () => {
             <p>환영합니다, {member.memberNickName}님</p>
             <ul>
                 {chatList.map(room=>(
-                    <li key={room.roomId}>{room.name}&nbsp;<button onClick={() => EnterRoom({room})}>입장하기</button></li>
+                    <li key={room.roomId}>{room.roomName}&nbsp;<button onClick={() => EnterRoom({room})}>입장하기</button></li>
                 ))}
             </ul>
         </table>

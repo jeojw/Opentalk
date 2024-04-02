@@ -6,6 +6,7 @@ import com.example.opentalk.entity.MemberEntity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.web.socket.WebSocketSession;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,6 +15,7 @@ import java.util.*;
 @Getter
 @Setter
 @Data
+@ToString
 public class ChatRoomDTO {
 
     private String roomId;
@@ -26,7 +28,6 @@ public class ChatRoomDTO {
     private Integer participates;
     private List<HashTagDTO> roomTags;
     private List<MemberDTO> members;
-    private Set<WebSocketSession> sessions = new HashSet<>();
 
     public static ChatRoomDTO create(String roomName, String roomPassword, String manager,
                                      Integer limitParticipates, String introduction,
@@ -57,13 +58,13 @@ public class ChatRoomDTO {
         }
 
         chatRoomDTO.setRoomId(chatRoomEntity.getRoomId());
-        chatRoomDTO.setManager(chatRoomDTO.getManager());
-        chatRoomDTO.setRoomName(chatRoomDTO.getRoomName());
-        chatRoomDTO.setRoomPassword(chatRoomDTO.getRoomPassword());
-        chatRoomDTO.setExistLock(chatRoomDTO.isExistLock());
-        chatRoomDTO.setIntroduction(chatRoomDTO.getIntroduction());
-        chatRoomDTO.setParticipates(chatRoomDTO.getParticipates());
-        chatRoomDTO.setLimitParticipates(chatRoomDTO.getLimitParticipates());
+        chatRoomDTO.setManager(chatRoomEntity.getManager());
+        chatRoomDTO.setRoomName(chatRoomEntity.getRoomName());
+        chatRoomDTO.setRoomPassword(chatRoomEntity.getRoomPassword());
+        chatRoomDTO.setExistLock(chatRoomEntity.isExistLock());
+        chatRoomDTO.setIntroduction(chatRoomEntity.getIntroduction());
+        chatRoomDTO.setParticipates(chatRoomEntity.getParticipates());
+        chatRoomDTO.setLimitParticipates(chatRoomEntity.getLimitParticipates());
         chatRoomDTO.setRoomTags(hashTagDTOList);
         chatRoomDTO.setMembers(memberDTOList);
 

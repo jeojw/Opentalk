@@ -38,7 +38,7 @@ public class ChatRoomEntity implements Serializable {
     @Column
     private String introduction;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "chatroom_hashtag",
             joinColumns = @JoinColumn(name = "chatroom_id", referencedColumnName = "roomId"),
@@ -52,7 +52,7 @@ public class ChatRoomEntity implements Serializable {
     @Column
     private String roomPassword;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "chatroom_member",
             joinColumns = @JoinColumn(name = "chatroom_id"),
@@ -92,7 +92,7 @@ public class ChatRoomEntity implements Serializable {
                     .memberId(m.getMemberId())
                     .memberPassword(m.getMemberPassword())
                     .memberName(m.getMemberName())
-                    .memberName(m.getMemberNickName())
+                    .memberNickName(m.getMemberNickName())
                     .memberEmail(m.getMemberEmail())
                     .authority(m.getAuthority())
                     .build());
