@@ -1,16 +1,13 @@
 package com.example.opentalk.entity;
 
 import com.example.opentalk.dto.MemberDTO;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
 @Table(name = "OpenTalkMember")
@@ -32,6 +29,8 @@ public class MemberEntity {
     private String authority;
     @ManyToMany(mappedBy = "members")
     private List<ChatRoomEntity> chatRooms;
+
+    protected  MemberEntity(){}
 
     @Builder
     public MemberEntity(Long id, String memberId, String memberPassword, String memberName, String memberNickName, String memberEmail, String authority){

@@ -1,6 +1,7 @@
 package com.example.opentalk.controller;
 
 import com.example.opentalk.dto.ChatRoomDTO;
+import com.example.opentalk.dto.ChatRoomMemberDTO;
 import com.example.opentalk.dto.HashTagDTO;
 import com.example.opentalk.dto.MemberDTO;
 import com.example.opentalk.entity.ChatRoomEntity;
@@ -39,12 +40,15 @@ public class RoomController {
         return ResponseEntity.ok(roomId);
     }
 
-//    @PostMapping("/api/opentalk/enterRoom")
-//    public ResponseEntity<MemberDTO> enterRoom(@RequestParam("room_id") String room_id){
-//
-//    }
+    @PostMapping("/api/opentalk/enterRoom")
+    public void enterRoom(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO){
+        chatRoomService.enterRoom(chatRoomMemberDTO);
+    }
 
-
+    @DeleteMapping("/api/opentalk/exitRoom")
+    public void exitRoom(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO){
+        chatRoomService.exitRoom(chatRoomMemberDTO.getChatroom(), chatRoomMemberDTO.getMember());
+    }
 
 //    @PostMapping("/api/opentalk/appendTag")
 //    public ResponseEntity<HashTagDTO> createTag(@RequestBody @Valid HashTagDTO hashTagDTO){

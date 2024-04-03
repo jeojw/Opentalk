@@ -1,9 +1,10 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import axios from "axios";
 import { useParams } from 'react-router-dom';
 import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
 
-const RoomComponent = (props) => {
+const RoomComponent = ({roomInfo, talker}) => {
 
     const [manager, setManager] = useState('');
     const [password, setPassword] = useState('');
@@ -18,6 +19,7 @@ const RoomComponent = (props) => {
     const client = useRef({});
 
     useEffect(() =>{
+        setRoomName(roomInfo);
         const connect = () => {
             client.current = new StompJs.Client({
                 webSocketFactory: () => new SockJs('/ws'),
@@ -37,6 +39,7 @@ const RoomComponent = (props) => {
                     console.error(frame);
                 }
             });
+            console.log(roomInfo);
             client.current.activate();  
         };
     
@@ -52,7 +55,7 @@ const RoomComponent = (props) => {
         
         connect();
         return () => disconnect();
-    }, [room_Id]);
+    }, [room_Id, roomInfo]);
 
     // useEffect(() => {
     //     setRoomName(props.roomInfo.name);
@@ -67,11 +70,10 @@ const RoomComponent = (props) => {
             destination: '/pub/chat',
             body: JSON.stringify({
                 roomId: room_Id,
-                writer: "null",
+                writer: talker,
                 message: chat
             }),
         });
-
         setChat("");
     }
 

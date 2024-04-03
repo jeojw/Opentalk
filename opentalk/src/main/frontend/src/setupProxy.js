@@ -9,7 +9,7 @@ module.exports = (app) => {
     })
   );
   app.use(
-    '/stomp-ws',
+    '/ws',
     createProxyMiddleware({
       target: 'http://localhost:8081',	// 서버 URL or localhost:설정한포트번호
       ws: true

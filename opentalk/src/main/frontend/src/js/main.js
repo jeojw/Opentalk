@@ -12,11 +12,21 @@ const MainComponent = () => {
     const naviagte = useNavigate();
 
 
-    const EnterRoom = ({room}) => {
+    const EnterRoom = ({roomInfo, talker}) => {
+        const enterUrl = '/api/opentalk/enterRoom';
+        axios.post(enterUrl, {
+            chatroom: roomInfo, 
+            member: talker
+        })
+        .then((res) => {
+            if (res.status === 200){
+                naviagte(`/opentalk/room/${roomInfo.roomId}`);
+            }
+        })
+        .catch((error) => console.log(error));
         return (
             <div>
-                <RoomComponent roomInfo={room}/>
-                {naviagte(`/opentalk/room/${room.roomId}`)}
+                <RoomComponent roomInfo={roomInfo} talker={talker}/>
             </div>
         );
     }
@@ -30,7 +40,6 @@ const MainComponent = () => {
             } catch (error) {
                 console.error(error);
             }
-            console.log(member);
         };
 
         fetchMemberStatus();
@@ -40,7 +49,6 @@ const MainComponent = () => {
         const fetchChatRooms = async () => {
             try{
                 const response = await axios.get('/api/opentalk/rooms');
-                console.log(response.data);
                 setChatList(response.data);
             } catch (error) {
                 console.error(error);
@@ -82,7 +90,7 @@ const MainComponent = () => {
             <p>환영합니다, {member.memberNickName}님</p>
             <ul>
                 {chatList.map(room=>(
-                    <li key={room.roomId}>{room.roomName}&nbsp;<button onClick={() => EnterRoom({room})}>입장하기</button></li>
+                    <li key={room.roomId}>{room.roomName}&nbsp;<button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button></li>
                 ))}
             </ul>
         </table>

@@ -3,6 +3,7 @@ package com.example.opentalk.repository;
 import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.HashTagDTO;
 import com.example.opentalk.entity.ChatRoomEntity;
+import com.example.opentalk.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

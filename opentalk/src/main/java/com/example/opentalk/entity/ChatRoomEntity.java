@@ -23,7 +23,7 @@ public class ChatRoomEntity implements Serializable {
     @Column(nullable = false)
     private String roomName;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private String roomId;
 
     @Column(nullable = false)

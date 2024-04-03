@@ -33,7 +33,7 @@ public class StompChatController {
         log.info("[connect] connections : {}", SESSION_IDS.size());
     }
 
-    @EventListener(SessionConnectedEvent.class)
+    @EventListener(SessionDisconnectEvent.class)
     public void onDisconnect(SessionDisconnectEvent event){
         String sessionId = event.getSessionId();
         SESSION_IDS.remove(sessionId);

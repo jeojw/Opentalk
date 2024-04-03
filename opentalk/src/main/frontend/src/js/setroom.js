@@ -17,7 +17,6 @@ export const SetRoomComponent = ({getManager}) =>{
 
     useEffect(() => {
         setManger(getManager);
-        console.log(manager)
     }, [getManager]);
     
     const openModal = () => {
