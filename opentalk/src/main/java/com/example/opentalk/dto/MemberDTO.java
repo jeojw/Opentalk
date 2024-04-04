@@ -45,4 +45,17 @@ public class MemberDTO {
 
         return memberDTO;
     }
+
+    public static MemberDTO toMemberDTO_Op(Optional<MemberEntity> memberEntity){
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setId(memberEntity.get().getId());
+        memberDTO.setMemberId(memberEntity.get().getMemberId());
+        memberDTO.setMemberPassword(memberEntity.get().getMemberPassword());
+        memberDTO.setMemberName(memberEntity.get().getMemberName());
+        memberDTO.setMemberNickName(memberEntity.get().getMemberNickName());
+        memberDTO.setMemberEmail(memberEntity.get().getMemberEmail());
+        memberDTO.setAuthority(memberEntity.get().getAuthority());
+
+        return memberDTO;
+    }
 }

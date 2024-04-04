@@ -1,16 +1,15 @@
 import React, { useRef, useState, useEffect } from 'react';
 import axios from "axios";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
+import { Cookies } from "react-cookie";
 
 const RoomComponent = ({roomInfo, talker}) => {
 
-    const [manager, setManager] = useState('');
-    const [password, setPassword] = useState('');
-    const [roomName, setRoomName] = useState('');
-    const [participates, setParticipates] = useState(0);
-
+    const [roomInfomation, setRoomInfomation] = useState();
+    const [myInfo, setMyInfo] = useState();
+    const [memberList, setMemberList] = useState([]);
     const [chatList, setChetList] = useState([]);
     const [chat, setChat] = useState("");
 
@@ -18,8 +17,51 @@ const RoomComponent = ({roomInfo, talker}) => {
     
     const client = useRef({});
 
+    const navigate = useNavigate();
+
+    const cookie = new Cookies();
+
+    useEffect(() => {
+        const fetchRoomStatus = async () => {
+            try{
+                const response = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
+                setRoomInfomation(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+            
+        };
+        fetchRoomStatus();
+    }, []);
+
+    useEffect(()=>{
+        const fetchMembersStatus = async () => {
+            try{
+                const response = await axios.get(`api/opentalk/allMembers/${room_Id}`);
+                setMemberList(response.data);
+                console.log(response.data);
+            } catch(error){
+                console.error(error);
+            }
+            console.log(memberList);
+        }
+        fetchMembersStatus();
+    }, []);
+
+    useEffect(()=> {
+        const myId = cookie.get("member");
+        const fetchMyself = async () => {
+            try{
+                const response = await axios.get(`/api/opentalk/Myself/${myId}`);
+                setMyInfo(response.data);
+            } catch (error){
+                console.error(error);
+            }
+        }
+        fetchMyself();
+    }, []);
+
     useEffect(() =>{
-        setRoomName(roomInfo);
         const connect = () => {
             client.current = new StompJs.Client({
                 webSocketFactory: () => new SockJs('/ws'),
@@ -39,7 +81,6 @@ const RoomComponent = ({roomInfo, talker}) => {
                     console.error(frame);
                 }
             });
-            console.log(roomInfo);
             client.current.activate();  
         };
     
@@ -70,7 +111,7 @@ const RoomComponent = ({roomInfo, talker}) => {
             destination: '/pub/chat',
             body: JSON.stringify({
                 roomId: room_Id,
-                writer: talker,
+                writer: myInfo.memberNickName,
                 message: chat
             }),
         });
@@ -84,11 +125,28 @@ const RoomComponent = ({roomInfo, talker}) => {
     const handleSubmit = (event) => {
         event.preventDefault();
     }
+
+    const ExitRoom = () => {
+        if (window.confirm("방을 나가시겠습니까?")){
+            console.log(myInfo);
+            const exitUrl = '/api/opentalk/exitRoom';
+            axios.post(exitUrl, {
+                chatroom: roomInfomation,
+                member: myInfo
+            })
+            .then((res) => {
+                if (res.status == 200){
+                    navigate("/opentalk/main");
+                }
+            })
+            .catch((error) => console.log(error));            
+        }
+    }
     return(
         <div>
             <div>
-                <h1>{roomName}</h1>
-                <h2>참여자 수: {participates}</h2>
+                {/* <h1>{roomInfomation.roomName}</h1>
+                <h2>참여자 수: {roomInfomation.participates}</h2> */}
             </div>
             <div>
                 {chatList && chatList.length > 0 && (
@@ -105,6 +163,16 @@ const RoomComponent = ({roomInfo, talker}) => {
                 </div>
                 <input type="submit" value="전송" onClick={() => publish(chat)}></input>
             </form>
+            <button onClick={ExitRoom}>나가기</button>
+            <div>
+                {memberList && memberList.length > 0 && (
+                    <ul>
+                        {chatList.map((_member, index) => (
+                            <li key={index}>{_member.nickName}</li>
+                        ))}
+                    </ul>
+                )}
+            </div>
 
         </div>
     );

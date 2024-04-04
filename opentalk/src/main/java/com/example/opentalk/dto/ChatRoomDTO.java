@@ -38,7 +38,7 @@ public class ChatRoomDTO {
         room.roomName = roomName;
         room.manager = manager;
         room.roomPassword = roomPassword;
-        room.participates = 0;
+        room.participates = members.size();
         room.limitParticipates = limitParticipates;
         room.introduction = introduction;
         room.existLock = room.roomPassword.isEmpty();

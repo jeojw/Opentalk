@@ -4,26 +4,64 @@ import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import SetRoomComponent from './setroom';
 import RoomComponent from './room';
+import {createBrowserHistory} from "history";
 
 const MainComponent = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['member']);
     const [member, setMember] = useState("");
     const [chatList, setChatList] = useState([]);
+    const [inputPw, setInputPw] = useState("");
     const naviagte = useNavigate();
 
+    const history = createBrowserHistory();
+
+    // useEffect(() => {
+    //     let unlisten = history.listen((location) => {
+    //         if (history.action === "POP")
+    //     })
+
+    //     return () => {
+    //         unlisten();
+    //     };
+    // }, [history])
 
     const EnterRoom = ({roomInfo, talker}) => {
-        const enterUrl = '/api/opentalk/enterRoom';
-        axios.post(enterUrl, {
-            chatroom: roomInfo, 
-            member: talker
-        })
-        .then((res) => {
-            if (res.status === 200){
-                naviagte(`/opentalk/room/${roomInfo.roomId}`);
+        const enterUrl = '/api/opentalk/enterRoom/';
+        if (!roomInfo.existLock){
+            axios.post(enterUrl, {
+                chatroom: roomInfo, 
+                member: talker
+            })
+            .then((res) => {
+                if (res.status === 200){
+                    naviagte(`/opentalk/room/${roomInfo.roomId}`);
+                }
+            })
+            .catch((error) => console.log(error));
+        }
+        else{
+            const inputPassword = window.prompt("비밀번호를 입력해주세요.");
+            setInputPw(inputPassword);
+            if (inputPw === ""){
+                window.alert("비밀번호를 입력해주세요.")
+            }else{
+                axios.post(enterUrl + inputPw, {
+                    chatroom: roomInfo, 
+                    member: talker
+                })
+                .then((res) => {
+                    if (res.status === 200){
+                        naviagte(`/opentalk/room/${roomInfo.roomId}`);
+                    }
+                    else{
+                        alert("비밀번호가 잘못되었습니다.")
+                        setInputPw("");
+                    }
+                })
+                .catch((error) => console.log(error));
             }
-        })
-        .catch((error) => console.log(error));
+           
+        }
         return (
             <div>
                 <RoomComponent roomInfo={roomInfo} talker={talker}/>
@@ -37,6 +75,7 @@ const MainComponent = () => {
             try{
                 const response = await axios.get('/api/opentalk/member/status');
                 setMember(response.data);
+                console.log(response.data);
             } catch (error) {
                 console.error(error);
             }
@@ -90,7 +129,11 @@ const MainComponent = () => {
             <p>환영합니다, {member.memberNickName}님</p>
             <ul>
                 {chatList.map(room=>(
-                    <li key={room.roomId}>{room.roomName}&nbsp;<button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button></li>
+                    <li key={room.roomId}>{room.roomName}
+                    {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
+                    <br></br>{room.introduction}
+                    <br></br>{room.roomTags}
+                    <button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button></li>
                 ))}
             </ul>
         </table>

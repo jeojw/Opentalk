@@ -40,14 +40,35 @@ public class RoomController {
         return ResponseEntity.ok(roomId);
     }
 
-    @PostMapping("/api/opentalk/enterRoom")
+    @PostMapping("/api/opentalk/enterRoom/")
     public void enterRoom(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO){
         chatRoomService.enterRoom(chatRoomMemberDTO);
     }
 
-    @DeleteMapping("/api/opentalk/exitRoom")
+    @GetMapping("/api/opentalk/getRoom/{roomId}")
+    public ResponseEntity<ChatRoomDTO> getRoom(@PathVariable String roomId){
+        return ResponseEntity.ok(chatRoomService.getRoom(roomId));
+    }
+
+    @GetMapping("/api/opentalk/allMembers/{roomId}")
+    public ResponseEntity<List<MemberDTO>> allMembers(@PathVariable String roomId){
+        return ResponseEntity.ok(chatRoomService.findMembers(roomId));
+    }
+
+    @GetMapping("/api/opentalk/Myself/{memberId}")
+    public ResponseEntity<MemberDTO> Myself(@PathVariable String memberId){
+        return ResponseEntity.ok(chatRoomService.findMyself(memberId));
+    }
+
+    @PostMapping("/api/opentalk/enterRoom/{password}")
+    public void enterRoom_Pw(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO, @PathVariable String password){
+        chatRoomService.enterRoom_Pw(chatRoomMemberDTO, password);
+    }
+
+    @PostMapping("/api/opentalk/exitRoom")
     public void exitRoom(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO){
-        chatRoomService.exitRoom(chatRoomMemberDTO.getChatroom(), chatRoomMemberDTO.getMember());
+        chatRoomService.exitRoom(chatRoomMemberDTO.getChatroom().getRoomId(),
+                chatRoomMemberDTO.getMember().getMemberId());
     }
 
 //    @PostMapping("/api/opentalk/appendTag")

@@ -61,15 +61,14 @@ public class ChatRoomEntity implements Serializable {
     private List<MemberEntity> members;
 
     @Builder
-    public ChatRoomEntity(Long id, String roomId, String roomName, String manager,
-                          Integer participates, Integer limitParticipates,
+    public ChatRoomEntity(Long id, String roomId, String roomName, String manager, Integer limitParticipates,
                           String introduction, boolean existLock, String roomPassword,
                           List<MemberEntity> members, List<HashTagEntity> roomTags){
         this.id = id;
         this.roomId = roomId;
         this.roomName = roomName;
         this.manager = manager;
-        this.participates = participates;
+        this.participates = members.size();
         this.limitParticipates = limitParticipates;
         this.introduction = introduction;
         this.existLock = existLock;
@@ -101,7 +100,6 @@ public class ChatRoomEntity implements Serializable {
                 .roomName(chatRoomDTO.getRoomName())
                 .roomId(chatRoomDTO.getRoomId())
                 .manager(chatRoomDTO.getManager())
-                .participates(chatRoomDTO.getParticipates())
                 .limitParticipates(chatRoomDTO.getLimitParticipates())
                 .introduction(chatRoomDTO.getIntroduction())
                 .existLock(chatRoomDTO.isExistLock())
