@@ -7,10 +7,16 @@ import RoomComponent from './room';
 import {createBrowserHistory} from "history";
 
 const MainComponent = () => {
+    const ChatRoomRole = {
+        PARTICIPATE: 'PARTICIPATE',
+        MANAGER: 'MANAGER'
+    };
+
     const [cookies, setCookie, removeCookie] = useCookies(['member', 'accessToken']);
     const [member, setMember] = useState("");
     const [chatList, setChatList] = useState([]);
     const [inputPw, setInputPw] = useState("");
+    const [role, setRole] = useState();
     const naviagte = useNavigate();
 
     const history = createBrowserHistory();
@@ -28,9 +34,20 @@ const MainComponent = () => {
     const EnterRoom = ({roomInfo, talker}) => {
         const enterUrl = '/api/opentalk/enterRoom/';
         if (!roomInfo.existLock){
+            if (roomInfo.manager === talker.memberId){
+                setRole(ChatRoomRole.MANAGER);
+            }
+            else{
+                setRole(ChatRoomRole.PARTICIPATE);
+            }
             axios.post(enterUrl, {
                 chatroom: roomInfo, 
-                member: talker
+                member: {
+                    roomId: roomInfo.roomId,
+                    memberId: talker.memberId,
+                    memberNickName: talker.memberNickName,
+                    Role: role
+                }
             })
             .then((res) => {
                 if (res.status === 200){
@@ -47,7 +64,12 @@ const MainComponent = () => {
             }else{
                 axios.post(enterUrl + inputPw, {
                     chatroom: roomInfo, 
-                    member: talker
+                    member: {
+                        roomId: roomInfo.roomId,
+                        memberId: talker.memberId,
+                        memberNickName: talker.memberNickName,
+                        Role: role
+                    }
                 })
                 .then((res) => {
                     if (res.status === 200){

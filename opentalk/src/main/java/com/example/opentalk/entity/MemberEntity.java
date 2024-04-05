@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -30,8 +29,7 @@ public class MemberEntity {
     private String memberEmail;
     @Enumerated(EnumType.STRING)
     private Authority authority;
-    @ManyToMany(mappedBy = "members")
-    private List<ChatRoomEntity> chatRooms;
+
 
     protected  MemberEntity(){}
 

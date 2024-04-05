@@ -4,6 +4,7 @@ import com.example.opentalk.dto.ChatMemberDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Setter
 @Getter
@@ -22,6 +23,8 @@ public class ChatMemberEntity {
     private String memberNickName;
     @Column
     private ChatRoomRole Role;
+    @ManyToMany(mappedBy = "members")
+    private List<ChatRoomEntity> chatRooms;
 
     @Builder
     public ChatMemberEntity(String roomId, String memberId, String memberNickName, ChatRoomRole Role){

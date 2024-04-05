@@ -1,10 +1,7 @@
 package com.example.opentalk.controller;
 
-import com.example.opentalk.dto.ChatMemberDto;
 import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.ChatRoomMemberDTO;
-import com.example.opentalk.dto.ChatRoomRequestDto;
-import com.example.opentalk.entity.ChatRoomRole;
 import com.example.opentalk.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -35,16 +32,7 @@ public class RoomController {
     }
 
     @PostMapping("/api/opentalk/enterRoom/")
-    public void enterRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto){
-        ChatMemberDto chatMemberDto = ChatMemberDto.builder()
-                        .roomId(chatRoomRequestDto.getChatroom().getRoomId())
-                        .memberId(chatRoomRequestDto.getMember().getMemberId())
-                        .memberNickName(chatRoomRequestDto.getMember().getMemberNickName())
-                        .Role(ChatRoomRole.ROLE_PARTICIPATE)
-                        .build();
-        ChatRoomMemberDTO chatRoomMemberDTO = new ChatRoomMemberDTO();
-        chatRoomMemberDTO.setMember(chatMemberDto);
-        chatRoomMemberDTO.setChatroom(chatRoomRequestDto.getChatroom());
+    public void enterRoom(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO){
         chatRoomService.enterRoom(chatRoomMemberDTO);
     }
 

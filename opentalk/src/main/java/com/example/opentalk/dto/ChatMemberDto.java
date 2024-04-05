@@ -14,6 +14,9 @@ public class ChatMemberDto {
     private String memberNickName;
     private ChatRoomRole Role;
 
+    public ChatMemberDto() {
+    }
+
     @Builder
     public ChatMemberDto(String roomId, String memberId, String memberNickName, ChatRoomRole Role){
         this.roomId = roomId;
