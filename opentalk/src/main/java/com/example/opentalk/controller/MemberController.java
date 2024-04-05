@@ -27,6 +27,11 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findMemberId(memberEmail));
     }
 
+//    @DeleteMapping("/api/opentalk/member/logout")
+//    public ResponseEntity<Boolean> logout(HttpServletRequest request){
+//        String accessToken = jwtFilter.r
+//
+//    }
 
     @PostMapping("/api/opentalk/member/authId")
     public ResponseEntity<Boolean> authId(@RequestParam("memberId") String memberId){

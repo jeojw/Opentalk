@@ -13,7 +13,6 @@ public class SecurityUtil {
             throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
         }
 
-        System.out.println("Name: " + authentication.getName());
         return Long.parseLong(authentication.getName());
     }
 }

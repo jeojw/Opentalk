@@ -43,11 +43,11 @@ const EnrollComponent = (props) =>{
         axios.post(checkUrl, data).then((res)=>{
             if (res.data === true){
                 alert("중복된 아이디입니다.");
-                setCheckNickName(false);
+                setCheckId(false);
             }
             else{
-                alert("사용 가능한 닉네임입니다.");
-                setCheckNickName(true);
+                alert("사용 가능한 아이디입니다.");
+                setCheckId(true);
             }
         }).catch((error)=>console.log(error))
     }

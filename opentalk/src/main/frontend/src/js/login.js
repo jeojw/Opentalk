@@ -5,7 +5,7 @@ import { useCookies } from 'react-cookie';
 
 const LoginComponent = (props) => {
     
-    const [cookies, setCookie] = useCookies([]);
+    const [cookies, setCookie] = useCookies(["accessToken"]);
     const [memberId, setMemberId] = useState("");
     const [memberPw, setMemberPw] = useState("");
     const navigate = useNavigate();
@@ -31,7 +31,7 @@ const LoginComponent = (props) => {
             })
             .then((res) => {
                 if (res.status === 200){
-                    setCookie('member', `${memberId}`);
+                    setCookie("accessToken", res.data.accessToken);
                     navigate("/opentalk/main");
                 }
             })

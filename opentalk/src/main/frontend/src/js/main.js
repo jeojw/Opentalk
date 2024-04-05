@@ -7,7 +7,7 @@ import RoomComponent from './room';
 import {createBrowserHistory} from "history";
 
 const MainComponent = () => {
-    const [cookies, setCookie, removeCookie] = useCookies(['member']);
+    const [cookies, setCookie, removeCookie] = useCookies(['member', 'accessToken']);
     const [member, setMember] = useState("");
     const [chatList, setChatList] = useState([]);
     const [inputPw, setInputPw] = useState("");
@@ -73,7 +73,9 @@ const MainComponent = () => {
     useEffect(() => {
         const fetchMemberStatus = async () => {
             try{
-                const response = await axios.get('/api/opentalk/member/status');
+                const response = await axios.get('/api/opentalk/member/me', {
+                    headers: {Authorization: 'Bearer ' + cookies.accessToken}
+                });
                 setMember(response.data);
             } catch (error) {
                 console.error(error);
@@ -88,7 +90,6 @@ const MainComponent = () => {
             try{
                 const response = await axios.get('/api/opentalk/rooms');
                 setChatList(response.data);
-                console.log(response);
             } catch (error) {
                 console.error(error);
             }
@@ -103,17 +104,12 @@ const MainComponent = () => {
         }
     }
 
-
     const LogOut = () => {
         if (cookies.member){
             if (window.confirm("로그아웃 하시겠습니까?")){
-                axios.post("/api/opentalk/member/logout", {})
-                .then((res)=>{
-                    removeCookie('member');
-                    window.alert("로그아웃 되었습니다.");
-                    naviagte("/opentalk/front");
-                })
-                .catch((error)=>console.log(error));
+                localStorage.removeItem("accessToken");
+                window.alert("로그아웃 되었습니다.");
+                naviagte("/opentalk/front");
             }
         }
         else{
@@ -128,13 +124,13 @@ const MainComponent = () => {
             <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
             <p>환영합니다, {member.memberNickName}님</p>
             <ul>
-                {/* {chatList.map(room=>(
+                {chatList.map(room=>(
                     <li key={room.roomId}>{room.roomName}
                     {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                     <br></br>{room.introduction}
                     <br></br>{room.roomTags}
                     <button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button></li>
-                ))} */}
+                ))}
             </ul>
         </table>
         <SetRoomComponent getManager={member} />
