@@ -22,7 +22,21 @@ public class MemberController {
         // return ResponseEntity.ok(memberService.getMyInfoBySecurity());
     }
 
+    @PostMapping("/api/opentalk/member/findId")
+    public ResponseEntity<String> findMemberId(@RequestParam("memberEmail") String memberEmail){
+        return ResponseEntity.ok(memberService.findMemberId(memberEmail));
+    }
 
+
+    @PostMapping("/api/opentalk/member/authId")
+    public ResponseEntity<Boolean> authId(@RequestParam("memberId") String memberId){
+        return ResponseEntity.ok(memberService.existId(memberId));
+    }
+
+    @PostMapping("/api/opentalk/member/getExPassword")
+    public ResponseEntity<String> getExPassword(@RequestParam("memberEmail") String memberEmail){
+        return ResponseEntity.ok(memberService.getExPw(memberEmail));
+    }
 
     @PostMapping("/api/opentalk/member/changeNickname")
     public ResponseEntity<MemberResponseDto> setMemberNickname(@RequestBody MemberRequestDto request) {

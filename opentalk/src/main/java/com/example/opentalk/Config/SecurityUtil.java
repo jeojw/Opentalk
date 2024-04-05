@@ -9,10 +9,11 @@ public class SecurityUtil {
     public static Long getCurrentMemberId() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || authentication.getName() == null) {
+        if (authentication == null || "anonymousUser".equals(authentication.getName())) {
             throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
         }
 
+        System.out.println("Name: " + authentication.getName());
         return Long.parseLong(authentication.getName());
     }
 }

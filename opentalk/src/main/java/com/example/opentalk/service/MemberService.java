@@ -24,6 +24,21 @@ public class MemberService {
     }
 
     @Transactional
+    public String findMemberId(String memberEmail){
+        return memberRepository.SearchMemberId(memberEmail);
+    }
+
+    @Transactional
+    public boolean existId(String memberId){
+        return memberRepository.existsByMemberId(memberId);
+    }
+
+    @Transactional
+    public String getExPw(String memberEmail){
+        return memberRepository.SearchMemberPassword(memberEmail);
+    }
+
+    @Transactional
     public MemberResponseDto changeMemberNickname(String memberId, String nickname) {
         MemberEntity member = memberRepository.findByMemberId(memberId).orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
         member.setMemberName(nickname);
@@ -36,7 +51,7 @@ public class MemberService {
         if (!passwordEncoder.matches(exPassword, member.getMemberPassword())) {
             throw new RuntimeException("비밀번호가 맞지 않습니다");
         }
-        member.setMemberPassword(passwordEncoder.encode((newPassword)));
+        member.setMemberPassword(passwordEncoder.encode(newPassword));
         return MemberResponseDto.of(memberRepository.save(member));
 
     }
