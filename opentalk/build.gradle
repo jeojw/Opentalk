@@ -4,11 +4,13 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.4'
 }
 
+apply plugin: "idea"
+
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '1.8'
+	sourceCompatibility = '17'
 }
 
 configurations {
@@ -46,10 +48,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
-	implementation 'org.webjars:sockjs-client:1.6.1'
+	implementation 'org.webjars:sockjs-client:1.5.1'
 	implementation 'org.webjars:stomp-websocket:2.3.4'
 	implementation 'org.springframework:spring-messaging:6.0.3'
 	implementation 'org.springframework.security:spring-security-messaging:6.0.2'
+
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
 }
 tasks.named('test') {
 	useJUnitPlatform()

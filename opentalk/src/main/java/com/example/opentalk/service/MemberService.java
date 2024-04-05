@@ -21,16 +21,11 @@ public class MemberService {
         memberRepository.save(memberEntity);
     }
 
-    public MemberDTO login(MemberDTO memberDTO){
-        Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(memberDTO.getMemberId());
-        if (byMemberId.isPresent()){
-            MemberEntity memberEntity = byMemberId.get();
-            if (memberEntity.getMemberPassword().equals(memberDTO.getMemberPassword())){
-                return MemberDTO.toMemberDTO(memberEntity);
-            }else{
-                return null;
-            }
-        }else{
+    public MemberDTO login(MemberDTO memberDTO) {
+        MemberEntity memberEntity = memberRepository.findByMemberId(memberDTO.getMemberId());
+        if (memberEntity.getMemberPassword().equals(memberDTO.getMemberPassword())) {
+            return MemberDTO.toMemberDTO(memberEntity);
+        } else {
             return null;
         }
     }
@@ -45,14 +40,9 @@ public class MemberService {
     }
 
     public MemberDTO getProfile(String memberId){
-        Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(memberId);
-        if (byMemberId.isPresent()){
-            MemberEntity memberEntity = byMemberId.get();
-            return MemberDTO.toMemberDTO(memberEntity);
-        }
-        else{
-            return null;
-        }
+        MemberEntity memberEntity = memberRepository.findByMemberId(memberId);
+
+        return MemberDTO.toMemberDTO(memberEntity);
     }
     public MemberDTO findById(Long id){
         Optional<MemberEntity> optionalMemberEntity = memberRepository.findById(id);

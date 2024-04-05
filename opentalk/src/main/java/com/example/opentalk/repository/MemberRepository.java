@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
-    Optional<MemberEntity> findByMemberId(String memberId);
+    MemberEntity findByMemberId(String memberId);
     @Query(value = "SELECT member_password FROM Opentalk.open_talk_member WHERE member_id=:memberId",
             nativeQuery = true
     )

@@ -86,19 +86,19 @@ public class ChatRoomService {
     }
 
     public MemberDTO findMyself(String memberId){
-        return MemberDTO.toMemberDTO_Op(memberRepository.findByMemberId(memberId));
+        return MemberDTO.toMemberDTO(memberRepository.findByMemberId(memberId));
     }
 
     public List<MemberDTO> findMembers(String roomId){
-        List<Optional<MemberEntity>> members = new ArrayList<>();
+        List<MemberEntity> members = new ArrayList<>();
         List<MemberDTO> memberDTOList = new ArrayList<>();
         List<String> member_id = chatRoomMemberRepository.findMembers(roomId);
         for (String id : member_id){
             members.add(memberRepository.findByMemberId(id));
         }
-        for (Optional<MemberEntity> me : members){
-            System.out.print(MemberDTO.toMemberDTO_Op(me));
-            memberDTOList.add(MemberDTO.toMemberDTO_Op(me));
+        for (MemberEntity me : members){
+            System.out.print(MemberDTO.toMemberDTO(me));
+            memberDTOList.add(MemberDTO.toMemberDTO(me));
         }
 
         return memberDTOList;
