@@ -113,6 +113,16 @@ const EnrollComponent = (props) =>{
     }
 
     const CheckAll = () =>{
+        if (!checkId){
+            alert("아이디 중복 체크를 진행해 주십시오.");
+        }
+        else if (!checkNickName){
+            alert("닉네임 중복 체크를 진행해 주십시오.");
+        }
+        else if (!checkEmail){
+            alert("이메일 인증을 진행해 주십시오.");
+        }
+        else{
             const url = `/api/opentalk/member/signup`;
             axios.post(url,{
                 memberId: memberId,
@@ -132,6 +142,7 @@ const EnrollComponent = (props) =>{
             });
             alert("회원가입이 완료되었습니다.")
             navigate("/opentalk/member/login");
+        }
         
     }
 
