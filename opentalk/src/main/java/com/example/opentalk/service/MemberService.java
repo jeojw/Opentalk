@@ -1,111 +1,43 @@
 package com.example.opentalk.service;
 
-import com.example.opentalk.dto.MemberDTO;
+import com.example.opentalk.Config.SecurityUtil;
+import com.example.opentalk.dto.MemberResponseDto;
 import com.example.opentalk.entity.MemberEntity;
 import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    public void enroll(MemberDTO memberDTO){
-        MemberEntity memberEntity = MemberEntity.toMemberEntity(memberDTO);
-        memberRepository.save(memberEntity);
+    private final PasswordEncoder passwordEncoder;
+
+    public MemberResponseDto getMyInfoBySecurity() {
+        return memberRepository.findById(SecurityUtil.getCurrentMemberId())
+                .map(MemberResponseDto::of)
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
     }
 
-    public MemberDTO login(MemberDTO memberDTO) {
-        MemberEntity memberEntity = memberRepository.findByMemberId(memberDTO.getMemberId());
-        if (memberEntity.getMemberPassword().equals(memberDTO.getMemberPassword())) {
-            return MemberDTO.toMemberDTO(memberEntity);
-        } else {
-            return null;
+    @Transactional
+    public MemberResponseDto changeMemberNickname(String memberId, String nickname) {
+        MemberEntity member = memberRepository.findByMemberId(memberId).orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
+        member.setMemberName(nickname);
+        return MemberResponseDto.of(memberRepository.save(member));
+    }
+
+    @Transactional
+    public MemberResponseDto changeMemberPassword(String exPassword, String newPassword) {
+        MemberEntity member = memberRepository.findById(SecurityUtil.getCurrentMemberId()).orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
+        if (!passwordEncoder.matches(exPassword, member.getMemberPassword())) {
+            throw new RuntimeException("비밀번호가 맞지 않습니다");
         }
-    }
+        member.setMemberPassword(passwordEncoder.encode((newPassword)));
+        return MemberResponseDto.of(memberRepository.save(member));
 
-    public List<MemberDTO> findAll(){
-        List<MemberEntity> memberEntityList = memberRepository.findAll();
-        List<MemberDTO> memberDTOList = new ArrayList<>();
-        for (MemberEntity memberEntity : memberEntityList){
-            memberDTOList.add(MemberDTO.toMemberDTO(memberEntity));
-        }
-        return memberDTOList;
     }
-
-    public MemberDTO getProfile(String memberId){
-        MemberEntity memberEntity = memberRepository.findByMemberId(memberId);
-
-        return MemberDTO.toMemberDTO(memberEntity);
-    }
-    public MemberDTO findById(Long id){
-        Optional<MemberEntity> optionalMemberEntity = memberRepository.findById(id);
-        if (optionalMemberEntity.isPresent()){
-            return MemberDTO.toMemberDTO(optionalMemberEntity.get());
-        }else{
-            return null;
-        }
-    }
-
-    public void deleteById(Long id){
-        memberRepository.deleteById(id);
-    }
-
-    public boolean authId(String memberId){
-        return memberRepository.existsByMemberId(memberId);
-    }
-
-    @Transactional
-    public void ChangeNickName(String memberId, String newNickName){
-        memberRepository.ChangeNickName(memberId, newNickName);
-    }
-
-    @Transactional
-    public boolean checkLoginAgree(String memberId, String memberPassword){
-        String pw = memberRepository.compareByMemberPassword(memberId);
-        return memberPassword.equals(pw);
-    }
-
-    @Transactional
-    public String searchId(String memberEmail){
-        if (memberEmail == null || memberEmail.isEmpty()) {
-            throw new IllegalArgumentException("Member email cannot be null or empty");
-        }
-        return memberRepository.SearchMemberId(memberEmail);
-    }
-
-    @Transactional
-    public String searchPw(String memberId, String memberEmail){
-        return memberRepository.SearchMemberPassword(memberId, memberEmail);
-    }
-
-    @Transactional
-    public void ChangePassword(String exPassword, String newPassword){
-        memberRepository.ChangePw(exPassword, newPassword);
-    }
-
-    @Transactional
-    public String ReturnPrePassword(String memberEmail){
-        return memberRepository.ReturnExPw(memberEmail);
-    }
-
-    @Transactional
-    public boolean checkIdDuplicate(String memberId){
-        return memberRepository.existsByMemberId(memberId);
-    }
-    @Transactional
-    public boolean checkNickNameDuplicate(String memberNickName){
-        return memberRepository.existsByMemberNickName(memberNickName);
-    }
-    @Transactional
-    public boolean checkEmailDuplicate(String memberEmail){
-        return memberRepository.existsByMemberEmail(memberEmail);
-    }
-
 }

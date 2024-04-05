@@ -1,7 +1,10 @@
 package com.example.opentalk.entity;
 
-import com.example.opentalk.dto.MemberDTO;
-import lombok.*;
+import com.example.opentalk.dto.MemberRequestDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
@@ -25,16 +28,15 @@ public class MemberEntity {
     private String memberNickName;
     @Column(nullable = false)
     private String memberEmail;
-    @Column
-    private String authority;
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
     @ManyToMany(mappedBy = "members")
     private List<ChatRoomEntity> chatRooms;
 
     protected  MemberEntity(){}
 
     @Builder
-    public MemberEntity(Long id, String memberId, String memberPassword, String memberName, String memberNickName, String memberEmail, String authority){
-        this.id = id;
+    public MemberEntity(String memberId, String memberPassword, String memberName, String memberNickName, String memberEmail, Authority authority){
         this.memberId = memberId;
         this.memberPassword = memberPassword;
         this.memberName = memberName;
@@ -42,15 +44,15 @@ public class MemberEntity {
         this.memberEmail = memberEmail;
         this.authority = authority;
     }
-    public static MemberEntity toMemberEntity(MemberDTO memberDTO){
-        MemberEntity memberEntity = new MemberEntity(
-                memberDTO.getId(),
-                memberDTO.getMemberId(),
-                memberDTO.getMemberPassword(),
-                memberDTO.getMemberName(),
-                memberDTO.getMemberNickName(),
-                memberDTO.getMemberEmail(),
-                memberDTO.getAuthority());
+    public static MemberEntity toMemberEntity(MemberRequestDto memberRequestDto){
+        MemberEntity memberEntity = MemberEntity.builder()
+                .memberId(memberRequestDto.getMemberId())
+                .memberPassword(memberRequestDto.getMemberPassword())
+                .memberEmail(memberRequestDto.getMemberEmail())
+                .memberName(memberRequestDto.getMemberNickName())
+                .memberNickName(memberRequestDto.getMemberNickName())
+                .build();
+
         return memberEntity;
     }
 

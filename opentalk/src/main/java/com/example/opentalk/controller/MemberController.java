@@ -1,150 +1,36 @@
 package com.example.opentalk.controller;
 
-import com.example.opentalk.dto.MemberDTO;
-import com.example.opentalk.entity.MemberEntity;
+import com.example.opentalk.dto.ChangePasswordRequestDto;
+import com.example.opentalk.dto.MemberRequestDto;
+import com.example.opentalk.dto.MemberResponseDto;
 import com.example.opentalk.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.lang.reflect.Member;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
-    @PostMapping("/api/opentalk/member/enroll")
-    public ResponseEntity<String> enroll(@RequestBody MemberDTO memberDTO){
-        memberService.enroll(memberDTO);
-        return ResponseEntity.ok("enroll");
-    }
-    @PostMapping("/api/opentalk/member/login")
-    public ResponseEntity<MemberDTO> login(@RequestBody MemberDTO memberDTO, HttpSession session,
-                                        HttpServletResponse response){
-        MemberDTO loginResult = memberService.login(memberDTO);
 
-        if (loginResult != null){
-            session.setAttribute("member", loginResult);
-            Cookie cookie = new Cookie("member", String.valueOf(loginResult.getMemberId()));
-            cookie.setMaxAge(60*60);
-            response.addCookie(cookie);
-
-            return ResponseEntity.ok(loginResult);
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-    }
-
-    //멤버의 상태를 반환하는 메서드
-    @GetMapping("/api/opentalk/member/status")
-    public ResponseEntity<MemberDTO> checkLogin(HttpSession session){
-        MemberDTO member = (MemberDTO) session.getAttribute("member");
-        if (member != null){
-            return ResponseEntity.ok(member);
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-    }
-
-    @PostMapping("/api/opentalk/member/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response){
-        HttpSession session = request.getSession(false);
-        Cookie cookie = new Cookie("member", null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-
-        if (session != null){
-            session.invalidate();
-        }
-        return ResponseEntity.ok("logout");
-    }
-
-    @PostMapping("/api/opentalk/profile")
-    public ResponseEntity<MemberDTO> findById(@RequestParam("memberId") String memberId){
-        MemberDTO memberDTO = memberService.getProfile(memberId);
-
-        return ResponseEntity.ok(memberDTO);
-    }
-
-    @GetMapping("/api/opentalk/member/delete/{id}")
-    public String deleteById(@PathVariable Long id){
-        memberService.deleteById(id);
-
-        return "redirect:/member/";
+    @GetMapping("/api/opentalk/member/me")
+    public ResponseEntity<MemberResponseDto> getMyMemberInfo() {
+        MemberResponseDto myInfoBySecurity = memberService.getMyInfoBySecurity();
+        System.out.println(myInfoBySecurity.getMemberNickName());
+        return ResponseEntity.ok((myInfoBySecurity));
+        // return ResponseEntity.ok(memberService.getMyInfoBySecurity());
     }
 
 
-    // 아이디 중복 체크
-    @PostMapping("/api/opentalk/member/checkId/{memberId}")
-    public ResponseEntity<Boolean> checkLoginId(@PathVariable String memberId){
-        return ResponseEntity.ok(memberService.checkIdDuplicate(memberId));
+
+    @PostMapping("/api/opentalk/member/changeNickname")
+    public ResponseEntity<MemberResponseDto> setMemberNickname(@RequestBody MemberRequestDto request) {
+        return ResponseEntity.ok(memberService.changeMemberNickname(request.getMemberId(), request.getMemberNickName()));
     }
 
-    // 비밀번호 찾기 시 아이디 먼저 인증
-    @PostMapping("/api/opentalk/member/authId/{memberId}")
-    public ResponseEntity<Boolean> authId(@PathVariable String memberId){
-        return ResponseEntity.ok(memberService.authId(memberId));
-    }
-
-    //로그인 정보 일치여부 확인
-    @PostMapping("/api/opentalk/member/checkLogin/{memberId}/{memberPassword}")
-    public ResponseEntity<Boolean> checkLogin(@PathVariable String memberId, @PathVariable String memberPassword){
-        return ResponseEntity.ok(memberService.checkLoginAgree(memberId, memberPassword));
-    }
-
-    //아이디 찾기
-    @PostMapping("/api/opentalk/member/findId/{memberEmail}")
-    public ResponseEntity<String> searchId(@PathVariable String memberEmail){
-        return ResponseEntity.ok(memberService.searchId(memberEmail));
-    }
-    //비밀번호 변경
-    @PostMapping("/api/opentalk/member/findPw/{memberId}/{memberEmail}")
-    public ResponseEntity<String> searchPw(@PathVariable String memberId, @PathVariable String memberEmail){
-        return ResponseEntity.ok(memberService.searchPw(memberId, memberEmail));
-    }
-    //현재 비밀번호 찾기
-    @PostMapping("/api/opentalk/member/changePw/{memberEmail}")
-    public ResponseEntity<String> exPassword(@PathVariable String memberEmail){
-        return ResponseEntity.ok(memberService.ReturnPrePassword(memberEmail));
-    }
-
-    //닉네임 변경
-    @PostMapping("/api/opentalk/member/changeNickName")
-    public void changeNickName(@RequestParam("memberId") String memberId, @RequestParam("newNickName") String newNickName){
-        memberService.ChangeNickName(memberId, newNickName);
-    }
-
-    //비밀번호 변경
-    @PostMapping("/api/opentalk/member/changePw/{exPassword}/{newPassword}")
-    public void changePw(@PathVariable String exPassword, @PathVariable String newPassword){
-        memberService.ChangePassword(exPassword, newPassword);
-    }
-
-    //회원가입 시 아이디 중복 체크
-    @GetMapping("/api/opentalk/member/id/{memberId}")
-    public ResponseEntity<Boolean> checkIdDuplicate(@PathVariable String memberId){
-        return ResponseEntity.ok(memberService.checkIdDuplicate(memberId));
-    }
-    //회원가입 시 닉네임 중복 체크
-    @GetMapping("/api/opentalk/member/nickname/{memberNickName}")
-    public ResponseEntity<Boolean> checkNickNameDuplicate(@PathVariable String memberNickName){
-        return ResponseEntity.ok(memberService.checkNickNameDuplicate(memberNickName));
-    }
-    //회원가입 시 이메일 중복 체크
-    @GetMapping("/api/opentalk/member/email/{memberEmail}")
-    public ResponseEntity<Boolean> checkEmailDuplicate(@PathVariable String memberEmail) {
-        return ResponseEntity.ok(memberService.checkEmailDuplicate(memberEmail));
+    @PostMapping("/api/opentalk/member/changePassword")
+    public ResponseEntity<MemberResponseDto> setMemberPassword(@RequestBody ChangePasswordRequestDto request) {
+        return ResponseEntity.ok(memberService.changeMemberPassword(request.getExPassword(), request.getNewPassword()));
     }
 }

@@ -2,22 +2,13 @@ package com.example.opentalk.controller;
 
 import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.ChatRoomMemberDTO;
-import com.example.opentalk.dto.HashTagDTO;
-import com.example.opentalk.dto.MemberDTO;
-import com.example.opentalk.entity.ChatRoomEntity;
-import com.example.opentalk.repository.ChatRoomRepository;
 import com.example.opentalk.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,15 +41,6 @@ public class RoomController {
         return ResponseEntity.ok(chatRoomService.getRoom(roomId));
     }
 
-    @GetMapping("/api/opentalk/allMembers/{roomId}")
-    public ResponseEntity<List<MemberDTO>> allMembers(@PathVariable String roomId){
-        return ResponseEntity.ok(chatRoomService.findMembers(roomId));
-    }
-
-    @GetMapping("/api/opentalk/Myself/{memberId}")
-    public ResponseEntity<MemberDTO> Myself(@PathVariable String memberId){
-        return ResponseEntity.ok(chatRoomService.findMyself(memberId));
-    }
 
     @PostMapping("/api/opentalk/enterRoom/{password}")
     public void enterRoom_Pw(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO, @PathVariable String password){

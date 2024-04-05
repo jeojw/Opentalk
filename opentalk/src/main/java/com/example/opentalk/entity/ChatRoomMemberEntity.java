@@ -1,8 +1,6 @@
 package com.example.opentalk.entity;
 
 import com.example.opentalk.dto.ChatRoomMemberDTO;
-import com.example.opentalk.repository.ChatRoomMemberRepository;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +22,7 @@ public class ChatRoomMemberEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "member_id", referencedColumnName = "memberId")
-    private MemberEntity member;
+    private ChatMemberEntity member;
 
 
     public ChatRoomMemberEntity() {}
@@ -32,10 +30,10 @@ public class ChatRoomMemberEntity {
     public static ChatRoomMemberEntity toChatRoomMemberEntity(ChatRoomMemberDTO chatRoomMemberDTO){
         ChatRoomMemberEntity chatRoomMemberEntity = new ChatRoomMemberEntity();
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomMemberDTO.getChatroom());
-        MemberEntity memberEntity = MemberEntity.toMemberEntity(chatRoomMemberDTO.getMember());
+        ChatMemberEntity chatMemberEntity = ChatMemberEntity.toChatMemberEntity(chatRoomMemberDTO.getMember());
 
         chatRoomMemberEntity.setChatroom(chatRoomEntity);
-        chatRoomMemberEntity.setMember(memberEntity);
+        chatRoomMemberEntity.setMember(chatMemberEntity);
 
         return chatRoomMemberEntity;
     }

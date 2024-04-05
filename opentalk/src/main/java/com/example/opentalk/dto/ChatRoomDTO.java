@@ -1,16 +1,16 @@
 package com.example.opentalk.dto;
 
+import com.example.opentalk.entity.ChatMemberEntity;
 import com.example.opentalk.entity.ChatRoomEntity;
 import com.example.opentalk.entity.HashTagEntity;
-import com.example.opentalk.entity.MemberEntity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.web.socket.WebSocketSession;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -27,34 +27,34 @@ public class ChatRoomDTO {
     private Integer limitParticipates;
     private Integer participates;
     private List<HashTagDTO> roomTags;
-    private List<MemberDTO> members;
+    private List<ChatMemberDto> members;
 
     public static ChatRoomDTO create(String roomName, String roomPassword, String manager,
                                      Integer limitParticipates, String introduction,
-                                     List<MemberDTO> members, List<HashTagDTO> roomTags){
+                                     List<ChatMemberDto> talkers, List<HashTagDTO> roomTags){
         ChatRoomDTO room = new ChatRoomDTO();
 
         room.roomId = UUID.randomUUID().toString();
         room.roomName = roomName;
         room.manager = manager;
         room.roomPassword = roomPassword;
-        room.participates = members.size();
+        room.participates = talkers.size();
         room.limitParticipates = limitParticipates;
         room.introduction = introduction;
         room.existLock = room.roomPassword.isEmpty();
-        room.members = members;
+        room.members = talkers;
         room.roomTags = roomTags;
         return room;
     }
     public static ChatRoomDTO toChatRoomDTO(ChatRoomEntity chatRoomEntity){
         ChatRoomDTO chatRoomDTO = new ChatRoomDTO();
         List<HashTagDTO> hashTagDTOList = new ArrayList<>();
-        List<MemberDTO> memberDTOList = new ArrayList<>();
+        List<ChatMemberDto> chatMemberDtoList = new ArrayList<>();
         for (HashTagEntity hashTagEntity : chatRoomEntity.getHashtags()){
             hashTagDTOList.add(HashTagDTO.toHashTagDTO(hashTagEntity));
         }
-        for (MemberEntity memberEntity : chatRoomEntity.getMembers()){
-            memberDTOList.add(MemberDTO.toMemberDTO(memberEntity));
+        for (ChatMemberEntity memberEntity : chatRoomEntity.getMembers()){
+            chatMemberDtoList.add(ChatMemberDto.toChatMemberDto(memberEntity));
         }
 
         chatRoomDTO.setRoomId(chatRoomEntity.getRoomId());
@@ -66,7 +66,7 @@ public class ChatRoomDTO {
         chatRoomDTO.setParticipates(chatRoomEntity.getParticipates());
         chatRoomDTO.setLimitParticipates(chatRoomEntity.getLimitParticipates());
         chatRoomDTO.setRoomTags(hashTagDTOList);
-        chatRoomDTO.setMembers(memberDTOList);
+        chatRoomDTO.setMembers(chatMemberDtoList);
 
         return chatRoomDTO;
     }

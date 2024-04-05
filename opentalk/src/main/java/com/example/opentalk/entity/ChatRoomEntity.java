@@ -1,8 +1,8 @@
 package com.example.opentalk.entity;
 
+import com.example.opentalk.dto.ChatMemberDto;
 import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.HashTagDTO;
-import com.example.opentalk.dto.MemberDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -58,12 +58,12 @@ public class ChatRoomEntity implements Serializable {
             joinColumns = @JoinColumn(name = "chatroom_id"),
             inverseJoinColumns = @JoinColumn(name = "member_id")
     )
-    private List<MemberEntity> members;
+    private List<ChatMemberEntity> members;
 
     @Builder
     public ChatRoomEntity(Long id, String roomId, String roomName, String manager, Integer limitParticipates,
                           String introduction, boolean existLock, String roomPassword,
-                          List<MemberEntity> members, List<HashTagEntity> roomTags){
+                          List<ChatMemberEntity> members, List<HashTagEntity> roomTags){
         this.id = id;
         this.roomId = roomId;
         this.roomName = roomName;
@@ -80,20 +80,18 @@ public class ChatRoomEntity implements Serializable {
 
     public static ChatRoomEntity toChatRoomEntity(ChatRoomDTO chatRoomDTO){
         List<HashTagEntity> hashTagEntities = new ArrayList<>();
-        List<MemberEntity> memberEntities = new ArrayList<>();
+        List<ChatMemberEntity> chatMemberEntities = new ArrayList<>();
         for (HashTagDTO tag : chatRoomDTO.getRoomTags()){
             hashTagEntities.add(HashTagEntity.builder()
                     .name(tag.getTagName())
                     .build());
         }
-        for (MemberDTO m : chatRoomDTO.getMembers()){
-            memberEntities.add(MemberEntity.builder()
+        for (ChatMemberDto m : chatRoomDTO.getMembers()){
+            chatMemberEntities .add(ChatMemberEntity.builder()
+                    .roomId(m.getRoomId())
                     .memberId(m.getMemberId())
-                    .memberPassword(m.getMemberPassword())
-                    .memberName(m.getMemberName())
                     .memberNickName(m.getMemberNickName())
-                    .memberEmail(m.getMemberEmail())
-                    .authority(m.getAuthority())
+                    .Role(m.getRole())
                     .build());
         }
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.builder()
@@ -105,7 +103,7 @@ public class ChatRoomEntity implements Serializable {
                 .existLock(chatRoomDTO.isExistLock())
                 .roomPassword(chatRoomDTO.getRoomPassword())
                 .roomTags(hashTagEntities)
-                .members(memberEntities)
+                .members(chatMemberEntities )
                 .build();
         return chatRoomEntity;
     }

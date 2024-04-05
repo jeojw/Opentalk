@@ -1,15 +1,11 @@
 package com.example.opentalk.entity;
 
 import com.example.opentalk.dto.HashTagDTO;
-import com.example.opentalk.dto.MemberDTO;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity

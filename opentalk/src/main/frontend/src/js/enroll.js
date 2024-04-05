@@ -12,6 +12,8 @@ const EnrollComponent = (props) =>{
     const [checkId, setCheckId] = useState(false);
     const [checkNickName, setCheckNickName] = useState(false);
     const [checkEmail, setCheckEmail] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
     const navigate = useNavigate();
 
     const GetInputId = (event) =>{
@@ -35,22 +37,26 @@ const EnrollComponent = (props) =>{
     }
 
     const CheckIdDuplicate = () => {
-        const checkUrl = `/api/opentalk/member/id/${memberId}`
-        axios.get(checkUrl).then((res)=>{
+        const data = new FormData();
+        data.append("memberId", memberId);
+        const checkUrl = `/api/opentalk/signup/checkId`;
+        axios.post(checkUrl, data).then((res)=>{
             if (res.data === true){
                 alert("중복된 아이디입니다.");
-                setCheckId(false);
+                setCheckNickName(false);
             }
             else{
-                alert("사용 가능한 아이디입니다.");
-                setCheckId(true);
+                alert("사용 가능한 닉네임입니다.");
+                setCheckNickName(true);
             }
         }).catch((error)=>console.log(error))
     }
 
     const CheckNickNameDuplicate = () =>{
-        const checkUrl = `/api/opentalk/member/nickname/${memberNickName}`
-        axios.get(checkUrl).then((res)=>{
+        const data = new FormData();
+        data.append("memberNickName", memberNickName);
+        const checkUrl = `/api/opentalk/signup/checkNickName`;
+        axios.post(checkUrl, data).then((res)=>{
             if (res.data === true){
                 alert("중복된 닉네임입니다.");
                 setCheckNickName(false);
@@ -63,13 +69,25 @@ const EnrollComponent = (props) =>{
     }
 
     const CheckMail = () =>{
-        const checkUrl = `/api/opentalk/enroll/mailSend`
-        axios.post(checkUrl, {
-            email: memberEmail,
-            sendType: "enroll"
-        }).then((res)=>{
-            setAuthNum(res.data);
+        const duplicateUrl = '/api/opentalk/signup/checkEmail'
+        const data = new FormData();
+        data.append("memberEmail", memberEmail);
+        axios.post(duplicateUrl, data)
+        .then((res)=>{
+            if (res.data === true){
+                alert("이미 사용중인 이메일입니다.");
+            }
+            else{
+                const checkUrl = `/api/opentalk/enroll/mailSend`
+                axios.post(checkUrl, {
+                    email: memberEmail,
+                    sendType: "enroll"
+                }).then((res)=>{
+                    setAuthNum(res.data);
+                })
+            }
         })
+        .catch((error) => console.log(error));
     }
 
     const CheckAuth = () =>{
@@ -95,17 +113,7 @@ const EnrollComponent = (props) =>{
     }
 
     const CheckAll = () =>{
-        if (!checkId){
-            alert("아이디 중복 체크를 진행해 주십시오.");
-        }
-        else if (!checkNickName){
-            alert("닉네임 중복 체크를 진행해 주십시오.");
-        }
-        else if (!checkEmail){
-            alert("이메일 인증을 진행해 주십시오.");
-        }
-        else{
-            const url = `/api/opentalk/member/enroll`;
+            const url = `/api/opentalk/member/signup`;
             axios.post(url,{
                 memberId: memberId,
                 memberPassword: memberPw,
@@ -114,10 +122,16 @@ const EnrollComponent = (props) =>{
                 memberEmail: memberEmail
             }).then((res)=>{
     
-            }).catch((error)=>console.log(error));
+            }).catch((error)=> {
+                if (error.response){
+                    setErrorMessage(error.response.data);
+                } else{
+                    setErrorMessage("");
+                    console.log(error);
+                }
+            });
             alert("회원가입이 완료되었습니다.")
             navigate("/opentalk/member/login");
-        }
         
     }
 

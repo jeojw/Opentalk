@@ -2,24 +2,18 @@ package com.example.opentalk.service;
 
 import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.ChatRoomMemberDTO;
-import com.example.opentalk.dto.HashTagDTO;
-import com.example.opentalk.dto.MemberDTO;
 import com.example.opentalk.entity.ChatRoomEntity;
 import com.example.opentalk.entity.ChatRoomMemberEntity;
-import com.example.opentalk.entity.MemberEntity;
 import com.example.opentalk.repository.ChatRoomMemberRepository;
 import com.example.opentalk.repository.ChatRoomRepository;
 import com.example.opentalk.repository.HashTagRepository;
 import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -85,27 +79,4 @@ public class ChatRoomService {
         return chatRoomDTOList;
     }
 
-    public MemberDTO findMyself(String memberId){
-        return MemberDTO.toMemberDTO(memberRepository.findByMemberId(memberId));
-    }
-
-    public List<MemberDTO> findMembers(String roomId){
-        List<MemberEntity> members = new ArrayList<>();
-        List<MemberDTO> memberDTOList = new ArrayList<>();
-        List<String> member_id = chatRoomMemberRepository.findMembers(roomId);
-        for (String id : member_id){
-            members.add(memberRepository.findByMemberId(id));
-        }
-        for (MemberEntity me : members){
-            System.out.print(MemberDTO.toMemberDTO(me));
-            memberDTOList.add(MemberDTO.toMemberDTO(me));
-        }
-
-        return memberDTOList;
-    }
-
-
-    public void deleteRoom(String roomId){
-
-    }
 }

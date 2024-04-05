@@ -75,7 +75,6 @@ const MainComponent = () => {
             try{
                 const response = await axios.get('/api/opentalk/member/status');
                 setMember(response.data);
-                console.log(response.data);
             } catch (error) {
                 console.error(error);
             }
@@ -89,6 +88,7 @@ const MainComponent = () => {
             try{
                 const response = await axios.get('/api/opentalk/rooms');
                 setChatList(response.data);
+                console.log(response);
             } catch (error) {
                 console.error(error);
             }
@@ -128,13 +128,13 @@ const MainComponent = () => {
             <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
             <p>환영합니다, {member.memberNickName}님</p>
             <ul>
-                {chatList.map(room=>(
+                {/* {chatList.map(room=>(
                     <li key={room.roomId}>{room.roomName}
                     {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                     <br></br>{room.introduction}
                     <br></br>{room.roomTags}
                     <button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button></li>
-                ))}
+                ))} */}
             </ul>
         </table>
         <SetRoomComponent getManager={member} />
