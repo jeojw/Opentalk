@@ -55,8 +55,8 @@ public class ChatRoomEntity implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "chatroom_member",
-            joinColumns = @JoinColumn(name = "chatroom_id"),
-            inverseJoinColumns = @JoinColumn(name = "member_id")
+            joinColumns = @JoinColumn(name = "chatroom_id", referencedColumnName = "roomId"),
+            inverseJoinColumns = @JoinColumn(name = "member_id", referencedColumnName = "memberId")
     )
     private List<ChatMemberEntity> members;
 
@@ -91,7 +91,7 @@ public class ChatRoomEntity implements Serializable {
                     .roomId(m.getRoomId())
                     .memberId(m.getMemberId())
                     .memberNickName(m.getMemberNickName())
-                    .Role(m.getRole())
+                    .role(m.getRole())
                     .build());
         }
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.builder()

@@ -21,25 +21,26 @@ public class ChatMemberEntity {
     private String memberId;
     @Column
     private String memberNickName;
+    @Enumerated(EnumType.STRING)
     @Column
-    private ChatRoomRole Role;
-    @ManyToMany(mappedBy = "members")
+    private ChatRoomRole role;
+    @ManyToMany(mappedBy = "members", cascade = CascadeType.PERSIST)
     private List<ChatRoomEntity> chatRooms;
 
     @Builder
-    public ChatMemberEntity(String roomId, String memberId, String memberNickName, ChatRoomRole Role){
+    public ChatMemberEntity(String roomId, String memberId, String memberNickName, ChatRoomRole role){
         this.roomId = roomId;
         this.memberId = memberId;
         this.memberNickName = memberNickName;
-        this.Role = Role;
+        this.role = role;
     }
 
-    public static ChatMemberEntity toChatMemberEntity(ChatMemberDto chatMemberEntity){
+    public static ChatMemberEntity toChatMemberEntity(ChatMemberDto chatMemberdto){
         return ChatMemberEntity.builder()
-                .roomId(chatMemberEntity.getRoomId())
-                .memberId(chatMemberEntity.getMemberId())
-                .memberNickName(chatMemberEntity.getMemberNickName())
-                .Role(chatMemberEntity.getRole())
+                .roomId(chatMemberdto.getRoomId())
+                .memberId(chatMemberdto.getMemberId())
+                .memberNickName(chatMemberdto.getMemberNickName())
+                .role(chatMemberdto.getRole())
                 .build();
     }
 }

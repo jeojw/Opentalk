@@ -1,8 +1,6 @@
 package com.example.opentalk.repository;
 
-import com.example.opentalk.entity.ChatRoomEntity;
 import com.example.opentalk.entity.ChatRoomMemberEntity;
-import com.example.opentalk.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.lang.reflect.Member;
 import java.util.List;
 
 @Repository

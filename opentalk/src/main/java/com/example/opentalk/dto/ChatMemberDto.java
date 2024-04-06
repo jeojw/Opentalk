@@ -12,17 +12,17 @@ public class ChatMemberDto {
     private String roomId;
     private String memberId;
     private String memberNickName;
-    private ChatRoomRole Role;
+    private ChatRoomRole role;
 
     public ChatMemberDto() {
     }
 
     @Builder
-    public ChatMemberDto(String roomId, String memberId, String memberNickName, ChatRoomRole Role){
+    public ChatMemberDto(String roomId, String memberId, String memberNickName, ChatRoomRole role){
         this.roomId = roomId;
         this.memberId = memberId;
         this.memberNickName = memberNickName;
-        this.Role = Role;
+        this.role = role;
     }
 
     public static ChatMemberDto toChatMemberDto(ChatMemberEntity chatMemberEntity){
@@ -30,7 +30,7 @@ public class ChatMemberDto {
                 .roomId(chatMemberEntity.getRoomId())
                 .memberId(chatMemberEntity.getMemberId())
                 .memberNickName(chatMemberEntity.getMemberNickName())
-                .Role(chatMemberEntity.getRole())
+                .role(chatMemberEntity.getRole())
                 .build();
     }
 }

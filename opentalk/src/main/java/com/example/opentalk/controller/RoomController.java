@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -31,9 +32,11 @@ public class RoomController {
         return ResponseEntity.ok(roomId);
     }
 
-    @PostMapping("/api/opentalk/enterRoom/")
+    @Transactional
+    @PostMapping("/api/opentalk/enterRoom")
     public void enterRoom(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO){
-        chatRoomService.enterRoom(chatRoomMemberDTO);
+        System.out.print("Role_DTO:" + chatRoomMemberDTO.getMember().getRole());
+        //chatRoomService.enterRoom(chatRoomMemberDTO);
     }
 
     @GetMapping("/api/opentalk/getRoom/{roomId}")

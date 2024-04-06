@@ -1,18 +1,13 @@
 package com.example.opentalk.repository;
 
-import com.example.opentalk.dto.ChatRoomDTO;
-import com.example.opentalk.dto.HashTagDTO;
 import com.example.opentalk.entity.ChatRoomEntity;
-import com.example.opentalk.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
-import java.util.*;
+import java.util.List;
 
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> {
@@ -29,13 +24,11 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> 
     ChatRoomEntity getRoom(@Param("roomId") String roomId);
 
     @Modifying
-    @Transactional
     @Query(value = "UPDATE Opentalk.opentalk_room_list SET participates = participates + 1 WHERE room_id = :roomId",
             nativeQuery = true)
     void enterRoom(@Param("roomId") String roomId);
 
     @Modifying
-    @Transactional
     @Query(value = "UPDATE Opentalk.opentalk_room_list SET participates = participates - 1 WHERE room_id = :roomId",
             nativeQuery = true)
     void exitRoom(@Param("roomId") String roomId);

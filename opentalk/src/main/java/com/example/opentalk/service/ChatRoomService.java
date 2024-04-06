@@ -4,10 +4,10 @@ import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.ChatRoomMemberDTO;
 import com.example.opentalk.entity.ChatRoomEntity;
 import com.example.opentalk.entity.ChatRoomMemberEntity;
+import com.example.opentalk.repository.ChatMemberRepository;
 import com.example.opentalk.repository.ChatRoomMemberRepository;
 import com.example.opentalk.repository.ChatRoomRepository;
 import com.example.opentalk.repository.HashTagRepository;
-import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Log4j2
 public class ChatRoomService {
-    private final MemberRepository memberRepository;
+    private final ChatMemberRepository chatMemberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final HashTagRepository hashTagRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
@@ -44,20 +44,26 @@ public class ChatRoomService {
 
     public void enterRoom(ChatRoomMemberDTO chatRoomMemberDTO){
         ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.toChatRoomMemberEntity(chatRoomMemberDTO);
+        chatRoomRepository.enterRoom(chatRoomMemberEntity.getChatroom().getRoomId());
+        System.out.println("Role:" + chatRoomMemberEntity.getMember().getRole());
+        chatMemberRepository.enterRoom(
+                chatRoomMemberEntity.getMember().getRole(),
+                chatRoomMemberEntity.getChatroom().getRoomId(),
+                chatRoomMemberEntity.getMember().getMemberId(),
+                chatRoomMemberEntity.getMember().getMemberNickName());
         chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getId(),
                 chatRoomMemberEntity.getChatroom().getRoomId(),
                 chatRoomMemberEntity.getMember().getMemberId());
-        chatRoomRepository.enterRoom(chatRoomMemberEntity.getChatroom().getRoomId());
     }
 
     public void enterRoom_Pw(ChatRoomMemberDTO chatRoomMemberDTO, String inputPw){
         ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.toChatRoomMemberEntity(chatRoomMemberDTO);
         System.out.print(inputPw);
         if (inputPw.equals(chatRoomMemberEntity.getChatroom().getRoomPassword())){
+            chatRoomRepository.enterRoom(chatRoomMemberEntity.getChatroom().getRoomId());
             chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getId(),
                     chatRoomMemberEntity.getChatroom().getRoomId(),
                     chatRoomMemberEntity.getMember().getMemberId());
-            chatRoomRepository.enterRoom(chatRoomMemberEntity.getChatroom().getRoomId());
         }
         else return;
     }

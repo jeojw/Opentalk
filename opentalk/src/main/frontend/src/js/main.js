@@ -12,7 +12,7 @@ const MainComponent = () => {
         MANAGER: 'MANAGER'
     };
 
-    const [cookies, setCookie, removeCookie] = useCookies(['member', 'accessToken']);
+    const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
     const [member, setMember] = useState("");
     const [chatList, setChatList] = useState([]);
     const [inputPw, setInputPw] = useState("");
@@ -32,7 +32,7 @@ const MainComponent = () => {
     // }, [history])
 
     const EnterRoom = ({roomInfo, talker}) => {
-        const enterUrl = '/api/opentalk/enterRoom/';
+        const enterUrl = '/api/opentalk/enterRoom';
         if (!roomInfo.existLock){
             if (roomInfo.manager === talker.memberId){
                 setRole(ChatRoomRole.MANAGER);
@@ -40,6 +40,7 @@ const MainComponent = () => {
             else{
                 setRole(ChatRoomRole.PARTICIPATE);
             }
+            console.log(roomInfo);
             axios.post(enterUrl, {
                 chatroom: roomInfo, 
                 member: {
@@ -121,15 +122,15 @@ const MainComponent = () => {
     }, []);
 
     const GoProfile = () => {
-        if (cookies.member){
+        if (cookies.accessToken){
             naviagte("/opentalk/profile");
         }
     }
 
     const LogOut = () => {
-        if (cookies.member){
+        if (cookies.accessToken){
             if (window.confirm("로그아웃 하시겠습니까?")){
-                localStorage.removeItem("accessToken");
+                removeCookie('accessToken');
                 window.alert("로그아웃 되었습니다.");
                 naviagte("/opentalk/front");
             }
