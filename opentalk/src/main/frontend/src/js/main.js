@@ -42,7 +42,6 @@ const MainComponent = () => {
                 currentRole = ChatRoomRole.PARTICIPATE;
             }
             setRole(currentRole);
-            console.log(talker.memberId);
             axios.post(enterUrl, {
                 chatroom: roomInfo, 
                 member: {

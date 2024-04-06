@@ -1,5 +1,7 @@
 package com.example.opentalk.entity;
 
+import com.example.opentalk.dto.ChatMessageDTO;
+import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -20,4 +22,19 @@ public class ChatMessageEntity {
 
     @Column(nullable = false)
     private String message;
+
+    @Builder
+    public ChatMessageEntity (String roomId, String writer, String message){
+        this.roomId = roomId;
+        this.writer = writer;
+        this.message = message;
+    }
+
+    public static ChatMessageEntity toChatMessageEntity(ChatMessageDTO chatMessageDTO){
+        return ChatMessageEntity.builder()
+                .roomId(chatMessageDTO.getRoomId())
+                .writer(chatMessageDTO.getWriter())
+                .message(chatMessageDTO.getMessage())
+                .build();
+    }
 }

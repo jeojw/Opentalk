@@ -50,11 +50,11 @@ public class RoomController {
         chatRoomService.enterRoom_Pw(chatRoomMemberDTO, password);
     }
 
-//    @PostMapping("/api/opentalk/exitRoom")
-//    public void exitRoom(@RequestParam("chatroom") ChatRoomDTO chatroom, @RequestParam("member")ChatMemberDto member){
-//        chatRoomService.exitRoom(chatRoomMemberDTO.getChatroom().getRoomId(),
-//                chatRoomMemberDTO.getMember().getMemberId());
-//    }
+    @PostMapping("/api/opentalk/exitRoom")
+    public void exitRoom(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO){
+        chatRoomService.exitRoom(chatRoomMemberDTO.getChatroom().getRoomId(),
+                chatRoomMemberDTO.getMember().getMemberId());
+    }
 
 //    @PostMapping("/api/opentalk/appendTag")
 //    public ResponseEntity<HashTagDTO> createTag(@RequestBody @Valid HashTagDTO hashTagDTO){

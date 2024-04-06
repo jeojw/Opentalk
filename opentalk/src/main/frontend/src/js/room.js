@@ -130,7 +130,6 @@ const RoomComponent = ({roomInfo, talker}) => {
 
     const ExitRoom = () => {
         if (window.confirm("방을 나가시겠습니까?")){
-            console.log(myInfo);
             const exitUrl = '/api/opentalk/exitRoom';
             axios.post(exitUrl, {
                 chatroom: roomInfomation,
