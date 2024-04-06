@@ -35,8 +35,8 @@ public class RoomController {
     @Transactional
     @PostMapping("/api/opentalk/enterRoom")
     public void enterRoom(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO){
-        System.out.print("Role_DTO:" + chatRoomMemberDTO.getMember().getRole());
-        //chatRoomService.enterRoom(chatRoomMemberDTO);
+        System.out.print("MemberId:" + chatRoomMemberDTO.getMember().getMemberId());
+        chatRoomService.enterRoom(chatRoomMemberDTO);
     }
 
     @GetMapping("/api/opentalk/getRoom/{roomId}")

@@ -12,6 +12,7 @@ const RoomComponent = ({roomInfo, talker}) => {
     const [memberList, setMemberList] = useState([]);
     const [chatList, setChetList] = useState([]);
     const [chat, setChat] = useState("");
+    const cookie = new Cookies();
 
     let {room_Id} = useParams();
     
@@ -19,7 +20,6 @@ const RoomComponent = ({roomInfo, talker}) => {
 
     const navigate = useNavigate();
 
-    const cookie = new Cookies();
 
     useEffect(() => {
         const fetchRoomStatus = async () => {
@@ -49,11 +49,13 @@ const RoomComponent = ({roomInfo, talker}) => {
     }, []);
 
     useEffect(()=> {
-        const myId = cookie.get("member");
         const fetchMyself = async () => {
             try{
-                const response = await axios.get(`/api/opentalk/Myself/${myId}`);
+                const response = await axios.get(`/api/opentalk/member/me`, {
+                    headers: {Authorization: 'Bearer ' + cookie.get("accessToken")}
+                });
                 setMyInfo(response.data);
+                
             } catch (error){
                 console.error(error);
             }
@@ -168,7 +170,7 @@ const RoomComponent = ({roomInfo, talker}) => {
                 {memberList && memberList.length > 0 && (
                     <ul>
                         {chatList.map((_member, index) => (
-                            <li key={index}>{_member.nickName}</li>
+                            <li key={index}>{_member.memberNickName}</li>
                         ))}
                     </ul>
                 )}

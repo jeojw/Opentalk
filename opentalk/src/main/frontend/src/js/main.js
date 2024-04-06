@@ -34,20 +34,22 @@ const MainComponent = () => {
     const EnterRoom = ({roomInfo, talker}) => {
         const enterUrl = '/api/opentalk/enterRoom';
         if (!roomInfo.existLock){
+            let currentRole;
             if (roomInfo.manager === talker.memberId){
-                setRole(ChatRoomRole.MANAGER);
+                currentRole = ChatRoomRole.MANAGER;
             }
             else{
-                setRole(ChatRoomRole.PARTICIPATE);
+                currentRole = ChatRoomRole.PARTICIPATE;
             }
-            console.log(roomInfo);
+            setRole(currentRole);
+            console.log(talker.memberId);
             axios.post(enterUrl, {
                 chatroom: roomInfo, 
                 member: {
                     roomId: roomInfo.roomId,
                     memberId: talker.memberId,
                     memberNickName: talker.memberNickName,
-                    Role: role
+                    role: role
                 }
             })
             .then((res) => {
@@ -63,13 +65,13 @@ const MainComponent = () => {
             if (inputPw === ""){
                 window.alert("비밀번호를 입력해주세요.")
             }else{
-                axios.post(enterUrl + inputPw, {
+                axios.post(enterUrl + `/${inputPw}`, {
                     chatroom: roomInfo, 
                     member: {
                         roomId: roomInfo.roomId,
                         memberId: talker.memberId,
                         memberNickName: talker.memberNickName,
-                        Role: role
+                        role: role
                     }
                 })
                 .then((res) => {
@@ -100,6 +102,7 @@ const MainComponent = () => {
                     headers: {Authorization: 'Bearer ' + cookies.accessToken}
                 });
                 setMember(response.data);
+                console.log(response.data);
             } catch (error) {
                 console.error(error);
             }

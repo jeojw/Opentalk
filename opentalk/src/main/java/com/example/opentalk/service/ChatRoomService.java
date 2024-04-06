@@ -1,5 +1,6 @@
 package com.example.opentalk.service;
 
+import com.example.opentalk.dto.ChatMessageDTO;
 import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.ChatRoomMemberDTO;
 import com.example.opentalk.entity.ChatRoomEntity;
@@ -42,10 +43,14 @@ public class ChatRoomService {
         return inputPassword.equals(roomPw);
     }
 
+    public void saveChat(ChatMessageDTO chatMessage){
+
+    }
+
     public void enterRoom(ChatRoomMemberDTO chatRoomMemberDTO){
         ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.toChatRoomMemberEntity(chatRoomMemberDTO);
-        chatRoomRepository.enterRoom(chatRoomMemberEntity.getChatroom().getRoomId());
-        System.out.println("Role:" + chatRoomMemberEntity.getMember().getRole());
+        System.out.println(chatRoomMemberEntity.getMember().getMemberId());
+        chatRoomRepository.enterRoom("MemberId:" + chatRoomMemberEntity.getMember().getMemberId());
         chatMemberRepository.enterRoom(
                 chatRoomMemberEntity.getMember().getRole(),
                 chatRoomMemberEntity.getChatroom().getRoomId(),

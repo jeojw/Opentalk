@@ -4,6 +4,7 @@ import com.example.opentalk.dto.ChatMemberDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Setter
@@ -11,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "chat_member_list")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ChatMemberEntity {
+public class ChatMemberEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,14 +22,13 @@ public class ChatMemberEntity {
     private String memberId;
     @Column
     private String memberNickName;
-    @Enumerated(EnumType.STRING)
     @Column
-    private ChatRoomRole role;
+    private String role;
     @ManyToMany(mappedBy = "members", cascade = CascadeType.PERSIST)
     private List<ChatRoomEntity> chatRooms;
 
     @Builder
-    public ChatMemberEntity(String roomId, String memberId, String memberNickName, ChatRoomRole role){
+    public ChatMemberEntity(String roomId, String memberId, String memberNickName, String role){
         this.roomId = roomId;
         this.memberId = memberId;
         this.memberNickName = memberNickName;

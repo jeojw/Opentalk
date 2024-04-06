@@ -1,7 +1,6 @@
 package com.example.opentalk.dto;
 
 import com.example.opentalk.entity.ChatMemberEntity;
-import com.example.opentalk.entity.ChatRoomRole;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -12,13 +11,13 @@ public class ChatMemberDto {
     private String roomId;
     private String memberId;
     private String memberNickName;
-    private ChatRoomRole role;
+    private String role;
 
     public ChatMemberDto() {
     }
 
     @Builder
-    public ChatMemberDto(String roomId, String memberId, String memberNickName, ChatRoomRole role){
+    public ChatMemberDto(String roomId, String memberId, String memberNickName, String role){
         this.roomId = roomId;
         this.memberId = memberId;
         this.memberNickName = memberNickName;
