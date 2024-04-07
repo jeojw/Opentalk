@@ -72,8 +72,7 @@ public class ChatRoomService {
                 chatRoomMemberEntity.getChatroom().getRoomId(),
                 chatRoomMemberEntity.getMember().getMemberId(),
                 chatRoomMemberEntity.getMember().getMemberNickName());
-        chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getId(),
-                chatRoomMemberEntity.getChatroom().getRoomId(),
+        chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getChatroom().getRoomId(),
                 chatRoomMemberEntity.getMember().getMemberId());
     }
 
@@ -86,8 +85,7 @@ public class ChatRoomService {
                     chatRoomMemberEntity.getChatroom().getRoomId(),
                     chatRoomMemberEntity.getMember().getMemberId(),
                     chatRoomMemberEntity.getMember().getMemberNickName());
-            chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getId(),
-                    chatRoomMemberEntity.getChatroom().getRoomId(),
+            chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getChatroom().getRoomId(),
                     chatRoomMemberEntity.getMember().getMemberId());
         }
         else return;

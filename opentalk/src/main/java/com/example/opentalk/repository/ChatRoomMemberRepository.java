@@ -15,9 +15,9 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMemberEn
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO Opentalk.chatroom_member Values(:id, :room_id, :member_id)",
+    @Query(value = "INSERT INTO Opentalk.chatroom_member(chatroom_id, member_id) Values(:room_id, :member_id)",
             nativeQuery = true)
-    int enterRoom(@Param("id") Long id, @Param("room_id") String room_id, @Param("member_id") String member_id);
+    int enterRoom(@Param("room_id") String room_id, @Param("member_id") String member_id);
 
     @Query(value = "SELECT * FROM Opentalk.chatroom_member WHERE chatroom_id = :room_id AND member_id = :member_id",
             nativeQuery = true)

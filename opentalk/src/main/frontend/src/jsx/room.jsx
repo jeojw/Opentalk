@@ -142,8 +142,8 @@ const RoomComponent = ({roomInfo, talker}) => {
     return(
         <div>
             <div>
-                {/* <h1>{roomInformation.roomName}</h1>
-                <h2>참여자 수: {roomInformation.participates}</h2> */}
+                <h1>{roomInformation.roomName}</h1>
+                <h2>참여자 수: {roomInformation.participates}</h2>
             </div>
             <div>
                 {chatList && chatList.length > 0 && (
@@ -163,9 +163,9 @@ const RoomComponent = ({roomInfo, talker}) => {
             <button onClick={ExitRoom}>나가기</button>
             <div>
             <h2>참여명단</h2>
-                {/* {roomInformation.members.map((_member, index) => (
+                {roomInformation.members.map((_member, index) => (
                     <li key={index}>{_member.memberNickName}</li>
-                ))} */}
+                ))}
             </div>
 
         </div>
