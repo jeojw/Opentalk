@@ -1,11 +1,12 @@
 package com.example.opentalk.dto;
 
-import com.example.opentalk.entity.HashTagEntity;
+import com.example.opentalk.entity.ChatRoomHashtagEntity;
 import lombok.*;
 
 @Data
 @Getter
 @Setter
+@NoArgsConstructor
 public class HashTagDTO {
     private String tagName;
     private Integer accumulate;
@@ -15,10 +16,10 @@ public class HashTagDTO {
         this.tagName = tagName;
         this.accumulate = accumulate;
     }
-    public static HashTagDTO toHashTagDTO(HashTagEntity hashTagEntity){
+    public static HashTagDTO toHashTagDTO(ChatRoomHashtagEntity hashTagEntity){
         return HashTagDTO.builder()
-                .tagName(hashTagEntity.getName())
-                .accumulate(hashTagEntity.getAccumulate())
+                .tagName(hashTagEntity.getHashtag().getName())
+                .accumulate(hashTagEntity.getHashtag().getAccumulate())
                 .build();
     }
 }

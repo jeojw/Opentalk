@@ -2,7 +2,8 @@ package com.example.opentalk.dto;
 
 import com.example.opentalk.entity.ChatMemberEntity;
 import com.example.opentalk.entity.ChatRoomEntity;
-import com.example.opentalk.entity.HashTagEntity;
+import com.example.opentalk.entity.ChatRoomHashtagEntity;
+import com.example.opentalk.entity.ChatRoomMemberEntity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,10 +51,10 @@ public class ChatRoomDTO {
         ChatRoomDTO chatRoomDTO = new ChatRoomDTO();
         List<HashTagDTO> hashTagDTOList = new ArrayList<>();
         List<ChatMemberDto> chatMemberDtoList = new ArrayList<>();
-        for (HashTagEntity hashTagEntity : chatRoomEntity.getHashtags()){
+        for (ChatRoomHashtagEntity hashTagEntity : chatRoomEntity.getHashtags()){
             hashTagDTOList.add(HashTagDTO.toHashTagDTO(hashTagEntity));
         }
-        for (ChatMemberEntity memberEntity : chatRoomEntity.getMembers()){
+        for (ChatRoomMemberEntity memberEntity : chatRoomEntity.getMembers()){
             chatMemberDtoList.add(ChatMemberDto.toChatMemberDto(memberEntity));
         }
 

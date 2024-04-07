@@ -1,6 +1,6 @@
 package com.example.opentalk.dto;
 
-import com.example.opentalk.entity.ChatMemberEntity;
+import com.example.opentalk.entity.ChatRoomMemberEntity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -24,12 +24,12 @@ public class ChatMemberDto {
         this.role = role;
     }
 
-    public static ChatMemberDto toChatMemberDto(ChatMemberEntity chatMemberEntity){
+    public static ChatMemberDto toChatMemberDto(ChatRoomMemberEntity chatMemberEntity){
         return ChatMemberDto.builder()
-                .roomId(chatMemberEntity.getRoomId())
-                .memberId(chatMemberEntity.getMemberId())
-                .memberNickName(chatMemberEntity.getMemberNickName())
-                .role(chatMemberEntity.getRole())
+                .roomId(chatMemberEntity.getMember().getRoomId())
+                .memberId(chatMemberEntity.getMember().getMemberId())
+                .memberNickName(chatMemberEntity.getMember().getMemberNickName())
+                .role(chatMemberEntity.getMember().getRole())
                 .build();
     }
 }

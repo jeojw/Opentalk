@@ -1,8 +1,6 @@
 package com.example.opentalk.entity;
 
-import com.example.opentalk.dto.ChatMemberDto;
 import com.example.opentalk.dto.ChatRoomDTO;
-import com.example.opentalk.dto.HashTagDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,13 +36,8 @@ public class ChatRoomEntity implements Serializable {
     @Column
     private String introduction;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "chatroom_hashtag",
-            joinColumns = @JoinColumn(name = "chatroom_id", referencedColumnName = "roomId"),
-            inverseJoinColumns = @JoinColumn(name = "hashtag_id", referencedColumnName = "tag_id")
-    )
-    private List<HashTagEntity> hashtags = new ArrayList<>();
+    @OneToMany(mappedBy = "hashtag", cascade = CascadeType.PERSIST)
+    private List<ChatRoomHashtagEntity> hashtags = new ArrayList<>();
 
     @Column
     private boolean existLock;
@@ -52,49 +45,26 @@ public class ChatRoomEntity implements Serializable {
     @Column
     private String roomPassword;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "chatroom_member",
-            joinColumns = @JoinColumn(name = "chatroom_id", referencedColumnName = "roomId"),
-            inverseJoinColumns = @JoinColumn(name = "member_id", referencedColumnName = "memberId")
-    )
-    private List<ChatMemberEntity> members;
+    @OneToMany(mappedBy = "chatroom", cascade = CascadeType.PERSIST)
+    private List<ChatRoomMemberEntity> members = new ArrayList<>();
 
     @Builder
-    public ChatRoomEntity(Long id, String roomId, String roomName, String manager, Integer limitParticipates,
-                          String introduction, boolean existLock, String roomPassword,
-                          List<ChatMemberEntity> members, List<HashTagEntity> roomTags){
+    public ChatRoomEntity(Long id, String roomId, String roomName, String manager,
+                          Integer limitParticipates, String introduction, boolean existLock,
+                          String roomPassword){
         this.id = id;
         this.roomId = roomId;
         this.roomName = roomName;
         this.manager = manager;
-        this.participates = members.size();
+        this.participates = 0;
         this.limitParticipates = limitParticipates;
         this.introduction = introduction;
         this.existLock = existLock;
         this.roomPassword = roomPassword;
-        this.members = members;
-        this.hashtags = roomTags;
 
     }
 
     public static ChatRoomEntity toChatRoomEntity(ChatRoomDTO chatRoomDTO){
-        List<HashTagEntity> hashTagEntities = new ArrayList<>();
-        List<ChatMemberEntity> chatMemberEntities = new ArrayList<>();
-        for (HashTagDTO tag : chatRoomDTO.getRoomTags()){
-            hashTagEntities.add(HashTagEntity.builder()
-                    .name(tag.getTagName())
-                    .accumulate(tag.getAccumulate())
-                    .build());
-        }
-        for (ChatMemberDto m : chatRoomDTO.getMembers()){
-            chatMemberEntities .add(ChatMemberEntity.builder()
-                    .roomId(m.getRoomId())
-                    .memberId(m.getMemberId())
-                    .memberNickName(m.getMemberNickName())
-                    .role(m.getRole())
-                    .build());
-        }
         return ChatRoomEntity.builder()
                 .roomName(chatRoomDTO.getRoomName())
                 .roomId(chatRoomDTO.getRoomId())
@@ -103,8 +73,6 @@ public class ChatRoomEntity implements Serializable {
                 .introduction(chatRoomDTO.getIntroduction())
                 .existLock(chatRoomDTO.isExistLock())
                 .roomPassword(chatRoomDTO.getRoomPassword())
-                .roomTags(hashTagEntities)
-                .members(chatMemberEntities )
                 .build();
     }
 }

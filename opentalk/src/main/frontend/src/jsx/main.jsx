@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import SetRoomComponent from './setroom';
@@ -17,9 +17,13 @@ const MainComponent = () => {
     const [chatList, setChatList] = useState([]);
     const [inputPw, setInputPw] = useState("");
     const [role, setRole] = useState();
+    const [selectManu, setSelectManu] = useState("");
+    const [searchKeyword, setSearchKeyword] = useState("");
     const naviagte = useNavigate();
 
     const history = createBrowserHistory();
+
+    let {page} = useParams();
 
     // useEffect(() => {
     //     let unlisten = history.listen((location) => {
@@ -31,11 +35,23 @@ const MainComponent = () => {
     //     };
     // }, [history])
 
+    const GetInputSearchKeyword = (event) => {
+        setSearchKeyword(event.target.value);
+    }
+
+    const selectMenuHandle = (event) => {
+        setSelectManu(event.target.value);
+    }
+
+    const search = () => {
+
+    }
+
     const EnterRoom = ({roomInfo, talker}) => {
         const enterUrl = '/api/opentalk/enterRoom';
         if (!roomInfo.existLock){
             let currentRole;
-            if (roomInfo.manager === talker.memberId){
+            if (roomInfo.manager === talker.memberNickName){
                 currentRole = ChatRoomRole.MANAGER;
             }
             else{
@@ -150,10 +166,10 @@ const MainComponent = () => {
             <p>환영합니다, {member.memberNickName}님</p>
             <ul>
                 {chatList.map(room=>(
-                    <li key={room.roomId}>{room.roomName}
+                    <li key={room.roomId}>{room.roomName} | 인원수: {room.participates} / {room.limitParticipates}
                     {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                     <br></br>{room.introduction}
-                    <br></br>
+                    <br></br>방장: {room.manager}
                     <ul>
                         {room.roomTags.map(tag=>(
                             <li>#{tag.tagName}</li>
@@ -167,6 +183,18 @@ const MainComponent = () => {
         <SetRoomComponent getManager={member} />
         <button onClick={GoProfile}>프로필 설정</button>
         <button onClick={LogOut}>로그아웃</button>
+        <br></br>
+        <select value={selectManu} onChange={selectMenuHandle}>
+            <option value="title">제목</option>
+            <option value="tag">태그</option>
+            <option value="manager">방장</option>
+        </select>
+        <input 
+            type="text"
+            value={searchKeyword}
+            onChange={GetInputSearchKeyword}
+        ></input>
+        <button onClick={search}>검색</button>
     </div>
 
     );

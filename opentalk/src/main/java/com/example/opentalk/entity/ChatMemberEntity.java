@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -24,8 +25,8 @@ public class ChatMemberEntity implements Serializable {
     private String memberNickName;
     @Column
     private String role;
-    @ManyToMany(mappedBy = "members", cascade = CascadeType.PERSIST)
-    private List<ChatRoomEntity> chatRooms;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
+    private List<ChatRoomMemberEntity> chatRooms = new ArrayList<>();
 
 
 

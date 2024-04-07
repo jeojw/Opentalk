@@ -67,7 +67,7 @@ export const SetRoomComponent = ({getManager}) =>{
         axios.post(makeUrl, {
             "roomName": roomName,
             "roomPassword": password,
-            "manager": manager.memberId,
+            "manager": manager.memberNickname,
             "participates": 0,
             "limitParticipates": participants,
             "introduction": info,
