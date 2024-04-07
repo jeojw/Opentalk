@@ -1,5 +1,6 @@
 package com.example.opentalk.controller;
 
+import com.example.opentalk.dto.ChangePasswordRequestDto;
 import com.example.opentalk.dto.MemberRequestDto;
 import com.example.opentalk.dto.MemberResponseDto;
 import com.example.opentalk.dto.TokenDto;
@@ -36,5 +37,21 @@ public class AuthController {
     @PostMapping("/api/opentalk/member/login")
     public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto requestDto) {
         return ResponseEntity.ok(authService.login(requestDto));
+    }
+
+    @PostMapping("/api/opentalk/auth/checkId")
+    public ResponseEntity<Boolean> authId(@RequestParam("memberId") String memberId){
+        return ResponseEntity.ok(authService.authId(memberId));
+    }
+
+    @PostMapping("/api/opentalk/auth/exPassword")
+    public ResponseEntity<String> getExPassword(@RequestParam("memberEmail") String memberEmail){
+        return ResponseEntity.ok(authService.getExPassword(memberEmail));
+    }
+
+    @PostMapping("/api/opentalk/auth/changePassword")
+    public void changePassword(ChangePasswordRequestDto changePasswordRequestDto){
+        authService.changePassword(changePasswordRequestDto.getExPassword(),
+                                    changePasswordRequestDto.getNewPassword());
     }
 }

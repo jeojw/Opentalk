@@ -2,24 +2,25 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
-import { Cookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 
 const ProfileComponent = (props) => {
     const [member, setMember] = useState('');
     const [pwPopupOpen, setPwPopupOpen] = useState(false);
     const [nickPopupOpen, setNickPopupOpen] = useState(false);
     const [newNickName, setNewNickName] = useState("");
+    const [exPassword, setExPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [checkPassword, setCheckPassword] = useState("");
 
     const navigate = useNavigate();
-    const cookie = new Cookies();
+    const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
 
     useEffect(() => {
         const fetchMemberStatus = async () => {
             try{
                 const response = await axios.get('/api/opentalk/member/profile', {
-                    headers: {Authorization: 'Bearer ' + cookie.get("accessToken")}
+                    headers: {Authorization: 'Bearer ' + cookies.accessToken}
                     });
                 setMember(response.data);
                 console.log(member);
@@ -30,6 +31,10 @@ const ProfileComponent = (props) => {
 
         fetchMemberStatus();
     }, []);
+
+    const GetInputExPassword = (event) =>{
+        setExPassword(event.target.value);
+    }
 
     const GetInputNewPassword = (event) =>{
         setNewPassword(event.target.value);
@@ -58,6 +63,7 @@ const ProfileComponent = (props) => {
 
     const ChangePasswordCancle = () => {
         setPwPopupOpen(false);
+        setExPassword("");
         setNewPassword("");
         setCheckPassword("");
     }
@@ -67,18 +73,21 @@ const ProfileComponent = (props) => {
             alert("비밀번호가 일치하지 않습니다.");
         }
         else{
-            const checkUrl = `/api/opentalk/member/changePw/`
-            axios.post(checkUrl + `${member.memberEmail}`, {})
+            const checkUrl = `/api/opentalk/member/changePassword`
+            axios.post(checkUrl, {
+                exPassword: exPassword,
+                newPassword: newPassword
+            },{
+                headers: {Authorization: 'Bearer ' + cookies.accessToken}
+            })
             .then((res)=>{
-                axios.post(checkUrl + `${res.data}/${newPassword}`, {
-                    exPassword: res.data,
-                    newPassword: newPassword
-                })
-                .then((res)=>{
+                if (res.status === 200){
                     alert("비밀번호가 변경되었습니다.");
                     ChangePasswordCancle();
-                })
-                .catch((error) => console.log(error));
+                }
+                else if (res.status === 500){
+                    alert("현재 비밀번호가 맞지 않습니다.")
+                }
             })
             .catch((error)=>console.log(error));
         }
@@ -113,9 +122,9 @@ const ProfileComponent = (props) => {
         <div>
             <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
             <ul>
-                <li>{member.memberName}</li>
-                <li>{member.memberNickName}</li>
-                <li>{member.memberEmail}</li>
+                <li>이름: {member.memberName}</li>
+                <li>닉네임: {member.memberNickName}</li>
+                <li>이메일: {member.memberEmail}</li>
             </ul>
             <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}>
                 새 닉네임: <input 
@@ -128,6 +137,13 @@ const ProfileComponent = (props) => {
                 <button onClick={ChangeNickNameCancle}>변경 취소</button>
             </Modal>
             <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}>
+                현재 비밀번호: <input
+                    type="password"
+                    value={exPassword}
+                    onChange={GetInputExPassword}
+                >
+                </input>
+                <br></br>
                 새 비밀번호: <input 
                     type="password" 
                     value={newPassword} 

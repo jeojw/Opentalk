@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
@@ -9,11 +9,15 @@ const ChangePasswordComponent = () =>{
     const location = useLocation();
     const naviagte = useNavigate();
 
-    React.useEffect(() =>{
+    useEffect(() =>{
         if (location.state && location.state.memberEmail){
             setMemberEmail(location.state.memberEmail);
         }
-    })
+    }, []);
+
+    useEffect(()=> {
+        
+    }, []);
 
     const GetInputPassword = (e) => {
         setNewPassword(e.target.value);
@@ -28,10 +32,11 @@ const ChangePasswordComponent = () =>{
             alert("비밀번호가 일치하지 않습니다.")
         }
         else{
-            const checkUrl = `/api/opentalk/member/changePw/`
-            axios.post(checkUrl + `${memberEmail}`, {})
+            const data = new FormData();
+            data.append("memberEmail", memberEmail);
+            axios.post("/api/opentalk/auth/exPassword", data)
             .then((res)=>{
-                axios.post(checkUrl + `${res.data}/${newPassword}`, {
+                axios.post(`/api/opentalk/auth/changePassword`, {
                     exPassword: res.data,
                     newPassword: newPassword
                 })

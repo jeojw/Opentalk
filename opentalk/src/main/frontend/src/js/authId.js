@@ -13,10 +13,10 @@ const AuthIdComponent = () =>{
 
     const AuthId = (e) => {
         e.preventDefault();
-        const checkUrl = `/api/opentalk/member/authId/${memberId}`
-        axios.post(checkUrl, {
-            memberId: memberId
-        })
+        const data = new FormData();
+        data.append("memberId", memberId);
+        const checkUrl = `/api/opentalk/auth/checkId`
+        axios.post(checkUrl, data)
         .then((res) => {
             if (res.data){
                 navigate("/opentalk/member/findPw")

@@ -50,6 +50,18 @@ public class AuthService {
         return memberRepository.existsByMemberEmail(memberEmail);
     }
 
+    public String getExPassword(String memberEmail){
+        return memberRepository.ReturnExPw(memberEmail);
+    }
+
+    public void changePassword(String exPassword, String newPassword){
+        memberRepository.ChangePw(exPassword, newPassword);
+    }
+
+    public boolean authId(String memberId){
+        return memberRepository.existsByMemberId(memberId);
+    }
+
     public TokenDto login(MemberRequestDto requestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
 
