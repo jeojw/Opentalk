@@ -66,8 +66,4 @@ public class RoomController {
                 chatRoomMemberDTO.getMember().getMemberId());
     }
 
-//    @PostMapping("/api/opentalk/appendTag")
-//    public ResponseEntity<HashTagDTO> createTag(@RequestBody @Valid HashTagDTO hashTagDTO){
-//
-//    }
 }

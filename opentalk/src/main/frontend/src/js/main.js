@@ -153,7 +153,13 @@ const MainComponent = () => {
                     <li key={room.roomId}>{room.roomName}
                     {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                     <br></br>{room.introduction}
-                    <br></br>{room.roomTags}
+                    <br></br>
+                    <ul>
+                        {room.roomTags.map(tag=>(
+                            <li>#{tag.tagName}</li>
+                        ))}
+                    </ul>
+                    
                     <button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button></li>
                 ))}
             </ul>

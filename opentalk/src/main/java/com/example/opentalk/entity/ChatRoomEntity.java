@@ -84,6 +84,7 @@ public class ChatRoomEntity implements Serializable {
         for (HashTagDTO tag : chatRoomDTO.getRoomTags()){
             hashTagEntities.add(HashTagEntity.builder()
                     .name(tag.getTagName())
+                    .accumulate(tag.getAccumulate())
                     .build());
         }
         for (ChatMemberDto m : chatRoomDTO.getMembers()){
@@ -94,7 +95,7 @@ public class ChatRoomEntity implements Serializable {
                     .role(m.getRole())
                     .build());
         }
-        ChatRoomEntity chatRoomEntity = ChatRoomEntity.builder()
+        return ChatRoomEntity.builder()
                 .roomName(chatRoomDTO.getRoomName())
                 .roomId(chatRoomDTO.getRoomId())
                 .manager(chatRoomDTO.getManager())
@@ -105,6 +106,5 @@ public class ChatRoomEntity implements Serializable {
                 .roomTags(hashTagEntities)
                 .members(chatMemberEntities )
                 .build();
-        return chatRoomEntity;
     }
 }

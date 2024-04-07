@@ -55,7 +55,9 @@ export const SetRoomComponent = ({getManager}) =>{
     }
 
     const AppendTag = (getTag) => {
-        tags.push(getTag);
+        tags.push({
+            tagName: getTag
+        });
         setTag("");
     }
 

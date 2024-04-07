@@ -3,6 +3,7 @@ package com.example.opentalk.service;
 import com.example.opentalk.dto.ChatMessageDTO;
 import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.ChatRoomMemberDTO;
+import com.example.opentalk.dto.HashTagDTO;
 import com.example.opentalk.entity.ChatMessageEntity;
 import com.example.opentalk.entity.ChatRoomEntity;
 import com.example.opentalk.entity.ChatRoomMemberEntity;
@@ -32,9 +33,13 @@ public class ChatRoomService {
     }
 
     public ChatRoomDTO getRoom(String roomId){
-        ChatRoomEntity chatRoomEntity = chatRoomRepository.getRoom(roomId);
 
-        return ChatRoomDTO.toChatRoomDTO(chatRoomEntity);
+        if (chatRoomRepository.getRoom(roomId).isPresent()){
+            ChatRoomEntity chatRoomEntity = chatRoomRepository.getRoom(roomId).get();
+            return ChatRoomDTO.toChatRoomDTO(chatRoomEntity);
+        }
+        else
+            return null;
     }
 
     public boolean checkPassword(String roomId, String inputPassword){
@@ -107,6 +112,10 @@ public class ChatRoomService {
             chatRoomDTOList.add(ChatRoomDTO.toChatRoomDTO(chatRoomEntity));
         }
         return chatRoomDTOList;
+    }
+
+    public void appendTag(HashTagDTO hashTagDTO){
+
     }
 
 }
