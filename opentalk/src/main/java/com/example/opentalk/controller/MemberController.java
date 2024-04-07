@@ -1,7 +1,7 @@
 package com.example.opentalk.controller;
 
 import com.example.opentalk.dto.ChangePasswordRequestDto;
-import com.example.opentalk.dto.MemberRequestDto;
+import com.example.opentalk.dto.MemberInfoDto;
 import com.example.opentalk.dto.MemberResponseDto;
 import com.example.opentalk.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +22,17 @@ public class MemberController {
         // return ResponseEntity.ok(memberService.getMyInfoBySecurity());
     }
 
+    @GetMapping("/api/opentalk/member/profile")
+    public ResponseEntity<MemberInfoDto> getProfile(){
+        MemberInfoDto myInfoBySecurity = memberService.getMyProfileBySecurity();
+        System.out.println(myInfoBySecurity.getMemberNickName());
+        return ResponseEntity.ok((myInfoBySecurity));
+    }
+
     @PostMapping("/api/opentalk/member/findId")
     public ResponseEntity<String> findMemberId(@RequestParam("memberEmail") String memberEmail){
         return ResponseEntity.ok(memberService.findMemberId(memberEmail));
     }
-
-//    @DeleteMapping("/api/opentalk/member/logout")
-//    public ResponseEntity<Boolean> logout(HttpServletRequest request){
-//        String accessToken = jwtFilter.r
-//
-//    }
 
     @PostMapping("/api/opentalk/member/authId")
     public ResponseEntity<Boolean> authId(@RequestParam("memberId") String memberId){
@@ -44,8 +45,14 @@ public class MemberController {
     }
 
     @PostMapping("/api/opentalk/member/changeNickname")
-    public ResponseEntity<MemberResponseDto> setMemberNickname(@RequestBody MemberRequestDto request) {
-        return ResponseEntity.ok(memberService.changeMemberNickname(request.getMemberId(), request.getMemberNickName()));
+    public ResponseEntity<MemberResponseDto> setMemberNickname(@RequestBody MemberResponseDto memberResponseDto) {
+        return ResponseEntity.ok(memberService.changeMemberNickname(memberResponseDto.getMemberId(),
+                                                                    memberResponseDto.getMemberNickName()));
+    }
+
+    @PostMapping("/api/opentalk/member/checkNickName")
+    public ResponseEntity<Boolean> checkDuplicateNickName(@RequestParam("memberNickName") String memberNickName){
+        return ResponseEntity.ok(memberService.checkNicknameDuplicate(memberNickName));
     }
 
     @PostMapping("/api/opentalk/member/changePassword")

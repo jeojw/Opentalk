@@ -14,10 +14,6 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     @Query(value = "SELECT * FROM Opentalk.open_talk_member WHERE member_id=:memberId",
             nativeQuery = true)
     Optional<MemberEntity> findByMemberId(@Param("memberId") String memberId);
-    @Query(value = "SELECT member_password FROM Opentalk.open_talk_member WHERE member_id=:memberId",
-            nativeQuery = true
-    )
-    String compareByMemberPassword(@Param("memberId") String memberId);
 
     @Query(value = "SELECT member_id FROM Opentalk.open_talk_member WHERE member_email=:memberEmail" ,
             nativeQuery = true)

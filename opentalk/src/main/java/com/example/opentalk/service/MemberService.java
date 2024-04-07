@@ -1,6 +1,7 @@
 package com.example.opentalk.service;
 
 import com.example.opentalk.Config.SecurityUtil;
+import com.example.opentalk.dto.MemberInfoDto;
 import com.example.opentalk.dto.MemberResponseDto;
 import com.example.opentalk.entity.MemberEntity;
 import com.example.opentalk.repository.MemberRepository;
@@ -23,6 +24,12 @@ public class MemberService {
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
     }
 
+    public MemberInfoDto getMyProfileBySecurity() {
+        return memberRepository.findById(SecurityUtil.getCurrentMemberId())
+                .map(MemberInfoDto::of)
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
+    }
+
     @Transactional
     public String findMemberId(String memberEmail){
         return memberRepository.SearchMemberId(memberEmail);
@@ -39,9 +46,14 @@ public class MemberService {
     }
 
     @Transactional
+    public boolean checkNicknameDuplicate(String newNickname){
+        return memberRepository.existsByMemberNickName(newNickname);
+    }
+
+    @Transactional
     public MemberResponseDto changeMemberNickname(String memberId, String nickname) {
         MemberEntity member = memberRepository.findByMemberId(memberId).orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
-        member.setMemberName(nickname);
+        member.setMemberNickName(nickname);
         return MemberResponseDto.of(memberRepository.save(member));
     }
 

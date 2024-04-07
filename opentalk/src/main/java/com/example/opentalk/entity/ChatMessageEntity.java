@@ -1,14 +1,17 @@
 package com.example.opentalk.entity;
 
 import com.example.opentalk.dto.ChatMessageDTO;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
 @Table(name = "chat_log")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

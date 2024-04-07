@@ -12,6 +12,8 @@ public class ChatMessageDTO {
     private String writer;
     private String message;
 
+    public ChatMessageDTO(){}
+
     @Builder
     public ChatMessageDTO(String roomId, String writer, String message){
         this.roomId = roomId;

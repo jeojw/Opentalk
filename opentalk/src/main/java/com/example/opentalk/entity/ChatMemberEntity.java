@@ -27,6 +27,8 @@ public class ChatMemberEntity implements Serializable {
     @ManyToMany(mappedBy = "members", cascade = CascadeType.PERSIST)
     private List<ChatRoomEntity> chatRooms;
 
+
+
     @Builder
     public ChatMemberEntity(String roomId, String memberId, String memberNickName, String role){
         this.roomId = roomId;

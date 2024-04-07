@@ -7,10 +7,11 @@ import { Cookies } from "react-cookie";
 
 const RoomComponent = ({roomInfo, talker}) => {
 
-    const [roomInfomation, setRoomInfomation] = useState();
+    const [roomInformation, setRoomInformation] = useState();
     const [myInfo, setMyInfo] = useState();
     const [memberList, setMemberList] = useState([]);
-    const [chatList, setChetList] = useState([]);
+    const [chatList, setChatList] = useState([]);
+    const [preChatList, setPreChatList] = useState([]);
     const [chat, setChat] = useState("");
     const cookie = new Cookies();
 
@@ -22,46 +23,23 @@ const RoomComponent = ({roomInfo, talker}) => {
 
 
     useEffect(() => {
-        const fetchRoomStatus = async () => {
+        const fetchData = async () => {
             try{
-                const response = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
-                setRoomInfomation(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-            
-        };
-        fetchRoomStatus();
-    }, []);
+                const roomResponse = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
+                setRoomInformation(roomResponse.data);
+                setMemberList(roomInformation.members);
 
-    useEffect(()=>{
-        const fetchMembersStatus = async () => {
-            try{
-                const response = await axios.get(`api/opentalk/allMembers/${room_Id}`);
-                setMemberList(response.data);
-                console.log(response.data);
-            } catch(error){
-                console.error(error);
-            }
-            console.log(memberList);
-        }
-        fetchMembersStatus();
-    }, []);
-
-    useEffect(()=> {
-        const fetchMyself = async () => {
-            try{
-                const response = await axios.get(`/api/opentalk/member/me`, {
-                    headers: {Authorization: 'Bearer ' + cookie.get("accessToken")}
+                const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
+                headers: {Authorization: 'Bearer ' + cookie.get("accessToken")}
                 });
-                setMyInfo(response.data);
-                
+                setMyInfo(myselfResponse.data);
             } catch (error){
-                console.error(error);
+                console.log(error);
             }
         }
-        fetchMyself();
-    }, []);
+
+        fetchData();
+    }, [room_Id]);
 
     useEffect(() =>{
         const connect = () => {
@@ -90,10 +68,20 @@ const RoomComponent = ({roomInfo, talker}) => {
             client.current.deactivate();
         };
 
-        const subscribe = () => {
-            client.current.subscribe(`/sub/chat/${room_Id}`, ({body}) => {
-                setChetList((_chatList)=>[..._chatList , JSON.parse(body)])
-            });
+        const subscribe = async () => {
+            try{
+                const chatLogData = new FormData();
+                chatLogData.append("roomId", room_Id);
+                const chatLogResponse = await axios.post("/api/opentalk/chatLog", chatLogData);
+                setPreChatList(chatLogResponse.data);
+    
+                client.current.subscribe(`/sub/chat/${room_Id}`, ({body}) => {
+                    setChatList((_chatList)=>[..._chatList , JSON.parse(body)])
+                });
+                chatList.push(...preChatList);
+            } catch (error) {
+                console.error(error);
+            }
         };
         
         connect();
@@ -108,6 +96,14 @@ const RoomComponent = ({roomInfo, talker}) => {
     
     const publish = (chat) => {
         if (!client.current.connected) return;
+
+        axios.post('/api/opentalk/saveChat', {
+            roomId: room_Id,
+            writer: myInfo.memberNickName,
+            message: chat
+        })
+        .then()
+        .catch((error) => console.log(error));
 
         client.current.publish({
             destination: '/pub/chat',
@@ -132,7 +128,7 @@ const RoomComponent = ({roomInfo, talker}) => {
         if (window.confirm("방을 나가시겠습니까?")){
             const exitUrl = '/api/opentalk/exitRoom';
             axios.post(exitUrl, {
-                chatroom: roomInfomation,
+                chatroom: roomInformation,
                 member: myInfo
             })
             .then((res) => {
@@ -146,8 +142,8 @@ const RoomComponent = ({roomInfo, talker}) => {
     return(
         <div>
             <div>
-                {/* <h1>{roomInfomation.roomName}</h1>
-                <h2>참여자 수: {roomInfomation.participates}</h2> */}
+                {/* <h1>{roomInformation.roomName}</h1>
+                <h2>참여자 수: {roomInformation.participates}</h2> */}
             </div>
             <div>
                 {chatList && chatList.length > 0 && (
@@ -166,13 +162,10 @@ const RoomComponent = ({roomInfo, talker}) => {
             </form>
             <button onClick={ExitRoom}>나가기</button>
             <div>
-                {memberList && memberList.length > 0 && (
-                    <ul>
-                        {chatList.map((_member, index) => (
-                            <li key={index}>{_member.memberNickName}</li>
-                        ))}
-                    </ul>
-                )}
+            <h2>참여명단</h2>
+                {/* {roomInformation.members.map((_member, index) => (
+                    <li key={index}>{_member.memberNickName}</li>
+                ))} */}
             </div>
 
         </div>

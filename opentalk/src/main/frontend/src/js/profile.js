@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
+import { Cookies } from 'react-cookie';
 
 const ProfileComponent = (props) => {
     const [member, setMember] = useState('');
@@ -12,11 +13,14 @@ const ProfileComponent = (props) => {
     const [checkPassword, setCheckPassword] = useState("");
 
     const navigate = useNavigate();
+    const cookie = new Cookies();
 
     useEffect(() => {
         const fetchMemberStatus = async () => {
             try{
-                const response = await axios.get('/api/opentalk/member/status');
+                const response = await axios.get('/api/opentalk/member/profile', {
+                    headers: {Authorization: 'Bearer ' + cookie.get("accessToken")}
+                    });
                 setMember(response.data);
                 console.log(member);
             } catch (error) {
@@ -80,16 +84,29 @@ const ProfileComponent = (props) => {
         }
     }
     const ChangeNickName = () =>{
-        const params = new FormData();
-        params.append("memberId", member.memberId);
-        params.append("newNickName", newNickName);
-        const checkUrl = "/api/opentalk/member/changeNickName";
-        axios.post(checkUrl, params)
+        const data = new FormData();
+        data.append("memberNickName", newNickName);
+        const duplicateUrl = "/api/opentalk/member/checkNickName";
+        axios.post(duplicateUrl, data)
         .then((res)=>{
-            alert("닉네임이 변경되었습니다.")
-            ChangeNickNameCancle();
+            if (!res.data){
+                const checkUrl = "/api/opentalk/member/changeNickname";
+                axios.post(checkUrl, {
+                memberId: member.memberId,
+                memberNickName: newNickName
+            })
+            .then((res)=>{
+                alert("닉네임이 변경되었습니다.")
+                ChangeNickNameCancle();
+            })
+            .catch((error) => console.log(error));
+            }
+            else{
+                alert("이미 존재하는 닉네임입니다.")
+            }
         })
-        .catch((error) => console.log(error));
+        .catch((error)=>console.log(error));
+        
     }
     
     return(
@@ -98,6 +115,7 @@ const ProfileComponent = (props) => {
             <ul>
                 <li>{member.memberName}</li>
                 <li>{member.memberNickName}</li>
+                <li>{member.memberEmail}</li>
             </ul>
             <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}>
                 새 닉네임: <input 

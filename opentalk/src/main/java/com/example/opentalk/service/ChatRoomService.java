@@ -46,6 +46,15 @@ public class ChatRoomService {
         chatMessageRepository.save(ChatMessageEntity.toChatMessageEntity(chatMessage));
     }
 
+    public List<ChatMessageDTO> chatLog(String roomId){
+        List<ChatMessageEntity> chatLogs= chatMessageRepository.chatLog(roomId);
+        List<ChatMessageDTO> chatMessageDTOS = new ArrayList<>();
+        for (ChatMessageEntity chat : chatLogs){
+            chatMessageDTOS.add(ChatMessageDTO.toChatMessageDTO(chat));
+        }
+        return chatMessageDTOS;
+    }
+
     public void deleteRome(){
 
     }

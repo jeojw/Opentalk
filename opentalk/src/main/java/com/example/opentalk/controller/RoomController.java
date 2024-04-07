@@ -1,5 +1,6 @@
 package com.example.opentalk.controller;
 
+import com.example.opentalk.dto.ChatMessageDTO;
 import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.ChatRoomMemberDTO;
 import com.example.opentalk.service.ChatRoomService;
@@ -44,6 +45,15 @@ public class RoomController {
         return ResponseEntity.ok(chatRoomService.getRoom(roomId));
     }
 
+    @PostMapping("/api/opentalk/saveChat")
+    public void saveChat(@RequestBody ChatMessageDTO chatMessageDTO){
+        chatRoomService.saveChat(chatMessageDTO);
+    }
+
+    @PostMapping("/api/opentalk/chatLog")
+    public ResponseEntity<List<ChatMessageDTO>> chatLog(@RequestParam("roomId") String roomId){
+        return ResponseEntity.ok(chatRoomService.chatLog(roomId));
+    }
 
     @PostMapping("/api/opentalk/enterRoom/{password}")
     public void enterRoom_Pw(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO, @PathVariable String password){
