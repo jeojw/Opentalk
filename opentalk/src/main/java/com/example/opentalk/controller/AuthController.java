@@ -1,13 +1,15 @@
 package com.example.opentalk.controller;
 
-import com.example.opentalk.dto.ChangePasswordRequestDto;
 import com.example.opentalk.dto.MemberRequestDto;
 import com.example.opentalk.dto.MemberResponseDto;
 import com.example.opentalk.dto.TokenDto;
 import com.example.opentalk.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,8 +52,9 @@ public class AuthController {
     }
 
     @PostMapping("/api/opentalk/auth/changePassword")
-    public void changePassword(ChangePasswordRequestDto changePasswordRequestDto){
-        authService.changePassword(changePasswordRequestDto.getExPassword(),
-                                    changePasswordRequestDto.getNewPassword());
+    public void changePassword(@RequestParam("memberEmail") String memberEmail,
+                               @RequestParam("exPassword") String exPassword,
+                               @RequestParam("newPassword") String newPassword){
+        authService.changePassword(memberEmail, exPassword, newPassword);
     }
 }

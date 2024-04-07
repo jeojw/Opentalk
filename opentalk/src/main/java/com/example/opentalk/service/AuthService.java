@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,8 +55,10 @@ public class AuthService {
         return memberRepository.ReturnExPw(memberEmail);
     }
 
-    public void changePassword(String exPassword, String newPassword){
-        memberRepository.ChangePw(exPassword, newPassword);
+    public MemberResponseDto changePassword(String memberEmail, String exPassword, String newPassword){
+        Optional<MemberEntity> member = memberRepository.findByMemberEmail(memberEmail);
+        member.get().setMemberPassword(passwordEncoder.encode(newPassword));
+        return MemberResponseDto.of(memberRepository.save(member.get()));
     }
 
     public boolean authId(String memberId){

@@ -32,14 +32,15 @@ const ChangePasswordComponent = () =>{
             alert("비밀번호가 일치하지 않습니다.")
         }
         else{
-            const data = new FormData();
-            data.append("memberEmail", memberEmail);
-            axios.post("/api/opentalk/auth/exPassword", data)
+            const EmailData = new FormData();
+            const PasswordData = new FormData();
+            EmailData.append("memberEmail", memberEmail);
+            axios.post("/api/opentalk/auth/exPassword", EmailData)
             .then((res)=>{
-                axios.post(`/api/opentalk/auth/changePassword`, {
-                    exPassword: res.data,
-                    newPassword: newPassword
-                })
+                PasswordData.append("memberEmail", memberEmail);
+                PasswordData.append("exPassword", res.data);
+                PasswordData.append("newPassword", newPassword);
+                axios.post(`/api/opentalk/auth/changePassword`, PasswordData)
                 .then((res)=>{
                     alert("비밀번호가 변경되었습니다.");
                     naviagte("/opentalk/member/login");
