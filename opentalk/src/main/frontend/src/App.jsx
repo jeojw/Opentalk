@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './js/login'
-import Front from './js/front'
-import Enroll from './js/enroll'
-import Main from './js/main'
-import FindId from './js/findId'
-import FindPw from './js/findPw'
-import ChangePw from './js/changePw'
-import AuthId from './js/authId'
-import Room from './js/room'
-import Profile from './js/profile'
+import Login from './jsx/login'
+import Front from './jsx/front'
+import Enroll from './jsx/enroll'
+import Main from './jsx/main'
+import FindId from './jsx/findId'
+import FindPw from './jsx/findPw'
+import ChangePw from './jsx/changePw'
+import AuthId from './jsx/authId'
+import Room from './jsx/room'
+import Profile from './jsx/profile'
 
 const App = () => {
   return (
