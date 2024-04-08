@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -17,26 +18,27 @@ public class ChatMessageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "room_id", nullable = false)
-    private String roomId;
-
-    @Column(name = "writer", nullable = false)
-    private String writer;
-
     @Column(name = "message", nullable = false)
     private String message;
 
+    @Column(name = "time_stamp", nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDateTime timeStamp;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "opentalk_room_list_id")
+    private ChatRoomEntity chatroom;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "open_talk_member_id")
+    private MemberEntity member;
+
     @Builder
-    public ChatMessageEntity (String roomId, String writer, String message){
-        this.roomId = roomId;
-        this.writer = writer;
+    public ChatMessageEntity (String message){
         this.message = message;
     }
 
     public static ChatMessageEntity toChatMessageEntity(ChatMessageDTO chatMessageDTO){
         return ChatMessageEntity.builder()
-                .roomId(chatMessageDTO.getRoomId())
-                .writer(chatMessageDTO.getWriter())
                 .message(chatMessageDTO.getMessage())
                 .build();
     }

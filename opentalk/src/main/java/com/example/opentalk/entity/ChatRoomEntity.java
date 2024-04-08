@@ -24,20 +24,11 @@ public class ChatRoomEntity implements Serializable {
     @Column(name = "room_id", nullable = false)
     private String roomId;
 
-    @Column(name = "manager", nullable = false)
-    private String manager;
-
-    @Column(name = "participates", nullable = false)
-    private Integer participates;
-
     @Column(name = "limit_participates", nullable = false)
     private Integer limitParticipates;
 
     @Column(name = "introduction")
     private String introduction;
-
-    @OneToMany(mappedBy = "hashtag", cascade = CascadeType.PERSIST)
-    private List<ChatRoomHashtagEntity> hashtags = new ArrayList<>();
 
     @Column(name = "exist_lock")
     private boolean existLock;
@@ -46,17 +37,21 @@ public class ChatRoomEntity implements Serializable {
     private String roomPassword;
 
     @OneToMany(mappedBy = "chatroom", cascade = CascadeType.PERSIST)
+    private List<ChatRoomHashtagEntity> hashtags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "chatroom", cascade = CascadeType.PERSIST)
     private List<ChatRoomMemberEntity> members = new ArrayList<>();
 
+    @OneToMany(mappedBy="chatroom", cascade = CascadeType.PERSIST)
+    private List<ChatMessageEntity> messages = new ArrayList<>();
+
     @Builder
-    public ChatRoomEntity(Long id, String roomId, String roomName, String manager,
-                          Integer limitParticipates, String introduction, boolean existLock,
+    public ChatRoomEntity(Long id, String roomId, String roomName, Integer limitParticipates,
+                          String introduction, boolean existLock,
                           String roomPassword){
         this.id = id;
         this.roomId = roomId;
         this.roomName = roomName;
-        this.manager = manager;
-        this.participates = 0;
         this.limitParticipates = limitParticipates;
         this.introduction = introduction;
         this.existLock = existLock;
@@ -68,8 +63,6 @@ public class ChatRoomEntity implements Serializable {
         return ChatRoomEntity.builder()
                 .roomName(chatRoomDTO.getRoomName())
                 .roomId(chatRoomDTO.getRoomId())
-                .manager(chatRoomDTO.getManager())
-                .limitParticipates(chatRoomDTO.getLimitParticipates())
                 .introduction(chatRoomDTO.getIntroduction())
                 .existLock(chatRoomDTO.isExistLock())
                 .roomPassword(chatRoomDTO.getRoomPassword())

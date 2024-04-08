@@ -15,11 +15,11 @@ public class ChatRoomHashtagEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "chatroom_id", referencedColumnName = "room_id")
+    @JoinColumn(name = "opentalk_room_list_id")
     private ChatRoomEntity chatroom;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "hashtag_name", referencedColumnName = "tag_name")
+    @JoinColumn(name = "tag_tag_id")
     private HashTagEntity hashtag;
 
     public ChatRoomHashtagEntity() {}

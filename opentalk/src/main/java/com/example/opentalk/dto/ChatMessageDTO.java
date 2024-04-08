@@ -9,22 +9,19 @@ import lombok.Setter;
 @Setter
 public class ChatMessageDTO {
     private String roomId;
-    private String writer;
     private String message;
 
     public ChatMessageDTO(){}
 
     @Builder
-    public ChatMessageDTO(String roomId, String writer, String message){
+    public ChatMessageDTO(String roomId, String message){
         this.roomId = roomId;
-        this.writer = writer;
         this.message = message;
     }
 
     public static ChatMessageDTO toChatMessageDTO(ChatMessageEntity chatMessageEntity){
         return ChatMessageDTO.builder()
-                .roomId(chatMessageEntity.getRoomId())
-                .writer(chatMessageEntity.getWriter())
+                .roomId(chatMessageEntity.getChatroom().getRoomId())
                 .message(chatMessageEntity.getMessage())
                 .build();
     }

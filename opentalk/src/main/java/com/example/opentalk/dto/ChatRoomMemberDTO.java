@@ -9,5 +9,5 @@ import lombok.Setter;
 @Data
 public class ChatRoomMemberDTO {
     private ChatRoomDTO chatroom;
-    private ChatMemberDto member;
+    private MemberRequestDto member;
 }

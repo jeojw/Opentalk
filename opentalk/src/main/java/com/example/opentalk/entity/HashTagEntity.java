@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Entity
-@Table(name = "tag")
+@Table(name = "hashtag")
 @NoArgsConstructor
 public class HashTagEntity implements Serializable {
     @Id
@@ -26,7 +26,7 @@ public class HashTagEntity implements Serializable {
     @Column(name = "tag_accumulate")
     private Integer accumulate;
 
-    @OneToMany(mappedBy = "chatroom", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "hashtag", cascade = CascadeType.PERSIST)
     private List<ChatRoomHashtagEntity> chatRooms = new ArrayList<>();
 
     @Builder

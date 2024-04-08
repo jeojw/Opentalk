@@ -18,5 +18,5 @@ public class ChatRoomRequestDto {
     private Integer limitParticipates;
     private Integer participates;
     private List<HashTagDTO> roomTags;
-    private List<ChatMemberDto> members;
+    private List<MemberResponseDto> members;
 }

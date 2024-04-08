@@ -17,12 +17,15 @@ public class ChatRoomMemberEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "chatroom_id", referencedColumnName = "room_id")
+    @JoinColumn(name = "opentalk_room_list_id")
     private ChatRoomEntity chatroom;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
-    private ChatMemberEntity member;
+    @JoinColumn(name = "open_talk_member_id")
+    private MemberEntity member;
+
+    @Column(name = "role")
+    private String role;
 
 
     public ChatRoomMemberEntity() {}
@@ -30,7 +33,7 @@ public class ChatRoomMemberEntity {
     public static ChatRoomMemberEntity toChatRoomMemberEntity(ChatRoomMemberDTO chatRoomMemberDTO){
         ChatRoomMemberEntity chatRoomMemberEntity = new ChatRoomMemberEntity();
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomMemberDTO.getChatroom());
-        ChatMemberEntity chatMemberEntity = ChatMemberEntity.toChatMemberEntity(chatRoomMemberDTO.getMember());
+        MemberEntity chatMemberEntity = MemberEntity.toMemberEntity(chatRoomMemberDTO.getMember());
 
         chatRoomMemberEntity.setChatroom(chatRoomEntity);
         chatRoomMemberEntity.setMember(chatMemberEntity);
