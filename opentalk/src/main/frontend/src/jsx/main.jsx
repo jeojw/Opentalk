@@ -163,6 +163,7 @@ const MainComponent = () => {
         }
         else{
             alert("이미 로그아웃되었습니다.");
+            naviagte("/opentalk/front");
         }
         
     };
