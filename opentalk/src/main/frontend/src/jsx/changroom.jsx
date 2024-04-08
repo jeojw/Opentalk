@@ -23,12 +23,12 @@ const ChangRoomComponent = ({room_Id}) => {
             } catch (error) {
                 console.log(error);
             }
-            setRoomName(roomInfo.roomName);
-            setExistLock(roomInfo.existLock);
-            setInfo(roomInfo.introduction);
-            setPassword(roomInfo.roomPassword);
-            setParticipants(roomName.limitParticipates);
-            setTags(roomName.roomTags);
+            setRoomName(roomInfo?.roomName);
+            setExistLock(roomInfo?.existLock);
+            setInfo(roomInfo?.introduction);
+            setPassword(roomInfo?.roomPassword);
+            setParticipants(roomInfo?.limitParticipates);
+            setTags(roomInfo?.roomTags);
         }
         fetchCurRoomInfo();
     }, []);
@@ -122,7 +122,7 @@ const ChangRoomComponent = ({room_Id}) => {
                         value="태그 추가"
                         onClick={()=>AppendTag(tag)}>
                     </input>
-                    {tags.map((t)=> (
+                    {tags?.map((t)=> (
                         <li>#{t}</li>
                     )
                     )}

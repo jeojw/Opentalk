@@ -35,7 +35,7 @@ const RoomComponent = ({roomInfo, talker}) => {
 
                 const roomResponse = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
                 setRoomInformation(roomResponse.data);
-                setMemberList(roomInformation.members);
+                setMemberList(roomResponse.data.members);
             } catch (error){
                 console.log(error);
             }
@@ -146,8 +146,9 @@ const RoomComponent = ({roomInfo, talker}) => {
     return(
         <div>
             <div>
-                {/* <h1>{roomInformation.roomName}</h1>
-                <h2>참여자 수: {roomInformation.participates}</h2> */}
+                {/* Option Chaining!!! */}
+                <h1>{roomInformation?.roomName}</h1> 
+                <h2>참여자 수: {roomInformation?.participates}</h2>
             </div>
             <div>
                 {chatList && chatList.length > 0 && (
@@ -165,12 +166,12 @@ const RoomComponent = ({roomInfo, talker}) => {
                 <input type="submit" value="전송" onClick={() => publish(chat)}></input>
             </form>
             <button onClick={ExitRoom}>나가기</button>
-            {/* <ChangRoomComponent room_Id={room_Id}/> */}
+            <ChangRoomComponent room_Id={room_Id}/>
             <div>
             <h2>참여명단</h2>
-                {/* {roomInformation.members.map((_member, index) => (
+                {roomInformation?.members.map((_member, index) => (
                     <li key={index}>{_member.memberNickName}</li>
-                ))} */}
+                ))}
             </div>
 
         </div>

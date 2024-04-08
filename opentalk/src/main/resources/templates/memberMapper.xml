@@ -1,4 +1,0 @@
-<select id="idChk" resultType="int">
-	SELECT COUNT(*) FROM open_talk_member
-	WHERE MEMBER_ID = #{member_Id}
-</select>
