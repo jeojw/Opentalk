@@ -1,6 +1,5 @@
 package com.example.opentalk.dto;
 
-import com.example.opentalk.entity.ChatMemberEntity;
 import com.example.opentalk.entity.ChatRoomEntity;
 import com.example.opentalk.entity.ChatRoomHashtagEntity;
 import com.example.opentalk.entity.ChatRoomMemberEntity;

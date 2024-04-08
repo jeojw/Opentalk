@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -23,6 +25,9 @@ public class HashTagEntity implements Serializable {
 
     @Column(name = "tag_accumulate")
     private Integer accumulate;
+
+    @OneToMany(mappedBy = "chatroom", cascade = CascadeType.PERSIST)
+    private List<ChatRoomHashtagEntity> chatRooms = new ArrayList<>();
 
     @Builder
     public HashTagEntity(String name, Integer accumulate){

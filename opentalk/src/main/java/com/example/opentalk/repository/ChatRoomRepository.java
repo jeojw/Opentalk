@@ -42,4 +42,10 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> 
     @Transactional
     @Query(value = "DELETE FROM Opentalk.opentalk_room_list WHERE room_id = :room_id", nativeQuery = true)
     int deleteRoom(@Param("room_id") String room_id);
+
+    @Query(value = "SELECT * FROM Opentalk.opentalk_room_list WHERE manager LIKE '%:keyword%'", nativeQuery = true)
+    List<ChatRoomEntity> searchRoomManager(@Param("keyword") String keyword);
+
+    @Query(value = "SELECT * FROM Opentalk.opentalk_room_list WHERE room_name LIKE '%:keyword%'", nativeQuery = true)
+    List<ChatRoomEntity> searchRoomName(@Param("keyword") String keyword);
 }

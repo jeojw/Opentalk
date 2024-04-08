@@ -3,6 +3,7 @@ package com.example.opentalk.controller;
 import com.example.opentalk.dto.ChatMessageDTO;
 import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.ChatRoomMemberDTO;
+import com.example.opentalk.dto.SearchDto;
 import com.example.opentalk.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -43,6 +44,11 @@ public class RoomController {
     @GetMapping("/api/opentalk/getRoom/{roomId}")
     public ResponseEntity<ChatRoomDTO> getRoom(@PathVariable String roomId){
         return ResponseEntity.ok(chatRoomService.getRoom(roomId));
+    }
+
+    @PostMapping("/api/opentalk/searchRoom")
+    public ResponseEntity<List<ChatRoomDTO>> searchRoom(@RequestBody SearchDto searchDto){
+        return ResponseEntity.ok(chatRoomService.searchRoom(searchDto));
     }
 
     @PostMapping("/api/opentalk/changeRoom")

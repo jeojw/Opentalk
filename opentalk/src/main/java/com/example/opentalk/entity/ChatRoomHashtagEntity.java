@@ -19,7 +19,7 @@ public class ChatRoomHashtagEntity {
     private ChatRoomEntity chatroom;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "hashtag_id", referencedColumnName = "tag_id")
+    @JoinColumn(name = "hashtag_name", referencedColumnName = "tag_name")
     private HashTagEntity hashtag;
 
     public ChatRoomHashtagEntity() {}

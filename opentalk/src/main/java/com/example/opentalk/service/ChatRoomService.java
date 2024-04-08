@@ -3,7 +3,7 @@ package com.example.opentalk.service;
 import com.example.opentalk.dto.ChatMessageDTO;
 import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.ChatRoomMemberDTO;
-import com.example.opentalk.dto.HashTagDTO;
+import com.example.opentalk.dto.SearchDto;
 import com.example.opentalk.entity.ChatMessageEntity;
 import com.example.opentalk.entity.ChatRoomEntity;
 import com.example.opentalk.entity.ChatRoomMemberEntity;
@@ -21,7 +21,6 @@ import java.util.List;
 public class ChatRoomService {
     private final ChatMemberRepository chatMemberRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final HashTagRepository hashTagRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final ChatMessageRepository chatMessageRepository;
 
@@ -116,8 +115,25 @@ public class ChatRoomService {
         return chatRoomDTOList;
     }
 
-    public void appendTag(HashTagDTO hashTagDTO){
+    public List<ChatRoomDTO> searchRoom(SearchDto searchDto){
+        List<ChatRoomEntity> chatRoomList = new ArrayList<>();
+        List<ChatRoomDTO> chatRoomDTOList = new ArrayList<>();
+        if (searchDto.getType().equals("NAME")){
+            chatRoomList = chatRoomRepository.searchRoomName(searchDto.getKeyword());
+        }
+        else if (searchDto.getType().equals("MANAGER")){
+            chatRoomList = chatRoomRepository.searchRoomManager(searchDto.getKeyword());
+        }
+//        else if (searchDto.getType().equals("TAG")){
+//            List<ChatRoomHashtagEntity> chatRoomHashtagEntities = new ArrayList<>();
+//            chatRoomHashtagEntities = chatRoomHashtagRepository.searchRoomTags(searchDto.getKeyword());
+//        }
 
+        for (ChatRoomEntity chatRoom : chatRoomList){
+            chatRoomDTOList.add(ChatRoomDTO.toChatRoomDTO(chatRoom));
+        }
+
+        return chatRoomDTOList;
     }
 
 }
