@@ -22,4 +22,9 @@ public interface ChatMemberRepository extends JpaRepository<ChatMemberEntity, Lo
     @Query(value = "DELETE FROM Opentalk.chat_member_list WHERE member_id =:member_id AND room_id=:room_id",
             nativeQuery = true)
     int exitRoom(@Param("room_id") String room_id, @Param("member_id") String member_id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM Opentalk.chat_member_list WHERE room_id = :room_id", nativeQuery = true)
+    int deleteRoom(@Param("room_id") String room_id);
 }

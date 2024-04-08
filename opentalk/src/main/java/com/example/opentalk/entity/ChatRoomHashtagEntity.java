@@ -15,7 +15,7 @@ public class ChatRoomHashtagEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "chatroom_id", referencedColumnName = "roomId")
+    @JoinColumn(name = "chatroom_id", referencedColumnName = "room_id")
     private ChatRoomEntity chatroom;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

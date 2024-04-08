@@ -19,6 +19,7 @@ const MainComponent = () => {
     const [role, setRole] = useState();
     const [selectManu, setSelectManu] = useState("");
     const [searchKeyword, setSearchKeyword] = useState("");
+    const [refresh, setRefresh] = useState(1);
     const naviagte = useNavigate();
 
     const history = createBrowserHistory();
@@ -45,6 +46,26 @@ const MainComponent = () => {
 
     const search = () => {
 
+    }
+
+    const deleteRoom = ({roomInfo}) => {
+        if (window.confirm("방을 삭제하시겠습니까?")){
+            if (!roomInfo.existLock){
+                const deleteUrl = "/api/opentalk/deleteRoom";
+                const data = new FormData();
+                data.append("room_id", roomInfo.roomId);
+                axios.post(deleteUrl, data)
+                .then((res) => {
+                    if (res.status === 200){
+                        window.alert("방이 삭제되었습니다.");
+                    }
+                })
+                .catch((error) => console.log(error));
+            }   
+            else{
+
+            }
+        }
     }
 
     const EnterRoom = ({roomInfo, talker}) => {
@@ -109,35 +130,22 @@ const MainComponent = () => {
         );
     }
 
-
     useEffect(() => {
-        const fetchMemberStatus = async () => {
+        const fetchMainData = async () => {
             try{
-                const response = await axios.get('/api/opentalk/member/me', {
+                const meResponse = await axios.get('/api/opentalk/member/me', {
                     headers: {Authorization: 'Bearer ' + cookies.accessToken}
                 });
-                setMember(response.data);
-                console.log(response.data);
-            } catch (error) {
+                setMember(meResponse.data);
+                const roomResponse = await axios.get('/api/opentalk/rooms');
+                setChatList(roomResponse.data);
+            } catch (error){
                 console.error(error);
             }
         };
 
-        fetchMemberStatus();
-    }, []);
-
-    useEffect(() => {
-        const fetchChatRooms = async () => {
-            try{
-                const response = await axios.get('/api/opentalk/rooms');
-                setChatList(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchChatRooms();
-    }, []);
+        fetchMainData();
+    }, [refresh]);
 
     const GoProfile = () => {
         if (cookies.accessToken){
@@ -175,8 +183,10 @@ const MainComponent = () => {
                             <li>#{tag.tagName}</li>
                         ))}
                     </ul>
-                    
-                    <button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button></li>
+                    <button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button>
+                    {room.manager === member.memberNickName && (
+                    <button onClick={() => deleteRoom({roomInfo: room})}>삭제하기</button>
+                )}</li>
                 ))}
             </ul>
         </table>

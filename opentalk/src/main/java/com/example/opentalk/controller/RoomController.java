@@ -45,6 +45,16 @@ public class RoomController {
         return ResponseEntity.ok(chatRoomService.getRoom(roomId));
     }
 
+    @PostMapping("/api/opentalk/deleteRoom")
+    public void deleteRoom(@RequestParam("room_id") String room_id){
+        chatRoomService.deleteRome(room_id);
+    }
+
+    @PostMapping("/api/opentalk/deleteRoom/password")
+    public void deleteRoom_Pw(@RequestParam("room_id") String room_id, @RequestParam("password") String password){
+        chatRoomService.deleteRome_Pw(room_id, password);
+    }
+
     @PostMapping("/api/opentalk/saveChat")
     public void saveChat(@RequestBody ChatMessageDTO chatMessageDTO){
         chatRoomService.saveChat(chatMessageDTO);

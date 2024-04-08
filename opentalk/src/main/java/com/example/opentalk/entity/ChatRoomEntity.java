@@ -18,31 +18,31 @@ public class ChatRoomEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "room_name", nullable = false)
     private String roomName;
 
-    @Column(nullable = false)
+    @Column(name = "room_id", nullable = false)
     private String roomId;
 
-    @Column(nullable = false)
+    @Column(name = "manager", nullable = false)
     private String manager;
 
-    @Column(nullable = false)
+    @Column(name = "participates", nullable = false)
     private Integer participates;
 
-    @Column(nullable = false)
+    @Column(name = "limit_participates", nullable = false)
     private Integer limitParticipates;
 
-    @Column
+    @Column(name = "introduction")
     private String introduction;
 
     @OneToMany(mappedBy = "hashtag", cascade = CascadeType.PERSIST)
     private List<ChatRoomHashtagEntity> hashtags = new ArrayList<>();
 
-    @Column
+    @Column(name = "exist_lock")
     private boolean existLock;
 
-    @Column
+    @Column(name = "room_password")
     private String roomPassword;
 
     @OneToMany(mappedBy = "chatroom", cascade = CascadeType.PERSIST)

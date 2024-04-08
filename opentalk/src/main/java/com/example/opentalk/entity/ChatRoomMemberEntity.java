@@ -17,11 +17,11 @@ public class ChatRoomMemberEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "chatroom_id", referencedColumnName = "roomId")
+    @JoinColumn(name = "chatroom_id", referencedColumnName = "room_id")
     private ChatRoomEntity chatroom;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "member_id", referencedColumnName = "memberId")
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     private ChatMemberEntity member;
 
 

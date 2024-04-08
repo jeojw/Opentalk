@@ -17,13 +17,13 @@ public class ChatMemberEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(name = "room_id")
     private String roomId;
-    @Column
+    @Column(name = "member_id")
     private String memberId;
-    @Column
+    @Column(name = "member_nick_name")
     private String memberNickName;
-    @Column
+    @Column(name = "role")
     private String role;
     @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
     private List<ChatRoomMemberEntity> chatRooms = new ArrayList<>();
