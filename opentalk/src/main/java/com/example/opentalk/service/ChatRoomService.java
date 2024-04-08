@@ -82,6 +82,8 @@ public class ChatRoomService {
                 chatRoomMemberEntity.getChatroom().getRoomId(),
                 chatRoomMemberEntity.getMember().getMemberId(),
                 chatRoomMemberEntity.getMember().getMemberNickName());
+        chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getChatroom().getRoomId(),
+                chatRoomMemberEntity.getMember().getMemberId());
     }
 
     public void enterRoom_Pw(ChatRoomMemberDTO chatRoomMemberDTO, String inputPw){
@@ -93,15 +95,16 @@ public class ChatRoomService {
                     chatRoomMemberEntity.getChatroom().getRoomId(),
                     chatRoomMemberEntity.getMember().getMemberId(),
                     chatRoomMemberEntity.getMember().getMemberNickName());
+            chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getChatroom().getRoomId(),
+                    chatRoomMemberEntity.getMember().getMemberId());
         }
         else return;
     }
 
     public void exitRoom(String room_id, String member_id){
         chatRoomRepository.exitRoom(room_id);
+        chatRoomMemberRepository.exitRoom(room_id, member_id);
         chatMemberRepository.exitRoom(room_id, member_id);
-
-
     }
 
     public List<ChatRoomDTO> findAllRooms(){

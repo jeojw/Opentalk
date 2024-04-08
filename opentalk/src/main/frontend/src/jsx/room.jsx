@@ -31,7 +31,6 @@ const RoomComponent = ({roomInfo, talker}) => {
                 });
 
                 setMyInfo(myselfResponse.data);
-                console.log(myselfResponse.data);
 
                 const roomResponse = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
                 setRoomInformation(roomResponse.data);

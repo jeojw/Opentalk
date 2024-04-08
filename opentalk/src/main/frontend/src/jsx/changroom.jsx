@@ -6,29 +6,53 @@ import axios from'axios';
 const ChangRoomComponent = ({room_Id}) => {
     const [roomInfo, setRoomInfo] = useState();
 
+    const [members, setMembers] = useState([]);
+    const [preMembers, setPreMembers] = useState([]);
+
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
+    const [preRoomName, setPreRoomName] = useState("");
+
     const [info, setInfo] = useState("");
-    const [existLock ,setExistLock] = useState(false);
+    const [preInfo, setPreInfo] = useState("");
+
+    const [existLock, setExistLock] = useState(false);
+    const [preExistLock, setPreExistLock] = useState(false);
+
     const [password, setPassword] = useState("");
+    const [prePassword, setPrePassword] = useState("");
+
     const [tag, setTag] = useState("");
     const [tags, setTags] = useState([]);
+    const [preTags, setPreTags] = useState([]);
+
     const [participants, setParticipants] = useState(0);
+    const [preParticipates, setPreParticipants] = useState(0);
 
     useEffect(() =>{
         const fetchCurRoomInfo = async () => {
             try{
                 const response = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
                 setRoomInfo(response.data);
+                setPreRoomName(roomInfo?.roomName);
+                setPreExistLock(roomInfo?.existLock);
+                setPreInfo(roomInfo?.introduction);
+                setPrePassword(roomInfo?.roomPassword);
+                setPreParticipants(roomInfo?.limitParticipates);
+                setPreTags(roomInfo?.roomTags);
+                setPreMembers(roomInfo?.members);
+
+                setRoomName(preRoomName);
+                setExistLock(preExistLock);
+                setInfo(preInfo);
+                setPassword(prePassword);
+                setParticipants(preParticipates);
+                setTags(preTags);
+                setMembers(preMembers);
+
             } catch (error) {
                 console.log(error);
             }
-            setRoomName(roomInfo?.roomName);
-            setExistLock(roomInfo?.existLock);
-            setInfo(roomInfo?.introduction);
-            setPassword(roomInfo?.roomPassword);
-            setParticipants(roomInfo?.limitParticipates);
-            setTags(roomInfo?.roomTags);
         }
         fetchCurRoomInfo();
     }, []);
@@ -43,6 +67,13 @@ const ChangRoomComponent = ({room_Id}) => {
 
     const cancleSetModal = () => {
         setIsOpen(false);
+        setRoomName(preRoomName);
+        setExistLock(preExistLock);
+        setInfo(preInfo);
+        setPassword(prePassword);
+        setParticipants(preParticipates);
+        setTags(preTags);
+        setMembers(preMembers);
     }
 
     const setModal = () => {
@@ -126,7 +157,10 @@ const ChangRoomComponent = ({room_Id}) => {
                         <li>#{t}</li>
                     )
                     )}
-                <br></br>
+                    <br></br>
+                    {members?.map((_member) => (
+                        <li>{_member}</li>
+                    )) }
                 <button onClick={setModal}>변경하기</button>
                 <button onClick={cancleSetModal}>변경 취소</button>
                 </div>
