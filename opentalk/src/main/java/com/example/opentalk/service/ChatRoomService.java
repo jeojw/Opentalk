@@ -42,6 +42,9 @@ public class ChatRoomService {
             return null;
     }
 
+    public void changeRoomOption(){
+    }
+
     public boolean checkPassword(String roomId, String inputPassword){
         String roomPw = chatRoomRepository.existPassword(roomId);
         return inputPassword.equals(roomPw);
@@ -63,14 +66,12 @@ public class ChatRoomService {
     public void deleteRome(String room_id){
         chatRoomRepository.deleteRoom(room_id);
         chatMemberRepository.deleteRoom(room_id);
-        chatRoomMemberRepository.deleteRoom(room_id);
-        chatMessageRepository.deleteLog(room_id); 
+        chatMessageRepository.deleteLog(room_id);
     }
 
     public void deleteRome_Pw(String password, String room_id){
         chatRoomRepository.deleteRoom(room_id);
         chatMemberRepository.deleteRoom(room_id);
-        chatRoomMemberRepository.deleteRoom(room_id);
     }
 
     public void enterRoom(ChatRoomMemberDTO chatRoomMemberDTO){
@@ -81,8 +82,6 @@ public class ChatRoomService {
                 chatRoomMemberEntity.getChatroom().getRoomId(),
                 chatRoomMemberEntity.getMember().getMemberId(),
                 chatRoomMemberEntity.getMember().getMemberNickName());
-        chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getChatroom().getRoomId(),
-                chatRoomMemberEntity.getMember().getMemberId());
     }
 
     public void enterRoom_Pw(ChatRoomMemberDTO chatRoomMemberDTO, String inputPw){
@@ -94,20 +93,13 @@ public class ChatRoomService {
                     chatRoomMemberEntity.getChatroom().getRoomId(),
                     chatRoomMemberEntity.getMember().getMemberId(),
                     chatRoomMemberEntity.getMember().getMemberNickName());
-            chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getChatroom().getRoomId(),
-                    chatRoomMemberEntity.getMember().getMemberId());
         }
         else return;
     }
 
     public void exitRoom(String room_id, String member_id){
-        ChatRoomMemberEntity chatRoomMemberEntity = chatRoomMemberRepository.findMember(room_id, member_id);
-
-        chatRoomRepository.exitRoom(chatRoomMemberEntity.getChatroom().getRoomId());
-        chatRoomMemberRepository.exitRoom(chatRoomMemberEntity.getChatroom().getRoomId(),
-                chatRoomMemberEntity.getMember().getMemberId());
-        chatMemberRepository.exitRoom(chatRoomMemberEntity.getChatroom().getRoomId(),
-                                        chatRoomMemberEntity.getMember().getMemberId());
+        chatRoomRepository.exitRoom(room_id);
+        chatMemberRepository.exitRoom(room_id, member_id);
 
 
     }

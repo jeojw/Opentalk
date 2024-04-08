@@ -3,7 +3,8 @@ import axios from "axios";
 import { useParams, useNavigate } from 'react-router-dom';
 import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
-import { Cookies } from "react-cookie";
+import { useCookies } from "react-cookie";
+import ChangRoomComponent from './changroom';
 
 const RoomComponent = ({roomInfo, talker}) => {
 
@@ -13,7 +14,7 @@ const RoomComponent = ({roomInfo, talker}) => {
     const [chatList, setChatList] = useState([]);
     const [preChatList, setPreChatList] = useState([]);
     const [chat, setChat] = useState("");
-    const cookie = new Cookies();
+    const [cookies] = useCookies(['accessToken']);
 
     let {room_Id} = useParams();
     
@@ -25,14 +26,16 @@ const RoomComponent = ({roomInfo, talker}) => {
     useEffect(() => {
         const fetchData = async () => {
             try{
+                const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
+                    headers: {Authorization: 'Bearer ' + cookies.accessToken}
+                });
+
+                setMyInfo(myselfResponse.data);
+                console.log(myselfResponse.data);
+
                 const roomResponse = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
                 setRoomInformation(roomResponse.data);
                 setMemberList(roomInformation.members);
-
-                const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
-                headers: {Authorization: 'Bearer ' + cookie.get("accessToken")}
-                });
-                setMyInfo(myselfResponse.data);
             } catch (error){
                 console.log(error);
             }
@@ -136,14 +139,15 @@ const RoomComponent = ({roomInfo, talker}) => {
                     navigate("/opentalk/main");
                 }
             })
-            .catch((error) => console.log(error));            
+            .catch((error) => console.log(error));       
         }
     }
+
     return(
         <div>
             <div>
-                <h1>{roomInformation.roomName}</h1>
-                <h2>참여자 수: {roomInformation.participates}</h2>
+                {/* <h1>{roomInformation.roomName}</h1>
+                <h2>참여자 수: {roomInformation.participates}</h2> */}
             </div>
             <div>
                 {chatList && chatList.length > 0 && (
@@ -161,11 +165,12 @@ const RoomComponent = ({roomInfo, talker}) => {
                 <input type="submit" value="전송" onClick={() => publish(chat)}></input>
             </form>
             <button onClick={ExitRoom}>나가기</button>
+            {/* <ChangRoomComponent room_Id={room_Id}/> */}
             <div>
             <h2>참여명단</h2>
-                {roomInformation.members.map((_member, index) => (
+                {/* {roomInformation.members.map((_member, index) => (
                     <li key={index}>{_member.memberNickName}</li>
-                ))}
+                ))} */}
             </div>
 
         </div>

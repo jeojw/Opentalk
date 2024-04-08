@@ -3,46 +3,50 @@ import {useCookies} from 'react-cookie';
 import Modal from 'react-modal';
 import axios from'axios';
 
-export const SetRoomComponent = () =>{
+const ChangRoomComponent = ({room_Id}) => {
+    const [roomInfo, setRoomInfo] = useState();
+
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
-    const [roomId, setRoomId] = useState("");
-    const [members, setMembers] = useState();
-    const [participants, setParticipants] = useState(0);
-    const [existLock, setExistLock] = useState(false);
-    const [password, setPassword] = useState("");
-    const [manager, setManger] = useState();
     const [info, setInfo] = useState("");
+    const [existLock ,setExistLock] = useState(false);
+    const [password, setPassword] = useState("");
     const [tag, setTag] = useState("");
     const [tags, setTags] = useState([]);
+    const [participants, setParticipants] = useState(0);
 
-    const [cookies] = useCookies(["accessToken"]);
-
-    useEffect(() => {
-        const fetchManager = async () =>{
+    useEffect(() =>{
+        const fetchCurRoomInfo = async () => {
             try{
-                const response = await axios.get("/api/opentalk/member/me", {
-                    headers: {Authorization: 'Bearer ' + cookies.accessToken}
-                })
-                setManger(response.data);
+                const response = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
+                setRoomInfo(response.data);
             } catch (error) {
                 console.log(error);
             }
+            setRoomName(roomInfo.roomName);
+            setExistLock(roomInfo.existLock);
+            setInfo(roomInfo.introduction);
+            setPassword(roomInfo.roomPassword);
+            setParticipants(roomName.limitParticipates);
+            setTags(roomName.roomTags);
         }
-        fetchManager();
+        fetchCurRoomInfo();
     }, []);
-    
+
     const openModal = () => {
-        setIsOpen(true)
-    };
+        setIsOpen(true);
+    }
+
     const closeModal = () => {
-        setRoomName('');
-        setExistLock(false);
-        setPassword('');
-        setParticipants(0);
         setIsOpen(false);
-        setTags([]);
-        setInfo('');
+    }
+
+    const cancleSetModal = () => {
+        setIsOpen(false);
+    }
+
+    const setModal = () => {
+        setIsOpen(false);
     }
 
     const GetInputName = (event) => {
@@ -74,38 +78,20 @@ export const SetRoomComponent = () =>{
         setTag("");
     }
 
-
-    const MakeRoom = () => {
-        const makeUrl = `/api/opentalk/makeRoom`
-        axios.post(makeUrl, {
-            "roomName": roomName,
-            "roomPassword": password,
-            "manager": manager.memberNickName,
-            "participates": 0,
-            "limitParticipates": participants,
-            "introduction": info,
-            "existLock": existLock,
-            "members": [],
-            "roomTags": tags
-        })
-        .then((res)=>{
-            if (res.status === 200){
-                alert("방이 생성되었습니다.");
-                setRoomId(res.data);
-                closeModal();
-            }
-        })
-        .catch((error) => console.log(error));
-    };
-
-    return (
+    return(
         <div>
-            <button onClick={openModal}>방 생성하기</button>
-            <Modal isOpen={isOpen} onRequestClose={closeModal}>
+            <button onClick={openModal}>설정 변경</button>
+            <Modal isOpen={isOpen} onRequestClose ={closeModal}>
                 <div>
-                    방 이름: <input type="text" value={roomName} onChange={GetInputName}></input>
+                방 이름: <input 
+                    type="text" 
+                    value={roomName} 
+                    onChange={GetInputName}></input>
                     <br></br>
-                    인원수: <input type="number" value={participants} onChange={GetInputCounts}></input>
+                    인원수: <input 
+                    type="number" 
+                    value={participants} 
+                    onChange={GetInputCounts}></input>
                     <br></br>
                     비밀번호: <input 
                         type="checkbox" 
@@ -140,14 +126,13 @@ export const SetRoomComponent = () =>{
                         <li>#{t}</li>
                     )
                     )}
-                    <br></br>
-                    <input type="submit" value="방 생성하기" onClick={MakeRoom}></input>
-                    <button onClick={closeModal}>생성 취소</button>
+                <br></br>
+                <button onClick={setModal}>변경하기</button>
+                <button onClick={cancleSetModal}>변경 취소</button>
                 </div>
-                
             </Modal>
         </div>
     );
-}; 
+}
 
-export default SetRoomComponent;
+export default ChangRoomComponent;

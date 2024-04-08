@@ -28,13 +28,13 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> 
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Opentalk.opentalk_room_list SET participates = participates + 1 WHERE room_id = :roomId",
+    @Query(value = "UPDATE Opentalk.opentalk_room_list SET participates = participates + 1 WHERE room_id = :roomId AND participates < limit_participates",
             nativeQuery = true)
     int enterRoom(@Param("roomId") String roomId);
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Opentalk.opentalk_room_list SET participates = participates - 1 WHERE room_id = :roomId",
+    @Query(value = "UPDATE Opentalk.opentalk_room_list SET participates = participates - 1 WHERE room_id = :roomId AND participates >= 0",
             nativeQuery = true)
     int exitRoom(@Param("roomId") String roomId);
 

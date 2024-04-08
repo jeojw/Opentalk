@@ -5,7 +5,7 @@ import { useCookies } from 'react-cookie';
 
 const LoginComponent = (props) => {
     
-    const [cookies, setCookie] = useCookies(["accessToken"]);
+    const [cookies, setCookie] = useCookies([]);
     const [memberId, setMemberId] = useState("");
     const [memberPw, setMemberPw] = useState("");
     const navigate = useNavigate();

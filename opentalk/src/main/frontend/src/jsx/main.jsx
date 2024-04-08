@@ -190,7 +190,7 @@ const MainComponent = () => {
                 ))}
             </ul>
         </table>
-        <SetRoomComponent getManager={member} />
+        <SetRoomComponent />
         <button onClick={GoProfile}>프로필 설정</button>
         <button onClick={LogOut}>로그아웃</button>
         <br></br>
