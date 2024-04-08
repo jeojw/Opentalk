@@ -24,7 +24,6 @@ public class ChatRoomService {
     private final HashTagRepository hashTagRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final ChatMessageEntity chatMessageEntity;
 
     public String createRoom(ChatRoomDTO chatRoomDTO){
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomDTO);
@@ -65,7 +64,7 @@ public class ChatRoomService {
         chatRoomRepository.deleteRoom(room_id);
         chatMemberRepository.deleteRoom(room_id);
         chatRoomMemberRepository.deleteRoom(room_id);
-        chatMessageRepository.deleteLog(room_id);
+        chatMessageRepository.deleteLog(room_id); 
     }
 
     public void deleteRome_Pw(String password, String room_id){
