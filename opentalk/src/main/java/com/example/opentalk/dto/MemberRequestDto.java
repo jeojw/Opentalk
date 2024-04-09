@@ -32,6 +32,17 @@ public class MemberRequestDto {
                 .build();
     }
 
+    public static MemberRequestDto toMemberRequestDto(MemberEntity member){
+        return MemberRequestDto.builder()
+                .memberId(member.getMemberId())
+                .memberPassword(member.getMemberPassword())
+                .memberEmail(member.getMemberEmail())
+                .memberName(member.getMemberName())
+                .memberNickName(member.getMemberNickName())
+                .authority(member.getAuthority())
+                .build();
+    }
+
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(memberId, memberPassword);
     }

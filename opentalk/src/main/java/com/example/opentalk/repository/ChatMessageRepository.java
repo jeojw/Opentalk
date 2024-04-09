@@ -12,11 +12,11 @@ import java.util.List;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessageEntity, Long> {
-    @Query(value = "SELECT * FROM Opentalk.chat_log WHERE room_id = :roomId", nativeQuery = true)
-    List<ChatMessageEntity> chatLog(@Param("roomId") String roomId);
+    @Query(value = "SELECT * FROM Opentalk.chat_log WHERE opentalk_room_list_id = :roomId", nativeQuery = true)
+    List<ChatMessageEntity> chatLog(@Param("roomId") Long roomId);
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE * FROM Opentalk.chat_log WHERE room_id = :roomId", nativeQuery = true)
-    int deleteLog(@Param("roomId") String roomId);
+    @Query(value = "DELETE * FROM Opentalk.chat_log WHERE opentalk_room_list_id = :roomId", nativeQuery = true)
+    int deleteLog(@Param("roomId") Long roomId);
 }

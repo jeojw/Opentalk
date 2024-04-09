@@ -15,6 +15,7 @@ const RoomComponent = ({roomInfo, talker}) => {
     const [preChatList, setPreChatList] = useState([]);
     const [chat, setChat] = useState("");
     const [cookies] = useCookies(['accessToken']);
+    const [role, setRole] = useState();
 
     let {room_Id} = useParams();
     
@@ -29,12 +30,11 @@ const RoomComponent = ({roomInfo, talker}) => {
                 const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
                     headers: {Authorization: 'Bearer ' + cookies.accessToken}
                 });
-
                 setMyInfo(myselfResponse.data);
-
                 const roomResponse = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
-                setRoomInformation(roomResponse.data);
-                setMemberList(roomResponse.data.members);
+                setRoomInformation(roomResponse.data.chatroom);
+                setMemberList(roomResponse.data.member);
+                setRole(roomResponse.data.role);
             } catch (error){
                 console.log(error);
             }
@@ -72,10 +72,10 @@ const RoomComponent = ({roomInfo, talker}) => {
 
         const subscribe = async () => {
             try{
-                const chatLogData = new FormData();
-                chatLogData.append("roomId", room_Id);
-                const chatLogResponse = await axios.post("/api/opentalk/chatLog", chatLogData);
-                setPreChatList(chatLogResponse.data);
+                // const chatLogData = new FormData();
+                // chatLogData.append("roomId", room_Id);
+                // const chatLogResponse = await axios.post("/api/opentalk/chatLog", chatLogData);
+                // setPreChatList(chatLogResponse.data);
     
                 client.current.subscribe(`/sub/chat/${room_Id}`, ({body}) => {
                     setChatList((_chatList)=>[..._chatList , JSON.parse(body)])
@@ -131,7 +131,8 @@ const RoomComponent = ({roomInfo, talker}) => {
             const exitUrl = '/api/opentalk/exitRoom';
             axios.post(exitUrl, {
                 chatroom: roomInformation,
-                member: myInfo
+                member: myInfo,
+                role: role
             })
             .then((res) => {
                 if (res.status == 200){
@@ -150,13 +151,13 @@ const RoomComponent = ({roomInfo, talker}) => {
                 <h2>참여자 수: {roomInformation?.participates}</h2>
             </div>
             <div>
-                {chatList && chatList.length > 0 && (
+                {/* {chatList && chatList.length > 0 && (
                     <ul>
                         {chatList.map((_chatMessage, index) => (
                             <li key={index}>{_chatMessage.writer}&nbsp;: {_chatMessage.message}</li>
                         ))}
                     </ul>
-                )}
+                )} */}
             </div>
             <form onSubmit={(event)=>handleSubmit(event)}>
                 <div>
@@ -168,9 +169,9 @@ const RoomComponent = ({roomInfo, talker}) => {
             <ChangRoomComponent room_Id={room_Id}/>
             <div>
             <h2>참여명단</h2>
-                {roomInformation?.members.map((_member, index) => (
+                {/* {roomInformation?.members.map((_member, index) => (
                     <li key={index}>{_member.memberNickName}</li>
-                ))}
+                ))} */}
             </div>
 
         </div>

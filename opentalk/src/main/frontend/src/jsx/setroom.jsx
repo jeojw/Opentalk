@@ -80,8 +80,7 @@ export const SetRoomComponent = () =>{
         axios.post(makeUrl, {
             "roomName": roomName,
             "roomPassword": password,
-            "manager": manager.memberNickName,
-            "participates": 0,
+            "roomManager": manager.memberNickName,
             "limitParticipates": participants,
             "introduction": info,
             "existLock": existLock,

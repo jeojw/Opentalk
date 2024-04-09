@@ -72,6 +72,7 @@ const MainComponent = () => {
         const enterUrl = '/api/opentalk/enterRoom';
         if (!roomInfo.existLock){
             let currentRole;
+            console.log(roomInfo);
             if (roomInfo.manager === talker.memberNickName){
                 currentRole = ChatRoomRole.MANAGER;
             }
@@ -81,12 +82,8 @@ const MainComponent = () => {
             setRole(currentRole);
             axios.post(enterUrl, {
                 chatroom: roomInfo, 
-                member: {
-                    roomId: roomInfo.roomId,
-                    memberId: talker.memberId,
-                    memberNickName: talker.memberNickName,
-                    role: role
-                }
+                member: talker,
+                role:role
             })
             .then((res) => {
                 if (res.status === 200){
@@ -139,6 +136,7 @@ const MainComponent = () => {
                 setMember(meResponse.data);
                 const roomResponse = await axios.get('/api/opentalk/rooms');
                 setChatList(roomResponse.data);
+                console.log(roomResponse.data);
             } catch (error){
                 console.error(error);
             }
@@ -178,7 +176,7 @@ const MainComponent = () => {
                     <li key={room.roomId}>{room.roomName} | 인원수: {room.participates} / {room.limitParticipates}
                     {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                     <br></br>{room.introduction}
-                    <br></br>방장: {room.manager}
+                    <br></br>방장: {room.roomManager}
                     <ul>
                         {room.roomTags.map(tag=>(
                             <li>#{tag.tagName}</li>

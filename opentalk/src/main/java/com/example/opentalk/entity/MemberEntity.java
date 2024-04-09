@@ -1,6 +1,6 @@
 package com.example.opentalk.entity;
 
-import com.example.opentalk.dto.MemberRequestDto;
+import com.example.opentalk.dto.MemberResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,7 +40,10 @@ public class MemberEntity {
     protected  MemberEntity(){}
 
     @Builder
-    public MemberEntity(String memberId, String memberPassword, String memberName, String memberNickName, String memberEmail, Authority authority){
+    public MemberEntity(String memberId,
+                        String memberPassword, String memberName,
+                        String memberNickName, String memberEmail,
+                        Authority authority){
         this.memberId = memberId;
         this.memberPassword = memberPassword;
         this.memberName = memberName;
@@ -48,16 +51,11 @@ public class MemberEntity {
         this.memberEmail = memberEmail;
         this.authority = authority;
     }
-    public static MemberEntity toMemberEntity(MemberRequestDto memberRequestDto){
-        MemberEntity memberEntity = MemberEntity.builder()
-                .memberId(memberRequestDto.getMemberId())
-                .memberPassword(memberRequestDto.getMemberPassword())
-                .memberEmail(memberRequestDto.getMemberEmail())
-                .memberName(memberRequestDto.getMemberNickName())
-                .memberNickName(memberRequestDto.getMemberNickName())
+    public static MemberEntity toMemberEntity(MemberResponseDto memberResponseDto){
+        return MemberEntity.builder()
+                .memberId(memberResponseDto.getMemberId())
+                .memberNickName(memberResponseDto.getMemberNickName())
                 .build();
-
-        return memberEntity;
     }
 
 }

@@ -3,10 +3,7 @@ package com.example.opentalk.dto;
 import com.example.opentalk.entity.ChatRoomEntity;
 import com.example.opentalk.entity.ChatRoomHashtagEntity;
 import com.example.opentalk.entity.ChatRoomMemberEntity;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,31 +15,33 @@ import java.util.UUID;
 @ToString
 public class ChatRoomDTO {
 
-    private String roomId;
+    private String roomId = UUID.randomUUID().toString();
     private String roomName;
     private boolean existLock;
+    private String roomManager;
     private String roomPassword;
     private String introduction;
     private Integer limitParticipates;
     private List<HashTagDTO> roomTags;
     private List<MemberResponseDto> members;
 
-    public static ChatRoomDTO create(String roomName, String roomPassword, Integer limitParticipates, String introduction,
-                                     List<MemberResponseDto> talkers, List<HashTagDTO> roomTags){
-        ChatRoomDTO room = new ChatRoomDTO();
+    public ChatRoomDTO() {}
 
-        room.roomId = UUID.randomUUID().toString();
-        room.roomName = roomName;
-        room.roomPassword = roomPassword;
-        room.limitParticipates = limitParticipates;
-        room.introduction = introduction;
-        room.existLock = room.roomPassword.isEmpty();
-        room.members = talkers;
-        room.roomTags = roomTags;
-        return room;
+    @Builder
+    public ChatRoomDTO (String roomId, String roomName, String roomPassword, Integer limitParticipates,
+                        String introduction, String roomManager,
+                        List<MemberResponseDto> talkers, List<HashTagDTO> roomTags){
+        this.roomId = roomId;
+        this.roomName = roomName;
+        this.roomPassword = roomPassword;
+        this.limitParticipates = limitParticipates;
+        this.introduction = introduction;
+        this.existLock = !this.roomPassword.isEmpty();
+        this.roomManager = roomManager;
+        this.members = talkers;
+        this.roomTags = roomTags;
     }
-    public static ChatRoomDTO toChatRoomDTO(ChatRoomEntity chatRoomEntity){
-        ChatRoomDTO chatRoomDTO = new ChatRoomDTO();
+    public static ChatRoomDTO toChatRoomDTO(ChatRoomEntity chatRoomEntity) {
         List<HashTagDTO> hashTagDTOList = new ArrayList<>();
         List<MemberResponseDto> chatMemberDtoList = new ArrayList<>();
         for (ChatRoomHashtagEntity hashTagEntity : chatRoomEntity.getHashtags()){
@@ -52,15 +51,15 @@ public class ChatRoomDTO {
             chatMemberDtoList.add(MemberResponseDto.of(memberEntity.getMember()));
         }
 
-        chatRoomDTO.setRoomId(chatRoomEntity.getRoomId());
-        chatRoomDTO.setRoomName(chatRoomEntity.getRoomName());
-        chatRoomDTO.setRoomPassword(chatRoomEntity.getRoomPassword());
-        chatRoomDTO.setExistLock(chatRoomEntity.isExistLock());
-        chatRoomDTO.setIntroduction(chatRoomEntity.getIntroduction());
-        chatRoomDTO.setLimitParticipates(chatRoomEntity.getLimitParticipates());
-        chatRoomDTO.setRoomTags(hashTagDTOList);
-        chatRoomDTO.setMembers(chatMemberDtoList);
-
-        return chatRoomDTO;
+        return ChatRoomDTO.builder()
+                .roomId(chatRoomEntity.getRoomId())
+                .roomName(chatRoomEntity.getRoomName())
+                .roomPassword(chatRoomEntity.getRoomPassword())
+                .limitParticipates(chatRoomEntity.getLimitParticipates())
+                .introduction(chatRoomEntity.getIntroduction())
+                .roomManager(chatRoomEntity.getRoomManager())
+                .roomTags(hashTagDTOList)
+                .talkers(chatMemberDtoList)
+                .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.opentalk.entity;
 
 import com.example.opentalk.dto.ChatRoomMemberDTO;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,28 +17,39 @@ public class ChatRoomMemberEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "opentalk_room_list_id")
     private ChatRoomEntity chatroom;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "open_talk_member_id")
     private MemberEntity member;
 
     @Column(name = "role")
     private String role;
 
-
     public ChatRoomMemberEntity() {}
 
+    @Builder
+    public ChatRoomMemberEntity(ChatRoomEntity chatroom, MemberEntity member) {
+        this.chatroom = chatroom;
+        this.member = member;
+        if (chatroom.getRoomManager().equals(member.getMemberNickName())){
+            this.role = "MANAGER";
+        }
+        else{
+            this.role = "PARTICIPATES";
+        }
+
+    }
+
     public static ChatRoomMemberEntity toChatRoomMemberEntity(ChatRoomMemberDTO chatRoomMemberDTO){
-        ChatRoomMemberEntity chatRoomMemberEntity = new ChatRoomMemberEntity();
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomMemberDTO.getChatroom());
         MemberEntity chatMemberEntity = MemberEntity.toMemberEntity(chatRoomMemberDTO.getMember());
 
-        chatRoomMemberEntity.setChatroom(chatRoomEntity);
-        chatRoomMemberEntity.setMember(chatMemberEntity);
-
-        return chatRoomMemberEntity;
+        return ChatRoomMemberEntity.builder()
+                .chatroom(chatRoomEntity)
+                .member(chatMemberEntity)
+                .build();
     }
 }

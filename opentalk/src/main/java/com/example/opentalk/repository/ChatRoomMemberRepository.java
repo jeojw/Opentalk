@@ -9,21 +9,34 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMemberEntity, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO Opentalk.chatroom_member(chatroom_id, member_id) Values(:room_id, :member_id)",
+    @Query(value = "INSERT INTO Opentalk.chatroom_member(opentalk_room_list_id, open_talk_member_id, role) Values(:room_id, :member_id, :memberRole)",
             nativeQuery = true)
-    int enterRoom(@Param("room_id") String room_id, @Param("member_id") String member_id);
+    int enterRoom(@Param("room_id") Long room_id, @Param("member_id") Long member_id, @Param("memberRole") String memberRole);
 
-    @Query(value = "SELECT * FROM Opentalk.chatroom_member WHERE chatroom_id = :room_id AND member_id = :member_id",
+    @Query(value = "SELECT * FROM Opentalk.chatroom_member WHERE opentalk_room_list_id = :room_id",
             nativeQuery = true)
-    ChatRoomMemberEntity findMember(@Param("room_id") String room_id , @Param("member_id") String member_id);
+    Optional<ChatRoomMemberEntity> findByRoomId(@Param("room_id") Long room_id);
 
-    @Query(value = "SELECT member_id FROM Opentalk.chatroom_member WHERE room_id = :roomId"
+    @Query(value = "SELECT * FROM Opentalk.chatroom_member WHERE opentalk_room_list_id = :room_id AND member_id = :member_id",
+            nativeQuery = true)
+    Optional<ChatRoomMemberEntity> findMember(@Param("room_id") String room_id , @Param("member_id") String member_id);
+
+    @Query(value = "SELECT * FROM Opentalk.chatroom_member WHERE opentalk_room_list_id = :room_id",
+            nativeQuery = true)
+    Optional<ChatRoomMemberEntity> getRoom(@Param("room_id") Long room_id);
+
+    @Query(value = "SELECT * FROM Opentalk.chatroom_member",
+            nativeQuery = true)
+    List<Optional<ChatRoomMemberEntity>> getAllRooms();
+
+    @Query(value = "SELECT member_id FROM Opentalk.chatroom_member WHERE opentalk_room_list_id = :roomId"
             ,nativeQuery = true)
     List<String> findMembers(@Param("roomId") String roomId);
 

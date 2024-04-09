@@ -17,7 +17,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> 
             nativeQuery = true)
     List<ChatRoomEntity> findAllRoom();
 
-
     @Query(value = "SELECT room_password FROM Opentalk.opentalk_room_list WHERE room_id = :roomId",
             nativeQuery = true)
     String existPassword(@Param("roomId") String roomId);
@@ -28,23 +27,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> 
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Opentalk.opentalk_room_list SET participates = participates + 1 WHERE room_id = :roomId AND participates < limit_participates",
-            nativeQuery = true)
-    int enterRoom(@Param("roomId") String roomId);
-
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE Opentalk.opentalk_room_list SET participates = participates - 1 WHERE room_id = :roomId AND participates >= 0",
-            nativeQuery = true)
-    int exitRoom(@Param("roomId") String roomId);
-
-    @Modifying
-    @Transactional
     @Query(value = "DELETE FROM Opentalk.opentalk_room_list WHERE room_id = :room_id", nativeQuery = true)
     int deleteRoom(@Param("room_id") String room_id);
-
-    @Query(value = "SELECT * FROM Opentalk.opentalk_room_list WHERE manager LIKE '%:keyword%'", nativeQuery = true)
-    List<ChatRoomEntity> searchRoomManager(@Param("keyword") String keyword);
 
     @Query(value = "SELECT * FROM Opentalk.opentalk_room_list WHERE room_name LIKE '%:keyword%'", nativeQuery = true)
     List<ChatRoomEntity> searchRoomName(@Param("keyword") String keyword);

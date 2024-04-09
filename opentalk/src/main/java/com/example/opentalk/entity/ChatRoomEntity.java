@@ -12,7 +12,6 @@ import java.util.List;
 @Setter
 @Getter
 @Table(name = "opentalk_room_list")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatRoomEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +35,9 @@ public class ChatRoomEntity implements Serializable {
     @Column(name = "room_password")
     private String roomPassword;
 
+    @Column(name = "room_manager")
+    private String roomManager;
+
     @OneToMany(mappedBy = "chatroom", cascade = CascadeType.PERSIST)
     private List<ChatRoomHashtagEntity> hashtags = new ArrayList<>();
 
@@ -45,18 +47,19 @@ public class ChatRoomEntity implements Serializable {
     @OneToMany(mappedBy="chatroom", cascade = CascadeType.PERSIST)
     private List<ChatMessageEntity> messages = new ArrayList<>();
 
+    public ChatRoomEntity() {}
+
     @Builder
-    public ChatRoomEntity(Long id, String roomId, String roomName, Integer limitParticipates,
-                          String introduction, boolean existLock,
+    public ChatRoomEntity(String roomId, String roomName, Integer limitParticipates,
+                          String introduction, boolean existLock, String roomManager,
                           String roomPassword){
-        this.id = id;
         this.roomId = roomId;
         this.roomName = roomName;
         this.limitParticipates = limitParticipates;
         this.introduction = introduction;
         this.existLock = existLock;
         this.roomPassword = roomPassword;
-
+        this.roomManager = roomManager;
     }
 
     public static ChatRoomEntity toChatRoomEntity(ChatRoomDTO chatRoomDTO){
@@ -66,6 +69,8 @@ public class ChatRoomEntity implements Serializable {
                 .introduction(chatRoomDTO.getIntroduction())
                 .existLock(chatRoomDTO.isExistLock())
                 .roomPassword(chatRoomDTO.getRoomPassword())
+                .roomManager(chatRoomDTO.getRoomManager())
+                .limitParticipates(chatRoomDTO.getLimitParticipates())
                 .build();
     }
 }
