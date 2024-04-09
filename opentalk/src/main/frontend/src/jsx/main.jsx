@@ -183,7 +183,7 @@ const MainComponent = () => {
                         ))}
                     </ul>
                     <button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button>
-                    {room.manager === member.memberNickName && (
+                    {room.roomManager === member.memberNickName && (
                     <button onClick={() => deleteRoom({roomInfo: room})}>삭제하기</button>
                 )}</li>
                 ))}

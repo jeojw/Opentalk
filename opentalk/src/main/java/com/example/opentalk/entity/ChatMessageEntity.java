@@ -29,14 +29,24 @@ public class ChatMessageEntity {
     @JoinColumn(name = "open_talk_member_id")
     private MemberEntity member;
 
+
+    public ChatMessageEntity() {}
+
     @Builder
-    public ChatMessageEntity (String message){
+    public ChatMessageEntity (ChatRoomEntity chatRoomEntity, MemberEntity memberEntity,
+            String message, LocalDateTime timeStamp){
+        this.chatroom = chatRoomEntity;
+        this.member = memberEntity;
         this.message = message;
+        this.timeStamp = timeStamp;
     }
 
     public static ChatMessageEntity toChatMessageEntity(ChatMessageDTO chatMessageDTO){
         return ChatMessageEntity.builder()
+                .chatRoomEntity(ChatRoomEntity.toChatRoomEntity(chatMessageDTO.getChatRoom()))
+                .memberEntity(MemberEntity.toMemberEntity(chatMessageDTO.getMember()))
                 .message(chatMessageDTO.getMessage())
+                .timeStamp(chatMessageDTO.getTimeStamp())
                 .build();
     }
 }

@@ -72,10 +72,11 @@ const RoomComponent = ({roomInfo, talker}) => {
 
         const subscribe = async () => {
             try{
-                // const chatLogData = new FormData();
-                // chatLogData.append("roomId", room_Id);
-                // const chatLogResponse = await axios.post("/api/opentalk/chatLog", chatLogData);
-                // setPreChatList(chatLogResponse.data);
+                const chatLogData = new FormData();
+                chatLogData.append("roomId", room_Id);
+                const chatLogResponse = await axios.post("/api/opentalk/chatLog", chatLogData);
+                setPreChatList(chatLogResponse.data);
+                console.log(preChatList);
     
                 client.current.subscribe(`/sub/chat/${room_Id}`, ({body}) => {
                     setChatList((_chatList)=>[..._chatList , JSON.parse(body)])
@@ -99,10 +100,13 @@ const RoomComponent = ({roomInfo, talker}) => {
     const publish = (chat) => {
         if (!client.current.connected) return;
 
+        const curTime = new Date();
+        const isoDateTime = curTime.toISOString();
         axios.post('/api/opentalk/saveChat', {
-            roomId: room_Id,
-            writer: myInfo.memberNickName,
-            message: chat
+            chatRoom: roomInformation,
+            member: myInfo,
+            message: chat,
+            timeStamp: isoDateTime
         })
         .then()
         .catch((error) => console.log(error));
@@ -110,9 +114,10 @@ const RoomComponent = ({roomInfo, talker}) => {
         client.current.publish({
             destination: '/pub/chat',
             body: JSON.stringify({
-                roomId: room_Id,
-                writer: myInfo.memberNickName,
-                message: chat
+                chatRoom: roomInformation,
+                member: myInfo,
+                message: chat,
+                timeStamp: isoDateTime
             }),
         });
         setChat("");
@@ -151,13 +156,13 @@ const RoomComponent = ({roomInfo, talker}) => {
                 <h2>참여자 수: {roomInformation?.participates}</h2>
             </div>
             <div>
-                {/* {chatList && chatList.length > 0 && (
+                {chatList && chatList.length > 0 && (
                     <ul>
                         {chatList.map((_chatMessage, index) => (
-                            <li key={index}>{_chatMessage.writer}&nbsp;: {_chatMessage.message}</li>
+                            <li key={index}>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</li>
                         ))}
                     </ul>
-                )} */}
+                )}
             </div>
             <form onSubmit={(event)=>handleSubmit(event)}>
                 <div>
@@ -169,9 +174,9 @@ const RoomComponent = ({roomInfo, talker}) => {
             <ChangRoomComponent room_Id={room_Id}/>
             <div>
             <h2>참여명단</h2>
-                {/* {roomInformation?.members.map((_member, index) => (
+                {roomInformation?.members.map((_member, index) => (
                     <li key={index}>{_member.memberNickName}</li>
-                ))} */}
+                ))}
             </div>
 
         </div>

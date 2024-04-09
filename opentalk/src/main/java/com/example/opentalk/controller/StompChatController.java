@@ -23,7 +23,7 @@ public class StompChatController {
     @MessageMapping("/chat")
     public void publishChat(ChatMessageDTO chatMessage){
         log.info("publishChat : {}", chatMessage);
-        template.convertAndSend("/sub/chat/" + chatMessage.getRoomId(), chatMessage);
+        template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
     }
 
     @EventListener(SessionConnectedEvent.class)

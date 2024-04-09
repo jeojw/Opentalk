@@ -55,16 +55,29 @@ public class ChatRoomService {
     }
 
     public void saveChat(ChatMessageDTO chatMessage){
-        chatMessageRepository.save(ChatMessageEntity.toChatMessageEntity(chatMessage));
+        ChatMessageEntity chatMessageEntity = ChatMessageEntity.toChatMessageEntity(chatMessage);
+        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(chatMessageEntity.getChatroom().getRoomId());
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(chatMessageEntity.getMember().getMemberId());
+
+        if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
+            chatMessageRepository.saveChat(chatRoomEntity.get().getId(),
+                    memberEntity.get().getId(),
+                    chatMessageEntity.getTimeStamp(),
+                    chatMessageEntity.getMessage());
+        }
     }
 
-    public List<ChatMessageDTO> chatLog(Long roomId){
-        List<ChatMessageEntity> chatLogs= chatMessageRepository.chatLog(roomId);
-        List<ChatMessageDTO> chatMessageDTOS = new ArrayList<>();
-        for (ChatMessageEntity chat : chatLogs){
-            chatMessageDTOS.add(ChatMessageDTO.toChatMessageDTO(chat));
+    public List<ChatMessageDTO> chatLog(String roomId){
+        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(roomId);
+        if (chatRoomEntity.isPresent()){
+            List<ChatMessageEntity> chatLogs= chatMessageRepository.chatLog(chatRoomEntity.get().getId());
+            List<ChatMessageDTO> chatMessageDTOS = new ArrayList<>();
+            for (ChatMessageEntity chat : chatLogs){
+                chatMessageDTOS.add(ChatMessageDTO.toChatMessageDTO(chat));
+            }
+            return chatMessageDTOS;
         }
-        return chatMessageDTOS;
+        return null;
     }
 
 //    public void deleteRome(String room_id){

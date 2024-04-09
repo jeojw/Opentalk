@@ -70,7 +70,7 @@ public class RoomController {
     }
 
     @PostMapping("/api/opentalk/chatLog")
-    public ResponseEntity<List<ChatMessageDTO>> chatLog(@RequestParam("roomId") Long roomId){
+    public ResponseEntity<List<ChatMessageDTO>> chatLog(@RequestParam("roomId") String roomId){
         return ResponseEntity.ok(chatRoomService.chatLog(roomId));
     }
 
