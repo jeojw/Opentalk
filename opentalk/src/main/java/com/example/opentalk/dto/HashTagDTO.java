@@ -6,10 +6,11 @@ import lombok.*;
 @Data
 @Getter
 @Setter
-@NoArgsConstructor
 public class HashTagDTO {
     private String tagName;
     private Integer accumulate;
+
+    public HashTagDTO() {}
 
     @Builder
     public HashTagDTO(String tagName, Integer accumulate){

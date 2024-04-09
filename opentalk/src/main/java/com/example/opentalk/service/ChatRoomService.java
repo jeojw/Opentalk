@@ -3,14 +3,9 @@ package com.example.opentalk.service;
 import com.example.opentalk.dto.ChatMessageDTO;
 import com.example.opentalk.dto.ChatRoomDTO;
 import com.example.opentalk.dto.ChatRoomMemberDTO;
-import com.example.opentalk.entity.ChatMessageEntity;
-import com.example.opentalk.entity.ChatRoomEntity;
-import com.example.opentalk.entity.ChatRoomMemberEntity;
-import com.example.opentalk.entity.MemberEntity;
-import com.example.opentalk.repository.ChatMessageRepository;
-import com.example.opentalk.repository.ChatRoomMemberRepository;
-import com.example.opentalk.repository.ChatRoomRepository;
-import com.example.opentalk.repository.MemberRepository;
+import com.example.opentalk.dto.HashTagDTO;
+import com.example.opentalk.entity.*;
+import com.example.opentalk.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -27,9 +22,34 @@ public class ChatRoomService {
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final MemberRepository memberRepository;
+    private final ChatRoomHashtagRepository chatRoomHashtagRepository;
+    private final HashTagRepository hashTagRepository;
 
     public String createRoom(ChatRoomDTO chatRoomDTO){
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomDTO);
+        if (!chatRoomDTO.getRoomTags().isEmpty()){
+            ChatRoomHashtagEntity chatRoomHashtagEntity;
+
+            List<HashTagEntity> hashTagEntities = new ArrayList<>();
+            for (HashTagDTO tag : chatRoomDTO.getRoomTags()){
+                hashTagEntities.add(HashTagEntity.toHashTagEntity(tag));
+            }
+
+            for (HashTagEntity tagEntity : hashTagEntities){
+                System.out.println(tagEntity.getId());
+                if (tagEntity.getId() == null){
+                    hashTagRepository.save(tagEntity);
+                }
+                else{
+                    hashTagRepository.accumulateTag(tagEntity.getId());
+                }
+                chatRoomHashtagEntity = ChatRoomHashtagEntity.builder()
+                        .chatroom(chatRoomEntity)
+                        .hashtag(tagEntity)
+                        .build();
+                chatRoomHashtagRepository.save(chatRoomHashtagEntity);
+            }
+        }
         chatRoomRepository.save(chatRoomEntity);
         return chatRoomEntity.getRoomId();
     }
@@ -80,11 +100,18 @@ public class ChatRoomService {
         return null;
     }
 
-//    public void deleteRome(String room_id){
-//        chatRoomRepository.deleteRoom(room_id);
-//        chatRoomMemberRepository.deleteRoom(room_id);
-//        chatMessageRepository.deleteLog(room_id);
-//    }
+    public void deleteRome(String room_id){
+        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(room_id);
+        if (chatRoomEntity.isPresent()){
+            chatMessageRepository.deleteLog(chatRoomEntity.get().getId());
+            chatRoomRepository.deleteById(chatRoomEntity.get().getId());
+            Optional<ChatRoomMemberEntity> chatRoomMemberEntity =
+                    chatRoomMemberRepository.findByRoomId(chatRoomEntity.get().getId());
+            chatRoomMemberEntity.ifPresent(roomMemberEntity -> chatRoomMemberRepository.deleteById(roomMemberEntity.getId()));
+
+        }
+
+    }
 //
 //    public void deleteRome_Pw(String password, Long room_id){
 //        if (chatRoomRepository.findByRoomId(room_id)).isPresent()){

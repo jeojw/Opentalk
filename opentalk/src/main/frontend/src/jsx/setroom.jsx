@@ -68,10 +68,17 @@ export const SetRoomComponent = () =>{
     }
 
     const AppendTag = (getTag) => {
-        tags.push({
-            tagName: getTag
-        });
+        const newTags = [...tags, {
+            tagName: getTag,
+            accumulate: 0
+        }];
+        setTags(newTags);
         setTag("");
+    }
+
+    const tagDelete = (getTag) => {
+        const newTags = tags.filter(tag => tag !== getTag);
+        setTags(newTags);
     }
 
 
@@ -136,9 +143,8 @@ export const SetRoomComponent = () =>{
                         onClick={()=>AppendTag(tag)}>
                     </input>
                     {tags.map((t)=> (
-                        <li>#{t}</li>
-                    )
-                    )}
+                        <li>#{t.tagName}<button onClick={()=>tagDelete(t)}>삭제</button></li>
+                    ))}
                     <br></br>
                     <input type="submit" value="방 생성하기" onClick={MakeRoom}></input>
                     <button onClick={closeModal}>생성 취소</button>

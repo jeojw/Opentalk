@@ -44,6 +44,11 @@ public class RoomController {
         return ResponseEntity.ok(chatRoomService.getRoom(roomId));
     }
 
+    @PostMapping("/api/opentalk/deleteRoom")
+    public void deleteRoom(@RequestParam("room_id") String room_id){
+        chatRoomService.deleteRome(room_id);
+    }
+
 //    @PostMapping("/api/opentalk/searchRoom")
 //    public ResponseEntity<List<ChatRoomDTO>> searchRoom(@RequestBody SearchDto searchDto){
 //        return ResponseEntity.ok(chatRoomService.searchRoom(searchDto));
@@ -54,10 +59,7 @@ public class RoomController {
 
     }
 
-//    @PostMapping("/api/opentalk/deleteRoom")
-//    public void deleteRoom(@RequestParam("room_id") String room_id){
-//        chatRoomService.deleteRome(room_id);
-//    }
+
 //
 //    @PostMapping("/api/opentalk/deleteRoom/password")
 //    public void deleteRoom_Pw(@RequestParam("room_id") String room_id, @RequestParam("password") String password){

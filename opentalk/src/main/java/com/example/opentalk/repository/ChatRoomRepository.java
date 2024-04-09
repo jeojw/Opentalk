@@ -2,12 +2,10 @@ package com.example.opentalk.repository;
 
 import com.example.opentalk.entity.ChatRoomEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,12 +22,4 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> 
     @Query(value = "SELECT * FROM Opentalk.opentalk_room_list WHERE room_id = :roomId"
             ,nativeQuery = true)
     Optional<ChatRoomEntity> getRoom(@Param("roomId") String roomId);
-
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM Opentalk.opentalk_room_list WHERE room_id = :room_id", nativeQuery = true)
-    int deleteRoom(@Param("room_id") String room_id);
-
-    @Query(value = "SELECT * FROM Opentalk.opentalk_room_list WHERE room_name LIKE '%:keyword%'", nativeQuery = true)
-    List<ChatRoomEntity> searchRoomName(@Param("keyword") String keyword);
 }

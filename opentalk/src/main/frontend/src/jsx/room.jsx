@@ -140,7 +140,7 @@ const RoomComponent = ({roomInfo, talker}) => {
                 role: role
             })
             .then((res) => {
-                if (res.status == 200){
+                if (res.status === 200){
                     navigate("/opentalk/main");
                 }
             })

@@ -28,9 +28,6 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMemberEn
             nativeQuery = true)
     Optional<ChatRoomMemberEntity> findMember(@Param("room_id") String room_id , @Param("member_id") String member_id);
 
-    @Query(value = "SELECT * FROM Opentalk.chatroom_member WHERE opentalk_room_list_id = :room_id",
-            nativeQuery = true)
-    Optional<ChatRoomMemberEntity> getRoom(@Param("room_id") Long room_id);
 
     @Query(value = "SELECT * FROM Opentalk.chatroom_member",
             nativeQuery = true)
@@ -44,9 +41,4 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMemberEn
     @Transactional
     @Query(value = "DELETE FROM Opentalk.chatroom_member WHERE chatroom_id = :room_id AND member_id = :member_id", nativeQuery = true)
     int exitRoom(@Param("room_id") String room_id , @Param("member_id") String member_id);
-
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM Opentalk.chatroom_member WHERE chatroom_id = :room_id", nativeQuery = true)
-    int deleteRoom(@Param("room_id") String room_id);
 }
