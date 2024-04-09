@@ -77,8 +77,8 @@ public class RoomController {
     }
 
     @PostMapping("/api/opentalk/enterRoom/{password}")
-    public void enterRoom_Pw(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO, @PathVariable String password){
-        chatRoomService.enterRoom_Pw(chatRoomMemberDTO, password);
+    public ResponseEntity<Boolean> enterRoom_Pw(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO, @PathVariable String password){
+        return ResponseEntity.ok(chatRoomService.enterRoom_Pw(chatRoomMemberDTO, password));
     }
 
 }

@@ -42,6 +42,7 @@ public class ChatRoomDTO {
         this.roomTags = roomTags;
     }
     public static ChatRoomDTO toChatRoomDTO(ChatRoomEntity chatRoomEntity) {
+
         List<HashTagDTO> hashTagDTOList = new ArrayList<>();
         List<MemberResponseDto> chatMemberDtoList = new ArrayList<>();
         for (ChatRoomHashtagEntity hashTagEntity : chatRoomEntity.getHashtags()){

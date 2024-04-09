@@ -15,7 +15,6 @@ const MainComponent = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
     const [member, setMember] = useState("");
     const [chatList, setChatList] = useState([]);
-    const [inputPw, setInputPw] = useState("");
     const [role, setRole] = useState();
     const [selectManu, setSelectManu] = useState("");
     const [searchKeyword, setSearchKeyword] = useState("");
@@ -23,8 +22,6 @@ const MainComponent = () => {
     const naviagte = useNavigate();
 
     const history = createBrowserHistory();
-
-    let {page} = useParams();
 
     // useEffect(() => {
     //     let unlisten = history.listen((location) => {
@@ -94,26 +91,21 @@ const MainComponent = () => {
         }
         else{
             const inputPassword = window.prompt("비밀번호를 입력해주세요.");
-            setInputPw(inputPassword);
-            if (inputPw === ""){
+            console.log(inputPassword);
+            if (inputPassword === ""){
                 window.alert("비밀번호를 입력해주세요.")
             }else{
-                axios.post(enterUrl + `/${inputPw}`, {
+                axios.post(enterUrl + `/${inputPassword}`, {
                     chatroom: roomInfo, 
-                    member: {
-                        roomId: roomInfo.roomId,
-                        memberId: talker.memberId,
-                        memberNickName: talker.memberNickName,
-                        role: role
-                    }
+                    member: talker,
+                    role:role
                 })
                 .then((res) => {
-                    if (res.status === 200){
+                    if (res.data === true){
                         naviagte(`/opentalk/room/${roomInfo.roomId}`);
                     }
                     else{
                         alert("비밀번호가 잘못되었습니다.")
-                        setInputPw("");
                     }
                 })
                 .catch((error) => console.log(error));

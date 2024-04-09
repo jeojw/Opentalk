@@ -139,7 +139,7 @@ public class ChatRoomService {
         }
     }
 
-    public void enterRoom_Pw(ChatRoomMemberDTO chatRoomMemberDTO, String inputPw){
+    public boolean enterRoom_Pw(ChatRoomMemberDTO chatRoomMemberDTO, String inputPw){
         ChatRoomEntity chatRoomEntity;  MemberEntity memberEntity;
         if (inputPw.equals(chatRoomMemberDTO.getChatroom().getRoomPassword())){
             if (chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId()).isPresent() &&
@@ -155,9 +155,11 @@ public class ChatRoomService {
                 chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getChatroom().getId(),
                                                     chatRoomMemberEntity.getMember().getId(),
                                                     chatRoomMemberEntity.getRole());
+
+                return true;
             }
         }
-        else return;
+        return false;
     }
 
     public void exitRoom(ChatRoomMemberDTO chatRoomMemberDTO){

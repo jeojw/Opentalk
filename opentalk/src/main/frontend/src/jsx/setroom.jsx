@@ -68,12 +68,27 @@ export const SetRoomComponent = () =>{
     }
 
     const AppendTag = (getTag) => {
-        const newTags = [...tags, {
-            tagName: getTag,
-            accumulate: 0
-        }];
-        setTags(newTags);
-        setTag("");
+        let isExist = false;
+        for (let i = 0; i < tags.length; i++){
+            if (tags[i].tagName === getTag){
+                isExist = true;
+            }
+        }
+        if (getTag === ""){
+            window.alert("태그를 입력해주세요.");
+        }
+        else if (isExist){
+            window.alert("이미 추가한 태그입니다.");
+        }
+        else{
+            const newTags = [...tags, {
+                tagName: getTag,
+                accumulate: 0
+            }];
+            setTags(newTags);
+            setTag("");
+        }
+
     }
 
     const tagDelete = (getTag) => {
