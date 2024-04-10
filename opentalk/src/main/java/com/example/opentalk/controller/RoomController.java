@@ -37,9 +37,9 @@ public class RoomController {
         chatRoomService.exitRoom(chatRoomMemberDTO);
     }
 
-    @GetMapping("/api/opentalk/getRoom/{roomId}")
-    public ResponseEntity<ChatRoomMemberDTO> getRoom(@PathVariable String roomId){
-        return ResponseEntity.ok(chatRoomService.getRoom(roomId));
+    @GetMapping("/api/opentalk/getRoom/{roomId}/{memberId}")
+    public ResponseEntity<ChatRoomMemberDTO> getRoom(@PathVariable String roomId, @PathVariable String memberId){
+        return ResponseEntity.ok(chatRoomService.getRoom(roomId, memberId));
     }
 
     @PostMapping("/api/opentalk/deleteRoom")

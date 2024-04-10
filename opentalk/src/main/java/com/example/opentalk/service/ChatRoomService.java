@@ -51,12 +51,15 @@ public class ChatRoomService {
         return chatRoomEntity.getRoomId();
     }
 
-    public ChatRoomMemberDTO getRoom(String roomId){
+    public ChatRoomMemberDTO getRoom(String roomId, String memberId){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(roomId);
-        if (chatRoomEntity.isPresent()) {
-            if (chatRoomMemberRepository.findByRoomId(chatRoomEntity.get().getId()).isPresent()) {
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(memberId);
+
+        if (chatRoomEntity.isPresent() && memberEntity.isPresent()) {
+            if (chatRoomMemberRepository.findByRoomMemberId(chatRoomEntity.get().getId(), memberEntity.get().getId()).isPresent()) {
                 ChatRoomMemberEntity chatRoomMemberEntity =
-                        chatRoomMemberRepository.findByRoomId(chatRoomEntity.get().getId()).get();
+                        chatRoomMemberRepository.findByRoomMemberId(chatRoomEntity.get().getId(),
+                                                        memberEntity.get().getId()).get();
                 return ChatRoomMemberDTO.toChatRoomMemberDTO(chatRoomMemberEntity);
             }
         }
@@ -146,7 +149,6 @@ public class ChatRoomService {
                     chatRoomHashtagRepository.findByRoomId(chatRoomEntity.get().getId());
             chatRoomHashtagEntity.ifPresent(roomHashtagEntity -> chatRoomHashtagRepository.deleteById(roomHashtagEntity.getId()));
             chatRoomMemberEntity.ifPresent(roomMemberEntity -> chatRoomMemberRepository.deleteById(roomMemberEntity.getId()));
-
         }
 
     }

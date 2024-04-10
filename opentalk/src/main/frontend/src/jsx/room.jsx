@@ -31,7 +31,8 @@ const RoomComponent = ({roomInfo, talker}) => {
                     headers: {Authorization: 'Bearer ' + cookies.accessToken}
                 });
                 setMyInfo(myselfResponse.data);
-                const roomResponse = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
+                
+                const roomResponse = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myselfResponse.data.memberId}`);
                 setRoomInformation(roomResponse.data.chatroom);
                 setMemberList(roomResponse.data.member);
                 setRole(roomResponse.data.role);
