@@ -49,6 +49,11 @@ public class RoomController {
         chatRoomService.deleteRome(room_id);
     }
 
+    @PostMapping("/api/opentalk/deleteRoom/{password}")
+    public ResponseEntity<Boolean> deleteRoom_Pw(@RequestParam("room_id") String room_id, @PathVariable String password){
+        return ResponseEntity.ok(chatRoomService.deleteRome_Pw(room_id, password));
+    }
+
 //    @PostMapping("/api/opentalk/searchRoom")
 //    public ResponseEntity<List<ChatRoomDTO>> searchRoom(@RequestBody SearchDto searchDto){
 //        return ResponseEntity.ok(chatRoomService.searchRoom(searchDto));

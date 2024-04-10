@@ -90,12 +90,14 @@ public class ChatRoomService {
     public List<ChatMessageDTO> chatLog(String roomId){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(roomId);
         if (chatRoomEntity.isPresent()){
-            List<ChatMessageEntity> chatLogs= chatMessageRepository.chatLog(chatRoomEntity.get().getId());
+            Optional<List<ChatMessageEntity>> chatLogs= chatMessageRepository.chatLog(chatRoomEntity.get().getId());
             List<ChatMessageDTO> chatMessageDTOS = new ArrayList<>();
-            for (ChatMessageEntity chat : chatLogs){
-                chatMessageDTOS.add(ChatMessageDTO.toChatMessageDTO(chat));
+            if (chatLogs.isPresent()) {
+                for (ChatMessageEntity chat : chatLogs.get()) {
+                    chatMessageDTOS.add(ChatMessageDTO.toChatMessageDTO(chat));
+                }
+                return chatMessageDTOS;
             }
-            return chatMessageDTOS;
         }
         return null;
     }
@@ -112,16 +114,26 @@ public class ChatRoomService {
         }
 
     }
-//
-//    public void deleteRome_Pw(String password, Long room_id){
-//        if (chatRoomRepository.findByRoomId(room_id)).isPresent()){
-//            if (password.equals(chatRoomRepository.getRoom(room_id).get().getRoomPassword())){
-//                chatRoomRepository.deleteRoom(room_id);
-//                chatRoomMemberRepository.deleteRoom(room_id);
-//                chatMessageRepository.deleteLog(room_id);
-//            }
-//        }
-//    }
+    public boolean deleteRome_Pw(String room_id, String password){
+        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(room_id);
+        if (chatRoomEntity.isPresent()){
+            if (password.equals(chatRoomEntity.get().getRoomPassword())){
+                Optional<ChatRoomMemberEntity> chatRoomMemberEntity =
+                        chatRoomMemberRepository.findByRoomId(chatRoomEntity.get().getId());
+                Optional<ChatRoomHashtagEntity> chatRoomHashtagEntity =
+                        chatRoomHashtagRepository.findByRoomId(chatRoomEntity.get().getId());
+
+                if (chatRoomMemberEntity.isPresent() && chatRoomHashtagEntity.isPresent()) {
+                    chatRoomHashtagRepository.deleteById(chatRoomHashtagEntity.get().getId());
+                    chatRoomMemberRepository.deleteById(chatRoomMemberEntity.get().getId());
+                }
+                chatMessageRepository.deleteLog(chatRoomEntity.get().getId());
+                chatRoomRepository.deleteById(chatRoomEntity.get().getId());
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void enterRoom(ChatRoomMemberDTO chatRoomMemberDTO){
         ChatRoomEntity chatRoomEntity;  MemberEntity memberEntity;

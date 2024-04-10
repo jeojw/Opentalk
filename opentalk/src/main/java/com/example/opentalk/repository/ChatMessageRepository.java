@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessageEntity, Long> {
@@ -21,7 +22,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessageEntity, 
                  @Param("timeStamp") LocalDateTime timeStamp, @Param("message") String message);
 
     @Query(value = "SELECT * FROM Opentalk.chat_log WHERE opentalk_room_list_id = :roomId", nativeQuery = true)
-    List<ChatMessageEntity> chatLog(@Param("roomId") Long roomId);
+    Optional<List<ChatMessageEntity>> chatLog(@Param("roomId") Long roomId);
 
     @Modifying
     @Transactional

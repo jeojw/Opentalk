@@ -47,10 +47,10 @@ const MainComponent = () => {
 
     const deleteRoom = ({roomInfo}) => {
         if (window.confirm("방을 삭제하시겠습니까?")){
+            const deleteUrl = "/api/opentalk/deleteRoom";
+            const data = new FormData();
+            data.append("room_id", roomInfo.roomId);
             if (!roomInfo.existLock){
-                const deleteUrl = "/api/opentalk/deleteRoom";
-                const data = new FormData();
-                data.append("room_id", roomInfo.roomId);
                 axios.post(deleteUrl, data)
                 .then((res) => {
                     if (res.status === 200){
@@ -60,7 +60,22 @@ const MainComponent = () => {
                 .catch((error) => console.log(error));
             }   
             else{
-
+                const inputPassword = window.prompt("비밀번호를 입력해주세요.");
+                if (inputPassword === ""){
+                    window.alert("비밀번호를 입력해주세요.")
+                }
+                else{
+                    axios.post(deleteUrl + `/${inputPassword}`, data)
+                    .then((res)=> {
+                        if (res.data === true){
+                            window.alert("방이 삭제되었습니다.");
+                        }
+                        else{
+                            window.alert("비밀번호가 잘못되었습니다.");
+                        }
+                    })
+                    .catch((error) => console.log(error));
+                }
             }
         }
     }
@@ -105,7 +120,7 @@ const MainComponent = () => {
                         naviagte(`/opentalk/room/${roomInfo.roomId}`);
                     }
                     else{
-                        alert("비밀번호가 잘못되었습니다.")
+                        window.alert("비밀번호가 잘못되었습니다.")
                     }
                 })
                 .catch((error) => console.log(error));
