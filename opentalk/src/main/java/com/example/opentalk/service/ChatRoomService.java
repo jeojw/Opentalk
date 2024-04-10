@@ -109,6 +109,9 @@ public class ChatRoomService {
             chatRoomRepository.deleteById(chatRoomEntity.get().getId());
             Optional<ChatRoomMemberEntity> chatRoomMemberEntity =
                     chatRoomMemberRepository.findByRoomId(chatRoomEntity.get().getId());
+            Optional<ChatRoomHashtagEntity> chatRoomHashtagEntity =
+                    chatRoomHashtagRepository.findByRoomId(chatRoomEntity.get().getId());
+            chatRoomHashtagEntity.ifPresent(roomHashtagEntity -> chatRoomHashtagRepository.deleteById(roomHashtagEntity.getId()));
             chatRoomMemberEntity.ifPresent(roomMemberEntity -> chatRoomMemberRepository.deleteById(roomMemberEntity.getId()));
 
         }
@@ -123,10 +126,8 @@ public class ChatRoomService {
                 Optional<ChatRoomHashtagEntity> chatRoomHashtagEntity =
                         chatRoomHashtagRepository.findByRoomId(chatRoomEntity.get().getId());
 
-                if (chatRoomMemberEntity.isPresent() && chatRoomHashtagEntity.isPresent()) {
-                    chatRoomHashtagRepository.deleteById(chatRoomHashtagEntity.get().getId());
-                    chatRoomMemberRepository.deleteById(chatRoomMemberEntity.get().getId());
-                }
+                chatRoomMemberEntity.ifPresent(roomMemberEntity -> chatRoomMemberRepository.deleteById(roomMemberEntity.getId()));
+                chatRoomHashtagEntity.ifPresent(roomHashtagEntity -> chatRoomHashtagRepository.deleteById(roomHashtagEntity.getId()));
                 chatMessageRepository.deleteLog(chatRoomEntity.get().getId());
                 chatRoomRepository.deleteById(chatRoomEntity.get().getId());
                 return true;
