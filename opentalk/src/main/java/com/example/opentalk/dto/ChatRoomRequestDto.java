@@ -10,13 +10,11 @@ import java.util.List;
 @Setter
 @Data
 public class ChatRoomRequestDto {
-    private String manager;
+    private String roomId;
     private String roomName;
     private boolean existLock;
     private String roomPassword;
     private String introduction;
     private Integer limitParticipates;
-    private Integer participates;
     private List<HashTagDTO> roomTags;
-    private List<MemberResponseDto> members;
 }

@@ -8,7 +8,7 @@ export const SetRoomComponent = () =>{
     const [roomName, setRoomName] = useState("");
     const [roomId, setRoomId] = useState("");
     const [members, setMembers] = useState();
-    const [participants, setParticipants] = useState(0);
+    const [participants, setParticipants] = useState(3);
     const [existLock, setExistLock] = useState(false);
     const [password, setPassword] = useState("");
     const [manager, setManger] = useState();
@@ -48,8 +48,18 @@ export const SetRoomComponent = () =>{
     const GetInputName = (event) => {
         setRoomName(event.target.value);
     }
-    const GetInputCounts = (event) => {
-        setParticipants(event.target.value);
+    const GetInputParticipates = (event) => {
+        if (event.target.value >= 3){
+            if (event.target.value > 20){
+                window.alert("방의 인원수는 최대 20명까지 가능합니다.");
+            }
+            else{
+                setParticipants(event.target.value);
+            }
+        }
+        else{
+            window.alert("방의 인원수는 최소 3명부터 가능합니다.");
+        }
     }
     const GetInputPassword = (event) => {
         setPassword(event.target.value);
@@ -74,21 +84,25 @@ export const SetRoomComponent = () =>{
                 isExist = true;
             }
         }
-        if (getTag === ""){
-            window.alert("태그를 입력해주세요.");
-        }
-        else if (isExist){
-            window.alert("이미 추가한 태그입니다.");
+        if (tags.length >= 5){
+            window.alert("태그 수는 최대 5개까지 지정 가능합니다.");
         }
         else{
-            const newTags = [...tags, {
-                tagName: getTag,
-                accumulate: 0
-            }];
-            setTags(newTags);
-            setTag("");
+            if (getTag === ""){
+                window.alert("태그를 입력해주세요.");
+            }
+            else if (isExist){
+                window.alert("이미 추가한 태그입니다.");
+            }
+            else{
+                const newTags = [...tags, {
+                    tagName: getTag,
+                    accumulate: 0
+                }];
+                setTags(newTags);
+                setTag("");
+            }
         }
-
     }
 
     const tagDelete = (getTag) => {
@@ -124,9 +138,17 @@ export const SetRoomComponent = () =>{
             <button onClick={openModal}>방 생성하기</button>
             <Modal isOpen={isOpen} onRequestClose={closeModal}>
                 <div>
-                    방 이름: <input type="text" value={roomName} onChange={GetInputName}></input>
+                    방 이름: <input 
+                        type="text" 
+                        value={roomName} 
+                        onChange={GetInputName}></input>
                     <br></br>
-                    인원수: <input type="number" value={participants} onChange={GetInputCounts}></input>
+                    인원수: <input 
+                        type="number" 
+                        min="3"
+                        max="20"
+                        value={participants} 
+                        onChange={GetInputParticipates}></input>
                     <br></br>
                     비밀번호: <input 
                         type="checkbox" 

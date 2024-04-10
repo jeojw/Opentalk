@@ -1,9 +1,6 @@
 package com.example.opentalk.service;
 
-import com.example.opentalk.dto.ChatMessageDTO;
-import com.example.opentalk.dto.ChatRoomDTO;
-import com.example.opentalk.dto.ChatRoomMemberDTO;
-import com.example.opentalk.dto.HashTagDTO;
+import com.example.opentalk.dto.*;
 import com.example.opentalk.entity.*;
 import com.example.opentalk.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +63,43 @@ public class ChatRoomService {
         return null;
     }
 
-    public void changeRoomOption(){
+    public boolean changeRoomOption(ChatRoomRequestDto chatRoomRequestDto){
+        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(chatRoomRequestDto.getRoomId());
+        if (chatRoomEntity.isPresent()){
+            ChatRoomHashtagEntity chatRoomHashtagEntity;
+
+            System.out.println("참여자 제한: " + chatRoomRequestDto.getLimitParticipates());
+            System.out.println("비밀번호" + chatRoomRequestDto.getRoomPassword());
+
+            chatRoomRepository.changeRoomOption(chatRoomRequestDto.isExistLock(),
+                    chatRoomRequestDto.getIntroduction(),
+                    chatRoomRequestDto.getLimitParticipates(),
+                    chatRoomRequestDto.getRoomPassword(),
+                    chatRoomRequestDto.getRoomName(),
+                    chatRoomRequestDto.getRoomId());
+
+            List<HashTagEntity> hashTagEntities = new ArrayList<>();
+            for (HashTagDTO tag : chatRoomRequestDto.getRoomTags()){
+                hashTagEntities.add(HashTagEntity.toHashTagEntity(tag));
+            }
+
+            for (HashTagEntity tagEntity : hashTagEntities){
+                System.out.println(tagEntity.getId());
+                if (tagEntity.getId() == null){
+                    hashTagRepository.save(tagEntity);
+                }
+                else{
+                    hashTagRepository.accumulateTag(tagEntity.getId());
+                }
+                chatRoomHashtagEntity = ChatRoomHashtagEntity.builder()
+                        .chatroom(chatRoomEntity.get())
+                        .hashtag(tagEntity)
+                        .build();
+                chatRoomHashtagRepository.save(chatRoomHashtagEntity);
+            }
+            return true;
+        }
+        return false;
     }
 
     public boolean checkPassword(String roomId, String inputPassword){
@@ -193,6 +226,15 @@ public class ChatRoomService {
             chatRoomDTOList.add(ChatRoomDTO.toChatRoomDTO(chatRoomEntity));
         }
         return chatRoomDTOList;
+    }
+
+    public boolean forcedExistRoom(MemberResponseDto memberResponseDto){
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(memberResponseDto.getMemberId());
+        if (memberEntity.isPresent()){
+            chatRoomMemberRepository.deleteById(memberEntity.get().getId());
+            return true;
+        }
+        return false;
     }
 
 //    public List<ChatRoomDTO> searchRoom(SearchDto searchDto){

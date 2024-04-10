@@ -1,8 +1,6 @@
 package com.example.opentalk.controller;
 
-import com.example.opentalk.dto.ChatMessageDTO;
-import com.example.opentalk.dto.ChatRoomDTO;
-import com.example.opentalk.dto.ChatRoomMemberDTO;
+import com.example.opentalk.dto.*;
 import com.example.opentalk.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -54,21 +52,14 @@ public class RoomController {
         return ResponseEntity.ok(chatRoomService.deleteRome_Pw(room_id, password));
     }
 
+    @PostMapping("/api/opentalk/forcedExit")
+    public ResponseEntity<Boolean> forced_Exit(@RequestBody MemberResponseDto memberResponseDto){
+        return ResponseEntity.ok(chatRoomService.forcedExistRoom(memberResponseDto));
+    }
+
 //    @PostMapping("/api/opentalk/searchRoom")
 //    public ResponseEntity<List<ChatRoomDTO>> searchRoom(@RequestBody SearchDto searchDto){
 //        return ResponseEntity.ok(chatRoomService.searchRoom(searchDto));
-//    }
-
-    @PostMapping("/api/opentalk/changeRoom")
-    public void changeRoom(@RequestBody ChatRoomDTO chatRoomDTO){
-
-    }
-
-
-//
-//    @PostMapping("/api/opentalk/deleteRoom/password")
-//    public void deleteRoom_Pw(@RequestParam("room_id") String room_id, @RequestParam("password") String password){
-//        chatRoomService.deleteRome_Pw(room_id, password);
 //    }
 
     @PostMapping("/api/opentalk/saveChat")
@@ -84,6 +75,11 @@ public class RoomController {
     @PostMapping("/api/opentalk/enterRoom/{password}")
     public ResponseEntity<Boolean> enterRoom_Pw(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO, @PathVariable String password){
         return ResponseEntity.ok(chatRoomService.enterRoom_Pw(chatRoomMemberDTO, password));
+    }
+
+    @PostMapping("/api/opentalk/changeRoom")
+    public ResponseEntity<Boolean> changRoom(@RequestBody @Valid ChatRoomRequestDto chatRoomRequestDto){
+        return ResponseEntity.ok(chatRoomService.changeRoomOption(chatRoomRequestDto));
     }
 
 }

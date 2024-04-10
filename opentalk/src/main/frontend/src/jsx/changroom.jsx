@@ -6,9 +6,6 @@ import axios from'axios';
 const ChangRoomComponent = ({room_Id}) => {
     const [roomInfo, setRoomInfo] = useState();
 
-    const [members, setMembers] = useState([]);
-    const [preMembers, setPreMembers] = useState([]);
-
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [preRoomName, setPreRoomName] = useState("");
@@ -33,28 +30,27 @@ const ChangRoomComponent = ({room_Id}) => {
         const fetchCurRoomInfo = async () => {
             try{
                 const response = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
-                setRoomInfo(response.data);
-                setPreRoomName(roomInfo?.roomName);
-                setPreExistLock(roomInfo?.existLock);
-                setPreInfo(roomInfo?.introduction);
-                setPrePassword(roomInfo?.roomPassword);
-                setPreParticipants(roomInfo?.limitParticipates);
-                setPreTags(roomInfo?.roomTags);
-                setPreMembers(roomInfo?.members);
-
-                setRoomName(preRoomName);
-                setExistLock(preExistLock);
-                setInfo(preInfo);
-                setPassword(prePassword);
-                setParticipants(preParticipates);
-                setTags(preTags);
-                setMembers(preMembers);
-
+                setRoomInfo(response.data.chatroom);
+                setPreRoomName(response.data.chatroom.roomName);
+                setPreExistLock(response.data.chatroom.existLock);
+                setPreInfo(response.data.chatroom.introduction);
+                setPrePassword(response.data.chatroom.roomPassword);
+                setPreParticipants(response.data.chatroom.limitParticipates);
+                setPreTags(response.data.chatroom.roomTags);
             } catch (error) {
                 console.log(error);
             }
         }
         fetchCurRoomInfo();
+    }, []);
+
+    useEffect(() => {
+        setRoomName(preRoomName);
+        setExistLock(preExistLock);
+        setInfo(preInfo);
+        setPassword(prePassword);
+        setParticipants(preParticipates);
+        setTags(preTags);
     }, []);
 
     const openModal = () => {
@@ -73,18 +69,45 @@ const ChangRoomComponent = ({room_Id}) => {
         setPassword(prePassword);
         setParticipants(preParticipates);
         setTags(preTags);
-        setMembers(preMembers);
     }
 
-    const setModal = () => {
+    const changeRoomModal = () => {
+        axios.post("/api/opentalk/changeRoom", {
+            roomId: roomInfo?.roomId,
+            roomName: roomName,
+            roomPassword: password,
+            limitParticipates: participants,
+            introduction: info,
+            existLock: existLock,
+            roomTags: tags            
+        })
+        .then((res) => {
+            if (res.data === true){
+                window.alert("방 설정이 변경되었습니다.");
+            }
+        })
+        .catch((error) => console.log(error));
         setIsOpen(false);
     }
 
     const GetInputName = (event) => {
         setRoomName(event.target.value);
     }
-    const GetInputCounts = (event) => {
-        setParticipants(event.target.value);
+    const GetInputParticipates = (event) => {
+        if (event.target.value >= preParticipates){
+            if (event.target.value > 20){
+                window.alert("방의 인원수는 최대 20명까지 가능합니다.");
+            }
+            else{
+                setParticipants(event.target.value);
+            }
+        }
+        else if (event.target.value >= 3 && event.targat.value < preParticipates){
+            window.alert("현재 인원의 수보다 적게 설정이 불가능합니다.");
+        }
+        else {
+            window.alert("방의 인원수는 최소 3명부터 가능합니다.");
+        }
     }
     const GetInputPassword = (event) => {
         setPassword(event.target.value);
@@ -103,10 +126,31 @@ const ChangRoomComponent = ({room_Id}) => {
     }
 
     const AppendTag = (getTag) => {
-        tags.push({
-            tagName: getTag
-        });
-        setTag("");
+        let isExist = false;
+        for (let i = 0; i < tags.length; i++){
+            if (tags[i].tagName === getTag){
+                isExist = true;
+            }
+        }
+        if (tags.length >= 5){
+            window.alert("태그 수는 최대 5개까지 지정 가능합니다.");
+        }
+        else{
+            if (getTag === ""){
+                window.alert("태그를 입력해주세요.");
+            }
+            else if (isExist){
+                window.alert("이미 추가한 태그입니다.");
+            }
+            else{
+                const newTags = [...tags, {
+                    tagName: getTag,
+                    accumulate: 0
+                }];
+                setTags(newTags);
+                setTag("");
+            }
+        }
     }
 
     return(
@@ -120,9 +164,11 @@ const ChangRoomComponent = ({room_Id}) => {
                     onChange={GetInputName}></input>
                     <br></br>
                     인원수: <input 
-                    type="number" 
-                    value={participants} 
-                    onChange={GetInputCounts}></input>
+                        type="number" 
+                        min="3"
+                        max="20"
+                        value={participants} 
+                        onChange={GetInputParticipates}></input>
                     <br></br>
                     비밀번호: <input 
                         type="checkbox" 
@@ -154,14 +200,11 @@ const ChangRoomComponent = ({room_Id}) => {
                         onClick={()=>AppendTag(tag)}>
                     </input>
                     {tags?.map((t)=> (
-                        <li>#{t}</li>
+                        <li>#{t.tagName}</li>
                     )
                     )}
                     <br></br>
-                    {members?.map((_member) => (
-                        <li>{_member}</li>
-                    )) }
-                <button onClick={setModal}>변경하기</button>
+                <button onClick={changeRoomModal}>변경하기</button>
                 <button onClick={cancleSetModal}>변경 취소</button>
                 </div>
             </Modal>

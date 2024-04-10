@@ -131,6 +131,19 @@ const RoomComponent = ({roomInfo, talker}) => {
         event.preventDefault();
     }
 
+    const ForcedExit = (roomMember) => {
+        if (window.confirm(`정말 ${roomMember.memberNickName}님을 강제퇴장 시키겠습니까?`)){
+            const checkUrl = "/api/opentalk/forcedExit";
+            axios.post(checkUrl, roomMember)
+            .then((res) => {
+                if (res.data === true){
+                    window.alert("강제퇴장 되었습니다.");
+                }
+            })
+            .catch((error) => console.log(error));
+        }
+    }
+
     const ExitRoom = () => {
         if (window.confirm("방을 나가시겠습니까?")){
             const exitUrl = '/api/opentalk/exitRoom';
@@ -175,7 +188,11 @@ const RoomComponent = ({roomInfo, talker}) => {
             <div>
             <h2>참여명단</h2>
                 {roomInformation?.members.map((_member, index) => (
-                    <li key={index}>{_member.memberNickName}</li>
+                    <li key={index}>{_member.memberNickName}
+                    {role === "MANAGER" && _member === myInfo && (
+                        <button onClick={() => ForcedExit(_member)}>강퇴하기</button>
+                    )}
+                    </li>
                 ))}
             </div>
 
