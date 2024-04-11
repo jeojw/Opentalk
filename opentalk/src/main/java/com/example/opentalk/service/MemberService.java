@@ -10,6 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,15 @@ public class MemberService {
         return memberRepository.findById(SecurityUtil.getCurrentMemberId())
                 .map(MemberInfoDto::of)
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
+    }
+
+    public List<MemberResponseDto> searchMember(String memberNickName){
+        List<Optional<MemberEntity>> members = memberRepository.searchByMemberNickName(memberNickName);
+        List<MemberResponseDto> memberResponseDtoList = new ArrayList<>();
+        for (Optional<MemberEntity> member : members){
+            member.ifPresent(memberEntity -> memberResponseDtoList.add(MemberResponseDto.of(memberEntity)));
+        }
+        return memberResponseDtoList;
     }
 
     @Transactional

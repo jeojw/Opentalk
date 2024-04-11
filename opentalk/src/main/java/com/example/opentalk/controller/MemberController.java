@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
@@ -25,8 +27,12 @@ public class MemberController {
     @GetMapping("/api/opentalk/member/profile")
     public ResponseEntity<MemberInfoDto> getProfile(){
         MemberInfoDto myInfoBySecurity = memberService.getMyProfileBySecurity();
-        System.out.println(myInfoBySecurity.getMemberNickName());
         return ResponseEntity.ok((myInfoBySecurity));
+    }
+
+    @PostMapping("/api/opentalk/member/searchNickName")
+    public ResponseEntity<List<MemberResponseDto>> searchMember(@RequestParam("nickName") String nickName){
+        return ResponseEntity.ok(memberService.searchMember(nickName));
     }
 
     @PostMapping("/api/opentalk/member/findId")

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,6 +23,10 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     @Query(value = "SELECT member_id FROM Opentalk.open_talk_member WHERE member_email=:memberEmail" ,
             nativeQuery = true)
     String SearchMemberId(@Param("memberEmail") String memberEmail);
+
+    @Query(value = "SELECT * FROM Opentalk.open_talk_member WHERE member_nick_name LIKE %:nickName%",
+            nativeQuery = true)
+    List<Optional<MemberEntity>> searchByMemberNickName(@Param("nickName") String nickName);
 
 
     @Query(value = "SELECT member_password FROM Opentalk.open_talk_member WHERE member_email=:memberEmail",

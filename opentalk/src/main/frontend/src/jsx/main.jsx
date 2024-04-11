@@ -15,6 +15,12 @@ const MainComponent = () => {
         MANAGER: 'MANAGER'
     };
 
+    const menuList = [
+        {value: "title", name: "제목"},
+        {value: "manager", name: "방장"},
+        {value: "tags", name: "태그"},
+    ];
+
     const [chatRoomList, setChatRoomList] = useState([]);
     const [allChatRoomList, setAllChatRoomList] = useState([]);
     const [page, setPage] = useState(1);
@@ -35,7 +41,7 @@ const MainComponent = () => {
     const [member, setMember] = useState("");
     const [role, setRole] = useState();
     
-    const [selectManu, setSelectManu] = useState("");
+    const [selectManu, setSelectManu] = useState("default");
     const [searchKeyword, setSearchKeyword] = useState("");
     const naviagte = useNavigate();
 
@@ -106,7 +112,7 @@ const MainComponent = () => {
             .then((res) => {
                 console.log(res.data);
                 setChatRoomList(res.data);
-                setPageLength(chatRoomList.length);
+                setPageLength(res.data.length);
             })
             .catch((error) => console.log(error));
         }
@@ -249,14 +255,16 @@ const MainComponent = () => {
             )}</li>
             ))}
         </ul>
-        <SetRoomComponent />
+        <SetRoomComponent role={member.role}/>
         <button onClick={GoProfile}>프로필 설정</button>
         <button onClick={LogOut}>로그아웃</button>
         <br></br>
-        <select value={selectManu} onChange={selectMenuHandle}>
-            <option value="title">제목</option>
-            <option value="tag">태그</option>
-            <option value="manager">방장</option>
+        <select onChange={selectMenuHandle} value={selectManu}>
+            {menuList.map((item) => {
+                return <option value={item.value} key={item.value}>
+                    {item.name}
+                </option>;
+            })}
         </select>
         <input 
             type="text"

@@ -3,7 +3,7 @@ import {useCookies} from 'react-cookie';
 import Modal from 'react-modal';
 import axios from'axios';
 
-const ChangRoomComponent = ({room_Id}) => {
+const ChangRoomComponent = ({room_Id, role}) => {
     const [roomInfo, setRoomInfo] = useState();
 
     const [isOpen, setIsOpen] = useState(false);
@@ -155,7 +155,9 @@ const ChangRoomComponent = ({room_Id}) => {
 
     return(
         <div>
-            <button onClick={openModal}>설정 변경</button>
+            {role === "MANAGER" && (
+                <button onClick={openModal}>설정 변경</button>
+            )}
             <Modal isOpen={isOpen} onRequestClose ={closeModal}>
                 <div>
                 방 이름: <input 

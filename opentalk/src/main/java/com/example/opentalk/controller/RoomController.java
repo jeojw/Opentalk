@@ -33,6 +33,11 @@ public class RoomController {
         return ResponseEntity.ok(roomId);
     }
 
+//    @PostMapping("/api/opentalk/invite")
+//    public ResponseEntity<Boolean> inviteMember(@RequestParam("nickName") String nickName){
+//
+//    }
+
     @PostMapping("/api/opentalk/enterRoom")
     public void enterRoom(@RequestBody @Valid ChatRoomMemberDTO chatRoomMemberDTO){
         chatRoomService.enterRoom(chatRoomMemberDTO);

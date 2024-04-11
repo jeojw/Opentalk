@@ -5,6 +5,7 @@ import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
 import { useCookies } from "react-cookie";
 import ChangRoomComponent from './changroom';
+import InviteMemberComponent from './inviteMember';
 
 const RoomComponent = ({roomInfo, talker}) => {
 
@@ -203,7 +204,8 @@ const RoomComponent = ({roomInfo, talker}) => {
                 <input type="submit" value="전송" onClick={() => publish(chat)}></input>
             </form>
             <button onClick={ExitRoom}>나가기</button>
-            <ChangRoomComponent room_Id={room_Id}/>
+            <ChangRoomComponent room_Id={room_Id} role={role}/>
+            <InviteMemberComponent role={role}/>
             <div>
             <h2>참여명단</h2>
                 {roomInformation?.members.map((_member, index) => (
