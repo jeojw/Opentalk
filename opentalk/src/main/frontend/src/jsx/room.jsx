@@ -226,11 +226,12 @@ const RoomComponent = ({roomInfo, talker}) => {
             <div>
             <h2>참여명단</h2>
                 {roomInformation?.members.map((_member, index) => (
-                    <li key={index}>{_member.memberNickName}
-                    {role === "MANAGER" && _member !== myInfo && (
+                    <li key={index}>{_member?.memberNickName}
+                    {roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
+                    {roomInformation.roomManager !==_member.memberNickName && (
                         <button onClick={() => ForcedExit(_member)}>강퇴하기</button>
                     )}
-                    {role === "MANAGER" && _member !== myInfo && (
+                    {roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
                         <button onClick={() => AuthMandate(_member)}>방장위임</button>
                     )}
                     </li>
