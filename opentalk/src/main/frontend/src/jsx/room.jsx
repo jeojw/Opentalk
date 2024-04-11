@@ -23,79 +23,83 @@ const RoomComponent = ({roomInfo, talker}) => {
 
     const navigate = useNavigate();
 
-
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchInfo = async () => {
             try{
                 const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
                     headers: {Authorization: 'Bearer ' + cookies.accessToken}
                 });
                 setMyInfo(myselfResponse.data);
-                
-                const roomResponse = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myselfResponse.data.memberId}`);
-                setRoomInformation(roomResponse.data.chatroom);
-                setMemberList(roomResponse.data.member);
-                setRole(roomResponse.data.role);
             } catch (error){
                 console.log(error);
             }
         }
 
-        fetchData();
-    }, [room_Id]);
+        fetchInfo();
+    }, []);
 
-    useEffect(() =>{
-        const connect = () => {
-            client.current = new StompJs.Client({
-                webSocketFactory: () => new SockJs('/ws'),
-                connectHeaders: {
-                    "auth-token": "spring-chat-auth-token",
-                },
-                debug: function (str) {
-                    console.log(str);
-                },
-                reconnectDelay: 5000,
-                heartbeatIncoming: 4000,
-                heartbeatOutgoing: 4000,
-                onConnect: () => {
-                    subscribe();
-                },
-                onStompError: (frame) => {
-                    console.error(frame);
-                }
-            });
-            client.current.activate();  
-        };
-    
-        const disconnect = () => {
-            client.current.deactivate();
-        };
-
-        const subscribe = async () => {
-            try{
-                const chatLogData = new FormData();
-                chatLogData.append("roomId", room_Id);
-                const chatLogResponse = await axios.post("/api/opentalk/chatLog", chatLogData);
-                setPreChatList(chatLogResponse.data);
-                console.log(preChatList);
-    
-                client.current.subscribe(`/sub/chat/${room_Id}`, ({body}) => {
-                    setChatList((_chatList)=>[..._chatList , JSON.parse(body)])
-                });
-                chatList.push(...preChatList);
-            } catch (error) {
-                console.error(error);
+    useEffect(() => {
+        const fetchChatLog = async () => {
+            let response;
+            try {
+                const data = new FormData();
+                data.append("roomId", room_Id);
+                response = await axios.post("/api/opentalk/chatLog", data);
+            } catch (error){
+                console.log(error);
             }
-        };
-        
+            setPreChatList(response.data);
+        }
+
+        fetchChatLog();
+    }, [room_Id])
+
+
+    useEffect(() => {
+        const fetchRoom = async () => {
+            try{
+                const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
+                setRoomInformation(response.data.chatroom);
+                setMemberList(response.data.member);
+                setRole(response.data.role);
+            } catch (error){
+                console.log(error);
+            }
+        }
+
+        fetchRoom();
+    }, [room_Id, myInfo]);
+
+    useEffect(() =>{ 
         connect();
         return () => disconnect();
-    }, [room_Id, roomInfo]);
+    }, []);
 
-    // useEffect(() => {
-    //     setRoomName(props.roomInfo.name);
-    //     setParticipates(props.roomInfo.participates);
-    // }, [props]);
+    const connect = () => {
+        client.current = new StompJs.Client({
+            webSocketFactory: () => new SockJs('/ws'),
+            connectHeaders: {
+                "auth-token": "spring-chat-auth-token",
+            },
+            debug: function (str) {
+                console.log(str);
+            },
+            reconnectDelay: 5000,
+            heartbeatIncoming: 4000,
+            heartbeatOutgoing: 4000,
+            onConnect: () => {
+                subscribe();
+            },
+            onStompError: (frame) => {
+                console.error(frame);
+            }
+        });
+        client.current.activate();  
+    };
+
+    const disconnect = () => {
+        client.current.deactivate();
+    };
 
     
     const publish = (chat) => {
@@ -124,6 +128,12 @@ const RoomComponent = ({roomInfo, talker}) => {
         setChat("");
     }
 
+    const subscribe = () => {
+        client.current.subscribe(`/sub/chat/${room_Id}`, ({body}) => {
+            setChatList((prevChatList)=>[... prevChatList , JSON.parse(body)])
+        });
+    };
+
     const handleChange = (event) => {
         setChat(event.target.value);
     }
@@ -148,6 +158,7 @@ const RoomComponent = ({roomInfo, talker}) => {
     const ExitRoom = () => {
         if (window.confirm("방을 나가시겠습니까?")){
             const exitUrl = '/api/opentalk/exitRoom';
+            console.log(roomInformation);
             axios.post(exitUrl, {
                 chatroom: roomInformation,
                 member: myInfo,
@@ -170,6 +181,13 @@ const RoomComponent = ({roomInfo, talker}) => {
                 <h2>참여자 수: {roomInformation?.participates}</h2>
             </div>
             <div>
+                {preChatList && preChatList.length > 0 && (
+                    <ul>
+                        {preChatList.map((_chatMessage, index) => (
+                            <li key={index}>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</li>
+                        ))}
+                    </ul>
+                )}
                 {chatList && chatList.length > 0 && (
                     <ul>
                         {chatList.map((_chatMessage, index) => (

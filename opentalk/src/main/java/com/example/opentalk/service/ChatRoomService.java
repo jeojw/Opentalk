@@ -33,7 +33,6 @@ public class ChatRoomService {
             }
 
             for (HashTagEntity tagEntity : hashTagEntities){
-                System.out.println(tagEntity.getId());
                 if (tagEntity.getId() == null){
                     hashTagRepository.save(tagEntity);
                 }
@@ -70,10 +69,6 @@ public class ChatRoomService {
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(chatRoomRequestDto.getRoomId());
         if (chatRoomEntity.isPresent()){
             ChatRoomHashtagEntity chatRoomHashtagEntity;
-
-            System.out.println("참여자 제한: " + chatRoomRequestDto.getLimitParticipates());
-            System.out.println("비밀번호" + chatRoomRequestDto.getRoomPassword());
-
             chatRoomRepository.changeRoomOption(chatRoomRequestDto.isExistLock(),
                     chatRoomRequestDto.getIntroduction(),
                     chatRoomRequestDto.getLimitParticipates(),
@@ -87,7 +82,6 @@ public class ChatRoomService {
             }
 
             for (HashTagEntity tagEntity : hashTagEntities){
-                System.out.println(tagEntity.getId());
                 if (tagEntity.getId() == null){
                     hashTagRepository.save(tagEntity);
                 }
@@ -125,7 +119,9 @@ public class ChatRoomService {
 
     public List<ChatMessageDTO> chatLog(String roomId){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(roomId);
+
         if (chatRoomEntity.isPresent()){
+
             Optional<List<ChatMessageEntity>> chatLogs= chatMessageRepository.chatLog(chatRoomEntity.get().getId());
             List<ChatMessageDTO> chatMessageDTOS = new ArrayList<>();
             if (chatLogs.isPresent()) {
@@ -213,9 +209,11 @@ public class ChatRoomService {
     public void exitRoom(ChatRoomMemberDTO chatRoomMemberDTO){
         Optional<ChatRoomEntity> chatRoomEntity =
                 chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId());
-        if (chatRoomEntity.isPresent()){
+        Optional<MemberEntity> memberEntity =
+                memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId());
+        if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
             Optional<ChatRoomMemberEntity> chatRoomMemberEntity =
-                    chatRoomMemberRepository.findByRoomId(chatRoomEntity.get().getId());
+                    chatRoomMemberRepository.findByRoomMemberId(chatRoomEntity.get().getId(), memberEntity.get().getId());
             chatRoomMemberEntity.ifPresent(roomMemberEntity -> chatRoomMemberRepository.deleteById(roomMemberEntity.getId()));
         }
 

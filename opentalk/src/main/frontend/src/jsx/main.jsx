@@ -33,6 +33,23 @@ const MainComponent = () => {
     //     };
     // }, [history])
 
+    useEffect(() => {
+        const fetchMainData = async () => {
+            try{
+                const meResponse = await axios.get('/api/opentalk/member/me', {
+                    headers: {Authorization: 'Bearer ' + cookies.accessToken}
+                });
+                setMember(meResponse.data);
+                const roomResponse = await axios.get('/api/opentalk/rooms');
+                setChatList(roomResponse.data);
+            } catch (error){
+                console.error(error);
+            }
+        };
+
+        fetchMainData();
+    }, []);
+
     const GetInputSearchKeyword = (event) => {
         setSearchKeyword(event.target.value);
     }
@@ -134,24 +151,6 @@ const MainComponent = () => {
         );
     }
 
-    useEffect(() => {
-        const fetchMainData = async () => {
-            try{
-                const meResponse = await axios.get('/api/opentalk/member/me', {
-                    headers: {Authorization: 'Bearer ' + cookies.accessToken}
-                });
-                setMember(meResponse.data);
-                const roomResponse = await axios.get('/api/opentalk/rooms');
-                setChatList(roomResponse.data);
-                console.log(roomResponse.data);
-            } catch (error){
-                console.error(error);
-            }
-        };
-
-        fetchMainData();
-    }, [refresh]);
-
     const GoProfile = () => {
         if (cookies.accessToken){
             naviagte("/opentalk/profile");
@@ -175,27 +174,25 @@ const MainComponent = () => {
 
    return (
     <div>
-        <table>
-            <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
-            <p>환영합니다, {member.memberNickName}님</p>
-            <ul>
-                {chatList.map(room=>(
-                    <li key={room.roomId}>{room.roomName} | 인원수: {room.participates} / {room.limitParticipates}
-                    {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
-                    <br></br>{room.introduction}
-                    <br></br>방장: {room.roomManager}
-                    <ul>
-                        {room.roomTags.map(tag=>(
-                            <li>#{tag.tagName}</li>
-                        ))}
-                    </ul>
-                    <button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button>
-                    {room.roomManager === member.memberNickName && (
-                    <button onClick={() => deleteRoom({roomInfo: room})}>삭제하기</button>
-                )}</li>
-                ))}
-            </ul>
-        </table>
+        <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
+        <p>환영합니다, {member.memberNickName}님</p>
+        <ul>
+            {chatList.map(room=>(
+                <li key={room.roomId}>{room.roomName} | 인원수: {room.participates} / {room.limitParticipates}
+                {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
+                <br></br>{room.introduction}
+                <br></br>방장: {room.roomManager}
+                <ul>
+                    {room.roomTags.map(tag=>(
+                        <li>#{tag.tagName}</li>
+                    ))}
+                </ul>
+                <button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button>
+                {room.roomManager === member.memberNickName && (
+                <button onClick={() => deleteRoom({roomInfo: room})}>삭제하기</button>
+            )}</li>
+            ))}
+        </ul>
         <SetRoomComponent />
         <button onClick={GoProfile}>프로필 설정</button>
         <button onClick={LogOut}>로그아웃</button>
