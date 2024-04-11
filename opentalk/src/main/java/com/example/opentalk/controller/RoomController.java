@@ -21,6 +21,12 @@ public class RoomController {
         List<ChatRoomDTO> rooms = chatRoomService.findAllRooms();
         return ResponseEntity.ok(rooms);
     }
+
+    @PostMapping("/api/opentalk/searchRooms")
+    public ResponseEntity<List<ChatRoomDTO>> searchRooms(@RequestBody SearchDto searchDto){
+        return ResponseEntity.ok(chatRoomService.searchRooms(searchDto));
+    }
+
     @PostMapping("/api/opentalk/makeRoom")
     public ResponseEntity<String> create(@RequestBody @Valid ChatRoomDTO chatRoomDTO){
         String roomId = chatRoomService.createRoom(chatRoomDTO);

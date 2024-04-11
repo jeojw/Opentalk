@@ -5,6 +5,9 @@ import { useCookies } from 'react-cookie';
 import SetRoomComponent from './setroom';
 import RoomComponent from './room';
 import {createBrowserHistory} from "history";
+import Pagination from 'react-js-pagination';
+import Select from "react-select";
+
 
 const MainComponent = () => {
     const ChatRoomRole = {
@@ -12,13 +15,28 @@ const MainComponent = () => {
         MANAGER: 'MANAGER'
     };
 
+    const [chatRoomList, setChatRoomList] = useState([]);
+    const [allChatRoomList, setAllChatRoomList] = useState([]);
+    const [page, setPage] = useState(1);
+    const [isSearch, setIsSearch] = useState(false);
+
+    const postPerPage = 2;
+    const indexOfLastPost = page * postPerPage;
+    const indexOfFirstPost= indexOfLastPost - postPerPage;
+
+    const [pageLength , setPageLength] = useState(0);
+
+    const chatRoomLength = allChatRoomList.length;
+    const handlePageChange = (page)=>{
+        setPage(page);
+    }
+
     const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
     const [member, setMember] = useState("");
-    const [chatList, setChatList] = useState([]);
     const [role, setRole] = useState();
+    
     const [selectManu, setSelectManu] = useState("");
     const [searchKeyword, setSearchKeyword] = useState("");
-    const [refresh, setRefresh] = useState(1);
     const naviagte = useNavigate();
 
     const history = createBrowserHistory();
@@ -34,21 +52,37 @@ const MainComponent = () => {
     // }, [history])
 
     useEffect(() => {
-        const fetchMainData = async () => {
+        const fetchMyInfo = async () => {
             try{
                 const meResponse = await axios.get('/api/opentalk/member/me', {
                     headers: {Authorization: 'Bearer ' + cookies.accessToken}
                 });
                 setMember(meResponse.data);
-                const roomResponse = await axios.get('/api/opentalk/rooms');
-                setChatList(roomResponse.data);
             } catch (error){
                 console.error(error);
             }
         };
 
-        fetchMainData();
+        fetchMyInfo();
     }, []);
+
+    useEffect(() => {
+        const fetchAllRooms = async () => {
+            try{
+                const roomResponse = await axios.get("/api/opentalk/rooms");
+                setAllChatRoomList(roomResponse.data);
+                setPageLength(roomResponse.data.length);
+            } catch (error){
+                console.error(error);
+            }
+        };
+
+        fetchAllRooms();
+    }, []);
+
+    useEffect(() => {
+        setChatRoomList(allChatRoomList.slice(indexOfFirstPost, indexOfLastPost))
+    }, [allChatRoomList, page]);
 
     const GetInputSearchKeyword = (event) => {
         setSearchKeyword(event.target.value);
@@ -59,7 +93,29 @@ const MainComponent = () => {
     }
 
     const search = () => {
+        if (searchKeyword.length <= 0){
+            window.alert("한글자 이상의 검색어를 입력해주세요.")
+        }
+        else{
+            setIsSearch(true);
+            console.log(selectManu);
+            axios.post("/api/opentalk/searchRooms", {
+                type:selectManu,
+                keyword:searchKeyword
+            })
+            .then((res) => {
+                console.log(res.data);
+                setChatRoomList(res.data);
+                setPageLength(chatRoomList.length);
+            })
+            .catch((error) => console.log(error));
+        }
+    }
 
+    const initSearch = () => {
+        setChatRoomList(allChatRoomList.slice(indexOfFirstPost, indexOfLastPost));
+        setPageLength(allChatRoomList.length);
+        setIsSearch(false);
     }
 
     const deleteRoom = ({roomInfo}) => {
@@ -177,7 +233,7 @@ const MainComponent = () => {
         <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
         <p>환영합니다, {member.memberNickName}님</p>
         <ul>
-            {chatList.map(room=>(
+            {chatRoomList.map(room=>(
                 <li key={room.roomId}>{room.roomName} | 인원수: {room.participates} / {room.limitParticipates}
                 {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                 <br></br>{room.introduction}
@@ -208,6 +264,18 @@ const MainComponent = () => {
             onChange={GetInputSearchKeyword}
         ></input>
         <button onClick={search}>검색</button>
+        {isSearch && (
+            <button onClick={initSearch}>초기화</button>
+        )}
+        <Pagination
+            activePage={page}
+            itemsCountPerPage={postPerPage}
+            totalItemsCount={pageLength}
+            pageRangeDisplayed={5}
+            prevPageText={"<"}
+            nextPageText={">"}
+            onChange={handlePageChange}
+        />
     </div>
 
     );

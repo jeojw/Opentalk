@@ -228,6 +228,26 @@ public class ChatRoomService {
         return chatRoomDTOList;
     }
 
+    public List<ChatRoomDTO> searchRooms(SearchDto searchDto){
+        List<ChatRoomEntity> chatRoomEntityList = new ArrayList<>();
+        List<ChatRoomDTO> chatRoomDTOList = new ArrayList<>();
+        System.out.print("Type: " + searchDto.getType());
+        if (searchDto.getType().equals("title")){
+            chatRoomEntityList = chatRoomRepository.searchRoomsByTitle(searchDto.getKeyword());
+            System.out.print("List:" + chatRoomEntityList);
+        }
+        else if (searchDto.getType().equals("manager")) {
+            chatRoomEntityList = chatRoomRepository.searchRoomsByManager(searchDto.getKeyword());
+        }
+
+        if (!chatRoomEntityList.isEmpty()){
+            for (ChatRoomEntity chatRoomEntity : chatRoomEntityList){
+                chatRoomDTOList.add(ChatRoomDTO.toChatRoomDTO(chatRoomEntity));
+            }
+        }
+        return chatRoomDTOList;
+    }
+
     public boolean forcedExistRoom(MemberResponseDto memberResponseDto){
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(memberResponseDto.getMemberId());
         if (memberEntity.isPresent()){
