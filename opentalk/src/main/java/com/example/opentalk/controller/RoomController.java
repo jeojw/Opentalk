@@ -22,6 +22,11 @@ public class RoomController {
         return ResponseEntity.ok(rooms);
     }
 
+    @PostMapping("/api/opentalk/roomParticipates")
+    public ResponseEntity<Integer> getParticipates(@RequestParam("roomId") String roomId){
+        return ResponseEntity.ok(chatRoomService.getParticipates(roomId));
+    }
+
     @PostMapping("/api/opentalk/searchRooms")
     public ResponseEntity<List<ChatRoomDTO>> searchRooms(@RequestBody SearchDto searchDto){
         return ResponseEntity.ok(chatRoomService.searchRooms(searchDto));

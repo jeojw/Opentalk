@@ -21,6 +21,7 @@ public class ChatRoomDTO {
     private String roomManager;
     private String roomPassword;
     private String introduction;
+    private Integer curParticipates;
     private Integer limitParticipates;
     private List<HashTagDTO> roomTags;
     private List<MemberResponseDto> members;
@@ -29,11 +30,12 @@ public class ChatRoomDTO {
 
     @Builder
     public ChatRoomDTO (String roomId, String roomName, String roomPassword, Integer limitParticipates,
-                        String introduction, String roomManager,
+                        Integer curParticipates, String introduction, String roomManager,
                         List<MemberResponseDto> talkers, List<HashTagDTO> roomTags){
         this.roomId = roomId;
         this.roomName = roomName;
         this.roomPassword = roomPassword;
+        this.curParticipates = curParticipates;
         this.limitParticipates = limitParticipates;
         this.introduction = introduction;
         this.existLock = !this.roomPassword.isEmpty();

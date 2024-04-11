@@ -65,6 +65,11 @@ public class ChatRoomService {
         return null;
     }
 
+    public int getParticipates(String roomId){
+        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(roomId);
+        return chatRoomEntity.map(roomEntity -> chatRoomMemberRepository.getParticipates(roomEntity.getId())).orElse(-1);
+    }
+
     public boolean authMandate(ManagerChangeDto managerChangeDto){
         Optional<MemberEntity> manager = memberRepository.findByMemberNickName(managerChangeDto.getManager());
         Optional<MemberEntity> newManager = memberRepository.findByMemberNickName(managerChangeDto.getNewManager());
@@ -237,7 +242,9 @@ public class ChatRoomService {
         List<ChatRoomEntity> chatRoomEntityList = chatRoomRepository.findAll();
         List<ChatRoomDTO> chatRoomDTOList = new ArrayList<>();
         for (ChatRoomEntity chatRoomEntity : chatRoomEntityList){
-            chatRoomDTOList.add(ChatRoomDTO.toChatRoomDTO(chatRoomEntity));
+            ChatRoomDTO chatRoomDTO = ChatRoomDTO.toChatRoomDTO(chatRoomEntity);
+            chatRoomDTO.setCurParticipates(getParticipates(chatRoomEntity.getRoomId()));
+            chatRoomDTOList.add(chatRoomDTO);
         }
         return chatRoomDTOList;
     }

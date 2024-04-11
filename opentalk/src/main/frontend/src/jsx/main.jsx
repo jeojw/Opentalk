@@ -1,13 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios, { all } from 'axios';
 import { useCookies } from 'react-cookie';
 import SetRoomComponent from './setroom';
 import RoomComponent from './room';
 import {createBrowserHistory} from "history";
 import Pagination from 'react-js-pagination';
-import Select from "react-select";
-
 
 const MainComponent = () => {
     const ChatRoomRole = {
@@ -40,6 +38,7 @@ const MainComponent = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
     const [member, setMember] = useState("");
     const [role, setRole] = useState();
+    const participates = [];
     
     const [selectManu, setSelectManu] = useState("default");
     const [searchKeyword, setSearchKeyword] = useState("");
@@ -240,7 +239,7 @@ const MainComponent = () => {
         <p>환영합니다, {member.memberNickName}님</p>
         <ul>
             {chatRoomList.map(room=>(
-                <li key={room.roomId}>{room.roomName} | 인원수: {room.participates} / {room.limitParticipates}
+                <li key={room.roomId}>{room.roomName} | 인원수: {room.curParticipates} / {room.limitParticipates}
                 {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                 <br></br>{room.introduction}
                 <br></br>방장: {room.roomManager}
@@ -252,7 +251,8 @@ const MainComponent = () => {
                 <button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button>
                 {room.roomManager === member.memberNickName && (
                 <button onClick={() => deleteRoom({roomInfo: room})}>삭제하기</button>
-            )}</li>
+            )}
+            </li>
             ))}
         </ul>
         <SetRoomComponent role={member.role}/>

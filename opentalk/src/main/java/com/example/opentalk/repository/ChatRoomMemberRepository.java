@@ -41,6 +41,10 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMemberEn
             ,nativeQuery = true)
     List<String> findMembers(@Param("roomId") String roomId);
 
+    @Query(value = "SELECT COUNT(case when opentalk_room_list_id=:roomId then 1 end) FROM Opentalk.chatroom_member",
+            nativeQuery = true)
+    int getParticipates(@Param("roomId") Long roomId);
+
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM Opentalk.chatroom_member WHERE chatroom_id = :room_id AND member_id = :member_id", nativeQuery = true)
