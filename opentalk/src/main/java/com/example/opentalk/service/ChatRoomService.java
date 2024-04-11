@@ -186,43 +186,52 @@ public class ChatRoomService {
         return false;
     }
 
-    public void enterRoom(ChatRoomMemberDTO chatRoomMemberDTO){
+    public String enterRoom(ChatRoomMemberDTO chatRoomMemberDTO){
         ChatRoomEntity chatRoomEntity;  MemberEntity memberEntity;
         if (chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId()).isPresent() &&
                 memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId()).isPresent()){
             chatRoomEntity = chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId()).get();
             memberEntity = memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId()).get();
+            if (getParticipates(chatRoomEntity.getRoomId()) != chatRoomEntity.getLimitParticipates()){
+                ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
+                        .chatroom(chatRoomEntity)
+                        .member(memberEntity)
+                        .build();
 
-            ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
-                    .chatroom(chatRoomEntity)
-                    .member(memberEntity)
-                    .build();
-
-            chatRoomMemberRepository.save(chatRoomMemberEntity);
+                chatRoomMemberRepository.save(chatRoomMemberEntity);
+                return "Success";
+            }
         }
+        return "Fail";
     }
 
-    public boolean enterRoom_Pw(ChatRoomMemberDTO chatRoomMemberDTO, String inputPw){
+    public String enterRoom_Pw(ChatRoomMemberDTO chatRoomMemberDTO, String inputPw){
         ChatRoomEntity chatRoomEntity;  MemberEntity memberEntity;
         if (inputPw.equals(chatRoomMemberDTO.getChatroom().getRoomPassword())){
             if (chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId()).isPresent() &&
                     memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId()).isPresent()){
                 chatRoomEntity = chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId()).get();
                 memberEntity = memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId()).get();
+                if (getParticipates(chatRoomEntity.getRoomId()) != chatRoomEntity.getLimitParticipates()){
+                    ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
+                            .chatroom(chatRoomEntity)
+                            .member(memberEntity)
+                            .build();
 
-                ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
-                        .chatroom(chatRoomEntity)
-                        .member(memberEntity)
-                        .build();
-
-                chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getChatroom().getId(),
-                                                    chatRoomMemberEntity.getMember().getId(),
-                                                    chatRoomMemberEntity.getRole());
-
-                return true;
+                    chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getChatroom().getId(),
+                            chatRoomMemberEntity.getMember().getId(),
+                            chatRoomMemberEntity.getRole());
+                    return "Success";
+                }
+                else{
+                    return "Fail";
+                }
             }
         }
-        return false;
+        else{
+            return "Incorrect";
+        }
+        return "Fail";
     }
 
     public void exitRoom(ChatRoomMemberDTO chatRoomMemberDTO){

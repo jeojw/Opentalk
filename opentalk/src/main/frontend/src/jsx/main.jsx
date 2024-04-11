@@ -176,8 +176,11 @@ const MainComponent = () => {
                 role:role
             })
             .then((res) => {
-                if (res.status === 200){
+                if (res.data === "Success"){
                     naviagte(`/opentalk/room/${roomInfo.roomId}`);
+                }
+                else{
+                    window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
                 }
             })
             .catch((error) => console.log(error));
@@ -194,11 +197,14 @@ const MainComponent = () => {
                     role:role
                 })
                 .then((res) => {
-                    if (res.data === true){
+                    if (res.data === "Success"){
                         naviagte(`/opentalk/room/${roomInfo.roomId}`);
                     }
-                    else{
+                    else if (res.data ==="Incorrect"){
                         window.alert("비밀번호가 잘못되었습니다.")
+                    }
+                    else{
+                        window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
                     }
                 })
                 .catch((error) => console.log(error));

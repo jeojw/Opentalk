@@ -49,8 +49,8 @@ public class RoomController {
     }
 
     @PostMapping("/api/opentalk/enterRoom")
-    public void enterRoom(@RequestBody @Valid ChatRoomMemberDTO chatRoomMemberDTO){
-        chatRoomService.enterRoom(chatRoomMemberDTO);
+    public ResponseEntity<String> enterRoom(@RequestBody @Valid ChatRoomMemberDTO chatRoomMemberDTO){
+        return ResponseEntity.ok(chatRoomService.enterRoom(chatRoomMemberDTO));
     }
 
     @PostMapping("/api/opentalk/exitRoom")
@@ -94,7 +94,7 @@ public class RoomController {
     }
 
     @PostMapping("/api/opentalk/enterRoom/{password}")
-    public ResponseEntity<Boolean> enterRoom_Pw(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO, @PathVariable String password){
+    public ResponseEntity<String> enterRoom_Pw(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO, @PathVariable String password){
         return ResponseEntity.ok(chatRoomService.enterRoom_Pw(chatRoomMemberDTO, password));
     }
 
