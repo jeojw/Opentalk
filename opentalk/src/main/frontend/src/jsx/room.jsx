@@ -156,6 +156,23 @@ const RoomComponent = ({roomInfo, talker}) => {
         }
     }
 
+    const AuthMandate = (roomMember) => {
+        if (window.confirm(`${roomMember.memberNickName}님에게 방장을 넘기시겠습니까?`)){
+            const changeUrl = "/api/opentalk/authMandate";
+            axios.post(changeUrl, {
+                roomId:room_Id,
+                manager:myInfo.memberNickName,
+                newManager:roomMember.memberNickName
+            })
+            .then((res) => {
+                if (res.data === true){
+                    window.alert(`${roomMember.memberNickName}님이 방장이 되었습니다.`);
+                }
+            })
+            .catch((error) => console.log(error));
+        }
+    }
+
     const ExitRoom = () => {
         if (window.confirm("방을 나가시겠습니까?")){
             const exitUrl = '/api/opentalk/exitRoom';
@@ -210,8 +227,11 @@ const RoomComponent = ({roomInfo, talker}) => {
             <h2>참여명단</h2>
                 {roomInformation?.members.map((_member, index) => (
                     <li key={index}>{_member.memberNickName}
-                    {role === "MANAGER" && _member === myInfo && (
+                    {role === "MANAGER" && _member !== myInfo && (
                         <button onClick={() => ForcedExit(_member)}>강퇴하기</button>
+                    )}
+                    {role === "MANAGER" && _member !== myInfo && (
+                        <button onClick={() => AuthMandate(_member)}>방장위임</button>
                     )}
                     </li>
                 ))}

@@ -65,6 +65,20 @@ public class ChatRoomService {
         return null;
     }
 
+    public boolean authMandate(ManagerChangeDto managerChangeDto){
+        Optional<MemberEntity> manager = memberRepository.findByMemberNickName(managerChangeDto.getManager());
+        Optional<MemberEntity> newManager = memberRepository.findByMemberNickName(managerChangeDto.getNewManager());
+        Optional<ChatRoomEntity> chatroom = chatRoomRepository.findByRoomId(managerChangeDto.getRoomId());
+        if (manager.isPresent() && newManager.isPresent() && chatroom.isPresent()){
+            chatRoomMemberRepository.setManager(chatroom.get().getId(), newManager.get().getId());
+            chatRoomMemberRepository.setParticipate(chatroom.get().getId(), manager.get().getId());
+           chatRoomRepository.updateManager(chatroom.get().getRoomId(), newManager.get().getMemberNickName());
+
+            return true;
+        }
+        return false;
+    }
+
     public boolean changeRoomOption(ChatRoomRequestDto chatRoomRequestDto){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(chatRoomRequestDto.getRoomId());
         if (chatRoomEntity.isPresent()){

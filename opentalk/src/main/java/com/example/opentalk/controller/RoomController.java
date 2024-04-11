@@ -38,6 +38,11 @@ public class RoomController {
 //
 //    }
 
+    @PostMapping("/api/opentalk/authMandate")
+    public ResponseEntity<Boolean> authMandate(@RequestBody @Valid  ManagerChangeDto managerChangeDto){
+        return ResponseEntity.ok(chatRoomService.authMandate(managerChangeDto));
+    }
+
     @PostMapping("/api/opentalk/enterRoom")
     public void enterRoom(@RequestBody @Valid ChatRoomMemberDTO chatRoomMemberDTO){
         chatRoomService.enterRoom(chatRoomMemberDTO);
