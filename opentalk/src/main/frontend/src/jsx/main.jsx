@@ -133,6 +133,7 @@ const MainComponent = () => {
                 .then((res) => {
                     if (res.status === 200){
                         window.alert("방이 삭제되었습니다.");
+                        window.location.reload();
                     }
                 })
                 .catch((error) => console.log(error));
@@ -147,6 +148,7 @@ const MainComponent = () => {
                     .then((res)=> {
                         if (res.data === true){
                             window.alert("방이 삭제되었습니다.");
+                            window.location.reload();
                         }
                         else{
                             window.alert("비밀번호가 잘못되었습니다.");

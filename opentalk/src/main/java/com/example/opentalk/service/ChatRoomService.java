@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -278,11 +280,22 @@ public class ChatRoomService {
         return chatRoomDTOList;
     }
 
-    public boolean forcedExistRoom(MemberResponseDto memberResponseDto){
-        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(memberResponseDto.getMemberId());
+    public boolean forcedExistRoom(ChatRoomMemberDTO chatRoomMemberDTO){
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId());
+        System.out.println(memberEntity);
         if (memberEntity.isPresent()){
-            chatRoomMemberRepository.deleteById(memberEntity.get().getId());
+            chatRoomMemberRepository.forcedExitRoom(memberEntity.get().getId());
             return true;
+        }
+        return false;
+    }
+
+    public boolean isExistInRoom(String roomId, String nickName){
+        Optional<MemberEntity> member = memberRepository.findByMemberNickName(nickName);
+        Optional<ChatRoomEntity> room = chatRoomRepository.findByRoomId(roomId);
+        System.out.print("Optional:" + member.isPresent() +  room.isPresent());
+        if (member.isPresent() && room.isPresent()){
+            return Objects.equals(chatRoomMemberRepository.existByRoomMemberId(room.get().getId(), member.get().getId()), BigInteger.ONE);
         }
         return false;
     }

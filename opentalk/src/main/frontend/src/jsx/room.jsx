@@ -11,12 +11,14 @@ const RoomComponent = ({roomInfo, talker}) => {
 
     const [roomInformation, setRoomInformation] = useState();
     const [myInfo, setMyInfo] = useState();
-    const [memberList, setMemberList] = useState([]);
+    const [member, setMember] = useState([]);
     const [chatList, setChatList] = useState([]);
     const [preChatList, setPreChatList] = useState([]);
     const [chat, setChat] = useState("");
     const [cookies] = useCookies(['accessToken']);
     const [role, setRole] = useState();
+
+    const [isForcedExist, setIsForcedExist] = useState(false);
 
     let {room_Id} = useParams();
     
@@ -61,7 +63,7 @@ const RoomComponent = ({roomInfo, talker}) => {
             try{
                 const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
                 setRoomInformation(response.data.chatroom);
-                setMemberList(response.data.member);
+                setMember(response.data.member);
                 setRole(response.data.role);
             } catch (error){
                 console.log(error);
@@ -71,10 +73,43 @@ const RoomComponent = ({roomInfo, talker}) => {
         fetchRoom();
     }, [room_Id, myInfo]);
 
+    useEffect(() => {
+        const isExistInRoom = async () => {
+            try{
+                const response = await axios.get(`/api/opentalk/isExistInRoom/${room_Id}/${myInfo.memberNickName}`);
+                if (response.data !== true){
+                    navigate("/opentalk/main");
+                    setIsForcedExist(false);
+                }
+            } catch (error){
+                console.log(error);
+            }
+        }
+
+        isExistInRoom();
+    }, [isForcedExist]);
+
     useEffect(() =>{ 
         connect();
         return () => disconnect();
     }, []);
+
+    const enterRoom = () => {
+        if (!client.current.connected) return;
+
+        const curTime = new Date();
+        const isoDateTime = curTime.toISOString();
+
+        client.current.publish({
+            destination: '/pub/chat/enter',
+            body: JSON.stringify({
+                chatRoom: roomInformation,
+                member: myInfo,
+                message: `${myInfo.memberNickName}님이 채팅방에 참여했습니다.`,
+                timeStamp: isoDateTime
+            })
+        });
+    }
 
     const connect = () => {
         client.current = new StompJs.Client({
@@ -90,6 +125,7 @@ const RoomComponent = ({roomInfo, talker}) => {
             heartbeatOutgoing: 4000,
             onConnect: () => {
                 subscribe();
+                enterRoom();
             },
             onStompError: (frame) => {
                 console.error(frame);
@@ -101,9 +137,8 @@ const RoomComponent = ({roomInfo, talker}) => {
     const disconnect = () => {
         client.current.deactivate();
     };
-
-    
-    const publish = (chat) => {
+  
+    const publishChat = (chat) => {
         if (!client.current.connected) return;
 
         const curTime = new Date();
@@ -146,13 +181,33 @@ const RoomComponent = ({roomInfo, talker}) => {
     const ForcedExit = (roomMember) => {
         if (window.confirm(`정말 ${roomMember.memberNickName}님을 강제퇴장 시키겠습니까?`)){
             const checkUrl = "/api/opentalk/forcedExit";
-            axios.post(checkUrl, roomMember)
+            axios.post(checkUrl, {
+                chatroom: roomInformation,
+                member: roomMember,
+                role: "PARTICIPATES"
+            })
             .then((res) => {
                 if (res.data === true){
                     window.alert("강제퇴장 되었습니다.");
+                    setIsForcedExist(true);
+                    window.location.reload();
                 }
             })
             .catch((error) => console.log(error));
+            if (!client.current.connected) return;
+
+            const curTime = new Date();
+            const isoDateTime = curTime.toISOString();
+
+            client.current.publish({
+                destination: '/pub/chat/forcedExit',
+                body: JSON.stringify({
+                    chatRoom: roomInformation,
+                    member: roomMember,
+                    message: `${roomMember.memberNickName}님이 강퇴되었습니다.`,
+                    timeStamp: isoDateTime
+                })
+            });
         }
     }
 
@@ -187,7 +242,19 @@ const RoomComponent = ({roomInfo, talker}) => {
                     navigate("/opentalk/main");
                 }
             })
-            .catch((error) => console.log(error));       
+            .catch((error) => console.log(error));
+            const curTime = new Date();
+            const isoDateTime = curTime.toISOString();
+
+            client.current.publish({
+                destination: '/pub/chat/exit',
+                body: JSON.stringify({
+                    chatRoom: roomInformation,
+                    member: myInfo,
+                    message: `${myInfo.memberNickName}님이 채팅방을 나갔습니다.`,
+                    timeStamp: isoDateTime
+                })
+            });
         }
     }
 
@@ -218,7 +285,7 @@ const RoomComponent = ({roomInfo, talker}) => {
                 <div>
                     입력하기: <input type="text" name="chatInput" onChange={handleChange} value={chat}></input>
                 </div>
-                <input type="submit" value="전송" onClick={() => publish(chat)}></input>
+                <input type="submit" value="전송" onClick={() => publishChat(chat)}></input>
             </form>
             <button onClick={ExitRoom}>나가기</button>
             <ChangRoomComponent room_Id={room_Id} role={role}/>
@@ -228,10 +295,10 @@ const RoomComponent = ({roomInfo, talker}) => {
                 {roomInformation?.members.map((_member, index) => (
                     <li key={index}>{_member?.memberNickName}
                     {roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
-                    {roomInformation.roomManager !==_member.memberNickName && (
+                    {role === "MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
                         <button onClick={() => ForcedExit(_member)}>강퇴하기</button>
                     )}
-                    {roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
+                    {role === "MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
                         <button onClick={() => AuthMandate(_member)}>방장위임</button>
                     )}
                     </li>

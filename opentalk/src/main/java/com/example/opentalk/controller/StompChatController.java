@@ -26,6 +26,27 @@ public class StompChatController {
         template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
     }
 
+    @MessageMapping("/chat/enter")
+    public void enterRoom(ChatMessageDTO chatMessage){
+        chatMessage.setMessage(chatMessage.getMember().getMemberNickName() + "님이 채팅방에 참여하였습니다.");
+        log.info("enterChat : {}", chatMessage);
+        template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
+    }
+
+    @MessageMapping("/chat/exit")
+    public void exitRoom(ChatMessageDTO chatMessage){
+        chatMessage.setMessage(chatMessage.getMember().getMemberNickName() + "님이 채팅방에서 나갔습니다.");
+        log.info("exitChat : {}", chatMessage);
+        template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
+    }
+
+    @MessageMapping("/chat/forcedExit")
+    public void forcedExitRoom(ChatMessageDTO chatMessage){
+        log.info("forcedExitChat : {}", chatMessage);
+        chatMessage.setMessage(chatMessage.getMember().getMemberNickName() + "님이 채팅방에서 강퇴되었습니다.");
+        template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
+    }
+
     @EventListener(SessionConnectedEvent.class)
     public void onConnect(SessionConnectedEvent event){
         String sessionId = event.getMessage().getHeaders().get("simpSessionId").toString();

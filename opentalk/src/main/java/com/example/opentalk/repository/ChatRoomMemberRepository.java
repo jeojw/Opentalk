@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,13 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMemberEn
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM Opentalk.chatroom_member WHERE chatroom_id = :room_id AND member_id = :member_id", nativeQuery = true)
+    @Query(value = "DELETE FROM Opentalk.chatroom_member WHERE open_talk_member_id = :memberId",
+            nativeQuery = true)
+    void forcedExitRoom(@Param("memberId") Long memberId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM Opentalk.chatroom_member WHERE opentalk_room_list_id = :room_id AND open_talk_member_id = :member_id", nativeQuery = true)
     int exitRoom(@Param("room_id") String room_id , @Param("member_id") String member_id);
 
     @Modifying
@@ -63,4 +70,9 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMemberEn
             "WHERE opentalk_room_list_id = :roomId AND open_talk_member_id = :memberId",
             nativeQuery = true)
     int setParticipate(@Param("roomId") Long roomId, @Param("memberId") Long memberId);
+
+    @Query(value = "SELECT EXISTS (SELECT * FROM Opentalk.chatroom_member " +
+            "WHERE opentalk_room_list_id = :roomId AND open_talk_member_id = :memberId) as success",
+            nativeQuery = true)
+    BigInteger existByRoomMemberId(@Param("roomId") Long roomId, @Param("memberId") Long memberId);
 }

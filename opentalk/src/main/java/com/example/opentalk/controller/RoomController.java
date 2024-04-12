@@ -74,8 +74,8 @@ public class RoomController {
     }
 
     @PostMapping("/api/opentalk/forcedExit")
-    public ResponseEntity<Boolean> forced_Exit(@RequestBody MemberResponseDto memberResponseDto){
-        return ResponseEntity.ok(chatRoomService.forcedExistRoom(memberResponseDto));
+    public ResponseEntity<Boolean> forced_Exit(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO){
+        return ResponseEntity.ok(chatRoomService.forcedExistRoom(chatRoomMemberDTO));
     }
 
 //    @PostMapping("/api/opentalk/searchRoom")
@@ -101,6 +101,11 @@ public class RoomController {
     @PostMapping("/api/opentalk/changeRoom")
     public ResponseEntity<Boolean> changRoom(@RequestBody @Valid ChatRoomRequestDto chatRoomRequestDto){
         return ResponseEntity.ok(chatRoomService.changeRoomOption(chatRoomRequestDto));
+    }
+
+    @GetMapping("/api/opentalk/isExistInRoom/{roomId}/{memberId}")
+    public ResponseEntity<Boolean> isExistInRoom(@PathVariable String roomId, @PathVariable String memberId){
+        return ResponseEntity.ok(chatRoomService.isExistInRoom(roomId, memberId));
     }
 
 }
