@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
-const ProfileComponent = (props) => {
+const ProfileComponent = ({setIsUpdateData}) => {
     const [member, setMember] = useState('');
     const [pwPopupOpen, setPwPopupOpen] = useState(false);
     const [nickPopupOpen, setNickPopupOpen] = useState(false);
@@ -13,8 +13,11 @@ const ProfileComponent = (props) => {
     const [newPassword, setNewPassword] = useState("");
     const [checkPassword, setCheckPassword] = useState("");
 
-    const navigate = useNavigate();
+    const [isChangeData, setIsChangeData] = useState(false);
+
     const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchMemberStatus = async () => {
@@ -30,7 +33,7 @@ const ProfileComponent = (props) => {
         };
 
         fetchMemberStatus();
-    }, []);
+    }, [isChangeData]);
 
     const GetInputExPassword = (event) =>{
         setExPassword(event.target.value);
@@ -106,6 +109,8 @@ const ProfileComponent = (props) => {
             })
             .then((res)=>{
                 alert("닉네임이 변경되었습니다.")
+                setIsChangeData(prevState => !prevState);
+                setIsUpdateData(prevState => !prevState);
                 ChangeNickNameCancle();
             })
             .catch((error) => console.log(error));

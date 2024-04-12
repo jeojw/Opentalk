@@ -6,6 +6,7 @@ import SetRoomComponent from './setroom';
 import RoomComponent from './room';
 import {createBrowserHistory} from "history";
 import Pagination from 'react-js-pagination';
+import ProfileComponent from './profile';
 
 const MainComponent = () => {
     const ChatRoomRole = {
@@ -226,6 +227,9 @@ const MainComponent = () => {
         if (cookies.accessToken){
             naviagte("/opentalk/profile");
         }
+        return (
+            <ProfileComponent setIsUpdateData={setIsUpdateTrigger}/>
+        )
     }
 
     const LogOut = () => {

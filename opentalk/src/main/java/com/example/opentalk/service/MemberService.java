@@ -3,7 +3,9 @@ package com.example.opentalk.service;
 import com.example.opentalk.Config.SecurityUtil;
 import com.example.opentalk.dto.MemberInfoDto;
 import com.example.opentalk.dto.MemberResponseDto;
+import com.example.opentalk.entity.ChatRoomEntity;
 import com.example.opentalk.entity.MemberEntity;
+import com.example.opentalk.repository.ChatRoomRepository;
 import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final ChatRoomRepository chatRoomRepository;
     private final PasswordEncoder passwordEncoder;
 
     public MemberResponseDto getMyInfoBySecurity() {
@@ -65,6 +68,12 @@ public class MemberService {
     @Transactional
     public MemberResponseDto changeMemberNickname(String memberId, String nickname) {
         MemberEntity member = memberRepository.findByMemberId(memberId).orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
+        Optional<List<ChatRoomEntity>> chatRooms = chatRoomRepository.findByManager(member.getMemberNickName());
+        if (chatRooms.isPresent()){
+            for (ChatRoomEntity room : chatRooms.get()){
+                chatRoomRepository.updateManager(room.getRoomId(), nickname);
+            }
+        }
         member.setMemberNickName(nickname);
         return MemberResponseDto.of(memberRepository.save(member));
     }
