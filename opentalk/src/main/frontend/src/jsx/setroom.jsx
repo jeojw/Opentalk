@@ -3,7 +3,7 @@ import {useCookies} from 'react-cookie';
 import Modal from 'react-modal';
 import axios from'axios';
 
-export const SetRoomComponent = () =>{
+export const SetRoomComponent = ({onDataUpdate}) =>{
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [roomId, setRoomId] = useState("");
@@ -30,7 +30,7 @@ export const SetRoomComponent = () =>{
             }
         }
         fetchManager();
-    }, []);
+    });
     
     const openModal = () => {
         setIsOpen(true)
@@ -128,6 +128,7 @@ export const SetRoomComponent = () =>{
                 alert("방이 생성되었습니다.");
                 setRoomId(res.data);
                 closeModal();
+                onDataUpdate(prevState => !prevState);
             }
         })
         .catch((error) => console.log(error));

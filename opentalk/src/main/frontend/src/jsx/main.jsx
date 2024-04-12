@@ -19,6 +19,8 @@ const MainComponent = () => {
         {value: "tags", name: "태그"},
     ];
 
+    const [isUpdateTrigger, setIsUpdateTrigger] = useState(false);
+
     const [chatRoomList, setChatRoomList] = useState([]);
     const [allChatRoomList, setAllChatRoomList] = useState([]);
     const [page, setPage] = useState(1);
@@ -83,7 +85,7 @@ const MainComponent = () => {
         };
 
         fetchAllRooms();
-    }, []);
+    }, [isUpdateTrigger]);
 
     useEffect(() => {
         setChatRoomList(allChatRoomList.slice(indexOfFirstPost, indexOfLastPost))
@@ -133,7 +135,7 @@ const MainComponent = () => {
                 .then((res) => {
                     if (res.status === 200){
                         window.alert("방이 삭제되었습니다.");
-                        window.location.reload();
+                        setIsUpdateTrigger(true);
                     }
                 })
                 .catch((error) => console.log(error));
@@ -148,7 +150,7 @@ const MainComponent = () => {
                     .then((res)=> {
                         if (res.data === true){
                             window.alert("방이 삭제되었습니다.");
-                            window.location.reload();
+                            setIsUpdateTrigger(true);
                         }
                         else{
                             window.alert("비밀번호가 잘못되었습니다.");
@@ -263,7 +265,9 @@ const MainComponent = () => {
             </li>
             ))}
         </ul>
-        <SetRoomComponent role={member.role}/>
+        <SetRoomComponent
+            onDataUpdate={setIsUpdateTrigger}
+         />
         <button onClick={GoProfile}>프로필 설정</button>
         <button onClick={LogOut}>로그아웃</button>
         <br></br>
