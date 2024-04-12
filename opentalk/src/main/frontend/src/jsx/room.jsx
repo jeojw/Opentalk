@@ -7,7 +7,7 @@ import { useCookies } from "react-cookie";
 import ChangRoomComponent from './changroom';
 import InviteMemberComponent from './inviteMember';
 
-const RoomComponent = ({roomInfo, talker}) => {
+const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
 
     const [roomInformation, setRoomInformation] = useState();
     const [myInfo, setMyInfo] = useState();
@@ -19,6 +19,7 @@ const RoomComponent = ({roomInfo, talker}) => {
     const [role, setRole] = useState();
 
     const [isForcedExist, setIsForcedExist] = useState(false);
+    const [isChangeRoom, setIsChangeRoom] = useState(false);
 
     let {room_Id} = useParams();
     
@@ -71,7 +72,7 @@ const RoomComponent = ({roomInfo, talker}) => {
         }
 
         fetchRoom();
-    }, [room_Id, myInfo]);
+    }, [isChangeRoom]);
 
     useEffect(() => {
         const isExistInRoom = async () => {
@@ -288,7 +289,9 @@ const RoomComponent = ({roomInfo, talker}) => {
                 <input type="submit" value="전송" onClick={() => publishChat(chat)}></input>
             </form>
             <button onClick={ExitRoom}>나가기</button>
-            <ChangRoomComponent room_Id={room_Id} role={role}/>
+            <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeRoom}>
+                {() => setIsChangeData(isChangeRoom)}
+            </ChangRoomComponent>
             <InviteMemberComponent role={role}/>
             <div>
             <h2>참여명단</h2>

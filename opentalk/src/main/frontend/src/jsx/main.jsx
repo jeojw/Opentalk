@@ -217,7 +217,7 @@ const MainComponent = () => {
         }
         return (
             <div>
-                <RoomComponent roomInfo={roomInfo} talker={talker}/>
+                <RoomComponent roomInfo={roomInfo} talker={talker} setIsChangeData={setIsUpdateTrigger}/>
             </div>
         );
     }

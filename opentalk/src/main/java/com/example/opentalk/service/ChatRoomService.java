@@ -52,7 +52,7 @@ public class ChatRoomService {
         return chatRoomEntity.getRoomId();
     }
 
-    public ChatRoomMemberDTO getRoom(String roomId, String memberId){
+    public ChatRoomMemberDTO getRoomByRoomMember(String roomId, String memberId){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(roomId);
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(memberId);
 
@@ -65,6 +65,12 @@ public class ChatRoomService {
             }
         }
         return null;
+    }
+
+    public ChatRoomDTO getRoomByRoom(String roomId){
+        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(roomId);
+
+        return chatRoomEntity.map(ChatRoomDTO::toChatRoomDTO).orElse(null);
     }
 
     public int getParticipates(String roomId){
@@ -88,6 +94,7 @@ public class ChatRoomService {
 
     public boolean changeRoomOption(ChatRoomRequestDto chatRoomRequestDto){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(chatRoomRequestDto.getRoomId());
+        System.out.print("Entity: " + chatRoomEntity);
         if (chatRoomEntity.isPresent()){
             ChatRoomHashtagEntity chatRoomHashtagEntity;
             chatRoomRepository.changeRoomOption(chatRoomRequestDto.isExistLock(),

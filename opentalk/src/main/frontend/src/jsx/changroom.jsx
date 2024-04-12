@@ -3,7 +3,7 @@ import {useCookies} from 'react-cookie';
 import Modal from 'react-modal';
 import axios from'axios';
 
-const ChangRoomComponent = ({room_Id, role}) => {
+const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
     const [roomInfo, setRoomInfo] = useState();
 
     const [isOpen, setIsOpen] = useState(false);
@@ -73,7 +73,7 @@ const ChangRoomComponent = ({room_Id, role}) => {
 
     const changeRoomModal = () => {
         axios.post("/api/opentalk/changeRoom", {
-            roomId: roomInfo?.roomId,
+            roomId: room_Id,
             roomName: roomName,
             roomPassword: password,
             limitParticipates: participants,
@@ -84,10 +84,12 @@ const ChangRoomComponent = ({room_Id, role}) => {
         .then((res) => {
             if (res.data === true){
                 window.alert("방 설정이 변경되었습니다.");
+                setIsChangeRoom(prevState => !prevState);
+                setIsOpen(false);
             }
         })
         .catch((error) => console.log(error));
-        setIsOpen(false);
+        
     }
 
     const GetInputName = (event) => {
@@ -158,7 +160,7 @@ const ChangRoomComponent = ({room_Id, role}) => {
             {role === "MANAGER" && (
                 <button onClick={openModal}>설정 변경</button>
             )}
-            <Modal isOpen={isOpen} onRequestClose ={closeModal}>
+            <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}>
                 <div>
                 방 이름: <input 
                     type="text" 
