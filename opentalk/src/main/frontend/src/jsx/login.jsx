@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import { useCookies } from 'react-cookie';
+import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 
 const LoginComponent = (props) => {
     
@@ -46,40 +47,39 @@ const LoginComponent = (props) => {
         
     }
 
-    const InputId = (e) => {
-        setMemberId(e.target.value);
-    }
-
-    const InputPw = (e) => {
-        setMemberPw(e.target.value);
-    }
-
    return (
-    <div>
-        <h2>로그인</h2>
-        <div>
-            <label for="memberId">아이디:</label>
-            <input type='text' name='memberId' className="memberId" onChange={InputId}></input>
-            <br></br>
-            <label for="memberPassword">비밀번호:</label>
-            <input type="password" name="memberPassword" className='memberPassword' onChange={InputPw}></input>
-            <br></br>
-            <label>
-                <input type='submit' value="로그인" onClick={CheckLogin}></input>
-            </label>
-            <label>
-                <input type='submit' value="아이디 찾기" onClick={()=>navigate("/opentalk/member/findId")}></input>
-            </label>
-            <label>
-                <input type='submit' value="비밀번호 찾기" onClick={()=>navigate("/opentalk/member/authId")}></input>
-            </label>
-            <label>
-                <input type='submit' value="회원가입" onClick={()=>navigate("/opentalk/member/enroll")}></input>
-            </label>
-            <br></br>
-            <button onClick={()=>navigate("/opentalk/front")}>시작화면으로</button>
-        </div>
-    </div>
+    <Container>
+            <Row>
+                <Col>
+                    <h2>로그인</h2>
+                    <Form>
+                        <Form.Group controlId="formMemberId">
+                            <Form.Label>아이디:</Form.Label>
+                            <Form.Control type="text" placeholder="아이디를 입력하세요" value={memberId} onChange={(e) => setMemberId(e.target.value)} />
+                        </Form.Group>
+
+                        <Form.Group controlId="formMemberPassword">
+                            <Form.Label>비밀번호:</Form.Label>
+                            <Form.Control type="password" placeholder="비밀번호를 입력하세요" value={memberPw} onChange={(e) => setMemberPw(e.target.value)} />
+                        </Form.Group>
+
+                        <Button variant="primary" type="button" onClick={CheckLogin}>로그인</Button>
+                        <Button variant="primary" type="button" onClick={() => navigate("/opentalk/member/enroll")}>회원가입</Button>
+                    </Form>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Button variant="primary" type="button" onClick={() => navigate("/opentalk/member/findId")}>아이디 찾기</Button>
+                    <Button variant="primary" type="button" onClick={() => navigate("/opentalk/member/authId")}>비밀번호 찾기</Button>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Button variant="primary" onClick={() => navigate("/opentalk/front")}>시작화면으로</Button>
+                </Col>
+            </Row>
+        </Container>
 
     );
 }

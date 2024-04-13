@@ -10,6 +10,7 @@ import ChangePw from './jsx/changePw'
 import AuthId from './jsx/authId'
 import Room from './jsx/room'
 import Profile from './jsx/profile'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
   return (

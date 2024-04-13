@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Form, Button, Container, Row, Col} from 'react-bootstrap';
 
 const FrontComponent = (props) => {
     const navigate = useNavigate();
@@ -13,16 +15,15 @@ const FrontComponent = (props) => {
     }
 
    return (
-    <div>
+    <Container>
         <h2>오픈톡방에 오신 것을 환영합니다!</h2>
-        <div>
-            <label>
-                <input type='button' value="로그인" onClick={LinkToLogin}></input>
-                <input type='button' value="회원가입" onClick={LinkToEnroll}></input>
-            </label>
-        </div>
-    </div>
-
+        <Row>
+            <Col>
+                <Button variant='primary' type="button" onClick={LinkToLogin}>로그인</Button>
+                <Button variant='primary' type="button" onClick={LinkToEnroll}>회원가입</Button>
+            </Col>
+        </Row>
+    </Container>
     );
 }
 

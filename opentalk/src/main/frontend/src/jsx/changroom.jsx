@@ -30,19 +30,19 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
         const fetchCurRoomInfo = async () => {
             try{
                 const response = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
-                setRoomInfo(response.data.chatroom);
-                setPreRoomName(response.data.chatroom.roomName);
-                setPreExistLock(response.data.chatroom.existLock);
-                setPreInfo(response.data.chatroom.introduction);
-                setPrePassword(response.data.chatroom.roomPassword);
-                setPreParticipants(response.data.chatroom.limitParticipates);
-                setPreTags(response.data.chatroom.roomTags);
+                setRoomInfo(response.data);
+                setPreRoomName(response.data.roomName);
+                setPreExistLock(response.data.existLock);
+                setPreInfo(response.data.introduction);
+                setPrePassword(response.data.roomPassword);
+                setPreParticipants(response.data.limitParticipates);
+                setPreTags(response.data.roomTags);
             } catch (error) {
                 console.log(error);
             }
         }
         fetchCurRoomInfo();
-    }, []);
+    }, [room_Id]);
 
     useEffect(() => {
         setRoomName(preRoomName);

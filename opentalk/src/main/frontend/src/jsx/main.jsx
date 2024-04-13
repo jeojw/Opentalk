@@ -7,6 +7,9 @@ import RoomComponent from './room';
 import {createBrowserHistory} from "history";
 import Pagination from 'react-js-pagination';
 import ProfileComponent from './profile';
+import { Container, Row, Col, Button, Form, 
+    FormControl, InputGroup, ListGroup, ListGroupItem, 
+    FormGroup} from 'react-bootstrap';
 
 const MainComponent = () => {
     const ChatRoomRole = {
@@ -41,7 +44,6 @@ const MainComponent = () => {
     const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
     const [member, setMember] = useState("");
     const [role, setRole] = useState();
-    const participates = [];
     
     const [selectManu, setSelectManu] = useState("default");
     const [searchKeyword, setSearchKeyword] = useState("");
@@ -66,9 +68,11 @@ const MainComponent = () => {
                     headers: {Authorization: 'Bearer ' + cookies.accessToken}
                 });
                 setMember(meResponse.data);
+                console.log(meResponse.data);
             } catch (error){
                 console.error(error);
             }
+            console.log(member);
         };
 
         fetchMyInfo();
@@ -79,6 +83,7 @@ const MainComponent = () => {
             try{
                 const roomResponse = await axios.get("/api/opentalk/rooms");
                 setAllChatRoomList(roomResponse.data);
+                console.log(allChatRoomList);
                 setPageLength(roomResponse.data.length);
             } catch (error){
                 console.error(error);
@@ -90,7 +95,8 @@ const MainComponent = () => {
 
     useEffect(() => {
         setChatRoomList(allChatRoomList.slice(indexOfFirstPost, indexOfLastPost))
-    }, [allChatRoomList, page]);
+        console.log(chatRoomList);
+    }, [allChatRoomList, page, indexOfFirstPost, indexOfLastPost]);
 
     const GetInputSearchKeyword = (event) => {
         setSearchKeyword(event.target.value);
@@ -136,7 +142,7 @@ const MainComponent = () => {
                 .then((res) => {
                     if (res.status === 200){
                         window.alert("방이 삭제되었습니다.");
-                        setIsUpdateTrigger(true);
+                        setIsUpdateTrigger(prevState => !prevState);
                     }
                 })
                 .catch((error) => console.log(error));
@@ -151,7 +157,7 @@ const MainComponent = () => {
                     .then((res)=> {
                         if (res.data === true){
                             window.alert("방이 삭제되었습니다.");
-                            setIsUpdateTrigger(true);
+                            setIsUpdateTrigger(prevState => !prevState);
                         }
                         else{
                             window.alert("비밀번호가 잘못되었습니다.");
@@ -248,60 +254,70 @@ const MainComponent = () => {
     };
 
    return (
-    <div>
-        <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
-        <p>환영합니다, {member.memberNickName}님</p>
-        <ul>
-            {chatRoomList.map(room=>(
-                <li key={room.roomId}>{room.roomName} | 인원수: {room.curParticipates} / {room.limitParticipates}
-                {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
-                <br></br>{room.introduction}
-                <br></br>방장: {room.roomManager}
-                <ul>
-                    {room.roomTags.map(tag=>(
-                        <li>#{tag.tagName}</li>
-                    ))}
-                </ul>
-                <button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</button>
-                {room.roomManager === member.memberNickName && (
-                <button onClick={() => deleteRoom({roomInfo: room})}>삭제하기</button>
-            )}
-            </li>
-            ))}
-        </ul>
-        <SetRoomComponent
-            onDataUpdate={setIsUpdateTrigger}
-         />
-        <button onClick={GoProfile}>프로필 설정</button>
-        <button onClick={LogOut}>로그아웃</button>
-        <br></br>
-        <select onChange={selectMenuHandle} value={selectManu}>
-            {menuList.map((item) => {
-                return <option value={item.value} key={item.value}>
-                    {item.name}
-                </option>;
-            })}
-        </select>
-        <input 
-            type="text"
-            value={searchKeyword}
-            onChange={GetInputSearchKeyword}
-        ></input>
-        <button onClick={search}>검색</button>
-        {isSearch && (
-            <button onClick={initSearch}>초기화</button>
-        )}
-        <Pagination
-            activePage={page}
-            itemsCountPerPage={postPerPage}
-            totalItemsCount={pageLength}
-            pageRangeDisplayed={5}
-            prevPageText={"<"}
-            nextPageText={">"}
-            onChange={handlePageChange}
-        />
-    </div>
+    <Container>
+        <Row>
+            <Col>
+                <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
+                <p>환영합니다, {member.memberNickName}님</p>
+                <Button onClick={GoProfile}>프로필 설정</Button>
+                <Button onClick={LogOut}>로그아웃</Button>
+                <ListGroup>
+                    {Array.isArray(chatRoomList) && chatRoomList.map(room=>(
 
+                        <ListGroupItem>{room.roomName} | 인원수: {room.curParticipates} / {room.limitParticipates}
+                        {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
+                        <br></br>{room.introduction}
+                        <br></br>방장: {room.roomManager}
+                            <ListGroup>
+                            {room.roomTags.map(tag=>(
+                                <ListGroupItem>#{tag.tagName}</ListGroupItem>
+                            ))}
+                            </ListGroup>
+                         <Button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</Button>
+                        {room.roomManager === member.memberNickName && (
+                        <Button onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
+                    )}
+                    </ListGroupItem>
+                    ))}
+                </ListGroup>
+                <SetRoomComponent
+                    onDataUpdate={setIsUpdateTrigger}
+                />
+                <br></br>
+                <FormGroup>
+                    <Form.Select 
+                        onChange={selectMenuHandle} 
+                        value={selectManu}
+                        size="sm"
+                    >
+                        {menuList.map((item) => {
+                            return <option value={item.value} key={item.value}>
+                                {item.name}
+                            </option>;
+                        })}
+                    </Form.Select>
+                    <InputGroup>
+                        <FormControl type='text' value={searchKeyword} onChange={GetInputSearchKeyword}></FormControl>
+                    </InputGroup>
+                </FormGroup>
+                
+                <Button onClick={search}>검색</Button>
+                {isSearch && (
+                    <button onClick={initSearch}>초기화</button>
+                )}
+                <Pagination
+                    activePage={page}
+                    itemsCountPerPage={postPerPage}
+                    totalItemsCount={pageLength}
+                    pageRangeDisplayed={5}
+                    prevPageText={"<"}
+                    nextPageText={">"}
+                 onChange={handlePageChange}
+                />
+            </Col>
+        </Row>
+        
+    </Container>
     );
 }
 

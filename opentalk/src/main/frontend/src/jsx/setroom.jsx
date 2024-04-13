@@ -2,6 +2,10 @@ import React, {useState, useEffect} from 'react';
 import {useCookies} from 'react-cookie';
 import Modal from 'react-modal';
 import axios from'axios';
+import { Form, Button, Container, Row, Col, InputGroup, 
+    InputGroupText, FormControl, FormGroup, FormLabel,
+    ListGroup,
+    ListGroupItem, } from 'react-bootstrap';
 
 export const SetRoomComponent = ({onDataUpdate}) =>{
     const [isOpen, setIsOpen] = useState(false);
@@ -135,61 +139,47 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
     };
 
     return (
-        <div>
-            <button onClick={openModal}>방 생성하기</button>
+        <Container>
+            <Button onClick={openModal}>방 생성하기</Button>
             <Modal isOpen={isOpen} onRequestClose={closeModal}>
-                <div>
-                    방 이름: <input 
-                        type="text" 
-                        value={roomName} 
-                        onChange={GetInputName}></input>
-                    <br></br>
-                    인원수: <input 
-                        type="number" 
-                        min="3"
-                        max="20"
-                        value={participants} 
-                        onChange={GetInputParticipates}></input>
-                    <br></br>
-                    비밀번호: <input 
-                        type="checkbox" 
-                        checked={existLock}
-                        onChange={GetCheckExistPw}></input>
-                    <input 
-                        type="password" 
-                        value={password} 
-                        onChange={GetInputPassword}
-                        disabled={!existLock}>   
-                    </input>
-                    <br></br>
-                    <input 
-                        type="text" 
-                        value={info} 
-                        placeholder={"방 소개문"}
-                        size={100}
-                        onChange={GetInputInfo}>
-                    </input>
-                    <br></br>
-                    <input 
-                        type="text" 
-                        value={tag} 
-                        onChange={GetInputTag}>    
-                    </input>
-                    <input
-                        type="button"
-                        value="태그 추가"
-                        onClick={()=>AppendTag(tag)}>
-                    </input>
-                    {tags.map((t)=> (
-                        <li>#{t.tagName}<button onClick={()=>tagDelete(t)}>삭제</button></li>
-                    ))}
-                    <br></br>
-                    <input type="submit" value="방 생성하기" onClick={MakeRoom}></input>
-                    <button onClick={closeModal}>생성 취소</button>
-                </div>
-                
+                <Row>
+                    <Col>
+                        <InputGroup>
+                            <InputGroup.Text>방 이름</InputGroup.Text>
+                            <FormControl type='text' value={roomName} onChange={GetInputName}></FormControl>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup>
+                            <InputGroup.Text>인원수</InputGroup.Text>
+                            <FormControl type="number" min={3} max={20} value={participants} onChange={GetInputParticipates}></FormControl>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup>
+                            <InputGroup.Text>비밀번호</InputGroup.Text>
+                            <Form.Check type='checkbox' checked={existLock} onChange={GetCheckExistPw}/>
+                            <FormControl type='password' value={password} onChange={GetInputPassword} disabled={!existLock}></FormControl>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup>
+                            <FormControl type="text" value={info} placeholder='방 소개문' onChange={GetInputInfo}></FormControl>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup>
+                            <FormControl type='text' value={tag} onChange={GetInputTag}></FormControl>
+                        </InputGroup>
+                        <Button onClick={()=>AppendTag(tag)}>태그 추가</Button>
+                        <ListGroup>
+                            {tags.map((t)=> (
+                                <ListGroupItem>#{t.tagName}<Button onClick={()=>tagDelete(t)}>삭제</Button></ListGroupItem>
+                            ))}
+                        </ListGroup>
+                        <br></br>
+                        <Button onClick={MakeRoom}>방 생성하기</Button>
+                        <Button onClick={closeModal}>생성 취소</Button>
+                    </Col>
+                </Row>
             </Modal>
-        </div>
+        </Container>
     );
 }; 
 

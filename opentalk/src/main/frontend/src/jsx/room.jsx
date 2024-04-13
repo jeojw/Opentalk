@@ -6,6 +6,8 @@ import SockJs from "sockjs-client"
 import { useCookies } from "react-cookie";
 import ChangRoomComponent from './changroom';
 import InviteMemberComponent from './inviteMember';
+import { Container, Row, Col, Button, Form, 
+    FormControl, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
 
@@ -260,35 +262,44 @@ const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
     }
 
     return(
-        <div>
-            <div>
-                {/* Option Chaining!!! */}
-                <h1>{roomInformation?.roomName}</h1> 
-                <h2>참여자 수: {roomInformation?.participates}</h2>
-            </div>
-            <div>
+        <Container>
+            <Row>
+                <Col>
+                    {/* Option Chaining!!! */}
+                    <h1>{roomInformation?.roomName}</h1> 
+                    <h2>참여자 수: {roomInformation?.participates}</h2>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
                 {preChatList && preChatList.length > 0 && (
-                    <ul>
+                    <ListGroup>
                         {preChatList.map((_chatMessage, index) => (
-                            <li key={index}>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</li>
+                            <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
                         ))}
-                    </ul>
+                    </ListGroup>
                 )}
                 {chatList && chatList.length > 0 && (
-                    <ul>
+                    <ListGroup>
                         {chatList.map((_chatMessage, index) => (
-                            <li key={index}>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</li>
+                            <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
                         ))}
-                    </ul>
+                    </ListGroup>
                 )}
-            </div>
-            <form onSubmit={(event)=>handleSubmit(event)}>
-                <div>
-                    입력하기: <input type="text" name="chatInput" onChange={handleChange} value={chat}></input>
-                </div>
-                <input type="submit" value="전송" onClick={() => publishChat(chat)}></input>
-            </form>
-            <button onClick={ExitRoom}>나가기</button>
+                </Col>
+            </Row>
+            <Container>
+                <Row>
+                    <Col>
+                        <Form onSubmit={(event)=>handleSubmit(event)}>
+                        <Form.Control type="text"  value={chat} onChange={handleChange} />
+                        <Button onChange={() => publishChat(chat)}>전송</Button>
+                        </Form>
+                    </Col>
+                </Row>
+            </Container>
+                
+            <Button onClick={ExitRoom}>나가기</Button>
             <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeRoom}>
                 {() => setIsChangeData(isChangeRoom)}
             </ChangRoomComponent>
@@ -296,19 +307,21 @@ const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
             <div>
             <h2>참여명단</h2>
                 {roomInformation?.members.map((_member, index) => (
-                    <li key={index}>{_member?.memberNickName}
-                    {roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
-                    {role === "MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                        <button onClick={() => ForcedExit(_member)}>강퇴하기</button>
-                    )}
-                    {role === "MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                        <button onClick={() => AuthMandate(_member)}>방장위임</button>
-                    )}
-                    </li>
+                    <ListGroup>
+                        <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
+                        {_member?.memberNickName}
+                        {role === "MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
+                        <Button onClick={() => ForcedExit(_member)}>강퇴하기</Button>
+                        )}
+                        {role === "MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
+                        <Button onClick={() => AuthMandate(_member)}>방장위임</Button>
+                        )}
+                        </ListGroupItem>
+                    </ListGroup>
                 ))}
             </div>
 
-        </div>
+        </Container>
     );
 }
 
