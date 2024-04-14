@@ -256,18 +256,21 @@ const MainComponent = () => {
 
    return (
     <Container>
-        <Row noGutters>
-            <Col xs={3} md={6} span={1} offset={1} lg="3" className="border border-warning border-3 rounded-3 p-5">
-                <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
-                <p>환영합니다, {member.memberNickName}님</p>
-                <div className="d-grid gap-2">
-                    <Button variant="primary" onClick={GoProfile}>프로필 설정</Button>
-                    <Button variant="dark" onClick={LogOut}>로그아웃</Button>
-                </div>
+        <Row className="justify-content-end">
+            <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-warning border-3 rounded-3 p-5"
+            style={{height: "400px"}}>
+                <aside>
+                    <div style={{ textAlign: 'center' }}>
+                        <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`} ></img>
+                        <p>환영합니다, {member.memberNickName}님</p>
+                    </div>
+                    <div className="d-grid gap-2">
+                        <Button variant="primary" onClick={GoProfile}>프로필 설정</Button>
+                        <Button variant="dark" onClick={LogOut}>로그아웃</Button>
+                    </div>
+                </aside>
             </Col>
-        </Row>
-        <Row noGutters>
-            <Col xs={6} md={9} span={12} offset={12} lg="5" >
+            <Col className="border border-warning border-3 rounded-3 p-5" style={{height: "741px"}}>
                 <ListGroup>
                     {Array.isArray(chatRoomList) && chatRoomList.map(room=>(
 
@@ -280,6 +283,7 @@ const MainComponent = () => {
                                 <ListGroupItem># {tag.tagName}</ListGroupItem>
                             ))}
                             </ListGroup>
+                            <br></br>
                         <div className="d-grid gap-2">
                             <Button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</Button>
                             {room.roomManager === member.memberNickName && (
@@ -290,6 +294,10 @@ const MainComponent = () => {
                     </ListGroupItem>
                     ))}
                 </ListGroup>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
                 <br></br>
                 <SetRoomComponent
                     onDataUpdate={setIsUpdateTrigger}
@@ -319,19 +327,22 @@ const MainComponent = () => {
                     )}
                     </InputGroup>
                 </FormGroup>
+                <br></br>
+                <PaginationControl
+                page={page}
+                between={3}
+                total={pageLength}
+                limit={2}
+                changePage={(page) => {
+                handlePageChange(page)
+                }}
+                />
                 
             </Col>
         </Row>
-        {console.log(pageLength)}
-        <PaginationControl
-            page={page}
-            between={3}
-            total={pageLength}
-            limit={2}
-            changePage={(page) => {
-                handlePageChange(page)
-            }}
-                />
+        <Row class="w-auto p-3" className="Layout-module__column_left">
+            
+        </Row>
     </Container>
     );
 }

@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.List;
 
+@Builder
 @Entity
 @AllArgsConstructor
 @Setter
@@ -30,6 +32,9 @@ public class MemberEntity {
     private String memberEmail;
     @Enumerated(EnumType.STRING)
     private Authority authority;
+    @Column(nullable = false)
+    @ColumnDefault("profile_prototype.jpg")
+    private String imgUrl;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
     private List<ChatRoomMemberEntity> rooms;
@@ -43,18 +48,20 @@ public class MemberEntity {
     public MemberEntity(String memberId,
                         String memberPassword, String memberName,
                         String memberNickName, String memberEmail,
-                        Authority authority){
+                        Authority authority, String imgUrl){
         this.memberId = memberId;
         this.memberPassword = memberPassword;
         this.memberName = memberName;
         this.memberNickName = memberNickName;
         this.memberEmail = memberEmail;
         this.authority = authority;
+        this.imgUrl = imgUrl;
     }
     public static MemberEntity toMemberEntity(MemberResponseDto memberResponseDto){
         return MemberEntity.builder()
                 .memberId(memberResponseDto.getMemberId())
                 .memberNickName(memberResponseDto.getMemberNickName())
+                .imgUrl(memberResponseDto.getImgUrl())
                 .build();
     }
 

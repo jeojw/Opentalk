@@ -30,6 +30,11 @@ public class MemberController {
         return ResponseEntity.ok((myInfoBySecurity));
     }
 
+    @PostMapping("/api/opentalk/member/changeImg")
+    public ResponseEntity<Boolean> changeImg(@RequestParam("memberId") String memberId, @RequestParam("newImg") String newImg){
+        return ResponseEntity.ok(memberService.changeImage(memberId, newImg));
+    }
+
     @PostMapping("/api/opentalk/member/searchNickName")
     public ResponseEntity<List<MemberResponseDto>> searchMember(@RequestParam("nickName") String nickName){
         return ResponseEntity.ok(memberService.searchMember(nickName));

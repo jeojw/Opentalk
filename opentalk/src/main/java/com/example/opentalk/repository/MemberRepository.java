@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,7 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
             nativeQuery = true)
     String SearchMemberPassword(@Param("memberEmail") String memberEmail);
     @Modifying
+    @Transactional
     @Query(value = "UPDATE Opentalk.open_talk_member SET member_password = :newPassword WHERE member_password = :exPassword",
             nativeQuery = true)
     void ChangePw(@Param("exPassword") String exPassword, @Param("newPassword") String newPassword);
@@ -46,9 +48,16 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     String ReturnExPw(@Param("memberEmail") String memberEmail);
 
     @Modifying
+    @Transactional
     @Query(value = "UPDATE Opentalk.open_talk_member SET member_nick_name = :newNickName WHERE member_id = :memberId",
             nativeQuery = true)
     void ChangeNickName(@Param("memberId") String memberId, @Param("newNickName") String newNickName);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE Opentalk.open_talk_member SET img_url = :newImage WHERE member_id = :memberId",
+            nativeQuery = true)
+    void ChangeImg(@Param("memberId") String memberId, @Param("newImage") String newImage);
 
     boolean existsByMemberId(String memberId);
 

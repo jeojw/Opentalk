@@ -13,6 +13,7 @@ public class MemberInfoDto {
     private String memberName;
     private String memberNickName;
     private String memberEmail;
+    private String imgUrl;
 
     public static MemberInfoDto of(MemberEntity member) {
         return MemberInfoDto.builder()
@@ -20,6 +21,7 @@ public class MemberInfoDto {
                 .memberName(member.getMemberName())
                 .memberNickName(member.getMemberNickName())
                 .memberEmail(member.getMemberEmail())
+                .imgUrl(member.getImgUrl())
                 .build();
     }
 }

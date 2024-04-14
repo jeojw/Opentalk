@@ -24,6 +24,15 @@ public class MemberService {
     private final ChatRoomRepository chatRoomRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public boolean changeImage(String memberId, String newImg){
+        Optional<MemberEntity> member = memberRepository.SearchMemberId(memberId);
+        if (member.isPresent()){
+            memberRepository.ChangeImg(member.get().getMemberId(), newImg);
+            return true;
+        }
+        return false;
+    }
+
     public MemberResponseDto getMyInfoBySecurity() {
         return memberRepository.findById(SecurityUtil.getCurrentMemberId())
                 .map(MemberResponseDto::of)

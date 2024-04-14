@@ -8,12 +8,17 @@ import { Container, Row, Col, Button, Form,
 
 const ProfileComponent = ({setIsUpdateData}) => {
     const [member, setMember] = useState('');
+
     const [pwPopupOpen, setPwPopupOpen] = useState(false);
     const [nickPopupOpen, setNickPopupOpen] = useState(false);
+    const [imgPopupOpen, setImgPopupOpen] = useState(false);
+
     const [newNickName, setNewNickName] = useState("");
     const [exPassword, setExPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
+
     const [checkPassword, setCheckPassword] = useState("");
+    const [uploadImgUrl, setUploadImgUrl] = useState("");
 
     const [isChangeData, setIsChangeData] = useState(false);
 
@@ -37,6 +42,18 @@ const ProfileComponent = ({setIsUpdateData}) => {
         fetchMemberStatus();
     }, [isChangeData]);
 
+    const onChangeImageUpload = (event) => {
+        const {files} = event.target;
+        const uploadFile = files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(uploadFile);
+        reader.onload = () => {
+            setUploadImgUrl(reader.result);
+        }
+        
+        reader.readAsDataURL(files)
+    }
+
     const GetInputExPassword = (event) =>{
         setExPassword(event.target.value);
     }
@@ -53,7 +70,11 @@ const ProfileComponent = ({setIsUpdateData}) => {
         setNewNickName(event.target.value);
     }
 
-    const ChangeNickNamePopup = () => {
+    const ChangeImgPopup = () => {
+        setImgPopupOpen(true);
+    }
+
+     const ChangeNickNamePopup = () => {
         setNickPopupOpen(true); 
     }  
 
@@ -73,6 +94,33 @@ const ProfileComponent = ({setIsUpdateData}) => {
         setCheckPassword("");
     }
 
+    const ChangeImgCancle = () => {
+        setUploadImgUrl("");
+        setImgPopupOpen(false);
+    }
+
+    const ChangeImg = () => {
+        if (uploadImgUrl === ""){
+            window.alert("사진을 선택해주세요.")
+        }
+        else{
+            if (window.confirm("변경하시겠습니까?")){
+                const changeData = new FormData();
+                changeData.append("memberId", member.memberId)
+                changeData.append("newImg", uploadImgUrl)
+                const changUrl = "/api/opentalk/member/changeImg";
+                axios.post(changUrl, changeData)
+                .then((res) => {
+                    if(res.data === true){
+                        window.alert("변경되었습니다!")
+                        setImgPopupOpen(false);
+                        setIsChangeData(prevState => !prevState);
+                    }
+                })
+            }
+        }
+        
+    }
     const ChangePassword = () =>{
         if (newPassword !== checkPassword){
             alert("비밀번호가 일치하지 않습니다.");
@@ -131,7 +179,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
                 <Col xs lg="3" md={{ span: 1, offset: 2}} className="border border-warning border-3 rounded-3 p-5">
                     <img 
                         alt="프로필 이미지" 
-                        src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}
+                        src={`${process.env.PUBLIC_URL}/`}
                         style={{width:200, 
                                 height:200,
                                 backgroundPosition:"center"}}    
@@ -143,6 +191,12 @@ const ProfileComponent = ({setIsUpdateData}) => {
                         <ListGroupItem>이메일: {member.memberEmail}</ListGroupItem>
                     </ListGroup>
                     <br></br>
+                    <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}>
+                        <img src = {uploadImgUrl} img = "img"/>
+                        <FormControl type='file' accept='image/*' onChange={onChangeImageUpload}></FormControl>
+                        <Button onClick={ChangeImg}>변경하기</Button>
+                        <Button variant='dark' onClick={ChangeImgCancle}>변경취소</Button>
+                    </Modal>
                     <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}>
                         <InputGroup>
                             <InputGroup.Text>새 닉네임</InputGroup.Text>
@@ -183,6 +237,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
                         <Button variant='dark' onClick={ChangePasswordCancle}>변경 취소</Button>
                     </Modal>
                     <div className="d-grid gap-2">
+                        <Button onClick={ChangeImgPopup}>사진 변경</Button>
                         <Button onClick={ChangeNickNamePopup}>닉네임 변경</Button>
                         <Button onClick={ChangePasswordPopup}>비밀번호 변경</Button>
                         <Button onClick={() => navigate("/opentalk/main")}>이전 페이지</Button>
