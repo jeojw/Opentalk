@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
+import {Button} from 'react-bootstrap'
 
 const InviteMemberComponent = ({role}) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +42,7 @@ const InviteMemberComponent = ({role}) => {
     return (
         <div>
             {role === "MANAGER" && (
-                <button onClick={OpenInviteModal}>초대하기</button>
+                <Button onClick={OpenInviteModal}>초대하기</Button>
             )}
             <Modal isOpen={isOpen} onRequestClose={CloseInviteModal}>
                 <div>
@@ -50,12 +51,12 @@ const InviteMemberComponent = ({role}) => {
                         value = {nickName}
                         onChange = {GetInputNickName}
                     ></input>
-                    <button onClick={() => SearchByNickName(nickName)}>검색</button>
-                    <button onClick={CloseInviteModal}>취소</button>
+                    <Button onClick={() => SearchByNickName(nickName)}>검색</Button>
+                    <Button onClick={CloseInviteModal}>취소</Button>
                     {searchList && searchList.length > 0 && (
                         <ul>
                             {searchList.map((_member, index) => (
-                                <li key={index}>{_member.memberNickName}<button onClick={InviteMember}>초대</button></li>
+                                <li key={index}>{_member.memberNickName}<Button onClick={InviteMember}>초대</Button></li>
                             ))}
                         </ul>
                     )}

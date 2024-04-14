@@ -47,7 +47,13 @@ public class MemberService {
 
     @Transactional
     public String findMemberId(String memberEmail){
-        return memberRepository.SearchMemberId(memberEmail);
+        Optional<MemberEntity> member = memberRepository.SearchMemberId(memberEmail);
+        if (member.isPresent()){
+            return member.get().getMemberId();
+        }
+        else{
+            return "fail";
+        }
     }
 
     @Transactional

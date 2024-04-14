@@ -9,7 +9,12 @@ const LoginComponent = (props) => {
     const [cookies, setCookie] = useCookies([]);
     const [memberId, setMemberId] = useState("");
     const [memberPw, setMemberPw] = useState("");
+    const [isForget, setIsForget] = useState(false);
     const navigate = useNavigate();
+
+    const findIdPw = (e) => {
+
+    }
     
     const CheckLogin = (e) => {
         const checkloginUrl = '/api/opentalk/member/login'
@@ -61,22 +66,20 @@ const LoginComponent = (props) => {
                             <Form.Label>비밀번호</Form.Label>
                             <Form.Control type="password" placeholder="비밀번호를 입력하세요" value={memberPw} onChange={(e) => setMemberPw(e.target.value)} />
                         </FormGroup>
+                        <br></br>
                         <div className="d-grid gap-2">
                             <Button variant="primary" onClick={CheckLogin} size='4'>로그인</Button>
-                            <Button variant="dark" onClick={() => navigate("/opentalk/member/enroll")}>회원가입</Button>
+                            <Button variant="secondary" onClick={() => navigate("/opentalk/member/enroll")}>회원가입</Button>
+                            <Button variant='warning' onClick={() => setIsForget(prevState => !prevState)}>계정을 잊어버리셨나요?</Button>
+                            {isForget && (
+                            <div className="d-grid gap-2">
+                                <Button variant="primary" onClick={() => navigate("/opentalk/member/findId")}>아이디 찾기</Button>
+                                <Button variant="primary" onClick={() => navigate("/opentalk/member/authId")}>비밀번호 찾기</Button>
+                            </div>
+                            )}
+                            <Button variant="info" onClick={() => navigate("/opentalk/front")}>시작화면으로</Button>
                         </div>
                     </Form>
-                </Col>
-            </Row>
-            <Row>
-                <Col md={{ span: 3, offset: 3 }}>
-                    <Button variant="primary" onClick={() => navigate("/opentalk/member/findId")}>아이디 찾기</Button>
-                    <Button variant="primary" onClick={() => navigate("/opentalk/member/authId")}>비밀번호 찾기</Button>
-                </Col>
-            </Row>
-            <Row>
-                <Col md={{ span: 3, offset: 3 }}>
-                    <Button variant="primary" onClick={() => navigate("/opentalk/front")}>시작화면으로</Button>
                 </Col>
             </Row>
         </Container>

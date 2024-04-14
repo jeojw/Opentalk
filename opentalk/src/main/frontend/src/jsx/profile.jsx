@@ -3,6 +3,8 @@ import axios from 'axios';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import { Container, Row, Col, Button, Form, 
+    FormControl, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 const ProfileComponent = ({setIsUpdateData}) => {
     const [member, setMember] = useState('');
@@ -124,52 +126,70 @@ const ProfileComponent = ({setIsUpdateData}) => {
     }
     
     return(
-        <div>
-            <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
-            <ul>
-                <li>이름: {member.memberName}</li>
-                <li>닉네임: {member.memberNickName}</li>
-                <li>이메일: {member.memberEmail}</li>
-            </ul>
-            <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}>
-                새 닉네임: <input 
-                    type="text" 
-                    value={newNickName} 
-                    onChange={GetInputNewNickName}>   
-                </input>
-                <br></br>
-                <button onClick={ChangeNickName}>변경하기</button>
-                <button onClick={ChangeNickNameCancle}>변경 취소</button>
-            </Modal>
-            <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}>
-                현재 비밀번호: <input
-                    type="password"
-                    value={exPassword}
-                    onChange={GetInputExPassword}
-                >
-                </input>
-                <br></br>
-                새 비밀번호: <input 
-                    type="password" 
-                    value={newPassword} 
-                    onChange={GetInputNewPassword}>   
-                </input>
-                <br></br>
-                비밀번호 확인: <input 
-                    type="password" 
-                    value={checkPassword} 
-                    onChange={GetInputCheckPassword}>   
-                </input>
-                <br></br>
-                <button onClick={ChangePassword}>변경하기</button>
-                <button onClick={ChangePasswordCancle}>변경 취소</button>
-            </Modal>
-
-            <button onClick={ChangeNickNamePopup}>닉네임 변경</button>
-            <button onClick={ChangePasswordPopup}>비밀번호 변경</button>
-            <br></br>
-            <button onClick={() => navigate("/opentalk/main")}>이전 페이지</button>
-        </div>
+        <Container>
+            <Row>
+                <Col xs lg="3" md={{ span: 1, offset: 2}} className="border border-warning border-3 rounded-3 p-5">
+                    <img 
+                        alt="프로필 이미지" 
+                        src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}
+                        style={{width:200, 
+                                height:200,
+                                backgroundPosition:"center"}}    
+                    ></img>
+                    <br></br>
+                    <ListGroup>
+                        <ListGroupItem>이름: {member.memberName}</ListGroupItem>
+                        <ListGroupItem>닉네임: {member.memberNickName}</ListGroupItem>
+                        <ListGroupItem>이메일: {member.memberEmail}</ListGroupItem>
+                    </ListGroup>
+                    <br></br>
+                    <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}>
+                        <InputGroup>
+                            <InputGroup.Text>새 닉네임</InputGroup.Text>
+                            <Form.Control 
+                                type="text" 
+                                value={newNickName} 
+                                onChange={GetInputNewNickName}></Form.Control>
+                        </InputGroup>
+                        <br></br>
+                        <Button onClick={ChangeNickName}>변경하기</Button>
+                        <Button variant='dark'onClick={ChangeNickNameCancle}>변경 취소</Button>
+                    </Modal>
+                    <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}>
+                        <InputGroup>
+                            <InputGroup.Text>현재 비밀번호</InputGroup.Text>
+                            <Form.Control 
+                                type="password"
+                                value={exPassword}
+                                onChange={GetInputExPassword}></Form.Control>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup>
+                            <InputGroup.Text>새 비밀번호</InputGroup.Text>
+                            <Form.Control type="password" 
+                                value={newPassword} 
+                                onChange={GetInputNewPassword}></Form.Control>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup>
+                            <InputGroup.Text>비밀번호 확인</InputGroup.Text>
+                            <Form.Control type="password" 
+                                value={checkPassword} 
+                                onChange={GetInputCheckPassword}></Form.Control>
+                        </InputGroup>
+                        <br></br>
+                        <br></br>
+                        <Button onClick={ChangePassword}>변경하기</Button>
+                        <Button variant='dark' onClick={ChangePasswordCancle}>변경 취소</Button>
+                    </Modal>
+                    <div className="d-grid gap-2">
+                        <Button onClick={ChangeNickNamePopup}>닉네임 변경</Button>
+                        <Button onClick={ChangePasswordPopup}>비밀번호 변경</Button>
+                        <Button onClick={() => navigate("/opentalk/main")}>이전 페이지</Button>
+                    </div>
+                </Col>
+            </Row>
+        </Container>
     );
 
 }

@@ -1,6 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { Container, Row, Col, Button, Form, 
+    FormControl, InputGroup, ListGroup, ListGroupItem, 
+    FormGroup} from 'react-bootstrap';
 
 const ChangePasswordComponent = () =>{
     const [memberEmail, setMemberEmail] = useState("");
@@ -52,16 +55,24 @@ const ChangePasswordComponent = () =>{
     }
 
     return(
-        <div>
-            <h2>비밀번호 변경하기</h2>
-            <label>
-                새로운 비밀번호: <input type="password" value={newPassword} onChange = {GetInputPassword}></input>
-                <br></br>
-                비밀번호 확인: <input type="password" value={checkPassword} onChange = {GetInputCheckPassword}></input>
-                <br></br>
-                <input type="button" value="변경하기" onClick={ChangePassword}></input>
-            </label>
-        </div>  
+        <Container style={{ minHeight: '100vh'}}>
+            <Row>
+                <Col xs lg="4" md={{ span: 3, offset: 4 }} className="border border-warning border-3 rounded-3 p-5">
+                    <h3>비밀번호 변경하기</h3>
+                    <Form>
+                        <Form.Label>새 비밀번호</Form.Label>
+                        <Form.Control type='password' value={newPassword} onChange={GetInputPassword}></Form.Control>
+                        <Form.Label>비밀번호 확인</Form.Label>
+                        <Form.Control type='password' value={checkPassword} onChange={GetInputCheckPassword}></Form.Control>
+                    </Form>
+                    <br></br>
+                    <div className="d-grid gap-2">
+                        <Button onClick={ChangePassword}>변경하기</Button>
+                    </div>
+                </Col>
+            </Row>
+            
+        </Container>
     );
 }
 

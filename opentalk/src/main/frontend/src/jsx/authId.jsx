@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Form, Button, Container, Row, Col, FormControl } from 'react-bootstrap';
 
 const AuthIdComponent = () =>{
     const [memberId, setMemberId] = useState("");
@@ -29,16 +30,21 @@ const AuthIdComponent = () =>{
     }
 
     return (
-        <div>
-            <h2>아이디 확인하기</h2>
-            <form onSubmit={AuthId}>
-                <label>
-                    아이디: <input type="text" value={memberId} onChange = {GetInputId}></input>
+        <Container style={{ minHeight: '100vh'}}>
+            <Row>
+                <Col xs lg="3" md={{ span: 3, offset: 4 }} className="border border-warning border-3 rounded-3 p-5">
+                <h3>아이디 확인하기</h3>
+                <Form>
+                    <Form.Label>아이디</Form.Label>
+                    <FormControl type='text' value={memberId} onChange={GetInputId}></FormControl>
                     <br></br>
-                    <input type="submit" value="확인하기" onClick={AuthId}></input>
-                </label>
-            </form>
-        </div>
+                    <div className="d-grid gap-2">
+                        <Button onClick={AuthId}>확인하기</Button>
+                    </div>
+                </Form>
+                </Col>
+            </Row>
+        </Container>
     );
 }
 

@@ -256,8 +256,8 @@ const MainComponent = () => {
 
    return (
     <Container>
-        <Row size="10">
-            <Col xs lg="3" md={{ span: 1, offset: 6}} className="border border-warning border-3 rounded-3 p-5">
+        <Row noGutters>
+            <Col xs={3} md={6} span={1} offset={1} lg="3" className="border border-warning border-3 rounded-3 p-5">
                 <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
                 <p>환영합니다, {member.memberNickName}님</p>
                 <div className="d-grid gap-2">
@@ -266,8 +266,8 @@ const MainComponent = () => {
                 </div>
             </Col>
         </Row>
-        <Row>
-            <Col xs lg="5" md={{ span: 3}}>
+        <Row noGutters>
+            <Col xs={6} md={9} span={12} offset={12} lg="5" >
                 <ListGroup>
                     {Array.isArray(chatRoomList) && chatRoomList.map(room=>(
 
@@ -275,9 +275,9 @@ const MainComponent = () => {
                         {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                         <br></br>소개문: {room.introduction}
                         <br></br>방장: {room.roomManager}
-                            <ListGroup>
+                            <ListGroup class="list-group list-group-horizontal">
                             {room.roomTags.map(tag=>(
-                                <ListGroupItem>#{tag.tagName}</ListGroupItem>
+                                <ListGroupItem># {tag.tagName}</ListGroupItem>
                             ))}
                             </ListGroup>
                         <div className="d-grid gap-2">
@@ -290,6 +290,7 @@ const MainComponent = () => {
                     </ListGroupItem>
                     ))}
                 </ListGroup>
+                <br></br>
                 <SetRoomComponent
                     onDataUpdate={setIsUpdateTrigger}
                 />

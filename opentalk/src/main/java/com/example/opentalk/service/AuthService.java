@@ -51,6 +51,14 @@ public class AuthService {
         return memberRepository.existsByMemberEmail(memberEmail);
     }
 
+    public String findId(String memberEmail){
+        Optional<MemberEntity> member = memberRepository.findByMemberEmail(memberEmail);
+        if (member.isPresent()){
+            return member.get().getMemberId();
+        }
+        return "fail";
+    }
+
     public String getExPassword(String memberEmail){
         return memberRepository.ReturnExPw(memberEmail);
     }

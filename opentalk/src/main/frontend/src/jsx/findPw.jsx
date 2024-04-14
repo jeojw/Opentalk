@@ -1,14 +1,20 @@
 import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Form, Button, Container, Row, Col, InputGroup, FormControl } from 'react-bootstrap';
 
 const FindMemberPassword = (props) =>{
     const [memberEmail, setMemberEmail] = useState('');
-    const [authNum, setAuthNum] = useState('');
+    const [authNum, setAuthNum] = useState();
+    const [inputNum, setInputNum] = useState();
     const navigate = useNavigate();
 
     const GetInputEmail = (event) =>{
         setMemberEmail(event.target.value);
+    }
+
+    const GetInputNum = (event) => {
+        setInputNum(event.target.value);
     }
 
     const CheckMail = () =>{
@@ -23,28 +29,44 @@ const FindMemberPassword = (props) =>{
 
     const CheckAuth = () =>{
         const checkUrl = `/api/opentalk/findPw/mailauthCheck`
-        axios.post(checkUrl, {
-            email: memberEmail,
-            authNum: String(authNum)
-        }).then((res)=>{
-            if (res.data === "ok"){
-                navigate("/opentalk/member/changePw", {state: {memberEmail: memberEmail}});
-            }
-            else{
-                alert("인증이 실패하였습니다. 다시 시도해주십시오.")
-            }
-        }).catch((error) => console.log(error))
+        if (String(inputNum) !== String(authNum)){
+            alert("인증이 실패하였습니다. 다시 시도해주십시오.")
+        }
+        else{
+            axios.post(checkUrl, {
+                email: memberEmail,
+                authNum: String(authNum)
+            }).then((res)=>{
+                if (res.data === "ok"){
+                    navigate("/opentalk/member/changePw", {state: {memberEmail: memberEmail}});
+                }
+                else{
+                    alert("인증이 실패하였습니다. 다시 시도해주십시오.")
+                }
+            }).catch((error) => console.log(error))
+        }
     }
     return(
-        <div>
-            <h2>회원정보 찾기</h2>
-            <h3>비밀번호 찾기</h3>
-            <label>
-                이메일: <input type="email" value={memberEmail} onChange = {GetInputEmail}></input><input type="button" value="인증번호 받기" onClick={CheckMail}></input>
-                <br></br>
-                인증번호: <input type="text"></input><input type="button" value="인증하기" onClick={CheckAuth}></input>
-            </label>
-        </div>
+        <Container style={{ minHeight: '100vh'}}>
+            <Row>
+                <Col xs lg="5" md={{ span: 3, offset: 3 }} className="border border-warning border-3 rounded-3 p-5">
+                <h3>비밀번호 찾기</h3>
+                <Form>
+                    <Form.Label>이메일</Form.Label>
+                    <InputGroup>
+                        <FormControl type='email' value={memberEmail} onChange={GetInputEmail}></FormControl>
+                        <Button onClick={CheckMail}>인증번호 받기</Button>
+                    </InputGroup>
+                    <Form.Label>인증번호</Form.Label>
+                    <InputGroup>
+                        <FormControl type='text' value={inputNum} onChange={GetInputNum}></FormControl>
+                        <Button onClick={CheckAuth}>인증하기</Button>
+                    </InputGroup>
+                </Form>
+                </Col>
+            </Row>
+            
+        </Container>
     );
 }
 

@@ -42,7 +42,7 @@ const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
         }
 
         fetchInfo();
-    }, []);
+    });
 
     useEffect(() => {
         const fetchChatLog = async () => {
@@ -292,8 +292,11 @@ const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
                 <Row>
                     <Col>
                         <Form onSubmit={(event)=>handleSubmit(event)}>
-                        <Form.Control type="text"  value={chat} onChange={handleChange} />
-                        <Button onChange={() => publishChat(chat)}>전송</Button>
+                            <InputGroup>
+                                <Form.Control type="text"  value={chat} onChange={handleChange} />
+                                <Button onChange={() => publishChat(chat)}>전송</Button>
+                            </InputGroup>
+                            
                         </Form>
                     </Col>
                 </Row>

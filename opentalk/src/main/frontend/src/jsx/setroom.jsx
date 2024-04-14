@@ -141,7 +141,9 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
     return (
         <Container>
             <Button onClick={openModal}>방 생성하기</Button>
-            <Modal isOpen={isOpen} onRequestClose={closeModal}>
+            <Modal
+                isOpen={isOpen} 
+                onRequestClose={closeModal}>
                 <Row>
                     <Col>
                         <InputGroup>
