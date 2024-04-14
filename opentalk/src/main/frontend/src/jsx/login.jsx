@@ -55,7 +55,7 @@ const LoginComponent = (props) => {
    return (
     <Container style={{ minHeight: '100vh'}}>
             <Row>
-                <Col xs lg="3" md={{ span: 3, offset: 4 }} className="border border-warning border-3 rounded-3 p-5">
+                <Col md={{ span: 3, offset: 4 }} className="border border-warning border-3 rounded-3 p-5">
                     <h2>로그인</h2>
                     <Form onSubmit={CheckLogin}>
                         <FormGroup>

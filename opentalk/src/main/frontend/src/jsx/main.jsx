@@ -31,7 +31,7 @@ const MainComponent = () => {
     const [page, setPage] = useState(1);
     const [isSearch, setIsSearch] = useState(false);
 
-    const postPerPage = 2;
+    const postPerPage = 3;
     const indexOfLastPost = page * postPerPage;
     const indexOfFirstPost= indexOfLastPost - postPerPage;
 
@@ -278,7 +278,7 @@ const MainComponent = () => {
                         {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                         <br></br>소개문: {room.introduction}
                         <br></br>방장: {room.roomManager}
-                            <ListGroup class="list-group list-group-horizontal">
+                            <ListGroup className="list-group list-group-horizontal">
                             {room.roomTags.map(tag=>(
                                 <ListGroupItem># {tag.tagName}</ListGroupItem>
                             ))}
@@ -332,7 +332,7 @@ const MainComponent = () => {
                 page={page}
                 between={3}
                 total={pageLength}
-                limit={2}
+                limit={3}
                 changePage={(page) => {
                 handlePageChange(page)
                 }}
