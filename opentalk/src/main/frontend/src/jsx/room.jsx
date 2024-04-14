@@ -7,6 +7,7 @@ import { useCookies } from "react-cookie";
 import ChangRoomComponent from './changroom';
 import InviteMemberComponent from './inviteMember';
 import { Container, Row, Col, Button, Form, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
+import InfiniteScroll from "react-infinite-scroller";
 
 const RoomComponent = ({setIsChangeData}) => {
 
@@ -22,10 +23,8 @@ const RoomComponent = ({setIsChangeData}) => {
     const [isForcedExist, setIsForcedExist] = useState(false);
     const [isChangeRoom, setIsChangeRoom] = useState(false);
 
-    let {room_Id} = useParams();
-    
+    let {room_Id} = useParams();  
     const client = useRef({});
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -45,19 +44,18 @@ const RoomComponent = ({setIsChangeData}) => {
 
     useEffect(() => {
         const fetchChatLog = async () => {
-            let response;
             try {
                 const data = new FormData();
                 data.append("roomId", room_Id);
-                response = await axios.post("/api/opentalk/chatLog", data);
+                const response = await axios.post("/api/opentalk/chatLog", data);
+                setPreChatList(response.data);
             } catch (error){
                 console.log(error);
             }
-            setPreChatList(response.data);
         }
 
         fetchChatLog();
-    }, [room_Id])
+    }, [])
 
 
     useEffect(() => {
@@ -270,22 +268,23 @@ const RoomComponent = ({setIsChangeData}) => {
                 </Col>
             </Row>
             <Row>
-                <Col>
-                {preChatList && preChatList.length > 0 && (
+                <Col style={{ overflowY: 'auto', maxHeight: '400px' }}>
+                    {preChatList && preChatList.length > 0 && (
                     <ListGroup>
                         {preChatList.map((_chatMessage, index) => (
                             <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
                         ))}
                     </ListGroup>
-                )}
-                <br></br>
-                {chatList && chatList.length > 0 && (
+                    )}
+                    <br></br>
+                    {chatList && chatList.length > 0 && (
                     <ListGroup>
                         {chatList.map((_chatMessage, index) => (
                             <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
                         ))}
                     </ListGroup>
-                )}
+                    )}
+
                 </Col>
             </Row>
             <br></br>
