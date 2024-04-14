@@ -167,7 +167,7 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
     return(
         <Container>
             {role === "MANAGER" && (
-                <Button onClick={openModal}>설정 변경</Button>
+            <Button onClick={openModal}>설정 변경</Button>
             )}
             <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}>
                 <Row>

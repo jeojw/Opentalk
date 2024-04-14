@@ -38,7 +38,7 @@ const RoomComponent = ({setIsChangeData}) => {
                 console.log(error);
             }
         }
-
+        console.log(myInfo);
         fetchInfo();
     },[]);
 
@@ -304,8 +304,9 @@ const RoomComponent = ({setIsChangeData}) => {
                 {() => setIsChangeData(isChangeRoom)}
             </ChangRoomComponent>
             <InviteMemberComponent role={role}/>
-            <div>
-            <h2>참여명단</h2>
+            <Row>
+                <Col style={{ overflowY: 'auto', maxHeight: '200px' }}>
+                <h2>참여명단</h2>
                 {roomInformation?.members.map((_member, index) => (
                     <ListGroup>
                         <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
@@ -319,8 +320,8 @@ const RoomComponent = ({setIsChangeData}) => {
                         </ListGroupItem>
                     </ListGroup>
                 ))}
-            </div>
-
+                </Col>
+            </Row>
         </Container>
     );
 }
