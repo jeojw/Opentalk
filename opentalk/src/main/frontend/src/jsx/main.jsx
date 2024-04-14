@@ -10,6 +10,7 @@ import ProfileComponent from './profile';
 import { Container, Row, Col, Button, Form, 
     FormControl, InputGroup, ListGroup, ListGroupItem, 
     FormGroup} from 'react-bootstrap';
+import { PaginationControl } from 'react-bootstrap-pagination-control';
 
 const MainComponent = () => {
     const ChatRoomRole = {
@@ -255,28 +256,37 @@ const MainComponent = () => {
 
    return (
     <Container>
-        <Row>
-            <Col>
+        <Row size="10">
+            <Col xs lg="3" md={{ span: 1, offset: 6}} className="border border-warning border-3 rounded-3 p-5">
                 <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}></img>
                 <p>환영합니다, {member.memberNickName}님</p>
-                <Button onClick={GoProfile}>프로필 설정</Button>
-                <Button onClick={LogOut}>로그아웃</Button>
+                <div className="d-grid gap-2">
+                    <Button variant="primary" onClick={GoProfile}>프로필 설정</Button>
+                    <Button variant="dark" onClick={LogOut}>로그아웃</Button>
+                </div>
+            </Col>
+        </Row>
+        <Row>
+            <Col xs lg="5" md={{ span: 3}}>
                 <ListGroup>
                     {Array.isArray(chatRoomList) && chatRoomList.map(room=>(
 
                         <ListGroupItem>{room.roomName} | 인원수: {room.curParticipates} / {room.limitParticipates}
                         {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
-                        <br></br>{room.introduction}
+                        <br></br>소개문: {room.introduction}
                         <br></br>방장: {room.roomManager}
                             <ListGroup>
                             {room.roomTags.map(tag=>(
                                 <ListGroupItem>#{tag.tagName}</ListGroupItem>
                             ))}
                             </ListGroup>
-                         <Button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</Button>
-                        {room.roomManager === member.memberNickName && (
-                        <Button onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
-                    )}
+                        <div className="d-grid gap-2">
+                            <Button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</Button>
+                            {room.roomManager === member.memberNickName && (
+                            <Button variant="dark" onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
+                            )}
+                        </div>
+                        
                     </ListGroupItem>
                     ))}
                 </ListGroup>
@@ -285,38 +295,42 @@ const MainComponent = () => {
                 />
                 <br></br>
                 <FormGroup>
-                    <Form.Select 
-                        onChange={selectMenuHandle} 
-                        value={selectManu}
-                        size="sm"
-                    >
-                        {menuList.map((item) => {
-                            return <option value={item.value} key={item.value}>
-                                {item.name}
-                            </option>;
-                        })}
-                    </Form.Select>
                     <InputGroup>
-                        <FormControl type='text' value={searchKeyword} onChange={GetInputSearchKeyword}></FormControl>
+                        <Form.Select 
+                            onChange={selectMenuHandle} 
+                            value={selectManu}
+                            style={{flex: '1'}}
+                        >
+                            {menuList.map((item) => {
+                                return <option value={item.value} key={item.value}>
+                                    {item.name}
+                                </option>;
+                            })}
+                        </Form.Select>
+                        <FormControl 
+                            type='text' 
+                            value={searchKeyword} 
+                            onChange={GetInputSearchKeyword}
+                            style={{flex: '5'}}></FormControl>
+                            <Button onClick={search}>검색</Button>
+                        {isSearch && (
+                        <Button onClick={initSearch}>초기화</Button>
+                    )}
                     </InputGroup>
                 </FormGroup>
                 
-                <Button onClick={search}>검색</Button>
-                {isSearch && (
-                    <button onClick={initSearch}>초기화</button>
-                )}
-                <Pagination
-                    activePage={page}
-                    itemsCountPerPage={postPerPage}
-                    totalItemsCount={pageLength}
-                    pageRangeDisplayed={5}
-                    prevPageText={"<"}
-                    nextPageText={">"}
-                 onChange={handlePageChange}
-                />
             </Col>
         </Row>
-        
+        {console.log(pageLength)}
+        <PaginationControl
+            page={page}
+            between={3}
+            total={pageLength}
+            limit={2}
+            changePage={(page) => {
+                handlePageChange(page)
+            }}
+                />
     </Container>
     );
 }

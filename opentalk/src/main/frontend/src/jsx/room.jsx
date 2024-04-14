@@ -299,7 +299,7 @@ const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
                 </Row>
             </Container>
                 
-            <Button onClick={ExitRoom}>나가기</Button>
+            <Button variant="dark" onClick={ExitRoom}>나가기</Button>
             <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeRoom}>
                 {() => setIsChangeData(isChangeRoom)}
             </ChangRoomComponent>

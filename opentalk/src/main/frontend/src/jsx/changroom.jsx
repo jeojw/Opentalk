@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {useCookies} from 'react-cookie';
 import Modal from 'react-modal';
 import axios from'axios';
+import {Button} from 'react-bootstrap'
 
 const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
     const [roomInfo, setRoomInfo] = useState();
@@ -208,8 +209,8 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                     )
                     )}
                     <br></br>
-                <button onClick={changeRoomModal}>변경하기</button>
-                <button onClick={cancleSetModal}>변경 취소</button>
+                <Button onClick={changeRoomModal}>변경하기</Button>
+                <Button onClick={cancleSetModal}>변경 취소</Button>
                 </div>
             </Modal>
         </div>
