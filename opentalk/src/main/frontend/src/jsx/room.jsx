@@ -6,10 +6,9 @@ import SockJs from "sockjs-client"
 import { useCookies } from "react-cookie";
 import ChangRoomComponent from './changroom';
 import InviteMemberComponent from './inviteMember';
-import { Container, Row, Col, Button, Form, 
-    FormControl, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 
-const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
+const RoomComponent = ({setIsChangeData}) => {
 
     const [roomInformation, setRoomInformation] = useState();
     const [myInfo, setMyInfo] = useState();
@@ -42,7 +41,7 @@ const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
         }
 
         fetchInfo();
-    });
+    },[]);
 
     useEffect(() => {
         const fetchChatLog = async () => {
@@ -143,6 +142,7 @@ const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
   
     const publishChat = (chat) => {
         if (!client.current.connected) return;
+        console.log(chat);
 
         const curTime = new Date();
         const isoDateTime = curTime.toISOString();
@@ -267,7 +267,6 @@ const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
                 <Col>
                     {/* Option Chaining!!! */}
                     <h1>{roomInformation?.roomName}</h1> 
-                    <h2>참여자 수: {roomInformation?.participates}</h2>
                 </Col>
             </Row>
             <Row>
@@ -279,6 +278,7 @@ const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
                         ))}
                     </ListGroup>
                 )}
+                <br></br>
                 {chatList && chatList.length > 0 && (
                     <ListGroup>
                         {chatList.map((_chatMessage, index) => (
@@ -288,19 +288,17 @@ const RoomComponent = ({roomInfo, talker, setIsChangeData}) => {
                 )}
                 </Col>
             </Row>
-            <Container>
-                <Row>
-                    <Col>
-                        <Form onSubmit={(event)=>handleSubmit(event)}>
-                            <InputGroup>
-                                <Form.Control type="text"  value={chat} onChange={handleChange} />
-                                <Button onChange={() => publishChat(chat)}>전송</Button>
-                            </InputGroup>
-                            
-                        </Form>
-                    </Col>
-                </Row>
-            </Container>
+            <br></br>
+            <Row>
+                <Col>
+                    <Form onSubmit={(event)=>handleSubmit(event)}>
+                        <InputGroup>
+                            <Form.Control type="text" value={chat} onChange={handleChange} />                
+                            <Button onClick={() => publishChat(chat)}>전송</Button>            
+                        </InputGroup>
+                    </Form>
+                </Col>
+            </Row>
                 
             <Button variant="dark" onClick={ExitRoom}>나가기</Button>
             <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeRoom}>

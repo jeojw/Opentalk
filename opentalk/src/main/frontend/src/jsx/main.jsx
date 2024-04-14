@@ -258,7 +258,7 @@ const MainComponent = () => {
     <Container>
         <Row className="justify-content-end">
             <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-warning border-3 rounded-3 p-5"
-            style={{height: "400px"}}>
+            style={{width:"300px", height: "400px"}}>
                 <aside>
                     <div style={{ textAlign: 'center' }}>
                         <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`} ></img>
