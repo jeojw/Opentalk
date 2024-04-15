@@ -7,7 +7,6 @@ import { useCookies } from "react-cookie";
 import ChangRoomComponent from './changroom';
 import InviteMemberComponent from './inviteMember';
 import { Container, Row, Col, Button, Form, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
-import InfiniteScroll from "react-infinite-scroller";
 
 const RoomComponent = ({setIsChangeData}) => {
 
@@ -17,7 +16,7 @@ const RoomComponent = ({setIsChangeData}) => {
     const [chatList, setChatList] = useState([]);
     const [preChatList, setPreChatList] = useState([]);
     const [chat, setChat] = useState("");
-    const [cookies] = useCookies(['accessToken']);
+    const [cookies] = useCookies(['accessToken', 'refreshToken']);
     const [role, setRole] = useState();
 
     const [isForcedExist, setIsForcedExist] = useState(false);
@@ -34,28 +33,13 @@ const RoomComponent = ({setIsChangeData}) => {
                     headers: {Authorization: 'Bearer ' + cookies.accessToken}
                 });
                 setMyInfo(myselfResponse.data);
+                console.log(myselfResponse.data);
             } catch (error){
                 console.log(error);
             }
         }
-        console.log(myInfo);
         fetchInfo();
-    },[]);
-
-    useEffect(() => {
-        const fetchChatLog = async () => {
-            try {
-                const data = new FormData();
-                data.append("roomId", room_Id);
-                const response = await axios.post("/api/opentalk/chatLog", data);
-                setPreChatList(response.data);
-            } catch (error){
-                console.log(error);
-            }
-        }
-
-        fetchChatLog();
-    }, [])
+    }, []);
 
 
     useEffect(() => {
@@ -71,7 +55,7 @@ const RoomComponent = ({setIsChangeData}) => {
         }
 
         fetchRoom();
-    }, [isChangeRoom]);
+    }, [isChangeRoom, myInfo]);
 
     useEffect(() => {
         const isExistInRoom = async () => {
@@ -88,6 +72,21 @@ const RoomComponent = ({setIsChangeData}) => {
 
         isExistInRoom();
     }, [isForcedExist]);
+
+    useEffect(() => {
+        const fetchChatLog = async () => {
+            try {
+                const data = new FormData();
+                data.append("roomId", room_Id);
+                const response = await axios.post("/api/opentalk/chatLog", data);
+                setPreChatList(response.data);
+            } catch (error){
+                console.log(error);
+            }
+        }
+
+        fetchChatLog();
+    }, [])
 
     useEffect(() =>{ 
         connect();

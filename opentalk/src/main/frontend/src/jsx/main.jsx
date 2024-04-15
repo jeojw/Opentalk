@@ -42,7 +42,7 @@ const MainComponent = () => {
         setPage(page);
     }
 
-    const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
+    const [cookies, setCookie, removeCookie] = useCookies(['accessToken', 'refreshToken']);
     const [member, setMember] = useState("");
     const [role, setRole] = useState();
     
@@ -242,13 +242,14 @@ const MainComponent = () => {
         if (cookies.accessToken){
             if (window.confirm("로그아웃 하시겠습니까?")){
                 removeCookie('accessToken');
+                removeCookie('refreshToken');
                 window.alert("로그아웃 되었습니다.");
-                naviagte("/opentalk/front");
+                naviagte("/");
             }
         }
         else{
             alert("이미 로그아웃되었습니다.");
-            naviagte("/opentalk/front");
+            naviagte("/");
         }
         
     };
