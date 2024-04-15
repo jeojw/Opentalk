@@ -166,10 +166,18 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
 
     return(
         <Container>
-            {role === "MANAGER" && (
-            <Button onClick={openModal}>설정 변경</Button>
-            )}
-            <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}>
+            <div className='d-grid gap-2'>
+                {role === "MANAGER" && (
+                <Button onClick={openModal}>설정 변경</Button>
+                )} 
+            </div>
+            <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}
+            style={{
+                content: {
+                    width: '800px', // 원하는 너비로 설정
+                    height: '400px', // 원하는 높이로 설정
+                }
+            }}>
                 <Row>
                     <Col>
                     <InputGroup>
@@ -193,6 +201,7 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                     <InputGroup>
                         <InputGroup.Text>비밀번호</InputGroup.Text>
                         <Form.Check 
+                            size={20}
                             type='checkbox' 
                             checked={existLock} 
                             onChange={GetCheckExistPw}/>
@@ -223,7 +232,7 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                         >태그 추가</Button>
                     </InputGroup>
                     <br></br>
-                    <ListGroup>
+                    <ListGroup className="list-group list-group-horizontal">
                         {tags?.map((t)=> (
                             <ListGroupItem>#{t.tagName}<Button onClick={()=>tagDelete(t)}>삭제</Button></ListGroupItem>
                         )

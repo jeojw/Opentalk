@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
-import {Button} from 'react-bootstrap'
+import {Row, Col, Button, Form, FormGroup, FormControl, ListGroup, ListGroupItem, InputGroup, Container} from 'react-bootstrap'
 
 const InviteMemberComponent = ({role}) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +16,8 @@ const InviteMemberComponent = ({role}) => {
 
     const CloseInviteModal = () => {
         setIsOpen(false);
+        setNickName("");
+        setSearchList([]);
     }
 
     const GetInputNickName = (event) => {
@@ -40,29 +42,43 @@ const InviteMemberComponent = ({role}) => {
     }
 
     return (
-        <div>
-            {role === "MANAGER" && (
-                <Button onClick={OpenInviteModal}>초대하기</Button>
-            )}
-            <Modal isOpen={isOpen} onRequestClose={CloseInviteModal}>
-                <div>
-                    <input
-                        type = "text"
-                        value = {nickName}
-                        onChange = {GetInputNickName}
-                    ></input>
-                    <Button onClick={() => SearchByNickName(nickName)}>검색</Button>
-                    <Button onClick={CloseInviteModal}>취소</Button>
-                    {searchList && searchList.length > 0 && (
-                        <ul>
-                            {searchList.map((_member, index) => (
-                                <li key={index}>{_member.memberNickName}<Button onClick={InviteMember}>초대</Button></li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
+        <Container>
+            <div className='d-grid gap-2'>
+                {role === "MANAGER" && (
+                    <Button onClick={OpenInviteModal}>초대하기</Button>
+                )}
+            </div>
+            <Modal isOpen={isOpen} onRequestClose={CloseInviteModal}
+            style={{
+                content: {
+                    width: '450px', // 원하는 너비로 설정
+                    height: '600px', // 원하는 높이로 설정
+                }
+            }}>
+                <Row>
+                    <Col>
+                        <InputGroup>
+                            <InputGroup.Text>닉네임</InputGroup.Text>
+                            <FormControl type="text" value={nickName} onChange={GetInputNickName}></FormControl>
+                            <Button onClick={() => SearchByNickName(nickName)}>검색</Button>
+                        </InputGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col style={{ overflowY: 'auto', maxHeight: '400px' }}>
+                        {searchList && searchList.length > 0 && (
+                            <ListGroup>
+                                {searchList.map((_member, index) => (
+                                    <ListGroupItem>{_member.memberNickName}<Button onClick={InviteMember}>초대</Button></ListGroupItem>
+                                ))}
+                            </ListGroup>
+                        )}
+                        <Button variant='dark' onClick={CloseInviteModal}>취소</Button>
+                    </Col>
+                </Row>
+                    
             </Modal>
-        </div>
+        </Container>
     )
 }
 

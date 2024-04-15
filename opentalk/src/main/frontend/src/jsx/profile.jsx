@@ -50,8 +50,6 @@ const ProfileComponent = ({setIsUpdateData}) => {
         reader.onload = () => {
             setUploadImgUrl(reader.result);
         }
-        
-        reader.readAsDataURL(files)
     }
 
     const GetInputExPassword = (event) =>{
@@ -174,16 +172,17 @@ const ProfileComponent = ({setIsUpdateData}) => {
     }
     
     return(
-        <Container>
-            <Row>
-                <Col xs lg="3" md={{ span: 1, offset: 2}} className="border border-warning border-3 rounded-3 p-5">
+        <Container className="border border-warning border-3 rounded-3 p-5">
+            <Row style={{ textAlign: 'center' }}>
+                <Col md={{ span: 3, offset: 4}} className="border border-warning border-3 rounded-3 p-5">
                     <img 
                         alt="프로필 이미지" 
-                        src={`${process.env.PUBLIC_URL}/`}
+                        src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}
                         style={{width:200, 
                                 height:200,
                                 backgroundPosition:"center"}}    
                     ></img>
+                    <br></br>
                     <br></br>
                     <ListGroup>
                         <ListGroupItem>이름: {member.memberName}</ListGroupItem>
@@ -191,13 +190,25 @@ const ProfileComponent = ({setIsUpdateData}) => {
                         <ListGroupItem>이메일: {member.memberEmail}</ListGroupItem>
                     </ListGroup>
                     <br></br>
-                    <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}>
+                    <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}
+                    style={{
+                        content: {
+                            width: '800px', // 원하는 너비로 설정
+                            height: '400px', // 원하는 높이로 설정
+                        }
+                    }}>
                         <img src = {uploadImgUrl} img = "img"/>
                         <FormControl type='file' accept='image/*' onChange={onChangeImageUpload}></FormControl>
                         <Button onClick={ChangeImg}>변경하기</Button>
                         <Button variant='dark' onClick={ChangeImgCancle}>변경취소</Button>
                     </Modal>
-                    <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}>
+                    <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}
+                    style={{
+                        content: {
+                            width: '800px', // 원하는 너비로 설정
+                            height: '400px', // 원하는 높이로 설정
+                        }
+                    }}>
                         <InputGroup>
                             <InputGroup.Text>새 닉네임</InputGroup.Text>
                             <Form.Control 
@@ -209,7 +220,13 @@ const ProfileComponent = ({setIsUpdateData}) => {
                         <Button onClick={ChangeNickName}>변경하기</Button>
                         <Button variant='dark'onClick={ChangeNickNameCancle}>변경 취소</Button>
                     </Modal>
-                    <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}>
+                    <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}
+                    style={{
+                        content: {
+                            width: '800px', // 원하는 너비로 설정
+                            height: '400px', // 원하는 높이로 설정
+                        }
+                    }}>
                         <InputGroup>
                             <InputGroup.Text>현재 비밀번호</InputGroup.Text>
                             <Form.Control 

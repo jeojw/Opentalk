@@ -274,7 +274,7 @@ const MainComponent = () => {
     <Container>
         <Row className="justify-content-end">
             <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-warning border-3 rounded-3 p-5"
-            style={{width:"300px", height: "400px"}}>
+            style={{width:"300px", height: "500px"}}>
                 <aside>
                     <div style={{ textAlign: 'center' }}>
                         <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`} ></img>
@@ -282,24 +282,25 @@ const MainComponent = () => {
                     </div>
                     <div className="d-grid gap-2">
                         <Button variant="primary" onClick={GoProfile}>프로필 설정</Button>
+                        <Button>메세지함</Button>
                         <Button variant="dark" onClick={LogOut}>로그아웃</Button>
                     </div>
                 </aside>
             </Col>
-            <Col className="border border-warning border-3 rounded-3 p-5" style={{height: "741px"}}>
+            <Col className="border border-warning border-3 rounded-3 p-5" style={{height: "850px"}}>
                 <ListGroup>
                     {Array.isArray(chatRoomList) && chatRoomList.map(room=>(
-
-                        <ListGroupItem>{room.roomName} | 인원수: {room.curParticipates} / {room.limitParticipates}
+                        <ListGroupItem>방 이름: {room.roomName} | 인원수: {room.curParticipates} / {room.limitParticipates}
                         {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                         <br></br>소개문: {room.introduction}
                         <br></br>방장: {room.roomManager}
-                            <ListGroup className="list-group list-group-horizontal">
-                            {room.roomTags.map(tag=>(
-                                <ListGroupItem># {tag.tagName}</ListGroupItem>
-                            ))}
-                            </ListGroup>
-                            <br></br>
+                        <p>태그목록</p>
+                        <ListGroup className="list-group list-group-horizontal">        
+                        {room.roomTags.map(tag=>(
+                            <ListGroupItem># {tag.tagName}</ListGroupItem>
+                        ))}
+                        </ListGroup>
+                        <br></br>
                         <div className="d-grid gap-2">
                             <Button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</Button>
                             {room.roomManager === member.memberNickName && (

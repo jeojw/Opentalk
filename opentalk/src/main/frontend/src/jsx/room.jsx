@@ -103,7 +103,10 @@ const RoomComponent = ({setIsChangeData}) => {
             destination: '/pub/chat/enter',
             body: JSON.stringify({
                 chatRoom: roomInformation,
-                member: myInfo,
+                member: {
+                    memberId:"system",
+                    memberNickName:"system"
+                },
                 message: `${myInfo.memberNickName}님이 채팅방에 참여했습니다.`,
                 timeStamp: isoDateTime
             })
@@ -209,7 +212,10 @@ const RoomComponent = ({setIsChangeData}) => {
                 destination: '/pub/chat/forcedExit',
                 body: JSON.stringify({
                     chatRoom: roomInformation,
-                    member: roomMember,
+                    member: {
+                        memberId:"system",
+                        memberNickName:"system"
+                    },
                     message: `${roomMember.memberNickName}님이 강퇴되었습니다.`,
                     timeStamp: isoDateTime
                 })
@@ -262,7 +268,10 @@ const RoomComponent = ({setIsChangeData}) => {
                     destination: '/pub/chat/exit',
                     body: JSON.stringify({
                         chatRoom: roomInformation,
-                        member: myInfo,
+                        member: {
+                            memberId:"system",
+                            memberNickName:"system"
+                        },
                         message: `${myInfo?.memberNickName}님이 채팅방을 나갔습니다.`,
                         timeStamp: isoDateTime
                     })
@@ -273,7 +282,7 @@ const RoomComponent = ({setIsChangeData}) => {
     }
 
     return(
-        <Container>
+        <Container className="border border-warning border-3 rounded-3 p-5">
             <Row>
                 <Col>
                     {/* Option Chaining!!! */}
@@ -281,10 +290,10 @@ const RoomComponent = ({setIsChangeData}) => {
                 </Col>
             </Row>
             <Row>
-                <Col style={{ overflowY: 'auto', maxHeight: '400px' }}>
+                <Col style={{ width: '600px', overflowY: 'auto', maxHeight: '400px' }}>
                     {preChatList && preChatList.length > 0 && (
                     <ListGroup>
-                        {preChatList.map((_chatMessage, index) => (
+                        {preChatList.map((_chatMessage) => (
                             <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
                         ))}
                     </ListGroup>
@@ -292,12 +301,27 @@ const RoomComponent = ({setIsChangeData}) => {
                     <br></br>
                     {chatList && chatList.length > 0 && (
                     <ListGroup>
-                        {chatList.map((_chatMessage, index) => (
+                        {chatList.map((_chatMessage) => (
                             <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
                         ))}
                     </ListGroup>
                     )}
-
+                </Col>
+                <Col style={{ width: '200px', overflowY: 'auto', maxHeight: '400px' }}>
+                    <h2>참여명단</h2>
+                    {roomInformation?.members.map((_member, index) => (
+                        <ListGroup>
+                            <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
+                            {_member?.memberNickName}
+                            {role === "MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
+                            <Button onClick={() => ForcedExit(_member)}>강퇴하기</Button>
+                            )}
+                            {role === "MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
+                            <Button onClick={() => AuthMandate(_member)}>방장위임</Button>
+                            )}
+                            </ListGroupItem>
+                        </ListGroup>
+                    ))}
                 </Col>
             </Row>
             <br></br>
@@ -311,30 +335,19 @@ const RoomComponent = ({setIsChangeData}) => {
                     </Form>
                 </Col>
             </Row>
-                
-            <Button variant="dark" onClick={ExitRoom}>나가기</Button>
-            <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeRoom}>
-                {() => setIsChangeData(isChangeRoom)}
-            </ChangRoomComponent>
-            <InviteMemberComponent role={role}/>
-            <Row>
-                <Col style={{ overflowY: 'auto', maxHeight: '200px' }}>
-                <h2>참여명단</h2>
-                {roomInformation?.members.map((_member, index) => (
-                    <ListGroup>
-                        <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
-                        {_member?.memberNickName}
-                        {role === "MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                        <Button onClick={() => ForcedExit(_member)}>강퇴하기</Button>
-                        )}
-                        {role === "MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                        <Button onClick={() => AuthMandate(_member)}>방장위임</Button>
-                        )}
-                        </ListGroupItem>
-                    </ListGroup>
-                ))}
-                </Col>
-            </Row>
+            <br></br>
+            
+            <div className='d-grid gap-2'>
+                <Button variant="dark" onClick={ExitRoom}>나가기</Button>
+            </div>
+            <br></br>
+            <div className='border border-warning border-3 rounded-3 p-4'>
+                <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeRoom}>
+                    {() => setIsChangeData(isChangeRoom)}
+                </ChangRoomComponent>
+                <br></br>
+                <InviteMemberComponent role={role}/>
+            </div>
         </Container>
     );
 }

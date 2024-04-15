@@ -189,7 +189,7 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                             <Button onClick={()=>AppendTag(tag)}>태그 추가</Button>
                         </InputGroup>
 
-                        <ListGroup>
+                        <ListGroup className="list-group list-group-horizontal">
                             {tags.map((t)=> (
                                 <ListGroupItem>#{t.tagName}<Button onClick={()=>tagDelete(t)}>삭제</Button></ListGroupItem>
                             ))}
