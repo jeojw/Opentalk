@@ -206,10 +206,13 @@ public class ChatRoomService {
                         .chatroom(chatRoomEntity)
                         .member(memberEntity)
                         .build();
-
+                if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoomEntity.getId(), memberEntity.getId()), BigInteger.ONE)){
+                    chatRoomMemberRepository.deleteMember(chatRoomEntity.getId(), memberEntity.getId());
+                }
                 chatRoomMemberRepository.save(chatRoomMemberEntity);
                 return "Success";
             }
+
         }
         return "Fail";
     }

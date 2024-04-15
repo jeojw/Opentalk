@@ -31,6 +31,8 @@ const MainComponent = () => {
     const [page, setPage] = useState(1);
     const [isSearch, setIsSearch] = useState(false);
 
+    const [userStatus, setUserStatus] = useState(true);
+
     const postPerPage = 3;
     const indexOfLastPost = page * postPerPage;
     const indexOfFirstPost= indexOfLastPost - postPerPage;
@@ -64,15 +66,18 @@ const MainComponent = () => {
 
     useEffect(() => {
         const fetchMyInfo = async () => {
-            try{
-                const meResponse = await axios.get('/api/opentalk/member/me', {
-                    headers: {Authorization: 'Bearer ' + cookies.accessToken}
-                });
-                setMember(meResponse.data);
-                console.log(meResponse.data);
-            } catch (error){
-                console.error(error);
-            }
+            await axios.get('/api/opentalk/member/me', {
+                headers: {Authorization: 'Bearer ' + cookies.accessToken}
+            }).then((res) => {
+                if (res.status === 200){
+                    setMember(res.data);
+                }
+            }).catch((error) => {
+                if (error === 500){
+                    setUserStatus(false);
+                    console.log(userStatus)
+                }
+            });
         };
 
         fetchMyInfo();
@@ -170,39 +175,23 @@ const MainComponent = () => {
     }
 
     const EnterRoom = ({roomInfo, talker}) => {
-        const enterUrl = '/api/opentalk/enterRoom';
-        if (!roomInfo.existLock){
-            let currentRole;
-            console.log(roomInfo);
-            if (roomInfo.manager === talker.memberNickName){
-                currentRole = ChatRoomRole.MANAGER;
-            }
-            else{
-                currentRole = ChatRoomRole.PARTICIPATE;
-            }
-            setRole(currentRole);
-            axios.post(enterUrl, {
-                chatroom: roomInfo, 
-                member: talker,
-                role:role
-            })
-            .then((res) => {
-                if (res.data === "Success"){
-                    naviagte(`/opentalk/room/${roomInfo.roomId}`);
-                }
-                else{
-                    window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
-                }
-            })
-            .catch((error) => console.log(error));
+        if (talker === undefined){
+            window.alert("이미 로그아웃 되었습니다.");
+            naviagte("/opentalk/member/login");
         }
         else{
-            const inputPassword = window.prompt("비밀번호를 입력해주세요.");
-            console.log(inputPassword);
-            if (inputPassword === ""){
-                window.alert("비밀번호를 입력해주세요.")
-            }else{
-                axios.post(enterUrl + `/${inputPassword}`, {
+            const enterUrl = '/api/opentalk/enterRoom';
+            if (!roomInfo.existLock){
+                let currentRole;
+                console.log(roomInfo);
+                if (roomInfo.manager === talker.memberNickName){
+                    currentRole = ChatRoomRole.MANAGER;
+                }
+                else{
+                    currentRole = ChatRoomRole.PARTICIPATE;
+                }
+                setRole(currentRole);
+                axios.post(enterUrl, {
                     chatroom: roomInfo, 
                     member: talker,
                     role:role
@@ -211,16 +200,39 @@ const MainComponent = () => {
                     if (res.data === "Success"){
                         naviagte(`/opentalk/room/${roomInfo.roomId}`);
                     }
-                    else if (res.data ==="Incorrect"){
-                        window.alert("비밀번호가 잘못되었습니다.")
-                    }
                     else{
                         window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
                     }
                 })
                 .catch((error) => console.log(error));
             }
+            else{
+                const inputPassword = window.prompt("비밀번호를 입력해주세요.");
+                console.log(inputPassword);
+                if (inputPassword === ""){
+                    window.alert("비밀번호를 입력해주세요.")
+                }else{
+                    axios.post(enterUrl + `/${inputPassword}`, {
+                        chatroom: roomInfo, 
+                        member: talker,
+                        role:role
+                    })
+                    .then((res) => {
+                        if (res.data === "Success"){
+                            naviagte(`/opentalk/room/${roomInfo.roomId}`);
+                        }
+                        else if (res.data ==="Incorrect"){
+                            window.alert("비밀번호가 잘못되었습니다.")
+                        }
+                        else{
+                            window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
+                        }
+                    })
+                    .catch((error) => console.log(error));
+                }
            
+            }
+        
         }
         return (
             <div>
@@ -230,8 +242,12 @@ const MainComponent = () => {
     }
 
     const GoProfile = () => {
-        if (cookies.accessToken){
+        if (userStatus){
             naviagte("/opentalk/profile");
+        }
+        else{
+            window.alert("이미 로그아웃 되었습니다.")
+            naviagte("/opentalk/member/login");
         }
         return (
             <ProfileComponent setIsUpdateData={setIsUpdateTrigger}/>
@@ -244,12 +260,12 @@ const MainComponent = () => {
                 removeCookie('accessToken');
                 removeCookie('refreshToken');
                 window.alert("로그아웃 되었습니다.");
-                naviagte("/");
+                naviagte("/opentalk/member/login");
             }
         }
         else{
             alert("이미 로그아웃되었습니다.");
-            naviagte("/");
+            naviagte("/opentalk/member/login");
         }
         
     };
@@ -296,7 +312,7 @@ const MainComponent = () => {
                 </ListGroup>
             </Col>
         </Row>
-        <Row>
+        <Row className="justify-content-end">
             <Col>
                 <br></br>
                 <SetRoomComponent
@@ -321,11 +337,12 @@ const MainComponent = () => {
                             value={searchKeyword} 
                             onChange={GetInputSearchKeyword}
                             style={{flex: '5'}}></FormControl>
-                            <Button onClick={search}>검색</Button>
+                        <Button onClick={search}>검색</Button>
                         {isSearch && (
                         <Button onClick={initSearch}>초기화</Button>
                     )}
                     </InputGroup>
+                    
                 </FormGroup>
                 <br></br>
                 <PaginationControl
@@ -339,9 +356,6 @@ const MainComponent = () => {
                 />
                 
             </Col>
-        </Row>
-        <Row class="w-auto p-3" className="Layout-module__column_left">
-            
         </Row>
     </Container>
     );

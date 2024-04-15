@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useCookies} from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import axios from'axios';
 import { Form, Button, Container, Row, Col, InputGroup, 
@@ -21,6 +22,8 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
     const [tags, setTags] = useState([]);
 
     const [cookies] = useCookies(["accessToken"]);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchManager = async () =>{
@@ -116,26 +119,33 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
 
 
     const MakeRoom = () => {
-        const makeUrl = `/api/opentalk/makeRoom`
-        axios.post(makeUrl, {
-            "roomName": roomName,
-            "roomPassword": password,
-            "roomManager": manager.memberNickName,
-            "limitParticipates": participants,
-            "introduction": info,
-            "existLock": existLock,
-            "members": [],
-            "roomTags": tags
-        })
-        .then((res)=>{
-            if (res.status === 200){
-                alert("방이 생성되었습니다.");
-                setRoomId(res.data);
-                closeModal();
-                onDataUpdate(prevState => !prevState);
-            }
-        })
-        .catch((error) => console.log(error));
+        if (manager === undefined){
+            window.alert("이미 로그아웃 되었습니다.")
+            navigate("/opentalk/member/login");
+        }
+        else{
+            const makeUrl = `/api/opentalk/makeRoom`
+            axios.post(makeUrl, {
+                "roomName": roomName,
+                "roomPassword": password,
+                "roomManager": manager.memberNickName,
+                "limitParticipates": participants,
+                "introduction": info,
+                "existLock": existLock,
+                "members": [],
+                "roomTags": tags
+            })
+            .then((res)=>{
+                if (res.status === 200){
+                    alert("방이 생성되었습니다.");
+                    setRoomId(res.data);
+                    closeModal();
+                    onDataUpdate(prevState => !prevState);
+                }
+            })
+            .catch((error) => console.log(error));
+        }
+        
     };
 
     return (
@@ -145,7 +155,13 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
             </div>
             <Modal
                 isOpen={isOpen} 
-                onRequestClose={closeModal}>
+                onRequestClose={closeModal}
+                style={{
+                    content: {
+                        width: '800px', // 원하는 너비로 설정
+                        height: '400px', // 원하는 높이로 설정
+                    }
+                }}>
                 <Row>
                     <Col>
                         <InputGroup>
@@ -170,8 +186,9 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                         <br></br>
                         <InputGroup>
                             <FormControl type='text' value={tag} onChange={GetInputTag}></FormControl>
+                            <Button onClick={()=>AppendTag(tag)}>태그 추가</Button>
                         </InputGroup>
-                        <Button onClick={()=>AppendTag(tag)}>태그 추가</Button>
+
                         <ListGroup>
                             {tags.map((t)=> (
                                 <ListGroupItem>#{t.tagName}<Button onClick={()=>tagDelete(t)}>삭제</Button></ListGroupItem>

@@ -141,20 +141,24 @@ const RoomComponent = ({setIsChangeData}) => {
         if (!client.current.connected) return;
         console.log(chat);
 
-        const curTime = new Date();
-        const isoDateTime = curTime.toISOString();
-        axios.post('/api/opentalk/saveChat', {
-            chatRoom: roomInformation,
-            member: myInfo,
-            message: chat,
-            timeStamp: isoDateTime
-        })
-        .then()
-        .catch((error) => console.log(error));
+        if (chat === ""){
+            window.alert("채팅 내용을 입력해주세요.")
+        }
+        else{
+            const curTime = new Date();
+            const isoDateTime = curTime.toISOString();
+            axios.post('/api/opentalk/saveChat', {
+                chatRoom: roomInformation,
+                member: myInfo,
+                message: chat,
+                timeStamp: isoDateTime
+            })
+            .then()
+            .catch((error) => console.log(error));
 
-        client.current.publish({
-            destination: '/pub/chat',
-            body: JSON.stringify({
+            client.current.publish({
+                destination: '/pub/chat',
+                body: JSON.stringify({
                 chatRoom: roomInformation,
                 member: myInfo,
                 message: chat,
@@ -162,6 +166,8 @@ const RoomComponent = ({setIsChangeData}) => {
             }),
         });
         setChat("");
+        }
+        
     }
 
     const subscribe = () => {
@@ -230,31 +236,39 @@ const RoomComponent = ({setIsChangeData}) => {
 
     const ExitRoom = () => {
         if (window.confirm("방을 나가시겠습니까?")){
-            const exitUrl = '/api/opentalk/exitRoom';
-            console.log(roomInformation);
-            axios.post(exitUrl, {
-                chatroom: roomInformation,
-                member: myInfo,
-                role: role
-            })
-            .then((res) => {
-                if (res.status === 200){
-                    navigate("/opentalk/main");
-                }
-            })
-            .catch((error) => console.log(error));
-            const curTime = new Date();
-            const isoDateTime = curTime.toISOString();
-
-            client.current.publish({
-                destination: '/pub/chat/exit',
-                body: JSON.stringify({
-                    chatRoom: roomInformation,
+            console.log(myInfo);
+            if (myInfo?.memberNickName === undefined){
+                window.alert("이미 로그아웃 되었습니다.")
+                navigate("/opentalk/member/login");
+            }
+            else{
+                const exitUrl = '/api/opentalk/exitRoom';
+                console.log(roomInformation);
+                axios.post(exitUrl, {
+                    chatroom: roomInformation,
                     member: myInfo,
-                    message: `${myInfo.memberNickName}님이 채팅방을 나갔습니다.`,
-                    timeStamp: isoDateTime
+                    role: role
                 })
-            });
+                .then((res) => {
+                    if (res.status === 200){
+                        navigate("/opentalk/main");
+                    }
+                })
+                .catch((error) => console.log(error));
+                const curTime = new Date();
+                const isoDateTime = curTime.toISOString();
+
+                client.current.publish({
+                    destination: '/pub/chat/exit',
+                    body: JSON.stringify({
+                        chatRoom: roomInformation,
+                        member: myInfo,
+                        message: `${myInfo?.memberNickName}님이 채팅방을 나갔습니다.`,
+                        timeStamp: isoDateTime
+                    })
+                });
+            }
+            
         }
     }
 
@@ -291,7 +305,7 @@ const RoomComponent = ({setIsChangeData}) => {
                 <Col>
                     <Form onSubmit={(event)=>handleSubmit(event)}>
                         <InputGroup>
-                            <Form.Control type="text" value={chat} onChange={handleChange} />                
+                            <Form.Control type="text" value={chat} onChange={handleChange} />            
                             <Button onClick={() => publishChat(chat)}>전송</Button>            
                         </InputGroup>
                     </Form>
