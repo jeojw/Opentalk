@@ -35,7 +35,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> 
 
     @Query(value = "SELECT * FROM Opentalk.opentalk_room_list WHERE id=:room_id",
             nativeQuery = true)
-    List<ChatRoomEntity> searchRoomsByTags(@Param("room_id") Long room_id);
+    Optional<ChatRoomEntity> searchRoomsByTags(@Param("room_id") Long room_id);
 
     @Query(value = "SELECT room_password FROM Opentalk.opentalk_room_list WHERE room_id = :roomId",
             nativeQuery = true)

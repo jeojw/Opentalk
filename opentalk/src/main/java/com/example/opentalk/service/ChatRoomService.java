@@ -26,29 +26,33 @@ public class ChatRoomService {
 
     public String createRoom(ChatRoomDTO chatRoomDTO){
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomDTO);
-        if (!chatRoomDTO.getRoomTags().isEmpty()){
+        if (!chatRoomDTO.getRoomTags().isEmpty()) {
             ChatRoomHashtagEntity chatRoomHashtagEntity;
 
-            List<HashTagEntity> hashTagEntities = new ArrayList<>();
-            for (HashTagDTO tag : chatRoomDTO.getRoomTags()){
-                hashTagEntities.add(HashTagEntity.toHashTagEntity(tag));
-            }
+            List<String> hashTagList = hashTagRepository.findAllTags();
+            ChatRoomEntity chatroomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomDTO);
+            chatRoomRepository.save(chatRoomEntity);
 
-            for (HashTagEntity tagEntity : hashTagEntities){
-                if (tagEntity.getId() == null){
-                    hashTagRepository.save(tagEntity);
+            Optional<Long> tag_id;
+            for (HashTagDTO tag : chatRoomDTO.getRoomTags()) {
+                if (!hashTagList.contains(tag.getTagName())) {
+                    hashTagRepository.save(HashTagEntity.toHashTagEntity(tag));
+                    tag_id = hashTagRepository.returnTagId(tag.getTagName());
+                } else {
+                    tag_id = hashTagRepository.returnTagId(tag.getTagName());
+                    tag_id.ifPresent(hashTagRepository::accumulateTag);
                 }
-                else{
-                    hashTagRepository.accumulateTag(tagEntity.getId());
+                Optional<ChatRoomEntity> chatroom = chatRoomRepository.findByRoomId(chatRoomEntity.getRoomId());
+                if (chatroom.isPresent()) {
+                    chatRoomHashtagEntity = ChatRoomHashtagEntity.builder()
+                            .chatroom(chatRoomEntity)
+                            .hashtag(HashTagEntity.toHashTagEntity(tag))
+                            .build();
+                    System.out.print("SaveTag_2!!!");
+                    tag_id.ifPresent(aLong -> chatRoomHashtagRepository.SaveTagRoom(aLong, chatroom.get().getId()));
                 }
-                chatRoomHashtagEntity = ChatRoomHashtagEntity.builder()
-                        .chatroom(chatRoomEntity)
-                        .hashtag(tagEntity)
-                        .build();
-                chatRoomHashtagRepository.save(chatRoomHashtagEntity);
             }
         }
-        chatRoomRepository.save(chatRoomEntity);
         return chatRoomEntity.getRoomId();
     }
 
@@ -104,17 +108,21 @@ public class ChatRoomService {
                     chatRoomRequestDto.getRoomName(),
                     chatRoomRequestDto.getRoomId());
 
+            List<String> hastTagList = hashTagRepository.findAllTags();
+
             List<HashTagEntity> hashTagEntities = new ArrayList<>();
             for (HashTagDTO tag : chatRoomRequestDto.getRoomTags()){
                 hashTagEntities.add(HashTagEntity.toHashTagEntity(tag));
             }
 
             for (HashTagEntity tagEntity : hashTagEntities){
-                if (tagEntity.getId() == null){
+                if (hastTagList.contains(tagEntity.getName())){
                     hashTagRepository.save(tagEntity);
                 }
                 else{
-                    hashTagRepository.accumulateTag(tagEntity.getId());
+                    if (hashTagRepository.returnTagId(tagEntity.getName()).isPresent()) {
+                        hashTagRepository.accumulateTag(hashTagRepository.returnTagId(tagEntity.getName()).get());
+                    }
                 }
                 chatRoomHashtagEntity = ChatRoomHashtagEntity.builder()
                         .chatroom(chatRoomEntity.get())
@@ -165,14 +173,16 @@ public class ChatRoomService {
     public void deleteRome(String room_id){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(room_id);
         if (chatRoomEntity.isPresent()){
-            chatMessageRepository.deleteLog(chatRoomEntity.get().getId());
-            chatRoomRepository.deleteById(chatRoomEntity.get().getId());
             Optional<ChatRoomMemberEntity> chatRoomMemberEntity =
                     chatRoomMemberRepository.findByRoomId(chatRoomEntity.get().getId());
-            Optional<ChatRoomHashtagEntity> chatRoomHashtagEntity =
+            List<Optional<ChatRoomHashtagEntity>> chatRoomHashtagEntityList =
                     chatRoomHashtagRepository.findByRoomId(chatRoomEntity.get().getId());
-            chatRoomHashtagEntity.ifPresent(roomHashtagEntity -> chatRoomHashtagRepository.deleteById(roomHashtagEntity.getId()));
+            for (Optional<ChatRoomHashtagEntity> room : chatRoomHashtagEntityList){
+                room.ifPresent(chatRoomHashtagRepository::delete);
+            }
             chatRoomMemberEntity.ifPresent(roomMemberEntity -> chatRoomMemberRepository.deleteById(roomMemberEntity.getId()));
+            chatMessageRepository.deleteLog(chatRoomEntity.get().getId());
+            chatRoomRepository.deleteById(chatRoomEntity.get().getId());
         }
 
     }
@@ -182,11 +192,12 @@ public class ChatRoomService {
             if (password.equals(chatRoomEntity.get().getRoomPassword())){
                 Optional<ChatRoomMemberEntity> chatRoomMemberEntity =
                         chatRoomMemberRepository.findByRoomId(chatRoomEntity.get().getId());
-                Optional<ChatRoomHashtagEntity> chatRoomHashtagEntity =
+                List<Optional<ChatRoomHashtagEntity>> chatRoomHashtagEntityList =
                         chatRoomHashtagRepository.findByRoomId(chatRoomEntity.get().getId());
-
+                for (Optional<ChatRoomHashtagEntity> room : chatRoomHashtagEntityList){
+                    room.ifPresent(chatRoomHashtagRepository::delete);
+                }
                 chatRoomMemberEntity.ifPresent(roomMemberEntity -> chatRoomMemberRepository.deleteById(roomMemberEntity.getId()));
-                chatRoomHashtagEntity.ifPresent(roomHashtagEntity -> chatRoomHashtagRepository.deleteById(roomHashtagEntity.getId()));
                 chatMessageRepository.deleteLog(chatRoomEntity.get().getId());
                 chatRoomRepository.deleteById(chatRoomEntity.get().getId());
                 return true;
@@ -281,6 +292,19 @@ public class ChatRoomService {
         else if (searchDto.getType().equals("manager")) {
             chatRoomEntityList = chatRoomRepository.searchRoomsByManager(searchDto.getKeyword());
         }
+        else if (searchDto.getType().equals("tags")){
+            Optional<Long> tag_id = hashTagRepository.returnTagId(searchDto.getKeyword());
+            if (tag_id.isPresent()){
+                List<Optional<Long>> chatroomList = chatRoomHashtagRepository.findByRoomTag(tag_id.get());
+                for (Optional<Long> roomId : chatroomList){
+                    if (roomId.isPresent()){
+                        if (chatRoomRepository.searchRoomsByTags(roomId.get()).isPresent()) {
+                            chatRoomEntityList.add(chatRoomRepository.searchRoomsByTags(roomId.get()).get());
+                        }
+                    }
+                }
+            }
+        }
 
         if (!chatRoomEntityList.isEmpty()){
             for (ChatRoomEntity chatRoomEntity : chatRoomEntityList){
@@ -309,25 +333,4 @@ public class ChatRoomService {
         }
         return false;
     }
-
-//    public List<ChatRoomDTO> searchRoom(SearchDto searchDto){
-//        List<ChatRoomMemberEntity> chatRoomList = new ArrayList<>();
-//        List<ChatRoomDTO> chatRoomDTOList = new ArrayList<>();
-//        if (searchDto.getType().equals("NAME")){
-//            chatRoomList = chatRoomRepository.searchRoomName(searchDto.getKeyword());
-//        }
-//        else if (searchDto.getType().equals("MANAGER")){
-//        }
-////        else if (searchDto.getType().equals("TAG")){
-////            List<ChatRoomHashtagEntity> chatRoomHashtagEntities = new ArrayList<>();
-////            chatRoomHashtagEntities = chatRoomHashtagRepository.searchRoomTags(searchDto.getKeyword());
-////        }
-//
-//        for (ChatRoomEntity chatRoom : chatRoomList){
-//            chatRoomDTOList.add(ChatRoomDTO.toChatRoomDTO(chatRoom));
-//        }
-//
-//        return chatRoomDTOList;
-//    }
-
 }

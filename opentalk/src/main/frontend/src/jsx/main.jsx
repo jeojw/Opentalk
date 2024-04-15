@@ -79,7 +79,7 @@ const MainComponent = () => {
                 }
             });
         };
-
+        console.log(member);
         fetchMyInfo();
     }, []);
 

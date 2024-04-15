@@ -8,13 +8,21 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HashTagRepository extends JpaRepository<HashTagEntity, Long> {
 
+    @Query(value = "SELECT tag_name FROM Opentalk.hashtag", nativeQuery = true)
+    List<String> findAllTags();
+
+    @Query(value = "SELECT id FROM Opentalk.hashtag WHERE tag_name = :tagName", nativeQuery = true)
+    Optional<Long> returnTagId(@Param("tagName") String tagName);
+
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Opentalk.hashtag SET tag_accumulate = tag_accumulate + 1 WHERE tag_id = :tag_id",
+    @Query(value = "UPDATE Opentalk.hashtag SET tag_accumulate = tag_accumulate + 1 WHERE id = :tag_id",
             nativeQuery = true)
-    int accumulateTag(@Param("tag_id") Long tag_id);
+    void accumulateTag(@Param("tag_id") Long tag_id);
 }
