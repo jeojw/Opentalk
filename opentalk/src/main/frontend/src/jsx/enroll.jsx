@@ -1,13 +1,18 @@
 import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Container, Row, Col, Button, Form, 
+    FormControl, InputGroup,
+    FormGroup} from 'react-bootstrap';
+
 const EnrollComponent = (props) =>{
     const [memberId, setMemberId] = useState('');
     const [memberPw, setMemberPw] = useState('');
     const [memberName, setMemberName] = useState('');
     const [memberNickName, setMemberNickName] = useState('');
     const [memberEmail, setMemberEmail] = useState('');
-    const [authNum, setAuthNum] = useState('');
+    const [authNum, setAuthNum] = useState();
+    const [inputNum, setInputNum] = useState();
 
     const [checkId, setCheckId] = useState(false);
     const [checkNickName, setCheckNickName] = useState(false);
@@ -34,6 +39,10 @@ const EnrollComponent = (props) =>{
 
     const GetInputEmail = (event) =>{
         setMemberEmail(event.target.value);
+    }
+
+    const GetInputNum = (event) => {
+        setInputNum(event.target.value);
     }
 
     const CheckIdDuplicate = () => {
@@ -91,25 +100,31 @@ const EnrollComponent = (props) =>{
     }
 
     const CheckAuth = () =>{
-        const checkUrl = `/api/opentalk/enroll/mailauthCheck`
-        axios.post(checkUrl, {
-            email: memberEmail,
-            authNum: String(authNum)
-        }).then((res)=>{
-            if (res.data === "ok"){
-                alert("인증되었습니다.");
-                setCheckEmail(true);
-            }
-            else{
-                if (checkEmail){
-                    alert("이미 인증되었습니다.");
+        if (inputNum.toString() !== authNum.toString()){
+            window.alert("인증에 실패하였습니다. 다시 시도해주십시오.");
+            setCheckEmail(false);
+        }
+        else{
+            const checkUrl = `/api/opentalk/enroll/mailauthCheck`
+            axios.post(checkUrl, {
+                email: memberEmail,
+                authNum: String(authNum)
+            }).then((res)=>{
+                if (res.data === "ok"){
+                    alert("인증되었습니다.");
+                    setCheckEmail(true);
                 }
                 else{
-                    alert("인증이 실패하였습니다. 다시 시도해주십시오.");
-                    setCheckEmail(false);
+                    if (checkEmail){
+                        alert("이미 인증되었습니다.");
+                    }
+                    else{
+                        alert("인증이 실패하였습니다. 다시 시도해주십시오.");
+                        setCheckEmail(false);
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     const CheckAll = () =>{
@@ -147,46 +162,67 @@ const EnrollComponent = (props) =>{
     }
 
     return(
-        <div>
-            <h2>회원가입</h2>
-            아이디: <label>
-            <input
-                type="text"
-                value={memberId}
-                onChange={GetInputId}></input>
-            <input type="button" value="아이디 중복 확인" onClick={CheckIdDuplicate}></input>
-            </label>
-            <br></br>
-            비밀번호: <label>
-                <input
-                type="password"
-                value={memberPw}
-                onChange={GetInputPw}></input>
-            </label>
-            <br></br>
-            이름: <label>
-                <input
-                type="text"
-                value={memberName}
-                onChange={GetInputName}></input>
-            </label>
-            <br></br>
-            닉네임: <input
-            type="text"
-            value={memberNickName}
-            onChange={GetInputNickName}></input>
-            <input type="button" value="닉네임 중복 확인" onClick={CheckNickNameDuplicate}></input>
-            <br></br>
-            이메일: <input
-            type="email"
-            value={memberEmail}
-            onChange={GetInputEmail}></input>
-            <input type="button" value="이메일 인증번호 받기" onClick={CheckMail}></input>
-            <br></br>
-            인증번호: <input type="text"></input><input type="button" value="인증하기" onClick={CheckAuth}></input>
-            <br></br>
-            <input type="button" value="회원가입" onClick={CheckAll}></input>
-        </div>
+        <Container>
+            <Row>
+                <Col md={{ span: 6, offset: 3 }} className="border border-warning border-3 rounded-3 p-5">
+                    <h2>회원가입</h2>
+                    <Form.Label>아이디</Form.Label>
+                    <InputGroup>
+                        <FormControl
+                            type="text"
+                            value={memberId}
+                            onChange={GetInputId}
+                        ></FormControl>
+                        <Button onClick={CheckIdDuplicate}>아이디 중복 확인</Button>
+                    </InputGroup>
+                    <Form.Label>비밀번호</Form.Label>
+                    <InputGroup>
+                        <FormControl
+                            type="password"
+                            value={memberPw}
+                            onChange={GetInputPw}
+                        ></FormControl>
+                    </InputGroup>
+                    <Form.Label>이름</Form.Label>
+                    <InputGroup>
+                        <FormControl
+                            type="text"
+                            value={memberName}
+                            onChange={GetInputName}
+                        ></FormControl>
+                    </InputGroup>
+                    <Form.Label>닉네임</Form.Label>
+                    <InputGroup>
+                        <FormControl
+                            type="text"
+                            value={memberNickName}
+                            onChange={GetInputNickName}
+                        ></FormControl>
+                        <Button onClick={CheckNickNameDuplicate}>닉네임 중복 확인</Button>
+                    </InputGroup>
+                    <Form.Label>이메일</Form.Label>
+                    <InputGroup>
+                        <FormControl
+                            type="email"
+                            value={memberEmail}
+                            onChange={GetInputEmail}
+                        ></FormControl>
+                        <Button onClick={CheckMail}>인증번호 받기</Button>
+                    </InputGroup>
+                    <Form.Label>인증번호</Form.Label>
+                    <InputGroup>
+                        <FormControl
+                            type="text"
+                            value={inputNum}
+                            onChange={GetInputNum}
+                        ></FormControl>
+                        <Button onClick={CheckAuth}>인증하기</Button>
+                    </InputGroup>
+                    <br></br>
+                    <Button onClick={CheckAll}>회원가입</Button>
+                </Col>
+            </Row>
+        </Container>
     );
 }
 export default EnrollComponent;
