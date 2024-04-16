@@ -61,8 +61,11 @@ public class MemberController {
         return ResponseEntity.ok(memberService.checkNicknameDuplicate(memberNickName));
     }
 
-//    @PostMapping("/api/opentalk/member/changePassword")
-//    public ResponseEntity<AuthDto.ResponseDto> setMemberPassword(@RequestBody ChangePasswordRequestDto request) {
-//        return ResponseEntity.ok(memberService.changeMemberPassword(request.getExPassword(), request.getNewPassword()));
-//    }
+    @PostMapping("/api/opentalk/member/changePassword")
+    public ResponseEntity<Boolean> changePassword(@RequestParam("memberEmail")String memberEmail,
+                                                  @RequestParam("exPassword") String exPassword,
+                                                  @RequestParam("newPassword") String newPassword){
+        return ResponseEntity.ok(memberService.changePassword(memberEmail, exPassword, newPassword));
+    }
+
 }

@@ -131,8 +131,7 @@ public class AuthController {
 
     @PostMapping("/api/opentalk/auth/changePassword")
     public void changePassword(@RequestParam("memberEmail") String memberEmail,
-                               @RequestParam("exPassword") String exPassword,
                                @RequestParam("newPassword") String newPassword){
-        authService.changePassword(memberEmail, exPassword, newPassword);
+        authService.changePassword(memberEmail, newPassword);
     }
 }

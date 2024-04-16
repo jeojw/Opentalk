@@ -37,11 +37,12 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     @Query(value = "SELECT member_password FROM Opentalk.open_talk_member WHERE member_email=:memberEmail",
             nativeQuery = true)
     String SearchMemberPassword(@Param("memberEmail") String memberEmail);
+
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Opentalk.open_talk_member SET member_password = :newPassword WHERE member_password = :exPassword",
+    @Query(value = "UPDATE Opentalk.open_talk_member SET member_password = :newPassword WHERE member_email = :memberEmail",
             nativeQuery = true)
-    void ChangePw(@Param("exPassword") String exPassword, @Param("newPassword") String newPassword);
+    void ChangePw(@Param("memberEmail") String memberEmail, @Param("newPassword") String newPassword);
 
     @Query(value = "SELECT member_password FROM Opentalk.open_talk_member WHERE member_email=:memberEmail",
             nativeQuery = true)

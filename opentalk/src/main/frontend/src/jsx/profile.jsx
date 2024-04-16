@@ -52,7 +52,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
         }
     }
 
-    const GetInputExPassword = (event) =>{
+    const GetExPassword = (event) =>{
         setExPassword(event.target.value);
     }
 
@@ -125,18 +125,19 @@ const ProfileComponent = ({setIsUpdateData}) => {
         }
         else{
             const checkUrl = `/api/opentalk/member/changePassword`
-            axios.post(checkUrl, {
-                exPassword: exPassword,
-                newPassword: newPassword
-            },{
-                headers: {Authorization: 'Bearer ' + cookies.accessToken}
+            const PwData = new FormData();
+            PwData.append("memberEmail", member.memberEmail);
+            PwData.append("exPassword", exPassword);
+            PwData.append("newPassword", newPassword);
+            axios.post(checkUrl, PwData,{
+                headers: {Authorization: 'Bearer ' + cookies['refresh-token']}
             })
             .then((res)=>{
-                if (res.status === 200){
+                if (res.data === true){
                     alert("비밀번호가 변경되었습니다.");
                     ChangePasswordCancle();
                 }
-                else if (res.status === 500){
+                else{
                     alert("현재 비밀번호가 맞지 않습니다.")
                 }
             })
@@ -232,7 +233,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
                             <Form.Control 
                                 type="password"
                                 value={exPassword}
-                                onChange={GetInputExPassword}></Form.Control>
+                                onChange={GetExPassword}></Form.Control>
                         </InputGroup>
                         <br></br>
                         <InputGroup>

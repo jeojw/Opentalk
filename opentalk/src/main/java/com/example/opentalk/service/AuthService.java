@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AuthService {
 
@@ -38,7 +37,7 @@ public class AuthService {
 
 
     @Transactional
-    public AuthDto.ResponseDto getMyInfo(){ //??? 왜 anonymous가 발생할까.... -> 해결
+    public AuthDto.ResponseDto getMyInfo(){ //??? 왜 anonymous가 발생할까....
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(curUserInfo.getPrincipal().toString());
         return memberEntity.map(AuthDto.ResponseDto::toResponse).orElse(null);
     }
@@ -172,8 +171,10 @@ public class AuthService {
         return memberRepository.ReturnExPw(memberEmail);
     }
 
-    public void changePassword(String memberEmail, String exPassword, String newPassword){
+    public void changePassword(String memberEmail, String newPassword){
         Optional<MemberEntity> member = memberRepository.findByMemberEmail(memberEmail);
-        member.ifPresent(memberEntity -> memberEntity.setMemberPassword(encoder.encode(newPassword)));
+        if (member.isPresent()){
+            memberRepository.ChangePw(memberEmail, encoder.encode(newPassword));
+        }
     }
 }

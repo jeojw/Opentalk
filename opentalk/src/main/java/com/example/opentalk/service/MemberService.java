@@ -6,6 +6,7 @@ import com.example.opentalk.entity.MemberEntity;
 import com.example.opentalk.repository.ChatRoomRepository;
 import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,6 +21,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final RedisService redisService;
+    private final BCryptPasswordEncoder encoder;
 
     public void singUp(AuthDto.SignupDto signupDto){
         MemberEntity member = MemberEntity.builder()
@@ -98,14 +100,14 @@ public class MemberService {
         return AuthDto.ResponseDto.toResponse(memberRepository.save(member));
     }
 
-//    @Transactional
-//    public AuthDto.ResponseDto changeMemberPassword(String exPassword, String newPassword) {
-//        MemberEntity member = memberRepository.findById(SecurityUtil.getCurrentMemberId()).orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
-//        if (!passwordEncoder.matches(exPassword, member.getMemberPassword())) {
-//            throw new RuntimeException("비밀번호가 맞지 않습니다");
-//        }
-//        member.setMemberPassword(passwordEncoder.encode(newPassword));
-//        return AuthDto.ResponseDto.toResponse(memberRepository.save(member));
-//
-//    }
+    @Transactional
+    public boolean changePassword(String memberEmail, String exPassword, String newPassword){
+        if (encoder.matches(exPassword, getExPw(memberEmail))){
+            memberRepository.ChangePw(memberEmail, encoder.encode(newPassword));
+            return true;
+        }
+        else
+            return false;
+    }
+
 }
