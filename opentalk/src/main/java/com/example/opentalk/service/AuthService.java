@@ -34,11 +34,12 @@ public class AuthService {
 
     private final String SERVER = "Server";
 
-    private UsernamePasswordAuthenticationToken curAuthentication;
+    UsernamePasswordAuthenticationToken curUserInfo;
 
-    public AuthDto.ResponseDto getMyInfo(){
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(curAuthentication.getPrincipal().toString());
+
+    @Transactional
+    public AuthDto.ResponseDto getMyInfo(){ //??? 왜 anonymous가 발생할까.... -> 해결
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(curUserInfo.getPrincipal().toString());
         return memberEntity.map(AuthDto.ResponseDto::toResponse).orElse(null);
     }
     // 로그인: 인증 정보 저장 및 비어 토큰 발급
@@ -50,7 +51,7 @@ public class AuthService {
         Authentication authentication = authenticationManagerBuilder.getObject()
                 .authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        curAuthentication = authenticationToken;
+        curUserInfo = authenticationToken;
 
         return generateToken(SERVER, authentication.getName(), getAuthorities(authentication));
     }

@@ -53,8 +53,7 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .formLogin().disable()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 예시코드는 stateless로 적어놔서 context가 갱신되지 않았다. 근데 왜 이ㅇ렇게 했을까?
                 // 예외 처리
                 .and()
                 .exceptionHandling()

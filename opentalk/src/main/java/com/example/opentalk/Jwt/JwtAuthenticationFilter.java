@@ -32,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (accessToken != null && jwtTokenProvider.validateAccessToken(accessToken)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                System.out.print("SaveToken:" + SecurityContextHolder.getContext().getAuthentication());
                 log.debug("Save authentication in SecurityContextHolder.");
             }
         } catch (IncorrectClaimException e) { // 잘못된 토큰일 경우

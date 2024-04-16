@@ -1,5 +1,6 @@
 package com.example.opentalk.controller;
 
+import com.example.opentalk.RuntimeException;
 import com.example.opentalk.dto.AuthDto;
 import com.example.opentalk.service.AuthService;
 import com.example.opentalk.service.MemberService;
@@ -17,7 +18,7 @@ public class MemberController {
     private final AuthService authService;
 
     @GetMapping("/api/opentalk/member/me")
-    public ResponseEntity<AuthDto.ResponseDto> getMyMemberInfo() {
+    public ResponseEntity<AuthDto.ResponseDto> getMyMemberInfo() throws RuntimeException {
         AuthDto.ResponseDto myInfoBySecurity = authService.getMyInfo();
         System.out.println(myInfoBySecurity.getMemberNickName());
         return ResponseEntity.ok(myInfoBySecurity);
