@@ -22,15 +22,15 @@ const ProfileComponent = ({setIsUpdateData}) => {
 
     const [isChangeData, setIsChangeData] = useState(false);
 
-    const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
+    const [cookies, setCookie, removeCookie] = useCookies(['refresh-token']);
 
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchMemberStatus = async () => {
             try{
-                const response = await axios.get('/api/opentalk/member/profile', {
-                    headers: {Authorization: 'Bearer ' + cookies.accessToken}
+                const response = await axios.get('/api/opentalk/member/me', {
+                    headers: {authorization: 'Bearer ' + cookies['refresh-token']}
                     });
                 setMember(response.data);
                 console.log(member);

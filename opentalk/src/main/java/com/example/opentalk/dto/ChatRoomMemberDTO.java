@@ -11,13 +11,13 @@ import lombok.Setter;
 @Data
 public class ChatRoomMemberDTO {
     private ChatRoomDTO chatroom;
-    private MemberResponseDto member;
+    private AuthDto.ResponseDto member;
     private String role;
 
     public ChatRoomMemberDTO() {}
 
     @Builder
-    public ChatRoomMemberDTO(ChatRoomDTO chatRoom, MemberResponseDto member, String role){
+    public ChatRoomMemberDTO(ChatRoomDTO chatRoom, AuthDto.ResponseDto member, String role){
         this.chatroom = chatRoom;
         this.member = member;
         this.role = role;
@@ -26,7 +26,7 @@ public class ChatRoomMemberDTO {
     public static ChatRoomMemberDTO toChatRoomMemberDTO(ChatRoomMemberEntity chatRoomMemberEntity){
         return ChatRoomMemberDTO.builder()
                 .chatRoom(ChatRoomDTO.toChatRoomDTO(chatRoomMemberEntity.getChatroom()))
-                .member(MemberResponseDto.of(chatRoomMemberEntity.getMember()))
+                .member(AuthDto.ResponseDto.toResponse(chatRoomMemberEntity.getMember()))
                 .role(chatRoomMemberEntity.getRole())
                 .build();
     }

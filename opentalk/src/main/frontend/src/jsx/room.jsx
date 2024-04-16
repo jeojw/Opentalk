@@ -16,7 +16,7 @@ const RoomComponent = ({setIsChangeData}) => {
     const [chatList, setChatList] = useState([]);
     const [preChatList, setPreChatList] = useState([]);
     const [chat, setChat] = useState("");
-    const [cookies] = useCookies(['accessToken', 'refreshToken']);
+    const [cookies] = useCookies(['refreshToken']);
     const [role, setRole] = useState();
 
     const [isForcedExist, setIsForcedExist] = useState(false);
@@ -30,7 +30,7 @@ const RoomComponent = ({setIsChangeData}) => {
         const fetchInfo = async () => {
             try{
                 const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
-                    headers: {Authorization: 'Bearer ' + cookies.accessToken}
+                    headers: {authorization: 'Bearer ' + cookies['refreshToken']}
                 });
                 setMyInfo(myselfResponse.data);
                 console.log(myselfResponse.data);

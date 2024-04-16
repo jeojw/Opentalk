@@ -1,16 +1,12 @@
 package com.example.opentalk.service;
 
-import com.example.opentalk.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.transaction.Transactional;
 import java.util.Random;
 
 @Service
@@ -18,13 +14,13 @@ public class MailSendService {
     @Autowired
     private JavaMailSender mailSender;
     @Autowired
-    private RedisUtil redisUtil;
+    private RedisService redisService;
     private int authNumber;
 
     public boolean CheckAuthNum(String email, String authNum){
-        if (redisUtil.getData(authNum) == null)
+        if (redisService.getValues(authNum) == null)
             return false;
-        else if (redisUtil.getData(authNum).equals(email))
+        else if (redisService.getValues(authNum).equals(email))
             return true;
         else
             return false;
@@ -67,7 +63,7 @@ public class MailSendService {
     }
 
     public void deleteKey(){
-        redisUtil.deleteData(Integer.toString(authNumber));
+        redisService.deleteValues(Integer.toString(authNumber));
     }
 
     public void mailSend(String setFrom, String toMail, String title, String content){
@@ -82,7 +78,7 @@ public class MailSendService {
         } catch(MessagingException e){
             e.printStackTrace();
         }
-        redisUtil.setDataExpire(Integer.toString(authNumber), toMail, 60*5L );
+        redisService.setValuesWithTimeout(Integer.toString(authNumber), toMail, 60*5L );
     }
 }
 

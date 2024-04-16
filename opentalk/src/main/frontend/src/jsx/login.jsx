@@ -17,7 +17,7 @@ const LoginComponent = (props) => {
     }
     
     const CheckLogin = (e) => {
-        const checkloginUrl = '/api/opentalk/member/login'
+        const checkloginUrl = '/api/opentalk/auth/login'
 
         if (memberId === ""){
             alert("아이디를 입력해주세요.")
@@ -27,18 +27,14 @@ const LoginComponent = (props) => {
         }
         else{
             axios.post(checkloginUrl, {
-                "id":"null",
-                "memberId": memberId,
-                "memberPassword": memberPw,
-                "memberName": "null",
-                "memberNickName": "null",
-                "memberEmail": "null",
-                "joinDate": "null"
+                memberId: memberId,
+                memberPassword: memberPw,
             })
             .then((res) => {
                 if (res.status === 200){
-                    setCookie("accessToken", res.data.accessToken);
-                    setCookie("refreshToken", res.data.refreshToken);
+                    const accessToken = res.headers['authorization'].split(' ')[1];
+                    // Access Token을 헤더에 저장
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
                     navigate("/opentalk/main");
                 }
             })

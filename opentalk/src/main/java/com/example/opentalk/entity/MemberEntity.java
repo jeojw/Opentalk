@@ -1,6 +1,6 @@
 package com.example.opentalk.entity;
 
-import com.example.opentalk.dto.MemberResponseDto;
+import com.example.opentalk.dto.AuthDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,7 +31,7 @@ public class MemberEntity {
     @Column(nullable = false)
     private String memberEmail;
     @Enumerated(EnumType.STRING)
-    private Authority authority;
+    private UserRole authority;
     @Column(nullable = false)
     @ColumnDefault("profile_prototype.jpg")
     private String imgUrl;
@@ -48,7 +48,7 @@ public class MemberEntity {
     public MemberEntity(String memberId,
                         String memberPassword, String memberName,
                         String memberNickName, String memberEmail,
-                        Authority authority, String imgUrl){
+                        UserRole authority, String imgUrl){
         this.memberId = memberId;
         this.memberPassword = memberPassword;
         this.memberName = memberName;
@@ -57,7 +57,7 @@ public class MemberEntity {
         this.authority = authority;
         this.imgUrl = imgUrl;
     }
-    public static MemberEntity toMemberEntity(MemberResponseDto memberResponseDto){
+    public static MemberEntity toMemberEntity(AuthDto.ResponseDto memberResponseDto){
         return MemberEntity.builder()
                 .memberId(memberResponseDto.getMemberId())
                 .memberNickName(memberResponseDto.getMemberNickName())

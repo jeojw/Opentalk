@@ -44,7 +44,7 @@ const MainComponent = () => {
         setPage(page);
     }
 
-    const [cookies, setCookie, removeCookie] = useCookies(['accessToken', 'refreshToken']);
+    const [cookies, setCookie, removeCookie] = useCookies(['refresh-token']);
     const [member, setMember] = useState("");
     const [role, setRole] = useState();
     
@@ -67,7 +67,7 @@ const MainComponent = () => {
     useEffect(() => {
         const fetchMyInfo = async () => {
             await axios.get('/api/opentalk/member/me', {
-                headers: {Authorization: 'Bearer ' + cookies.accessToken}
+                headers: {authorization: 'Bearer ' + cookies['refresh-token']}
             }).then((res) => {
                 if (res.status === 200){
                     setMember(res.data);
@@ -79,7 +79,6 @@ const MainComponent = () => {
                 }
             });
         };
-        console.log(member);
         fetchMyInfo();
     }, []);
 
@@ -255,12 +254,18 @@ const MainComponent = () => {
     }
 
     const LogOut = () => {
-        if (cookies.accessToken){
+        if (cookies['refresh-token'] !== ""){
             if (window.confirm("로그아웃 하시겠습니까?")){
-                removeCookie('accessToken');
-                removeCookie('refreshToken');
-                window.alert("로그아웃 되었습니다.");
-                naviagte("/opentalk/member/login");
+                axios.post("/api/opentalk/auth/logout", {
+                    headers: {'Authorization': 'Bearer ' + cookies['refresh-token']}
+                }, {})
+                .then((res) => {
+                    if (res.status === 200){
+                        window.alert("로그아웃 되었습니다.");
+                        naviagte("/opentalk/member/login");
+                    }
+                })
+                .catch((error) => console.log(error));
             }
         }
         else{

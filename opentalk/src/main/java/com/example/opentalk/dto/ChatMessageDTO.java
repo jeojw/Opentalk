@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 @Setter
 public class ChatMessageDTO {
     private ChatRoomDTO chatRoom;
-    private MemberResponseDto member;
+    private AuthDto.ResponseDto member;
     private String message;
     private LocalDateTime timeStamp;
 
     public ChatMessageDTO(){}
 
     @Builder
-    public ChatMessageDTO(ChatRoomDTO chatRoomDto, MemberResponseDto memberResponseDto,
+    public ChatMessageDTO(ChatRoomDTO chatRoomDto, AuthDto.ResponseDto memberResponseDto,
                           String message, LocalDateTime timeStamp){
         this.chatRoom = chatRoomDto;
         this.member = memberResponseDto;
@@ -29,7 +29,7 @@ public class ChatMessageDTO {
     public static ChatMessageDTO toChatMessageDTO(ChatMessageEntity chatMessageEntity){
         return ChatMessageDTO.builder()
                 .chatRoomDto(ChatRoomDTO.toChatRoomDTO(chatMessageEntity.getChatroom()))
-                .memberResponseDto(MemberResponseDto.of(chatMessageEntity.getMember()))
+                .memberResponseDto(AuthDto.ResponseDto.toResponse(chatMessageEntity.getMember()))
                 .message(chatMessageEntity.getMessage())
                 .timeStamp(chatMessageEntity.getTimeStamp())
                 .build();

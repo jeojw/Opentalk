@@ -1,8 +1,7 @@
 package com.example.opentalk.controller;
 
-import com.example.opentalk.dto.ChangePasswordRequestDto;
-import com.example.opentalk.dto.MemberInfoDto;
-import com.example.opentalk.dto.MemberResponseDto;
+import com.example.opentalk.dto.AuthDto;
+import com.example.opentalk.service.AuthService;
 import com.example.opentalk.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +14,14 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+    private final AuthService authService;
 
     @GetMapping("/api/opentalk/member/me")
-    public ResponseEntity<MemberResponseDto> getMyMemberInfo() {
-        MemberResponseDto myInfoBySecurity = memberService.getMyInfoBySecurity();
+    public ResponseEntity<AuthDto.ResponseDto> getMyMemberInfo() {
+        AuthDto.ResponseDto myInfoBySecurity = authService.getMyInfo();
         System.out.println(myInfoBySecurity.getMemberNickName());
         return ResponseEntity.ok(myInfoBySecurity);
         // return ResponseEntity.ok(memberService.getMyInfoBySecurity());
-    }
-
-    @GetMapping("/api/opentalk/member/profile")
-    public ResponseEntity<MemberInfoDto> getProfile(){
-        MemberInfoDto myInfoBySecurity = memberService.getMyProfileBySecurity();
-        return ResponseEntity.ok((myInfoBySecurity));
     }
 
     @PostMapping("/api/opentalk/member/changeImg")
@@ -36,7 +30,7 @@ public class MemberController {
     }
 
     @PostMapping("/api/opentalk/member/searchNickName")
-    public ResponseEntity<List<MemberResponseDto>> searchMember(@RequestParam("nickName") String nickName){
+    public ResponseEntity<List<AuthDto.ResponseDto>> searchMember(@RequestParam("nickName") String nickName){
         return ResponseEntity.ok(memberService.searchMember(nickName));
     }
 
@@ -56,7 +50,7 @@ public class MemberController {
     }
 
     @PostMapping("/api/opentalk/member/changeNickname")
-    public ResponseEntity<MemberResponseDto> setMemberNickname(@RequestBody MemberResponseDto memberResponseDto) {
+    public ResponseEntity<AuthDto.ResponseDto> setMemberNickname(@RequestBody AuthDto.ResponseDto memberResponseDto) {
         return ResponseEntity.ok(memberService.changeMemberNickname(memberResponseDto.getMemberId(),
                                                                     memberResponseDto.getMemberNickName()));
     }
@@ -66,8 +60,8 @@ public class MemberController {
         return ResponseEntity.ok(memberService.checkNicknameDuplicate(memberNickName));
     }
 
-    @PostMapping("/api/opentalk/member/changePassword")
-    public ResponseEntity<MemberResponseDto> setMemberPassword(@RequestBody ChangePasswordRequestDto request) {
-        return ResponseEntity.ok(memberService.changeMemberPassword(request.getExPassword(), request.getNewPassword()));
-    }
+//    @PostMapping("/api/opentalk/member/changePassword")
+//    public ResponseEntity<AuthDto.ResponseDto> setMemberPassword(@RequestBody ChangePasswordRequestDto request) {
+//        return ResponseEntity.ok(memberService.changeMemberPassword(request.getExPassword(), request.getNewPassword()));
+//    }
 }

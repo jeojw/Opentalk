@@ -24,14 +24,14 @@ public class ChatRoomDTO {
     private Integer curParticipates;
     private Integer limitParticipates;
     private List<HashTagDTO> roomTags;
-    private List<MemberResponseDto> members;
+    private List<AuthDto.ResponseDto> members;
 
     public ChatRoomDTO() {}
 
     @Builder
     public ChatRoomDTO (String roomId, String roomName, String roomPassword, Integer limitParticipates,
                         Integer curParticipates, String introduction, String roomManager,
-                        List<MemberResponseDto> talkers, List<HashTagDTO> roomTags){
+                        List<AuthDto.ResponseDto> talkers, List<HashTagDTO> roomTags){
         this.roomId = roomId;
         this.roomName = roomName;
         this.roomPassword = roomPassword;
@@ -46,12 +46,12 @@ public class ChatRoomDTO {
     public static ChatRoomDTO toChatRoomDTO(ChatRoomEntity chatRoomEntity) {
 
         List<HashTagDTO> hashTagDTOList = new ArrayList<>();
-        List<MemberResponseDto> chatMemberDtoList = new ArrayList<>();
+        List<AuthDto.ResponseDto> chatMemberDtoList = new ArrayList<>();
         for (ChatRoomHashtagEntity hashTagEntity : chatRoomEntity.getHashtags()){
             hashTagDTOList.add(HashTagDTO.toHashTagDTO(hashTagEntity));
         }
         for (ChatRoomMemberEntity memberEntity : chatRoomEntity.getMembers()){
-            chatMemberDtoList.add(MemberResponseDto.of(memberEntity.getMember()));
+            chatMemberDtoList.add(AuthDto.ResponseDto.toResponse(memberEntity.getMember()));
         }
 
         return ChatRoomDTO.builder()
