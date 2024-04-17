@@ -1,9 +1,12 @@
 package com.example.opentalk.service;
 
 import com.example.opentalk.dto.AuthDto;
+import com.example.opentalk.dto.InviteDto;
 import com.example.opentalk.entity.ChatRoomEntity;
+import com.example.opentalk.entity.InviteEntity;
 import com.example.opentalk.entity.MemberEntity;
 import com.example.opentalk.repository.ChatRoomRepository;
+import com.example.opentalk.repository.InviteMessageRepository;
 import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +25,7 @@ public class MemberService {
     private final ChatRoomRepository chatRoomRepository;
     private final RedisService redisService;
     private final BCryptPasswordEncoder encoder;
+    private final InviteMessageRepository inviteMessageRepository;
 
     public void singUp(AuthDto.SignupDto signupDto){
         MemberEntity member = MemberEntity.builder()
@@ -110,4 +114,21 @@ public class MemberService {
             return false;
     }
 
+    @Transactional
+    public List<InviteDto> getAllInviteMessages(String memberNickName){
+        List<InviteDto> returnList = new ArrayList<>();
+        Optional<List<InviteEntity>> list = inviteMessageRepository.getAllInvitedMessages(memberNickName);
+        if (list.isPresent()){
+            for (InviteEntity entity : list.get()){
+                returnList.add(InviteDto.builder()
+                                .roomId(entity.getRoomId())
+                                .roomName(entity.getRoomName())
+                                .invitedMember(entity.getInviter())
+                                .invitedMember(entity.getInvitedMember())
+                                .message(entity.getMessage())
+                                .build());
+            }
+        }
+        return returnList;
+    }
 }

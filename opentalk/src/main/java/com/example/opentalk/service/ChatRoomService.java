@@ -24,6 +24,9 @@ public class ChatRoomService {
     private final ChatRoomHashtagRepository chatRoomHashtagRepository;
     private final HashTagRepository hashTagRepository;
 
+    private final InviteMessageRepository inviteMessageRepository;
+    private final MemberInviteRepository memberInviteRepository;
+
     public String createRoom(ChatRoomDTO chatRoomDTO){
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomDTO);
         if (!chatRoomDTO.getRoomTags().isEmpty()) {
@@ -332,5 +335,23 @@ public class ChatRoomService {
             return Objects.equals(chatRoomMemberRepository.existByRoomMemberId(room.get().getId(), member.get().getId()), BigInteger.ONE);
         }
         return false;
+    }
+
+    public boolean InviteMember(InviteDto inviteDto){
+        Optional<MemberEntity> member = memberRepository.findByMemberNickName(inviteDto.getInvitedMember());
+        if (member.isPresent()){
+            InviteEntity inviteEntity = InviteEntity.toInviteEntity(inviteDto);
+            inviteMessageRepository.save(inviteEntity);
+            memberInviteRepository.save(MemberInviteEntity.builder()
+                            .member(member.get())
+                            .message(inviteEntity)
+                            .build());
+            return true;
+        }
+        return false;
+    }
+
+    public void deleteInviteMessage(InviteDto inviteDto){
+
     }
 }

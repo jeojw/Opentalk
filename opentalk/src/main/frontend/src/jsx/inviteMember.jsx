@@ -5,7 +5,7 @@ import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
 import {Row, Col, Button, Form, FormGroup, FormControl, ListGroup, ListGroupItem, InputGroup, Container} from 'react-bootstrap'
 
-const InviteMemberComponent = ({role}) => {
+const InviteMemberComponent = ({roomInfo, role}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [nickName, setNickName] = useState("");
     const [searchList, setSearchList] = useState([]);
@@ -35,9 +35,23 @@ const InviteMemberComponent = ({role}) => {
         .catch((error) => console.log(error));
     }
 
-    const InviteMember = () => {
+    const InviteMember = (member) => {
         if (window.confirm("초대하시겠습니까?")){
-
+            const inviteUrl = "/api/opentalk/invite"
+            axios.post(inviteUrl, {
+                roomId: roomInfo.roomId,
+                roomName: roomInfo.roomName,
+                inviter: roomInfo.roomManager,
+                message: "null",
+                invitedMember: member
+            })
+            .then((res)=>{
+                if (res.data === true){
+                    setIsOpen(false);
+                    setNickName("");
+                    setSearchList([]);
+                }
+            }).catch((error) => console.log(error));
         }
     }
 
@@ -69,7 +83,7 @@ const InviteMemberComponent = ({role}) => {
                         {searchList && searchList.length > 0 && (
                             <ListGroup>
                                 {searchList.map((_member, index) => (
-                                    <ListGroupItem>{_member.memberNickName}<Button onClick={InviteMember}>초대</Button></ListGroupItem>
+                                    <ListGroupItem>{_member.memberNickName}<Button onClick={() => InviteMember(_member.memberNickName)}>초대</Button></ListGroupItem>
                                 ))}
                             </ListGroup>
                         )}

@@ -42,7 +42,13 @@ public class MemberEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
     private List<ChatMessageEntity> messages;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
+    private List<MemberInviteEntity> inviteMessages;
+
     protected  MemberEntity(){}
+
+
+
 
     @Builder
     public MemberEntity(String memberId,

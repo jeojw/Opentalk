@@ -362,7 +362,7 @@ const RoomComponent = ({setIsChangeData}) => {
                     {() => setIsChangeData(isChangeRoom)}
                 </ChangRoomComponent>
                 <br></br>
-                <InviteMemberComponent role={role}/>
+                <InviteMemberComponent roomInfo = {roomInformation} role={role}/>
             </div>
             )}
         </Container>

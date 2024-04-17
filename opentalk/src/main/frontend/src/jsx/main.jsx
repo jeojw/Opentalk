@@ -1,16 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios, { all } from 'axios';
+import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import SetRoomComponent from './setroom';
 import RoomComponent from './room';
 import {createBrowserHistory} from "history";
-import Pagination from 'react-js-pagination';
 import ProfileComponent from './profile';
 import { Container, Row, Col, Button, Form, 
     FormControl, InputGroup, ListGroup, ListGroupItem, 
     FormGroup} from 'react-bootstrap';
 import { PaginationControl } from 'react-bootstrap-pagination-control';
+import Modal from 'react-modal';
 
 const MainComponent = () => {
     const ChatRoomRole = {
@@ -39,13 +39,16 @@ const MainComponent = () => {
 
     const [pageLength , setPageLength] = useState(0);
 
+    const [isMessageBoxOpen, setIsMessageBoxOpen] = useState(false);
+    const [messageList, setMessageList] = useState([]);
+
     const chatRoomLength = allChatRoomList.length;
     const handlePageChange = (page)=>{
         setPage(page);
     }
 
     const [cookies, setCookie, removeCookie] = useCookies(['refresh-token']);
-    const [member, setMember] = useState("");
+    const [member, setMember] = useState();
     const [role, setRole] = useState();
     
     const [selectManu, setSelectManu] = useState("default");
@@ -79,6 +82,7 @@ const MainComponent = () => {
                 }
             });
         };
+        console.log(member);
         fetchMyInfo();
     }, []);
 
@@ -173,8 +177,8 @@ const MainComponent = () => {
         }
     }
 
-    const EnterRoom = ({roomInfo, talker}) => {
-        if (talker === undefined){
+    const EnterRoom = ({roomInfo}) => {
+        if (member === undefined){
             window.alert("이미 로그아웃 되었습니다.");
             naviagte("/opentalk/member/login");
         }
@@ -183,7 +187,7 @@ const MainComponent = () => {
             if (!roomInfo.existLock){
                 let currentRole;
                 console.log(roomInfo);
-                if (roomInfo.manager === talker.memberNickName){
+                if (roomInfo.manager === member.memberNickName){
                     currentRole = ChatRoomRole.MANAGER;
                 }
                 else{
@@ -192,7 +196,7 @@ const MainComponent = () => {
                 setRole(currentRole);
                 axios.post(enterUrl, {
                     chatroom: roomInfo, 
-                    member: talker,
+                    member: member,
                     role:role
                 })
                 .then((res) => {
@@ -213,7 +217,7 @@ const MainComponent = () => {
                 }else{
                     axios.post(enterUrl + `/${inputPassword}`, {
                         chatroom: roomInfo, 
-                        member: talker,
+                        member: member,
                         role:role
                     })
                     .then((res) => {
@@ -235,7 +239,7 @@ const MainComponent = () => {
         }
         return (
             <div>
-                <RoomComponent roomInfo={roomInfo} talker={talker} setIsChangeData={setIsUpdateTrigger}/>
+                <RoomComponent roomInfo={roomInfo} talker={member} setIsChangeData={setIsUpdateTrigger}/>
             </div>
         );
     }
@@ -275,19 +279,57 @@ const MainComponent = () => {
         
     };
 
+    const openMessageBox = () => {
+        setIsMessageBoxOpen(true);
+    }
+
+    const closeModal = () => {
+        setIsMessageBoxOpen(false);
+    }
+
+    useEffect(() => {
+        const fetchAllMessages = async () => {
+            const url = "/api/opentalk/member/allInviteMessages"
+            try{
+                const data = new FormData();
+                data.append("memberNickName", member.memberNickName);
+                const response = await axios.post(url, data);
+                setMessageList(response.data);
+            } catch (error){
+                console.log(error);
+            }
+        }
+
+        fetchAllMessages();
+    },[isMessageBoxOpen])
+
    return (
     <Container>
+        <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal}>
+            <ListGroup>
+            {messageList.map((_message) => (
+                <ListGroupItem>방 이름: {_message.roomName}
+                <br></br>방장: {_message.inviter}
+                <br></br>메세지: {_message.message}
+                <br></br>
+                <Button>입장하기</Button>
+                <Button variant='dark'>메세지 지우기</Button>
+                </ListGroupItem>
+            ))}
+            </ListGroup> 
+            <Button onClick={closeModal}>닫기</Button>
+        </Modal>
         <Row className="justify-content-end">
             <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-warning border-3 rounded-3 p-5"
             style={{width:"300px", height: "500px"}}>
                 <aside>
                     <div style={{ textAlign: 'center' }}>
                         <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`} ></img>
-                        <p>환영합니다, {member.memberNickName}님</p>
+                        <p>환영합니다, {member?.memberNickName}님</p>
                     </div>
                     <div className="d-grid gap-2">
                         <Button variant="primary" onClick={GoProfile}>프로필 설정</Button>
-                        <Button>메세지함</Button>
+                        <Button onClick={openMessageBox}>메세지함</Button>
                         <Button variant="dark" onClick={LogOut}>로그아웃</Button>
                     </div>
                 </aside>
@@ -307,7 +349,7 @@ const MainComponent = () => {
                         </ListGroup>
                         <br></br>
                         <div className="d-grid gap-2">
-                            <Button onClick={() => EnterRoom({roomInfo: room, talker: member})}>입장하기</Button>
+                            <Button onClick={() => EnterRoom({roomInfo: room})}>입장하기</Button>
                             {room.roomManager === member.memberNickName && (
                             <Button variant="dark" onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
                             )}

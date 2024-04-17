@@ -2,12 +2,14 @@ package com.example.opentalk.controller;
 
 import com.example.opentalk.RuntimeException;
 import com.example.opentalk.dto.AuthDto;
+import com.example.opentalk.dto.InviteDto;
 import com.example.opentalk.service.AuthService;
 import com.example.opentalk.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -68,4 +70,8 @@ public class MemberController {
         return ResponseEntity.ok(memberService.changePassword(memberEmail, exPassword, newPassword));
     }
 
+    @PostMapping("/api/opentalk/member/allInviteMessages")
+    public ResponseEntity<List<InviteDto>> allInviteMessages(@RequestParam("memberNickName") String memberNickName){
+        return ResponseEntity.ok(memberService.getAllInviteMessages(memberNickName));
+    }
 }

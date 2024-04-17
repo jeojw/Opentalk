@@ -38,10 +38,10 @@ public class RoomController {
         return ResponseEntity.ok(roomId);
     }
 
-//    @PostMapping("/api/opentalk/invite")
-//    public ResponseEntity<Boolean> inviteMember(@RequestParam("nickName") String nickName){
-//
-//    }
+    @PostMapping("/api/opentalk/invite")
+    public ResponseEntity<Boolean> inviteMember(@RequestBody @Valid InviteDto inviteDto){
+        return ResponseEntity.ok(chatRoomService.InviteMember(inviteDto));
+    }
 
     @PostMapping("/api/opentalk/authMandate")
     public ResponseEntity<Boolean> authMandate(@RequestBody @Valid  ManagerChangeDto managerChangeDto){
