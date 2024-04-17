@@ -244,6 +244,41 @@ const MainComponent = () => {
         );
     }
 
+    const EnterInvitedRoom = ({roomId, Inviter}) => {
+        if (window.confirm("입장하시겠습니까?")){
+            if (member === undefined){
+                window.alert("이미 로그아웃 되었습니다.");
+                naviagte("/opentalk/member/login");
+            }
+            else{
+                let currentRole;
+                const enterUrl = '/api/opentalk/enterInvitedRoom';
+                currentRole = ChatRoomRole.PARTICIPATE;
+                setRole(currentRole);
+                const data = new FormData();
+                data.append("roomId", roomId);
+                data.append("memberId", member.memberId);
+                data.append("inviter", Inviter);
+                console.log(Inviter);
+                axios.post(enterUrl, data)
+                .then((res) => {
+                    if (res.data === "Success"){
+                        naviagte(`/opentalk/room/${roomId}`);
+                    }
+                    else{
+                        window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
+                    }
+                })
+                .catch((error) => console.log(error));      
+            }
+        }
+        return (
+            <div>
+                <RoomComponent setIsChangeData={setIsUpdateTrigger}/>
+            </div>
+        );
+    }
+
     const GoProfile = () => {
         if (userStatus){
             naviagte("/opentalk/profile");
@@ -312,7 +347,7 @@ const MainComponent = () => {
                 <br></br>방장: {_message.inviter}
                 <br></br>메세지: {_message.message}
                 <br></br>
-                <Button>입장하기</Button>
+                <Button onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}>입장하기</Button>
                 <Button variant='dark'>메세지 지우기</Button>
                 </ListGroupItem>
             ))}

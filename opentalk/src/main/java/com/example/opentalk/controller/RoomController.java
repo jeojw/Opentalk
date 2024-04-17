@@ -53,6 +53,13 @@ public class RoomController {
         return ResponseEntity.ok(chatRoomService.enterRoom(chatRoomMemberDTO));
     }
 
+    @PostMapping("/api/opentalk/enterInvitedRoom")
+    public ResponseEntity<String> enterInvitedRoom(@RequestParam("roomId") String roomId,
+                                                   @RequestParam("memberId") String memberId,
+                                                   @RequestParam("inviter") String inviter){
+        return ResponseEntity.ok(chatRoomService.enterInvitedRoom(roomId, memberId, inviter));
+    }
+
     @PostMapping("/api/opentalk/exitRoom")
     public void exitRoom(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO){
         chatRoomService.exitRoom(chatRoomMemberDTO);
@@ -82,11 +89,6 @@ public class RoomController {
     public ResponseEntity<Boolean> forced_Exit(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO){
         return ResponseEntity.ok(chatRoomService.forcedExistRoom(chatRoomMemberDTO));
     }
-
-//    @PostMapping("/api/opentalk/searchRoom")
-//    public ResponseEntity<List<ChatRoomDTO>> searchRoom(@RequestBody SearchDto searchDto){
-//        return ResponseEntity.ok(chatRoomService.searchRoom(searchDto));
-//    }
 
     @PostMapping("/api/opentalk/saveChat")
     public void saveChat(@RequestBody ChatMessageDTO chatMessageDTO){

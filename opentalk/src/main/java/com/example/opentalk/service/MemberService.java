@@ -123,7 +123,7 @@ public class MemberService {
                 returnList.add(InviteDto.builder()
                                 .roomId(entity.getRoomId())
                                 .roomName(entity.getRoomName())
-                                .invitedMember(entity.getInviter())
+                                .inviter(entity.getInviter())
                                 .invitedMember(entity.getInvitedMember())
                                 .message(entity.getMessage())
                                 .build());

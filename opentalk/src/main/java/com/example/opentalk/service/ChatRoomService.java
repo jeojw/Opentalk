@@ -209,19 +209,41 @@ public class ChatRoomService {
         return false;
     }
 
-    public String enterRoom(ChatRoomMemberDTO chatRoomMemberDTO){
-        ChatRoomEntity chatRoomEntity;  MemberEntity memberEntity;
-        if (chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId()).isPresent() &&
-                memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId()).isPresent()){
-            chatRoomEntity = chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId()).get();
-            memberEntity = memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId()).get();
-            if (getParticipates(chatRoomEntity.getRoomId()) != chatRoomEntity.getLimitParticipates()){
+    public String enterInvitedRoom(String roomId, String memberId, String inviter){
+        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(roomId);
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(memberId);
+        if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
+            if (getParticipates(chatRoomEntity.get().getRoomId()) != chatRoomEntity.get().getLimitParticipates()){
                 ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
-                        .chatroom(chatRoomEntity)
-                        .member(memberEntity)
+                        .chatroom(chatRoomEntity.get())
+                        .member(memberEntity.get())
                         .build();
-                if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoomEntity.getId(), memberEntity.getId()), BigInteger.ONE)){
-                    chatRoomMemberRepository.deleteMember(chatRoomEntity.getId(), memberEntity.getId());
+                if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoomEntity.get().getId(), memberEntity.get().getId()), BigInteger.ONE)){
+                    chatRoomMemberRepository.deleteMember(chatRoomEntity.get().getId(), memberEntity.get().getId());
+                }
+                chatRoomMemberRepository.save(chatRoomMemberEntity);
+                Optional<InviteEntity> inviteEntity = inviteMessageRepository.getInviteMessage(inviter, memberEntity.get().getMemberNickName());
+                if (inviteEntity.isPresent()){
+                    memberInviteRepository.deleteEntity(inviteEntity.get().getId(), memberEntity.get().getId());
+                    inviteMessageRepository.deleteMessage(memberEntity.get().getMemberNickName(), inviter);
+                    return "Success";
+                }
+            }
+        }
+        return "Fail";
+    }
+
+    public String enterRoom(ChatRoomMemberDTO chatRoomMemberDTO){
+        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId());
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId());
+        if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
+            if (getParticipates(chatRoomEntity.get().getRoomId()) != chatRoomEntity.get().getLimitParticipates()){
+                ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
+                        .chatroom(chatRoomEntity.get())
+                        .member(memberEntity.get())
+                        .build();
+                if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoomEntity.get().getId(), memberEntity.get().getId()), BigInteger.ONE)){
+                    chatRoomMemberRepository.deleteMember(chatRoomEntity.get().getId(), memberEntity.get().getId());
                 }
                 chatRoomMemberRepository.save(chatRoomMemberEntity);
                 return "Success";
@@ -232,16 +254,14 @@ public class ChatRoomService {
     }
 
     public String enterRoom_Pw(ChatRoomMemberDTO chatRoomMemberDTO, String inputPw){
-        ChatRoomEntity chatRoomEntity;  MemberEntity memberEntity;
+        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId());
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId());
         if (inputPw.equals(chatRoomMemberDTO.getChatroom().getRoomPassword())){
-            if (chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId()).isPresent() &&
-                    memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId()).isPresent()){
-                chatRoomEntity = chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId()).get();
-                memberEntity = memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId()).get();
-                if (getParticipates(chatRoomEntity.getRoomId()) != chatRoomEntity.getLimitParticipates()){
+            if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
+                if (getParticipates(chatRoomEntity.get().getRoomId()) != chatRoomEntity.get().getLimitParticipates()){
                     ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
-                            .chatroom(chatRoomEntity)
-                            .member(memberEntity)
+                            .chatroom(chatRoomEntity.get())
+                            .member(memberEntity.get())
                             .build();
 
                     chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getChatroom().getId(),
