@@ -237,6 +237,21 @@ const RoomComponent = ({setIsChangeData}) => {
                 }
             })
             .catch((error) => console.log(error));
+            const curTime = new Date();
+            const isoDateTime = curTime.toISOString();
+            
+            client.current.publish({
+                destination: '/pub/chat/exit',
+                body: JSON.stringify({
+                    chatRoom: roomInformation,
+                    member: {
+                        memberId:"system",
+                        memberNickName:"system"
+                    },
+                    message: `${roomMember.memberNickName}님이 방장이 되었습니다.`,
+                    timeStamp: isoDateTime
+                })
+            });
         }
     }
 
@@ -341,13 +356,15 @@ const RoomComponent = ({setIsChangeData}) => {
                 <Button variant="dark" onClick={ExitRoom}>나가기</Button>
             </div>
             <br></br>
-            <div className='border border-warning border-3 rounded-3 p-4'>
+            {role === "MANAGER" && (
+                <div className='border border-warning border-3 rounded-3 p-4'>
                 <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeRoom}>
                     {() => setIsChangeData(isChangeRoom)}
                 </ChangRoomComponent>
                 <br></br>
                 <InviteMemberComponent role={role}/>
             </div>
+            )}
         </Container>
     );
 }
