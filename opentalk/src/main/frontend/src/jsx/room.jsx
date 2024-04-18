@@ -12,7 +12,6 @@ const RoomComponent = ({setIsChangeData}) => {
 
     const [roomInformation, setRoomInformation] = useState();
     const [myInfo, setMyInfo] = useState();
-    const [member, setMember] = useState([]);
     const [chatList, setChatList] = useState([]);
     const [preChatList, setPreChatList] = useState([]);
     const [chat, setChat] = useState("");
@@ -47,7 +46,6 @@ const RoomComponent = ({setIsChangeData}) => {
             try{
                 const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
                 setRoomInformation(response.data.chatroom);
-                setMember(response.data.member);
                 setRole(response.data.role);
             } catch (error){
                 console.log(error);

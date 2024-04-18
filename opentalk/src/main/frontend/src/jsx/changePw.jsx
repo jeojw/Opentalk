@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Container, Row, Col, Button, Form, 
-    FormControl, InputGroup, ListGroup, ListGroupItem, 
-    FormGroup} from 'react-bootstrap';
+import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 
 const ChangePasswordComponent = () =>{
     const [memberEmail, setMemberEmail] = useState("");

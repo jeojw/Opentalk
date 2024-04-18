@@ -22,7 +22,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
 
     const [isChangeData, setIsChangeData] = useState(false);
 
-    const [cookies, setCookie, removeCookie] = useCookies(['refresh-token']);
+    const [useCookies] = useCookies(['refresh-token']);
 
     const navigate = useNavigate();
 

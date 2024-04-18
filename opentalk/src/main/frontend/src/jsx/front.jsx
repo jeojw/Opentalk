@@ -16,11 +16,16 @@ const FrontComponent = (props) => {
 
    return (
     <Container>
-        <h2>오픈톡방에 오신 것을 환영합니다!</h2>
         <Row>
-            <Col>
-                <Button variant='primary' type="button" onClick={LinkToLogin}>로그인</Button>
-                <Button variant='primary' type="button" onClick={LinkToEnroll}>회원가입</Button>
+            <Col md={{ span: 10, offset: 1 }} className="border border-warning border-3 rounded-3 p-5">
+                <div className='text-center'>
+                    <h2>오픈톡방에 오신 것을 환영합니다!</h2>
+                </div>
+                <br></br>
+                <div className="d-flex justify-content-between gap-1">
+                    <Button variant='primary' type="button" onClick={LinkToLogin} style={{fontSize: '20px', padding: '10px 100px'}}>로그인</Button>
+                    <Button variant='primary' type="button" onClick={LinkToEnroll} style={{fontSize: '20px', padding: '10px 100px'}}>회원가입</Button>
+                </div> 
             </Col>
         </Row>
     </Container>

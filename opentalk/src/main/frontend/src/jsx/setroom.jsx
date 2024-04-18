@@ -12,7 +12,6 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [roomId, setRoomId] = useState("");
-    const [members, setMembers] = useState();
     const [participants, setParticipants] = useState(3);
     const [existLock, setExistLock] = useState(false);
     const [password, setPassword] = useState("");

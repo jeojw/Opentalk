@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
-import { useCookies } from 'react-cookie';
 import { Form, Button, Container, Row, Col, InputGroup, FormGroup } from 'react-bootstrap';
 
 const LoginComponent = (props) => {
     
-    const [cookies, setCookie] = useCookies([]);
     const [memberId, setMemberId] = useState("");
     const [memberPw, setMemberPw] = useState("");
     const [isForget, setIsForget] = useState(false);

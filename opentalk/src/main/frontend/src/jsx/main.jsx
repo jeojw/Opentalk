@@ -47,7 +47,7 @@ const MainComponent = () => {
         setPage(page);
     }
 
-    const [cookies, setCookie, removeCookie] = useCookies(['refresh-token']);
+    const [cookies] = useCookies(['refresh-token']);
     const [member, setMember] = useState();
     const [role, setRole] = useState();
     
