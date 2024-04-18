@@ -1,7 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Form, Button, Container, Row, Col} from 'react-bootstrap';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 
 const FrontComponent = (props) => {
     const navigate = useNavigate();
