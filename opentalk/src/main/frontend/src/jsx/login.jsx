@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import { Form, Button, Container, Row, Col, FormGroup } from 'react-bootstrap';
+import MainComponent from './main';
 
 const LoginComponent = (props) => {
     
@@ -26,9 +27,7 @@ const LoginComponent = (props) => {
             })
             .then((res) => {
                 if (res.status === 200){
-                    const accessToken = res.headers['authorization'].split(' ')[1];
-                    // Access Token을 헤더에 저장
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+                    localStorage.setItem('refresh-token', res.headers['authorization']);
                     navigate("/opentalk/main");
                 }
             })

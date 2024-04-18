@@ -29,13 +29,12 @@ public class ChatRoomService {
 
     public String createRoom(ChatRoomDTO chatRoomDTO){
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomDTO);
+        ChatRoomHashtagEntity chatRoomHashtagEntity;
+
+        List<String> hashTagList = hashTagRepository.findAllTags();
+        ChatRoomEntity chatroomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomDTO);
+        chatRoomRepository.save(chatRoomEntity);
         if (!chatRoomDTO.getRoomTags().isEmpty()) {
-            ChatRoomHashtagEntity chatRoomHashtagEntity;
-
-            List<String> hashTagList = hashTagRepository.findAllTags();
-            ChatRoomEntity chatroomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomDTO);
-            chatRoomRepository.save(chatRoomEntity);
-
             Optional<Long> tag_id;
             for (HashTagDTO tag : chatRoomDTO.getRoomTags()) {
                 if (!hashTagList.contains(tag.getTagName())) {
@@ -51,7 +50,6 @@ public class ChatRoomService {
                             .chatroom(chatRoomEntity)
                             .hashtag(HashTagEntity.toHashTagEntity(tag))
                             .build();
-                    System.out.print("SaveTag_2!!!");
                     tag_id.ifPresent(aLong -> chatRoomHashtagRepository.SaveTagRoom(aLong, chatroom.get().getId()));
                 }
             }
@@ -92,7 +90,7 @@ public class ChatRoomService {
         if (manager.isPresent() && newManager.isPresent() && chatroom.isPresent()){
             chatRoomMemberRepository.setManager(chatroom.get().getId(), newManager.get().getId());
             chatRoomMemberRepository.setParticipate(chatroom.get().getId(), manager.get().getId());
-           chatRoomRepository.updateManager(chatroom.get().getRoomId(), newManager.get().getMemberNickName());
+            chatRoomRepository.updateManager(chatroom.get().getRoomId(), newManager.get().getMemberNickName());
 
             return true;
         }

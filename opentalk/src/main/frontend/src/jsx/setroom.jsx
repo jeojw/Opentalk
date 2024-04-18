@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import {useCookies} from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import axios from'axios';
@@ -20,15 +19,13 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
     const [tag, setTag] = useState("");
     const [tags, setTags] = useState([]);
 
-    const [cookies] = useCookies(["accessToken"]);
-
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchManager = async () =>{
             try{
                 const response = await axios.get("/api/opentalk/member/me", {
-                    headers: {Authorization: 'Bearer ' + cookies.accessToken}
+                    headers: {Authorization: localStorage.getItem('refresh-token')}
                 })
                 setManger(response.data);
             } catch (error) {
@@ -36,7 +33,8 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
             }
         }
         fetchManager();
-    });
+        console.log(manager);
+    }, []);
     
     const openModal = () => {
         setIsOpen(true)
@@ -118,32 +116,27 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
 
 
     const MakeRoom = () => {
-        if (manager === undefined){
-            window.alert("이미 로그아웃 되었습니다.")
-            navigate("/opentalk/member/login");
-        }
-        else{
-            const makeUrl = `/api/opentalk/makeRoom`
-            axios.post(makeUrl, {
-                "roomName": roomName,
-                "roomPassword": password,
-                "roomManager": manager.memberNickName,
-                "limitParticipates": participants,
-                "introduction": info,
-                "existLock": existLock,
-                "members": [],
-                "roomTags": tags
-            })
-            .then((res)=>{
-                if (res.status === 200){
-                    alert("방이 생성되었습니다.");
-                    setRoomId(res.data);
-                    closeModal();
-                    onDataUpdate(prevState => !prevState);
-                }
-            })
-            .catch((error) => console.log(error));
-        }
+        const makeUrl = `/api/opentalk/makeRoom`
+        console.log(manager);
+        axios.post(makeUrl, {
+            "roomName": roomName,
+            "roomPassword": password,
+            "roomManager": manager.memberNickName,
+            "limitParticipates": participants,
+            "introduction": info,
+            "existLock": existLock,
+            "members": [],
+            "roomTags": tags
+        })
+        .then((res)=>{
+            if (res.status === 200){
+                alert("방이 생성되었습니다.");
+                setRoomId(res.data);
+                closeModal();
+                onDataUpdate(prevState => !prevState);
+            }
+        })
+        .catch((error) => console.log(error));
         
     };
 

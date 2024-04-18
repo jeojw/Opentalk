@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useCookies } from 'react-cookie';
 import SetRoomComponent from './setroom';
 import RoomComponent from './room';
 import {createBrowserHistory} from "history";
@@ -47,7 +46,6 @@ const MainComponent = () => {
         setPage(page);
     }
 
-    const [cookies] = useCookies(['refresh-token']);
     const [member, setMember] = useState();
     const [role, setRole] = useState();
     
@@ -60,6 +58,9 @@ const MainComponent = () => {
     let imgRef = useRef();
     const [curImgUrl, setCurImgUrl] = useState(null);
 
+    const [isReissue, setIsReissue] = useState(false);
+    const [isLogin, setIsLogin] = useState(false);
+
     // useEffect(() => {
     //     let unlisten = history.listen((location) => {
     //         if (history.action === "POP")
@@ -71,25 +72,73 @@ const MainComponent = () => {
     // }, [history])
 
     useEffect(() => {
-        const fetchMyInfo = async () => {
-            await axios.get('/api/opentalk/member/me', {
-                headers: {Authorization: 'Bearer ' + cookies['refresh-token']}
-            }).then((res) => {
-                if (res.status === 200){
-                    setMember(res.data);
-                    setCurImgUrl(res.data.imgUrl);
-                    console.log(res.data);
+        const reissueToken = async () =>{
+            if (isReissue){
+                const reissueUrl = "/api/opentalk/auth/reissue";
+                try{
+                    const reissueRes = await axios.post(reissueUrl, {
+                        headers:{
+                            Authorization: localStorage.getItem('refresh-token'),
+                            Cookie: `refresh-token=${localStorage.getItem('refresh-token').split(" ")[1]}`
+                        }
+                    }, {})
+                    if (reissueRes.status === 200){
+                        setIsLogin(true);
+                    }
+                } catch(error) {
+                    window.alert("로그아웃 상태입니다. 로그인하여 주십시오");
+                    naviagte('/opentalk/member/login');   
+                    setIsReissue(false); 
+                    setIsLogin(false);  
                 }
-            }).catch((error) => {
-                if (error === 500){
-                    setUserStatus(false);
-                    console.log(userStatus)
+            }
+        }
+        reissueToken();
+    }, [isReissue])
+
+    useEffect(() => {
+        const validateToken = async () =>{
+            try{
+                const url = "/api/opentalk/auth/validate";
+                const response = await axios.post(url, {}, {
+                    headers: {
+                        Authorization: localStorage.getItem('refresh-token')
+                    }
+                });
+                if (response.status === 200){
+                    setIsReissue(false);
+                    setIsLogin(true);
                 }
-            });
-        };
-        console.log(member);
-        fetchMyInfo();
+            } catch(error){
+                setIsReissue(true);
+                setIsLogin(false);
+                console.log(error); 
+            }
+        }
+        validateToken();
     }, []);
+
+    useEffect(() => {
+        const fetchMyInfo = async () => {
+            console.log(isLogin);
+            if (isLogin){
+                await axios.get('/api/opentalk/member/me', {
+                    headers: {Authorization: localStorage.getItem('refresh-token')}
+                }).then((res) => {
+                    if (res.status === 200){
+                        setMember(res.data);
+                        setCurImgUrl(res.data.imgUrl);
+                        console.log(res.data);
+                    }
+                }).catch((error) => {
+                    if (error === 500){
+                        setUserStatus(false);
+                    }
+                });
+            }
+        }    
+        fetchMyInfo();
+    }, [isLogin]);
 
     useEffect(() => {
         if (curImgUrl){
@@ -99,18 +148,20 @@ const MainComponent = () => {
 
     useEffect(() => {
         const fetchAllRooms = async () => {
-            try{
-                const roomResponse = await axios.get("/api/opentalk/rooms");
-                setAllChatRoomList(roomResponse.data);
-                console.log(allChatRoomList);
-                setPageLength(roomResponse.data.length);
-            } catch (error){
-                console.error(error);
+            if (isLogin){
+                try{
+                    const roomResponse = await axios.get("/api/opentalk/rooms");
+                    setAllChatRoomList(roomResponse.data);
+                    console.log(allChatRoomList);
+                    setPageLength(roomResponse.data.length);
+                } catch (error){
+                    console.error(error);
+                }
             }
         };
 
         fetchAllRooms();
-    }, [isUpdateTrigger]);
+    }, [isUpdateTrigger, isLogin]);
 
     useEffect(() => {
         setChatRoomList(allChatRoomList.slice(indexOfFirstPost, indexOfLastPost))
@@ -295,7 +346,7 @@ const MainComponent = () => {
             naviagte("/opentalk/profile");
         }
         else{
-            window.alert("이미 로그아웃 되었습니다.")
+            window.alert("이미 로그아웃 되었습니다.");
             naviagte("/opentalk/member/login");
         }
         return (
@@ -304,14 +355,18 @@ const MainComponent = () => {
     }
 
     const LogOut = () => {
-        if (cookies['refresh-token'] !== ""){
+        if (localStorage.getItem("refresh-token")){
             if (window.confirm("로그아웃 하시겠습니까?")){
-                axios.post("/api/opentalk/auth/logout", {
-                    headers: { 'Authorization': 'Bearer ' + cookies['refresh-token']}
-                }, {})
+                axios.post("/api/opentalk/auth/logout", {}, {
+                    headers: { 
+                        Authorization: localStorage.getItem('refresh-token'),
+                    }
+                })
                 .then((res) => {
                     if (res.status === 200){
                         window.alert("로그아웃 되었습니다.");
+                        localStorage.removeItem('refresh-token');
+                        setIsLogin(false);
                         naviagte("/opentalk/member/login");
                     }
                 })
@@ -335,14 +390,16 @@ const MainComponent = () => {
 
     useEffect(() => {
         const fetchAllMessages = async () => {
-            const url = "/api/opentalk/member/allInviteMessages"
-            try{
-                const data = new FormData();
-                data.append("memberNickName", member.memberNickName);
-                const response = await axios.post(url, data);
-                setMessageList(response.data);
-            } catch (error){
-                console.log(error);
+            if (isLogin){
+                const url = "/api/opentalk/member/allInviteMessages"
+                try{
+                    const data = new FormData();
+                    data.append("memberNickName", member.memberNickName);
+                    const response = await axios.post(url, data);
+                    setMessageList(response.data);
+                } catch (error){
+                    console.log(error);
+                }
             }
         }
 
@@ -400,7 +457,7 @@ const MainComponent = () => {
                         <br></br>
                         <div className="d-grid gap-2">
                             <Button onClick={() => EnterRoom({roomInfo: room})}>입장하기</Button>
-                            {room.roomManager === member.memberNickName && (
+                            {room.roomManager === member?.memberNickName && (
                             <Button variant="dark" onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
                             )}
                         </div>
