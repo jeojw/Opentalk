@@ -70,7 +70,7 @@ const MainComponent = () => {
     useEffect(() => {
         const fetchMyInfo = async () => {
             await axios.get('/api/opentalk/member/me', {
-                headers: {authorization: 'Bearer ' + cookies['refresh-token']}
+                headers: {Authorization: 'Bearer ' + cookies['refresh-token']}
             }).then((res) => {
                 if (res.status === 200){
                     setMember(res.data);
@@ -296,7 +296,7 @@ const MainComponent = () => {
         if (cookies['refresh-token'] !== ""){
             if (window.confirm("로그아웃 하시겠습니까?")){
                 axios.post("/api/opentalk/auth/logout", {
-                    headers: {'Authorization': 'Bearer ' + cookies['refresh-token']}
+                    headers: { 'Authorization': 'Bearer ' + cookies['refresh-token']}
                 }, {})
                 .then((res) => {
                     if (res.status === 200){
