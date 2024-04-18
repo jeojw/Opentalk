@@ -41,7 +41,7 @@ public class MemberService {
     }
 
     public boolean changeImage(String memberId, String newImg){
-        Optional<MemberEntity> member = memberRepository.SearchMemberId(memberId);
+        Optional<MemberEntity> member = memberRepository.findByMemberId(memberId);
         if (member.isPresent()){
             memberRepository.ChangeImg(member.get().getMemberId(), newImg);
             return true;

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
@@ -18,12 +18,14 @@ const ProfileComponent = ({setIsUpdateData}) => {
     const [newPassword, setNewPassword] = useState("");
 
     const [checkPassword, setCheckPassword] = useState("");
-    const [uploadImgUrl, setUploadImgUrl] = useState("");
+    const [uploadImgUrl, setUploadImgUrl] = useState(null);
+    const [curImgUrl, setCurImgUrl] = useState(null);
 
     const [isChangeData, setIsChangeData] = useState(false);
 
     const [cookies] = useCookies(['refresh-token']);
 
+    let imgRef = useRef();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,7 +35,9 @@ const ProfileComponent = ({setIsUpdateData}) => {
                     headers: {authorization: 'Bearer ' + cookies['refresh-token']}
                     });
                 setMember(response.data);
-                console.log(member);
+                setCurImgUrl(response.data.imgUrl);
+                console.log(response.data);
+                
             } catch (error) {
                 console.error(error);
             }
@@ -42,15 +46,11 @@ const ProfileComponent = ({setIsUpdateData}) => {
         fetchMemberStatus();
     }, [isChangeData]);
 
-    const onChangeImageUpload = (event) => {
-        const {files} = event.target;
-        const uploadFile = files[0];
-        const reader = new FileReader();
-        reader.readAsDataURL(uploadFile);
-        reader.onload = () => {
-            setUploadImgUrl(reader.result);
+    useEffect(() => {
+        if (curImgUrl){
+            imgRef.current.setAttribute('src', curImgUrl);
         }
-    }
+    }, [curImgUrl])
 
     const GetExPassword = (event) =>{
         setExPassword(event.target.value);
@@ -97,25 +97,47 @@ const ProfileComponent = ({setIsUpdateData}) => {
         setImgPopupOpen(false);
     }
 
-    const ChangeImg = () => {
-        if (uploadImgUrl === ""){
-            window.alert("사진을 선택해주세요.")
+    const onChangeImageUpload = (event) => {
+        if (!event.target.files[0]){
+            window.alert("이미지를 선택해 주세요.");
+            return;
         }
-        else{
-            if (window.confirm("변경하시겠습니까?")){
-                const changeData = new FormData();
-                changeData.append("memberId", member.memberId)
-                changeData.append("newImg", uploadImgUrl)
-                const changUrl = "/api/opentalk/member/changeImg";
-                axios.post(changUrl, changeData)
-                .then((res) => {
-                    if(res.data === true){
-                        window.alert("변경되었습니다!")
-                        setImgPopupOpen(false);
-                        setIsChangeData(prevState => !prevState);
-                    }
-                })
+        const file = event.target.files[0];
+        const imgageUrl = URL.createObjectURL(file)
+        setUploadImgUrl(imgageUrl);
+    }
+
+    useEffect(() => {
+        if (uploadImgUrl) {
+            imgRef.current.setAttribute("src", uploadImgUrl);
+        }
+    }, [uploadImgUrl]);
+
+    const ChangeImg = () => {
+        if (window.confirm("변경하시겠습니까?")){
+            localStorage.setItem('profile', JSON.stringify(uploadImgUrl));
+            const profile = localStorage.getItem('profile');
+            const isVaild = JSON.parse(profile);
+            if (!isVaild){
+                window.alert("이미지를 선택해 주세요.");
+                return;
             }
+            imgRef.current.setAttribute('src', isVaild);
+
+            const changeData = new FormData();
+            console.log(imgRef.current);
+            changeData.append("memberId", member.memberId)
+            changeData.append("newImg", isVaild)
+            const changUrl = "/api/opentalk/member/changeImg";
+            axios.post(changUrl, changeData)
+            .then((res) => {
+                if(res.data === true){
+                    window.alert("변경되었습니다!")
+                    setImgPopupOpen(false);
+                    setIsChangeData(prevState => !prevState);
+                }
+            })
+            .catch((error) => console.log(error));
         }
         
     }
@@ -178,7 +200,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
                 <Col md={{ span: 3, offset: 4}} className="border border-warning border-3 rounded-3 p-5">
                     <img 
                         alt="프로필 이미지" 
-                        src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`}
+                        ref={imgRef}
                         style={{width:200, 
                                 height:200,
                                 backgroundPosition:"center"}}    
@@ -198,7 +220,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
                             height: '400px', // 원하는 높이로 설정
                         }
                     }}>
-                        <img src = {uploadImgUrl} img = "img"/>
+                        <img ref={imgRef} img = "img"/>
                         <FormControl type='file' accept='image/*' onChange={onChangeImageUpload}></FormControl>
                         <Button onClick={ChangeImg}>변경하기</Button>
                         <Button variant='dark' onClick={ChangeImgCancle}>변경취소</Button>

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
@@ -57,6 +57,9 @@ const MainComponent = () => {
 
     const history = createBrowserHistory();
 
+    let imgRef = useRef();
+    const [curImgUrl, setCurImgUrl] = useState(null);
+
     // useEffect(() => {
     //     let unlisten = history.listen((location) => {
     //         if (history.action === "POP")
@@ -74,6 +77,8 @@ const MainComponent = () => {
             }).then((res) => {
                 if (res.status === 200){
                     setMember(res.data);
+                    setCurImgUrl(res.data.imgUrl);
+                    console.log(res.data);
                 }
             }).catch((error) => {
                 if (error === 500){
@@ -85,6 +90,12 @@ const MainComponent = () => {
         console.log(member);
         fetchMyInfo();
     }, []);
+
+    useEffect(() => {
+        if (curImgUrl){
+            imgRef.current.setAttribute('src', curImgUrl);
+        }
+    }, [curImgUrl])
 
     useEffect(() => {
         const fetchAllRooms = async () => {
@@ -359,7 +370,11 @@ const MainComponent = () => {
             style={{width:"300px", height: "500px"}}>
                 <aside>
                     <div style={{ textAlign: 'center' }}>
-                        <img alt="프로필 이미지" src={`${process.env.PUBLIC_URL}/profile_prototype.jpg`} ></img>
+                        <img alt="프로필 이미지" 
+                            ref={imgRef} 
+                            style={{width:200, 
+                            height:200,
+                            backgroundPosition:"center"}}     ></img>
                         <p>환영합니다, {member?.memberNickName}님</p>
                     </div>
                     <div className="d-grid gap-2">
@@ -371,7 +386,7 @@ const MainComponent = () => {
             </Col>
             <Col className="border border-warning border-3 rounded-3 p-5" style={{height: "850px"}}>
                 <ListGroup>
-                    {Array.isArray(chatRoomList) && chatRoomList.map(room=>(
+                    {chatRoomList.map(room=>(
                         <ListGroupItem>방 이름: {room.roomName} | 인원수: {room.curParticipates} / {room.limitParticipates}
                         {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                         <br></br>소개문: {room.introduction}

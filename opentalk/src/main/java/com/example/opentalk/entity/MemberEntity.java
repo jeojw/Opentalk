@@ -33,7 +33,7 @@ public class MemberEntity {
     @Enumerated(EnumType.STRING)
     private UserRole authority;
     @Column(nullable = false)
-    @ColumnDefault("profile_prototype.jpg")
+    @ColumnDefault(value = "http://localhost:8000/b685f40c-7859-4c79-be2b-2db2ff50cd9d")
     private String imgUrl;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)

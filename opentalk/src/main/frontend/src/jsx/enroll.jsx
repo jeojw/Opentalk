@@ -144,7 +144,8 @@ const EnrollComponent = (props) =>{
                 memberPassword: memberPw,
                 memberName: memberName,
                 memberNickName: memberNickName,
-                memberEmail: memberEmail
+                memberEmail: memberEmail,
+                imgUrl: "null"
             }).then((res)=>{
     
             }).catch((error)=> {

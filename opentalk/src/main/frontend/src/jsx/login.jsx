@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
-import { Form, Button, Container, Row, Col, InputGroup, FormGroup } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, FormGroup } from 'react-bootstrap';
 
 const LoginComponent = (props) => {
     

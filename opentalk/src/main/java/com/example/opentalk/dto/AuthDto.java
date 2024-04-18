@@ -61,17 +61,20 @@ public class AuthDto {
         private String memberEmail;
         private String memberName;
         private String memberNickName;
+        private String imgUrl;
         private UserRole authority;
 
         @Builder
         public SignupDto(String memberId, String memberPassword,
                          String memberEmail, String memberName,
-                         String memberNickName, UserRole authority) {
+                         String memberNickName, String imgUrl,
+                         UserRole authority) {
             this.memberId = memberId;
             this.memberPassword = memberPassword;
             this.memberEmail = memberEmail;
             this.memberName = memberName;
             this.memberNickName = memberNickName;
+            this.imgUrl = imgUrl;
             this.authority = authority;
         }
 
@@ -82,6 +85,7 @@ public class AuthDto {
                     .memberEmail(signupDto.memberEmail)
                     .memberName(signupDto.memberName)
                     .memberNickName(signupDto.memberNickName)
+                    .imgUrl(signupDto.imgUrl)
                     .authority(UserRole.USER)
                     .build();
         }
