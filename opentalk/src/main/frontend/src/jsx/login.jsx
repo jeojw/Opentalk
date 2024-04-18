@@ -11,10 +11,6 @@ const LoginComponent = (props) => {
     const [memberPw, setMemberPw] = useState("");
     const [isForget, setIsForget] = useState(false);
     const navigate = useNavigate();
-
-    const findIdPw = (e) => {
-
-    }
     
     const CheckLogin = (e) => {
         const checkloginUrl = '/api/opentalk/auth/login'
@@ -74,7 +70,7 @@ const LoginComponent = (props) => {
                                 <Button variant="primary" onClick={() => navigate("/opentalk/member/authId")}>비밀번호 찾기</Button>
                             </div>
                             )}
-                            <Button variant="info" onClick={() => navigate("/opentalk/front")}>시작화면으로</Button>
+                            <Button variant="info" onClick={() => navigate("/")}>시작화면으로</Button>
                         </div>
                     </Form>
                 </Col>
