@@ -1,4 +1,4 @@
-package com.example.opentalk;
+package com.example.opentalk.controller;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

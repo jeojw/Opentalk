@@ -25,8 +25,8 @@ public class ChatRoomMemberEntity {
     @JoinColumn(name = "open_talk_member_id")
     private MemberEntity member;
 
-    @Column(name = "role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private ChatRoomRole role;
 
     public ChatRoomMemberEntity() {}
 
@@ -35,10 +35,10 @@ public class ChatRoomMemberEntity {
         this.chatroom = chatroom;
         this.member = member;
         if (chatroom.getRoomManager().equals(member.getMemberNickName())){
-            this.role = "MANAGER";
+            this.role = ChatRoomRole.ROLE_MANAGER;
         }
         else{
-            this.role = "PARTICIPATES";
+            this.role = ChatRoomRole.ROLE_PARTICIPATE;
         }
 
     }
