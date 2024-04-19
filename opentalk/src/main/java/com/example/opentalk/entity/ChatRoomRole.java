@@ -10,5 +10,5 @@ public enum ChatRoomRole {
     ROLE_MANAGER("MANAGER", "방장");
 
     private final String key;
-    private final String value;
+    private final String title;
 }
