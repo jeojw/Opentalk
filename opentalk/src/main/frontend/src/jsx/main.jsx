@@ -13,8 +13,8 @@ import Modal from 'react-modal';
 
 const MainComponent = () => {
     const ChatRoomRole = {
-        PARTICIPATE: 'PARTICIPATE',
-        MANAGER: 'MANAGER'
+        PARTICIPATE: 'ROLE_PARTICIPATE',
+        MANAGER: 'ROLE_MANAGER'
     };
 
     const menuList = [

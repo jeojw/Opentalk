@@ -336,10 +336,10 @@ const RoomComponent = ({setIsChangeData}) => {
                         <ListGroup>
                             <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                             {_member?.memberNickName}
-                            {role === "MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
+                            {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
                             <Button onClick={() => ForcedExit(_member)}>강퇴하기</Button>
                             )}
-                            {role === "MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
+                            {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
                             <Button onClick={() => AuthMandate(_member)}>방장위임</Button>
                             )}
                             </ListGroupItem>
@@ -364,7 +364,7 @@ const RoomComponent = ({setIsChangeData}) => {
                 <Button variant="dark" onClick={ExitRoom}>나가기</Button>
             </div>
             <br></br>
-            {role === "MANAGER" && (
+            {role === "ROLE_MANAGER" && (
                 <div className='border border-warning border-3 rounded-3 p-4'>
                 <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeRoom}>
                     {() => setIsChangeData(isChangeRoom)}
