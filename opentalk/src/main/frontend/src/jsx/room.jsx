@@ -111,7 +111,7 @@ const RoomComponent = ({setIsChangeData}) => {
                     memberNickName:"system"
                 },
                 message: `${myInfo.memberNickName}님이 채팅방에 참여했습니다.`,
-                timeStamp: format(kr_Time, "yyyy-MM-d-hh-mm")
+                timeStamp: format(kr_Time, "yyyy-MM-dd-hh-mm")
             })
         });
     }
@@ -145,7 +145,6 @@ const RoomComponent = ({setIsChangeData}) => {
   
     const publishChat = (chat) => {
         if (!client.current.connected) return;
-        console.log(chat);
 
         if (chat === ""){
             window.alert("채팅 내용을 입력해주세요.")
@@ -154,12 +153,12 @@ const RoomComponent = ({setIsChangeData}) => {
             const curTime = new Date();
             const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
             const kr_Time = new Date(utc + (KR_TIME_DIFF));
-
+            console.log(format(kr_Time, "yyyy-MM-dd-HH:mm"));
             axios.post('/api/opentalk/saveChat', {
                 chatRoom: roomInformation,
                 member: myInfo,
                 message: chat,
-                timeStamp: format(kr_Time, "yyyy-MM-d-hh-mm")
+                timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
             })
             .then()
             .catch((error) => console.log(error));
@@ -170,7 +169,7 @@ const RoomComponent = ({setIsChangeData}) => {
                 chatRoom: roomInformation,
                 member: myInfo,
                 message: chat,
-                timeStamp: format(kr_Time, "yyyy-MM-d-hh-mm")
+                timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
             }),
         });
         setChat("");
@@ -223,7 +222,7 @@ const RoomComponent = ({setIsChangeData}) => {
                         memberNickName:"system"
                     },
                     message: `${roomMember.memberNickName}님이 강퇴되었습니다.`,
-                    timeStamp: format(kr_Time, "yyyy-MM-d-hh-mm")
+                    timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                 })
             });
         }
@@ -256,7 +255,7 @@ const RoomComponent = ({setIsChangeData}) => {
                         memberNickName:"system"
                     },
                     message: `${roomMember.memberNickName}님이 방장이 되었습니다.`,
-                    timeStamp: format(kr_Time, "yyyy-MM-d-hh-mm")
+                    timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                 })
             });
         }
@@ -296,7 +295,7 @@ const RoomComponent = ({setIsChangeData}) => {
                             memberNickName:"system"
                         },
                         message: `${myInfo?.memberNickName}님이 채팅방을 나갔습니다.`,
-                        timeStamp: format(kr_Time, "yyyy-MM-d-hh-mm")
+                        timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                     })
                 });
             }
@@ -312,41 +311,43 @@ const RoomComponent = ({setIsChangeData}) => {
                     <h1>{roomInformation?.roomName}</h1> 
                 </Col>
             </Row>
-            <Row>
-                <Col style={{ width: '600px', overflowY: 'auto', maxHeight: '400px' }}>
-                    {preChatList && preChatList.length > 0 && (
-                    <ListGroup>
-                        {preChatList.map((_chatMessage) => (
-                            <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
-                        ))}
-                    </ListGroup>
-                    )}
-                    <br></br>
-                    {chatList && chatList.length > 0 && (
-                    <ListGroup>
-                        {chatList.map((_chatMessage) => (
-                            <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
-                        ))}
-                    </ListGroup>
-                    )}
-                </Col>
-                <Col style={{ width: '200px', overflowY: 'auto', maxHeight: '400px' }}>
-                    <h2>참여명단</h2>
-                    {roomInformation?.members.map((_member, index) => (
+            <Container>
+                <Row>
+                    <Col xs={6} style={{ width:'600px', height:'400px', overflowY: 'auto', maxHeight: '400px' }}>
+                        {preChatList && preChatList.length > 0 && (
                         <ListGroup>
-                            <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
-                            {_member?.memberNickName}
-                            {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                            <Button onClick={() => ForcedExit(_member)}>강퇴하기</Button>
-                            )}
-                            {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                            <Button onClick={() => AuthMandate(_member)}>방장위임</Button>
-                            )}
-                            </ListGroupItem>
+                            {preChatList.map((_chatMessage) => (
+                                <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
+                            ))}
                         </ListGroup>
-                    ))}
-                </Col>
-            </Row>
+                        )}
+                        <br/>
+                        {chatList && chatList.length > 0 && (
+                        <ListGroup>
+                            {chatList.map((_chatMessage) => (
+                                <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
+                            ))}
+                        </ListGroup>
+                        )}
+                    </Col>
+                    <Col xs={6} style={{ width:'258px', height:'400px', overflowY: 'auto', maxHeight: '400px' }}>
+                        <h2>참여명단</h2>
+                        {roomInformation?.members.map((_member, index) => (
+                            <ListGroup>
+                                <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
+                                {_member?.memberNickName}
+                                {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
+                                <Button onClick={() => ForcedExit(_member)}>강퇴하기</Button>
+                                )}
+                                {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
+                                <Button onClick={() => AuthMandate(_member)}>방장위임</Button>
+                                )}
+                                </ListGroupItem>
+                            </ListGroup>
+                        ))}
+                    </Col>
+                </Row>
+            </Container>
             <br></br>
             <Row>
                 <Col>

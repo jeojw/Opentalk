@@ -141,8 +141,8 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
     };
 
     return (
-        <Container>
-            <div className="d-grid gap-2">
+        <div>
+            <div className="d-grid gap-2 btn-lg">
                 <Button onClick={openModal}>방 생성하기</Button>
             </div>
             <Modal
@@ -192,7 +192,7 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                     </Col>
                 </Row>
             </Modal>
-        </Container>
+        </div>
     );
 }; 
 

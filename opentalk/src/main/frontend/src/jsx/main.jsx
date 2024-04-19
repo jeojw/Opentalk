@@ -437,6 +437,9 @@ const MainComponent = () => {
                     <div className="d-grid gap-2">
                         <Button variant="primary" onClick={GoProfile}>프로필 설정</Button>
                         <Button onClick={openMessageBox}>메세지함</Button>
+                        <SetRoomComponent
+                            onDataUpdate={setIsUpdateTrigger}
+                        />
                         <Button variant="dark" onClick={LogOut}>로그아웃</Button>
                     </div>
                 </aside>
@@ -467,15 +470,11 @@ const MainComponent = () => {
                 </ListGroup>
             </Col>
         </Row>
+        <br></br>
         <Row className="justify-content-end">
             <Col>
-                <br></br>
-                <SetRoomComponent
-                    onDataUpdate={setIsUpdateTrigger}
-                />
-                <br></br>
-                <FormGroup>
-                    <InputGroup>
+                <FormGroup className="d-flex align-items-center">
+                    <InputGroup style={{width:"800px"}}>
                         <Form.Select 
                             onChange={selectMenuHandle} 
                             value={selectManu}
@@ -492,12 +491,12 @@ const MainComponent = () => {
                             value={searchKeyword} 
                             onChange={GetInputSearchKeyword}
                             style={{flex: '5'}}></FormControl>
-                        <Button onClick={search}>검색</Button>
+                        
+                    </InputGroup>
+                    <Button onClick={search}>검색</Button>
                         {isSearch && (
                         <Button onClick={initSearch}>초기화</Button>
                     )}
-                    </InputGroup>
-                    
                 </FormGroup>
                 <br></br>
                 <PaginationControl
