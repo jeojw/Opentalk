@@ -5,7 +5,7 @@ import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
 import ChangRoomComponent from './changroom';
 import InviteMemberComponent from './inviteMember';
-import { Container, Row, Col, Button, Form, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { format } from 'date-fns'
 import { TokenContext } from './TokenContext';
 
@@ -321,27 +321,63 @@ const RoomComponent = ({setIsChangeData}) => {
                     <h1>{roomInformation?.roomName}</h1> 
                 </Col>
             </Row>
-            <Container>
+            <Container className="border border-warning border-1 rounded-1 p-5">
                 <Row>
-                    <Col xs={6} style={{ width:'800px', height:'400px', overflowY: 'auto', maxHeight: '400px'
+                    <Col 
+                        className="border border-warning border-1 rounded-1 p-4"  
+                        xs={6} 
+                        style={{ width:'800px', height:'400px', overflowY: 'auto', maxHeight: '400px'
                                         ,display: "flex", flexDirection: "column-reverse" }}>
                         {chatList && chatList.length > 0 && (
                         <ListGroup>
-                            {chatList.map((_chatMessage) => (
-                                <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
-                            ))}
+                            {chatList.map((_chatMessage) => {
+                                let color;
+                                let style;
+                                if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
+                                    color  = '#FFF824';
+                                } else if (_chatMessage.member.memberNickName === 'system') {
+                                    color  = '#A2A2A2';
+                                } else
+                                    color = '#FFFFFF';
+                                style = {
+                                    backgroundColor: color
+                                };
+                                return (
+                                    <ListGroupItem style={style}>
+                                        {_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}
+                                    </ListGroupItem>
+                                );
+                            })}
                         </ListGroup>
                         )}
                         <br></br>
                         {preChatList && preChatList.length > 0 && (
                         <ListGroup>
-                            {preChatList.map((_chatMessage) => (
-                                <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
-                            ))}
+                            {preChatList.map((_chatMessage) => {
+                                let color;
+                                let style;
+                                if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
+                                    color  = '#FFF824';
+                                } else if (_chatMessage.member.memberNickName === 'system') {
+                                    color  = '#A2A2A2';
+                                } else
+                                    color = '#FFFFFF';
+                                style = {
+                                    backgroundColor: color
+                                };
+                                return (
+                                    <ListGroupItem style={style}>
+                                        {_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}
+                                    </ListGroupItem>
+                                );
+                            })}
                         </ListGroup>
                         )}
                     </Col>
-                    <Col xs={6} style={{ width:'350px', height:'400px', overflowY: 'auto', maxHeight: '400px' }}>
+                    <Col 
+                        className="border border-warning border-1 rounded-1 p-4" 
+                        xs={6} 
+                        style={{ width:'335px', height:'400px', overflowY: 'auto', maxHeight: '400px' }}>
                         <h3>참여명단</h3>
                         {roomInformation?.members.map((_member, index) => (
                             <ListGroup>
@@ -358,33 +394,28 @@ const RoomComponent = ({setIsChangeData}) => {
                         ))}
                     </Col>
                 </Row>
+                <br></br>
+                <Row>
+                    <Col>
+                        <FormGroup 
+                            className="d-flex align-items-center justify-content-center"
+                            onSubmit={(event)=>handleSubmit(event)}>
+                            <InputGroup style={{width:"800px"}}>
+                                <Form.Control type="text" value={chat} placeholder='채팅 내용을 입력해 주세요.' onChange={handleChange} />            
+                            </InputGroup>
+                            <Button onClick={() => publishChat(chat)}>전송</Button>          
+                        </FormGroup>
+                    </Col>
+                </Row>
             </Container>
             <br></br>
-            <Row>
-                <Col>
-                    <Form onSubmit={(event)=>handleSubmit(event)}>
-                        <InputGroup>
-                            <Form.Control type="text" value={chat} onChange={handleChange} />            
-                            <Button onClick={() => publishChat(chat)}>전송</Button>            
-                        </InputGroup>
-                    </Form>
-                </Col>
-            </Row>
-            <br></br>
-            
-            <div className='d-grid gap-2'>
+            <FormGroup className="d-flex align-items-center justify-content-center gap-3">
                 <Button variant="dark" onClick={ExitRoom}>나가기</Button>
-            </div>
-            <br></br>
-            {role === "ROLE_MANAGER" && (
-                <div className='border border-warning border-3 rounded-3 p-4'>
                 <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeRoom}>
                     {() => setIsChangeData(isChangeRoom)}
                 </ChangRoomComponent>
-                <br></br>
                 <InviteMemberComponent roomInfo = {roomInformation} role={role}/>
-            </div>
-            )}
+            </FormGroup>
         </Container>
     );
 }

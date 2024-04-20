@@ -5,6 +5,7 @@ import com.example.opentalk.entity.*;
 import com.example.opentalk.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -26,6 +27,8 @@ public class ChatRoomService {
 
     private final InviteMessageRepository inviteMessageRepository;
     private final MemberInviteRepository memberInviteRepository;
+
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public String createRoom(ChatRoomDTO chatRoomDTO){
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomDTO);
@@ -254,28 +257,28 @@ public class ChatRoomService {
     public String enterRoom_Pw(ChatRoomMemberDTO chatRoomMemberDTO, String inputPw){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId());
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId());
-        if (inputPw.equals(chatRoomMemberDTO.getChatroom().getRoomPassword())){
-            if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
+        if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
+            if (passwordEncoder.matches(inputPw, chatRoomEntity.get().getRoomPassword())){
                 if (getParticipates(chatRoomEntity.get().getRoomId()) != chatRoomEntity.get().getLimitParticipates()){
                     ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
                             .chatroom(chatRoomEntity.get())
                             .member(memberEntity.get())
                             .build();
 
-                    chatRoomMemberRepository.enterRoom(chatRoomMemberEntity.getChatroom().getId(),
-                            chatRoomMemberEntity.getMember().getId(),
-                            chatRoomMemberEntity.getRole());
+                    chatRoomMemberRepository.save(chatRoomMemberEntity);
                     return "Success";
                 }
                 else{
                     return "Fail";
                 }
             }
+            else{
+                return "Incorrect";
+            }
         }
         else{
-            return "Incorrect";
+            return "Fail";
         }
-        return "Fail";
     }
 
     public void exitRoom(ChatRoomMemberDTO chatRoomMemberDTO){

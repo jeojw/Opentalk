@@ -31,8 +31,6 @@ const MainComponent = () => {
     const [page, setPage] = useState(1);
     const [isSearch, setIsSearch] = useState(false);
 
-    const [userStatus, setUserStatus] = useState(true);
-
     const postPerPage = 3;
     const indexOfLastPost = page * postPerPage;
     const indexOfFirstPost= indexOfLastPost - postPerPage;
@@ -134,11 +132,7 @@ const MainComponent = () => {
                         setCurImgUrl(res.data.imgUrl);
                         console.log(res.data);
                     }
-                }).catch((error) => {
-                    if (error === 500){
-                        setUserStatus(false);
-                    }
-                });
+                }).catch((error) => console.log(error));
             }
         }    
         fetchMyInfo();
@@ -244,7 +238,7 @@ const MainComponent = () => {
     }
 
     const EnterRoom = ({roomInfo}) => {
-        if (member === undefined){
+        if (!isLogin){
             window.alert("이미 로그아웃 되었습니다.");
             naviagte("/opentalk/member/login");
         }
@@ -305,14 +299,14 @@ const MainComponent = () => {
         }
         return (
             <div>
-                <RoomComponent roomInfo={roomInfo} talker={member} setIsChangeData={setIsUpdateTrigger}/>
+                <RoomComponent setIsChangeData={setIsUpdateTrigger}/>
             </div>
         );
     }
 
     const EnterInvitedRoom = ({roomId, Inviter}) => {
         if (window.confirm("입장하시겠습니까?")){
-            if (member === undefined){
+            if (!isLogin){
                 window.alert("이미 로그아웃 되었습니다.");
                 naviagte("/opentalk/member/login");
             }
@@ -346,7 +340,7 @@ const MainComponent = () => {
     }
 
     const GoProfile = () => {
-        if (userStatus){
+        if (isLogin){
             naviagte("/opentalk/profile");
         }
         else{
@@ -407,7 +401,7 @@ const MainComponent = () => {
         }
 
         fetchAllMessages();
-    },[isMessageBoxOpen])
+    },[isMessageBoxOpen, isLogin])
 
    return (
     <Container>
@@ -447,7 +441,7 @@ const MainComponent = () => {
                     </div>
                 </aside>
             </Col>
-            <Col className="border border-warning border-3 rounded-3 p-5" style={{height: "850px"}}>
+            <Col className="border border-warning border-3 rounded-3 p-5" style={{height: "820px"}}>
                 <ListGroup>
                     {chatRoomList.map(room=>(
                         <ListGroupItem>방 이름: {room.roomName} | 인원수: {room.curParticipates} / {room.limitParticipates}
@@ -461,16 +455,25 @@ const MainComponent = () => {
                         ))}
                         </ListGroup>
                         <br></br>
-                        <div className="d-grid gap-2">
+                        <div className="d-flex flex-row gap-2">
                             <Button onClick={() => EnterRoom({roomInfo: room})}>입장하기</Button>
                             {room.roomManager === member?.memberNickName && (
                             <Button variant="dark" onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
                             )}
                         </div>
-                        
                     </ListGroupItem>
                     ))}
                 </ListGroup>
+                <br></br>
+                <PaginationControl
+                    page={page}
+                    between={3}
+                    total={pageLength}
+                    limit={3}
+                    changePage={(page) => {
+                        handlePageChange(page)
+                    }}
+                />
             </Col>
         </Row>
         <br></br>
@@ -501,17 +504,6 @@ const MainComponent = () => {
                         <Button onClick={initSearch}>초기화</Button>
                     )}
                 </FormGroup>
-                <br></br>
-                <PaginationControl
-                page={page}
-                between={3}
-                total={pageLength}
-                limit={3}
-                changePage={(page) => {
-                handlePageChange(page)
-                }}
-                />
-                
             </Col>
         </Row>
     </Container>

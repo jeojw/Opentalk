@@ -165,12 +165,10 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
     }
 
     return(
-        <Container>
-            <div className='d-grid gap-2'>
-                {role === "ROLE_MANAGER" && (
-                <Button onClick={openModal}>설정 변경</Button>
-                )} 
-            </div>
+        <div>
+            {role === "ROLE_MANAGER" && (
+            <Button onClick={openModal}>설정 변경</Button>
+            )} 
             <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}
             style={{
                 content: {
@@ -245,7 +243,7 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                 </Col>
             </Row>
             </Modal>
-        </Container>
+        </div>
     );
 }
 

@@ -5,6 +5,7 @@ import com.example.opentalk.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -15,6 +16,7 @@ import java.util.List;
 @Log4j2
 public class RoomController {
     private final ChatRoomService chatRoomService;
+    private final BCryptPasswordEncoder encoder;
 
     @GetMapping("/api/opentalk/rooms")
     public ResponseEntity<List<ChatRoomDTO>> getRooms(){
@@ -34,6 +36,10 @@ public class RoomController {
 
     @PostMapping("/api/opentalk/makeRoom")
     public ResponseEntity<String> create(@RequestBody @Valid ChatRoomDTO chatRoomDTO){
+        if (chatRoomDTO.isExistLock()){
+            String encodePassword = encoder.encode(chatRoomDTO.getRoomPassword());
+            chatRoomDTO.setRoomPassword(encodePassword);
+        }
         String roomId = chatRoomService.createRoom(chatRoomDTO);
         return ResponseEntity.ok(roomId);
     }
