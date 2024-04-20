@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import axios from'axios';
@@ -6,6 +6,7 @@ import { Form, Button, Container, Row, Col, InputGroup,
     InputGroupText, FormControl, FormGroup, FormLabel,
     ListGroup,
     ListGroupItem, } from 'react-bootstrap';
+import { TokenContext } from './TokenContext';
 
 export const SetRoomComponent = ({onDataUpdate}) =>{
     const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +19,8 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
     const [info, setInfo] = useState("");
     const [tag, setTag] = useState("");
     const [tags, setTags] = useState([]);
+    
+    const {loginToken} = useContext(TokenContext);
 
     const navigate = useNavigate();
 
@@ -25,7 +28,7 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
         const fetchManager = async () =>{
             try{
                 const response = await axios.get("/api/opentalk/member/me", {
-                    headers: {Authorization: localStorage.getItem('refresh-token')}
+                    headers: {Authorization: loginToken}
                 })
                 setManger(response.data);
             } catch (error) {
