@@ -476,7 +476,7 @@ const MainComponent = () => {
         <br></br>
         <Row className="justify-content-end">
             <Col>
-                <FormGroup className="d-flex align-items-center">
+                <FormGroup className="d-flex align-items-center justify-content-center">
                     <InputGroup style={{width:"800px"}}>
                         <Form.Select 
                             onChange={selectMenuHandle} 

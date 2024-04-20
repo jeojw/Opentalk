@@ -23,7 +23,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
 
     const [isChangeData, setIsChangeData] = useState(false);
 
-    const { loginToken, updateToken } = useContext(TokenContext);
+    const { loginToken } = useContext(TokenContext);
 
     let imgRef = useRef();
     const navigate = useNavigate();
@@ -103,8 +103,12 @@ const ProfileComponent = ({setIsUpdateData}) => {
             return;
         }
         const file = event.target.files[0];
-        const imgageUrl = URL.createObjectURL(file)
-        setUploadImgUrl(imgageUrl);
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = ()=> {
+            setUploadImgUrl(reader.result);
+        }
+        console.log(uploadImgUrl);
     }
 
     useEffect(() => {

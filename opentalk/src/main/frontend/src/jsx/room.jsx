@@ -31,12 +31,12 @@ const RoomComponent = ({setIsChangeData}) => {
 
     useEffect(() => {
         const fetchInfo = async () => {
+            console.log(loginToken);
             try{
                 const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
                     headers: {authorization: loginToken}
                 });
                 setMyInfo(myselfResponse.data);
-                console.log(myselfResponse.data);
             } catch (error){
                 console.log(error);
             }
@@ -47,18 +47,18 @@ const RoomComponent = ({setIsChangeData}) => {
 
     useEffect(() => {
         const fetchRoom = async () => {
+            console.log(isChangeRoom);
             try{
                 const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
                 setRoomInformation(response.data.chatroom);
                 setRole(response.data.role);
-                console.log(response.data);
             } catch (error){
                 console.log(error);
             }
         }
 
         fetchRoom();
-    }, [isChangeRoom, myInfo, room_Id]);
+    }, [isChangeRoom, room_Id, myInfo]);
 
     useEffect(() => {
         const isExistInRoom = async () => {
@@ -115,6 +115,8 @@ const RoomComponent = ({setIsChangeData}) => {
                 timeStamp: format(kr_Time, "yyyy-MM-dd-hh-mm")
             })
         });
+        setIsChangeRoom(prevState => !prevState);
+        console.log(isChangeRoom);
     }
 
     const connect = () => {
@@ -203,7 +205,9 @@ const RoomComponent = ({setIsChangeData}) => {
             .then((res) => {
                 if (res.data === true){
                     window.alert("강제퇴장 되었습니다.");
-                    setIsForcedExist(true);
+                    setIsChangeRoom(prevState => !prevState);
+                    console.log(isChangeRoom);
+                    setIsForcedExist(prevState => !prevState);
                     window.location.reload();
                 }
             })
@@ -240,6 +244,8 @@ const RoomComponent = ({setIsChangeData}) => {
             .then((res) => {
                 if (res.data === true){
                     window.alert(`${roomMember.memberNickName}님이 방장이 되었습니다.`);
+                    setIsChangeRoom(prevState => !prevState);
+                    console.log(isChangeRoom);
                 }
             })
             .catch((error) => console.log(error));
@@ -280,9 +286,12 @@ const RoomComponent = ({setIsChangeData}) => {
                 .then((res) => {
                     if (res.status === 200){
                         navigate("/opentalk/main");
+                        setIsChangeRoom(prevState => !prevState);
+                        console.log(isChangeRoom);
                     }
                 })
                 .catch((error) => console.log(error));
+                
                 const curTime = new Date();
                 const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
                 const kr_Time = new Date(utc + (KR_TIME_DIFF));
@@ -314,15 +323,8 @@ const RoomComponent = ({setIsChangeData}) => {
             </Row>
             <Container>
                 <Row>
-                    <Col xs={6} style={{ width:'600px', height:'400px', overflowY: 'auto', maxHeight: '400px' }}>
-                        {preChatList && preChatList.length > 0 && (
-                        <ListGroup>
-                            {preChatList.map((_chatMessage) => (
-                                <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
-                            ))}
-                        </ListGroup>
-                        )}
-                        <br/>
+                    <Col xs={6} style={{ width:'800px', height:'400px', overflowY: 'auto', maxHeight: '400px'
+                                        ,display: "flex", flexDirection: "column-reverse" }}>
                         {chatList && chatList.length > 0 && (
                         <ListGroup>
                             {chatList.map((_chatMessage) => (
@@ -330,9 +332,17 @@ const RoomComponent = ({setIsChangeData}) => {
                             ))}
                         </ListGroup>
                         )}
+                        <br></br>
+                        {preChatList && preChatList.length > 0 && (
+                        <ListGroup>
+                            {preChatList.map((_chatMessage) => (
+                                <ListGroupItem>{_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}</ListGroupItem>
+                            ))}
+                        </ListGroup>
+                        )}
                     </Col>
-                    <Col xs={6} style={{ width:'258px', height:'400px', overflowY: 'auto', maxHeight: '400px' }}>
-                        <h2>참여명단</h2>
+                    <Col xs={6} style={{ width:'350px', height:'400px', overflowY: 'auto', maxHeight: '400px' }}>
+                        <h3>참여명단</h3>
                         {roomInformation?.members.map((_member, index) => (
                             <ListGroup>
                                 <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
