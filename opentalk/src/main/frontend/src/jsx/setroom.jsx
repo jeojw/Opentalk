@@ -161,37 +161,69 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                     <Col>
                         <InputGroup>
                             <InputGroup.Text>방 이름</InputGroup.Text>
-                            <FormControl type='text' value={roomName} onChange={GetInputName}></FormControl>
+                            <FormControl 
+                                type='text' 
+                                value={roomName} 
+                                onChange={GetInputName}
+                            ></FormControl>
                         </InputGroup>
                         <br></br>
                         <InputGroup>
                             <InputGroup.Text>인원수</InputGroup.Text>
-                            <FormControl type="number" min={3} max={20} value={participants} onChange={GetInputParticipates}></FormControl>
+                            <FormControl 
+                                type="number"
+                                min={3} 
+                                max={20} 
+                                value={participants} 
+                                onChange={GetInputParticipates}
+                            ></FormControl>
                         </InputGroup>
                         <br></br>
-                        <InputGroup>
+                        <InputGroup className='d-flex flex-row gap-1'>
                             <InputGroup.Text>비밀번호</InputGroup.Text>
-                            <Form.Check type='checkbox' checked={existLock} onChange={GetCheckExistPw}/>
-                            <FormControl type='password' value={password} onChange={GetInputPassword} disabled={!existLock}></FormControl>
+                            <Form.Check 
+                                type='checkbox' 
+                                checked={existLock} 
+                                onChange={GetCheckExistPw} 
+                                style={{zoom:1.6}}
+                            />
+                            <FormControl 
+                                type='password' 
+                                value={password} 
+                                onChange={GetInputPassword} 
+                                disabled={!existLock}
+                            ></FormControl>
                         </InputGroup>
                         <br></br>
                         <InputGroup>
-                            <FormControl type="text" value={info} placeholder='방 소개문' onChange={GetInputInfo}></FormControl>
+                            <FormControl 
+                                type="text"
+                                value={info} 
+                                placeholder='방 소개문 입력' 
+                                onChange={GetInputInfo}
+                            ></FormControl>
                         </InputGroup>
                         <br></br>
                         <InputGroup>
-                            <FormControl type='text' value={tag} onChange={GetInputTag}></FormControl>
+                            <FormControl 
+                                type='text' 
+                                value={tag}
+                                placeholder='태그 입력' 
+                                onChange={GetInputTag}
+                            ></FormControl>
                             <Button onClick={()=>AppendTag(tag)}>태그 추가</Button>
                         </InputGroup>
 
                         <ListGroup className="list-group list-group-horizontal">
                             {tags.map((t)=> (
-                                <ListGroupItem>#{t.tagName}<Button onClick={()=>tagDelete(t)}>삭제</Button></ListGroupItem>
+                                <ListGroupItem>#{t.tagName} <Button onClick={()=>tagDelete(t)}>삭제</Button></ListGroupItem>
                             ))}
                         </ListGroup>
                         <br></br>
-                        <Button onClick={MakeRoom}>방 생성하기</Button>
-                        <Button onClick={closeModal}>생성 취소</Button>
+                        <div className='d-flex flex-row gap-2'>
+                            <Button onClick={MakeRoom}>방 생성하기</Button>
+                            <Button onClick={closeModal}>생성 취소</Button>
+                        </div>
                     </Col>
                 </Row>
             </Modal>

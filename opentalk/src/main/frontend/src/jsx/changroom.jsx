@@ -196,13 +196,14 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                             onChange={GetInputParticipates}></FormControl>
                     </InputGroup>
                     <br></br>
-                    <InputGroup>
+                    <InputGroup className='d-flex flex-row gap-1'>
                         <InputGroup.Text>비밀번호</InputGroup.Text>
                         <Form.Check 
                             size={20}
                             type='checkbox' 
                             checked={existLock} 
-                            onChange={GetCheckExistPw}/>
+                            onChange={GetCheckExistPw}
+                            style={{zoom:1.6}}/>
                         <FormControl 
                             type='password' 
                             value={password} 
@@ -214,7 +215,7 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                         <FormControl
                             type='text'
                             value={info}
-                            placeholder='방 소개문'
+                            placeholder='방 소개문 입력'
                             onChange={GetInputInfo}
                         ></FormControl>
                     </InputGroup>
@@ -223,6 +224,7 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                         <FormControl
                             type='text'
                             value={tag}
+                            placeholder='태그 입력'
                             onChange={GetInputTag}
                         ></FormControl>
                         <Button
@@ -232,14 +234,15 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                     <br></br>
                     <ListGroup className="list-group list-group-horizontal">
                         {tags?.map((t)=> (
-                            <ListGroupItem>#{t.tagName}<Button onClick={()=>tagDelete(t)}>삭제</Button></ListGroupItem>
+                            <ListGroupItem>#{t.tagName} <Button onClick={()=>tagDelete(t)}>삭제</Button></ListGroupItem>
                         )
                         )}
                     </ListGroup>
-                    
                     <br></br>
-                <Button onClick={changeRoomModal}>변경하기</Button>
-                <Button onClick={cancleSetModal}>변경 취소</Button>
+                    <div className='d-flex flex-row gap-2'>
+                        <Button onClick={changeRoomModal}>변경하기</Button>
+                        <Button onClick={cancleSetModal}>변경 취소</Button>
+                    </div>
                 </Col>
             </Row>
             </Modal>
