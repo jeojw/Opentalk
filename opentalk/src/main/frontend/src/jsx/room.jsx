@@ -1,13 +1,13 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import axios from "axios";
 import { useParams, useNavigate } from 'react-router-dom';
 import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
-import { useCookies } from "react-cookie";
 import ChangRoomComponent from './changroom';
 import InviteMemberComponent from './inviteMember';
 import { Container, Row, Col, Button, Form, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { format } from 'date-fns'
+import { TokenContext } from './TokenContext';
 
 const RoomComponent = ({setIsChangeData}) => {
 
@@ -16,11 +16,12 @@ const RoomComponent = ({setIsChangeData}) => {
     const [chatList, setChatList] = useState([]);
     const [preChatList, setPreChatList] = useState([]);
     const [chat, setChat] = useState("");
-    const [cookies] = useCookies(['refreshToken']);
     const [role, setRole] = useState();
 
     const [isForcedExist, setIsForcedExist] = useState(false);
     const [isChangeRoom, setIsChangeRoom] = useState(false);
+
+    const { loginToken } = useContext(TokenContext);
 
     const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
 
@@ -32,7 +33,7 @@ const RoomComponent = ({setIsChangeData}) => {
         const fetchInfo = async () => {
             try{
                 const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
-                    headers: {authorization: 'Bearer ' + cookies['refreshToken']}
+                    headers: {authorization: loginToken}
                 });
                 setMyInfo(myselfResponse.data);
                 console.log(myselfResponse.data);
@@ -41,7 +42,7 @@ const RoomComponent = ({setIsChangeData}) => {
             }
         }
         fetchInfo();
-    }, []);
+    }, [loginToken]);
 
 
     useEffect(() => {
@@ -57,7 +58,7 @@ const RoomComponent = ({setIsChangeData}) => {
         }
 
         fetchRoom();
-    }, [isChangeRoom, myInfo]);
+    }, [isChangeRoom, myInfo, room_Id]);
 
     useEffect(() => {
         const isExistInRoom = async () => {
@@ -73,7 +74,7 @@ const RoomComponent = ({setIsChangeData}) => {
         }
 
         isExistInRoom();
-    }, [isForcedExist]);
+    }, [isForcedExist, myInfo, room_Id]);
 
     useEffect(() => {
         const fetchChatLog = async () => {

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
 import { Container, Row, Col, Button, Form, 
     FormControl, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { TokenContext } from './TokenContext';
 
 const ProfileComponent = ({setIsUpdateData}) => {
     const [member, setMember] = useState('');
@@ -23,7 +23,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
 
     const [isChangeData, setIsChangeData] = useState(false);
 
-    const [cookies] = useCookies(['refresh-token']);
+    const { loginToken, updateToken } = useContext(TokenContext);
 
     let imgRef = useRef();
     const navigate = useNavigate();
@@ -32,7 +32,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
         const fetchMemberStatus = async () => {
             try{
                 const response = await axios.get('/api/opentalk/member/me', {
-                    headers: {authorization: 'Bearer ' + cookies['refresh-token']}
+                    headers: {authorization: loginToken}
                     });
                 setMember(response.data);
                 setCurImgUrl(response.data.imgUrl);
@@ -152,7 +152,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
             PwData.append("exPassword", exPassword);
             PwData.append("newPassword", newPassword);
             axios.post(checkUrl, PwData,{
-                headers: {Authorization: 'Bearer ' + cookies['refresh-token']}
+                headers: {Authorization: loginToken}
             })
             .then((res)=>{
                 if (res.data === true){
