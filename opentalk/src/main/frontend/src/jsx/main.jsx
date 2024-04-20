@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useContext} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SetRoomComponent from './setroom';
@@ -10,6 +10,7 @@ import { Container, Row, Col, Button, Form,
     FormGroup} from 'react-bootstrap';
 import { PaginationControl } from 'react-bootstrap-pagination-control';
 import Modal from 'react-modal';
+import { TokenContext } from './TokenContext';
 
 const MainComponent = () => {
     const ChatRoomRole = {
@@ -55,6 +56,8 @@ const MainComponent = () => {
 
     const history = createBrowserHistory();
 
+    const { loginToken, updateToken } = useContext(TokenContext);
+
     let imgRef = useRef();
     const [curImgUrl, setCurImgUrl] = useState(null);
 
@@ -78,11 +81,12 @@ const MainComponent = () => {
                 try{
                     const reissueRes = await axios.post(reissueUrl, {
                         headers:{
-                            Authorization: localStorage.getItem('refresh-token'),
-                            Cookie: `refresh-token=${localStorage.getItem('refresh-token').split(" ")[1]}`
+                            Authorization: loginToken,
+                            Cookie: `refresh-token=${loginToken.split(" ")[1]}`
                         }
                     }, {})
                     if (reissueRes.status === 200){
+                        updateToken(reissueRes.headers['authorization']);
                         setIsLogin(true);
                     }
                 } catch(error) {
@@ -102,7 +106,7 @@ const MainComponent = () => {
                 const url = "/api/opentalk/auth/validate";
                 const response = await axios.post(url, {}, {
                     headers: {
-                        Authorization: localStorage.getItem('refresh-token')
+                        Authorization: loginToken
                     }
                 });
                 if (response.status === 200){
@@ -123,7 +127,7 @@ const MainComponent = () => {
             console.log(isLogin);
             if (isLogin){
                 await axios.get('/api/opentalk/member/me', {
-                    headers: {Authorization: localStorage.getItem('refresh-token')}
+                    headers: {Authorization: loginToken}
                 }).then((res) => {
                     if (res.status === 200){
                         setMember(res.data);
@@ -355,17 +359,16 @@ const MainComponent = () => {
     }
 
     const LogOut = () => {
-        if (localStorage.getItem("refresh-token")){
+        if (loginToken !== ""){
             if (window.confirm("로그아웃 하시겠습니까?")){
                 axios.post("/api/opentalk/auth/logout", {}, {
                     headers: { 
-                        Authorization: localStorage.getItem('refresh-token'),
+                        Authorization: loginToken,
                     }
                 })
                 .then((res) => {
                     if (res.status === 200){
                         window.alert("로그아웃 되었습니다.");
-                        localStorage.removeItem('refresh-token');
                         setIsLogin(false);
                         naviagte("/opentalk/member/login");
                     }
@@ -437,6 +440,9 @@ const MainComponent = () => {
                     <div className="d-grid gap-2">
                         <Button variant="primary" onClick={GoProfile}>프로필 설정</Button>
                         <Button onClick={openMessageBox}>메세지함</Button>
+                        <SetRoomComponent
+                            onDataUpdate={setIsUpdateTrigger}
+                        />
                         <Button variant="dark" onClick={LogOut}>로그아웃</Button>
                     </div>
                 </aside>
@@ -467,15 +473,11 @@ const MainComponent = () => {
                 </ListGroup>
             </Col>
         </Row>
+        <br></br>
         <Row className="justify-content-end">
             <Col>
-                <br></br>
-                <SetRoomComponent
-                    onDataUpdate={setIsUpdateTrigger}
-                />
-                <br></br>
-                <FormGroup>
-                    <InputGroup>
+                <FormGroup className="d-flex align-items-center">
+                    <InputGroup style={{width:"800px"}}>
                         <Form.Select 
                             onChange={selectMenuHandle} 
                             value={selectManu}
@@ -492,12 +494,12 @@ const MainComponent = () => {
                             value={searchKeyword} 
                             onChange={GetInputSearchKeyword}
                             style={{flex: '5'}}></FormControl>
-                        <Button onClick={search}>검색</Button>
+                        
+                    </InputGroup>
+                    <Button onClick={search}>검색</Button>
                         {isSearch && (
                         <Button onClick={initSearch}>초기화</Button>
                     )}
-                    </InputGroup>
-                    
                 </FormGroup>
                 <br></br>
                 <PaginationControl

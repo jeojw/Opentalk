@@ -1,6 +1,7 @@
 package com.example.opentalk.dto;
 
 import com.example.opentalk.entity.ChatMessageEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ public class ChatMessageDTO {
     private ChatRoomDTO chatRoom;
     private AuthDto.ResponseDto member;
     private String message;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd-HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime timeStamp;
 
     public ChatMessageDTO(){}

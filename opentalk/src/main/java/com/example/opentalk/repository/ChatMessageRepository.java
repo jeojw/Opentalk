@@ -27,5 +27,5 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessageEntity, 
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM Opentalk.chat_log WHERE opentalk_room_list_id = :roomId", nativeQuery = true)
-    int deleteLog(@Param("roomId") Long roomId);
+    void deleteLog(@Param("roomId") Long roomId);
 }
