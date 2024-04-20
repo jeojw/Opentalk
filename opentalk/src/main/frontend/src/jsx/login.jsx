@@ -4,7 +4,7 @@ import axios from 'axios'
 import { Form, Button, Container, Row, Col, FormGroup } from 'react-bootstrap';
 import { TokenContext } from './TokenContext';
 
-const LoginComponent = (props) => {
+const LoginComponent = () => {
     
     const [memberId, setMemberId] = useState("");
     const [memberPw, setMemberPw] = useState("");
@@ -16,10 +16,10 @@ const LoginComponent = (props) => {
         const checkloginUrl = '/api/opentalk/auth/login'
 
         if (memberId === ""){
-            alert("아이디를 입력해주세요.")
+            window.alert("아이디를 입력해주세요.");
         }
         else if (memberPw === ""){
-            alert("비밀번호를 입력해주세요.")
+            window.alert("비밀번호를 입력해주세요.");
         }
         else{
             axios.post(checkloginUrl, {

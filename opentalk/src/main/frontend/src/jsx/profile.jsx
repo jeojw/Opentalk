@@ -108,7 +108,6 @@ const ProfileComponent = ({setIsUpdateData}) => {
         reader.onloadend = ()=> {
             setUploadImgUrl(reader.result);
         }
-        console.log(uploadImgUrl);
     }
 
     useEffect(() => {

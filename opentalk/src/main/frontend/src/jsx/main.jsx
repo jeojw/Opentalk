@@ -434,26 +434,32 @@ const MainComponent = () => {
                     <div className="d-grid gap-2">
                         <Button variant="primary" onClick={GoProfile}>프로필 설정</Button>
                         <Button onClick={openMessageBox}>메세지함</Button>
-                        <SetRoomComponent
-                            onDataUpdate={setIsUpdateTrigger}
-                        />
+                        
                         <Button variant="dark" onClick={LogOut}>로그아웃</Button>
                     </div>
                 </aside>
             </Col>
-            <Col className="border border-warning border-3 rounded-3 p-5" style={{height: "820px"}}>
+            <Col className="border border-warning border-3 rounded-3 p-5" style={{height: "920px"}}>
+                <SetRoomComponent
+                    onDataUpdate={setIsUpdateTrigger}
+                />
+                <br></br>
                 <ListGroup>
                     {chatRoomList.map(room=>(
                         <ListGroupItem>방 이름: {room.roomName} | 인원수: {room.curParticipates} / {room.limitParticipates}
                         {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                         <br></br>소개문: {room.introduction}
                         <br></br>방장: {room.roomManager}
-                        <p>태그목록</p>
-                        <ListGroup className="list-group list-group-horizontal">        
-                        {room.roomTags.map(tag=>(
-                            <ListGroupItem># {tag.tagName}</ListGroupItem>
-                        ))}
-                        </ListGroup>
+                        {room.roomTags.length > 0 && (
+                            <div>
+                                <p>태그목록</p>
+                                <ListGroup className="list-group list-group-horizontal">        
+                                {room.roomTags.map(tag=>(
+                                    <ListGroupItem># {tag.tagName}</ListGroupItem>
+                                ))}
+                                </ListGroup>
+                            </div>
+                        )}
                         <br></br>
                         <div className="d-flex flex-row gap-2">
                             <Button onClick={() => EnterRoom({roomInfo: room})}>입장하기</Button>
@@ -465,20 +471,6 @@ const MainComponent = () => {
                     ))}
                 </ListGroup>
                 <br></br>
-                <PaginationControl
-                    page={page}
-                    between={3}
-                    total={pageLength}
-                    limit={3}
-                    changePage={(page) => {
-                        handlePageChange(page)
-                    }}
-                />
-            </Col>
-        </Row>
-        <br></br>
-        <Row className="justify-content-end">
-            <Col>
                 <FormGroup className="d-flex align-items-center justify-content-center">
                     <InputGroup style={{width:"800px"}}>
                         <Form.Select 
@@ -504,6 +496,16 @@ const MainComponent = () => {
                         <Button onClick={initSearch}>초기화</Button>
                     )}
                 </FormGroup>
+                <br></br>
+                <PaginationControl
+                    page={page}
+                    between={3}
+                    total={pageLength}
+                    limit={3}
+                    changePage={(page) => {
+                        handlePageChange(page)
+                    }}
+                />
             </Col>
         </Row>
     </Container>
