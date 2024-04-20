@@ -96,7 +96,7 @@ const MainComponent = () => {
             }
         }
         reissueToken();
-    }, [isReissue])
+    }, [isReissue, loginToken])
 
     useEffect(() => {
         const validateToken = async () =>{
@@ -118,7 +118,7 @@ const MainComponent = () => {
             }
         }
         validateToken();
-    }, []);
+    }, [loginToken]);
 
     useEffect(() => {
         const fetchMyInfo = async () => {
@@ -136,7 +136,7 @@ const MainComponent = () => {
             }
         }    
         fetchMyInfo();
-    }, [isLogin]);
+    }, [isLogin, loginToken]);
 
     useEffect(() => {
         if (curImgUrl){
