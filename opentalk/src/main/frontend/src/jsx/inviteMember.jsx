@@ -56,7 +56,7 @@ const InviteMemberComponent = ({roomInfo, role}) => {
     return (
         <Container>
             <div className='d-grid gap-2'>
-                {role === "MANAGER" && (
+                {role === "ROLE_MANAGER" && (
                     <Button onClick={OpenInviteModal}>초대하기</Button>
                 )}
             </div>

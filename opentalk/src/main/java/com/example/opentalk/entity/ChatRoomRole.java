@@ -1,30 +1,14 @@
 package com.example.opentalk.entity;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@Getter
+@RequiredArgsConstructor
 public enum ChatRoomRole {
-    ROLE_PARTICIPATE("PARTICIPATE"),
-    ROLE_MANAGER("MANAGER");
+    ROLE_PARTICIPATE("PARTICIPATE", "일반 참여자"),
+    ROLE_MANAGER("MANAGER", "방장");
 
-    private final String value;
-
-    ChatRoomRole(String value){
-        this.value = value;
-    }
-
-    @JsonValue
-    public String getValue(){
-        return value;
-    }
-
-    @JsonCreator
-    public static ChatRoomRole fromValue(String value){
-        for (ChatRoomRole role : ChatRoomRole.values()){
-            if (role.value.equalsIgnoreCase(value)){
-                return role;
-            }
-        }
-        throw new IllegalArgumentException("Invalid ChatRoomRole value: " + value);
-    }
+    private final String key;
+    private final String title;
 }

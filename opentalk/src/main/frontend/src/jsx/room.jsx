@@ -7,6 +7,7 @@ import { useCookies } from "react-cookie";
 import ChangRoomComponent from './changroom';
 import InviteMemberComponent from './inviteMember';
 import { Container, Row, Col, Button, Form, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { format } from 'date-fns'
 
 const RoomComponent = ({setIsChangeData}) => {
 
@@ -20,6 +21,8 @@ const RoomComponent = ({setIsChangeData}) => {
 
     const [isForcedExist, setIsForcedExist] = useState(false);
     const [isChangeRoom, setIsChangeRoom] = useState(false);
+
+    const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
 
     let {room_Id} = useParams();  
     const client = useRef({});
@@ -47,6 +50,7 @@ const RoomComponent = ({setIsChangeData}) => {
                 const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
                 setRoomInformation(response.data.chatroom);
                 setRole(response.data.role);
+                console.log(response.data);
             } catch (error){
                 console.log(error);
             }
@@ -95,7 +99,8 @@ const RoomComponent = ({setIsChangeData}) => {
         if (!client.current.connected) return;
 
         const curTime = new Date();
-        const isoDateTime = curTime.toISOString();
+        const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+        const kr_Time = new Date(utc + (KR_TIME_DIFF));
 
         client.current.publish({
             destination: '/pub/chat/enter',
@@ -106,7 +111,7 @@ const RoomComponent = ({setIsChangeData}) => {
                     memberNickName:"system"
                 },
                 message: `${myInfo.memberNickName}님이 채팅방에 참여했습니다.`,
-                timeStamp: isoDateTime
+                timeStamp: format(kr_Time, "yyyy-MM-d-hh-mm")
             })
         });
     }
@@ -147,12 +152,14 @@ const RoomComponent = ({setIsChangeData}) => {
         }
         else{
             const curTime = new Date();
-            const isoDateTime = curTime.toISOString();
+            const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+            const kr_Time = new Date(utc + (KR_TIME_DIFF));
+
             axios.post('/api/opentalk/saveChat', {
                 chatRoom: roomInformation,
                 member: myInfo,
                 message: chat,
-                timeStamp: isoDateTime
+                timeStamp: format(kr_Time, "yyyy-MM-d-hh-mm")
             })
             .then()
             .catch((error) => console.log(error));
@@ -163,7 +170,7 @@ const RoomComponent = ({setIsChangeData}) => {
                 chatRoom: roomInformation,
                 member: myInfo,
                 message: chat,
-                timeStamp: isoDateTime
+                timeStamp: format(kr_Time, "yyyy-MM-d-hh-mm")
             }),
         });
         setChat("");
@@ -204,7 +211,8 @@ const RoomComponent = ({setIsChangeData}) => {
             if (!client.current.connected) return;
 
             const curTime = new Date();
-            const isoDateTime = curTime.toISOString();
+            const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+            const kr_Time = new Date(utc + (KR_TIME_DIFF));
 
             client.current.publish({
                 destination: '/pub/chat/forcedExit',
@@ -215,7 +223,7 @@ const RoomComponent = ({setIsChangeData}) => {
                         memberNickName:"system"
                     },
                     message: `${roomMember.memberNickName}님이 강퇴되었습니다.`,
-                    timeStamp: isoDateTime
+                    timeStamp: format(kr_Time, "yyyy-MM-d-hh-mm")
                 })
             });
         }
@@ -236,7 +244,8 @@ const RoomComponent = ({setIsChangeData}) => {
             })
             .catch((error) => console.log(error));
             const curTime = new Date();
-            const isoDateTime = curTime.toISOString();
+            const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+            const kr_Time = new Date(utc + (KR_TIME_DIFF));
             
             client.current.publish({
                 destination: '/pub/chat/exit',
@@ -247,7 +256,7 @@ const RoomComponent = ({setIsChangeData}) => {
                         memberNickName:"system"
                     },
                     message: `${roomMember.memberNickName}님이 방장이 되었습니다.`,
-                    timeStamp: isoDateTime
+                    timeStamp: format(kr_Time, "yyyy-MM-d-hh-mm")
                 })
             });
         }
@@ -275,7 +284,8 @@ const RoomComponent = ({setIsChangeData}) => {
                 })
                 .catch((error) => console.log(error));
                 const curTime = new Date();
-                const isoDateTime = curTime.toISOString();
+                const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+                const kr_Time = new Date(utc + (KR_TIME_DIFF));
 
                 client.current.publish({
                     destination: '/pub/chat/exit',
@@ -286,7 +296,7 @@ const RoomComponent = ({setIsChangeData}) => {
                             memberNickName:"system"
                         },
                         message: `${myInfo?.memberNickName}님이 채팅방을 나갔습니다.`,
-                        timeStamp: isoDateTime
+                        timeStamp: format(kr_Time, "yyyy-MM-d-hh-mm")
                     })
                 });
             }
@@ -326,10 +336,10 @@ const RoomComponent = ({setIsChangeData}) => {
                         <ListGroup>
                             <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                             {_member?.memberNickName}
-                            {role === "MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
+                            {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
                             <Button onClick={() => ForcedExit(_member)}>강퇴하기</Button>
                             )}
-                            {role === "MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
+                            {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
                             <Button onClick={() => AuthMandate(_member)}>방장위임</Button>
                             )}
                             </ListGroupItem>
@@ -354,7 +364,7 @@ const RoomComponent = ({setIsChangeData}) => {
                 <Button variant="dark" onClick={ExitRoom}>나가기</Button>
             </div>
             <br></br>
-            {role === "MANAGER" && (
+            {role === "ROLE_MANAGER" && (
                 <div className='border border-warning border-3 rounded-3 p-4'>
                 <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeRoom}>
                     {() => setIsChangeData(isChangeRoom)}

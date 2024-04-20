@@ -1,6 +1,7 @@
 package com.example.opentalk.repository;
 
 import com.example.opentalk.entity.ChatRoomMemberEntity;
+import com.example.opentalk.entity.ChatRoomRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,7 +20,7 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMemberEn
     @Transactional
     @Query(value = "INSERT INTO Opentalk.chatroom_member(opentalk_room_list_id, open_talk_member_id, role) Values(:room_id, :member_id, :memberRole)",
             nativeQuery = true)
-    int enterRoom(@Param("room_id") Long room_id, @Param("member_id") Long member_id, @Param("memberRole") String memberRole);
+    int enterRoom(@Param("room_id") Long room_id, @Param("member_id") Long member_id, @Param("memberRole") ChatRoomRole memberRole);
 
     @Query(value = "SELECT * FROM Opentalk.chatroom_member WHERE opentalk_room_list_id = :room_id",
             nativeQuery = true)

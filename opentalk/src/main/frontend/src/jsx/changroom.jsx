@@ -167,7 +167,7 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
     return(
         <Container>
             <div className='d-grid gap-2'>
-                {role === "MANAGER" && (
+                {role === "ROLE_MANAGER" && (
                 <Button onClick={openModal}>설정 변경</Button>
                 )} 
             </div>

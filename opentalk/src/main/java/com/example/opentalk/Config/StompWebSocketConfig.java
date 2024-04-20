@@ -1,6 +1,6 @@
 package com.example.opentalk.Config;
 
-import com.example.opentalk.WebSocketInterceptor;
+import com.example.opentalk.controller.WebSocketInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
