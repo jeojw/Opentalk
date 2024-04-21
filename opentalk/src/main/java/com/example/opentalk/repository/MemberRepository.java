@@ -54,12 +54,6 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
             nativeQuery = true)
     void ChangeNickName(@Param("memberId") String memberId, @Param("newNickName") String newNickName);
 
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE Opentalk.open_talk_member SET img_url = :newImage WHERE member_id = :memberId",
-            nativeQuery = true)
-    void ChangeImg(@Param("memberId") String memberId, @Param("newImage") String newImage);
-
     boolean existsByMemberId(String memberId);
 
     boolean existsByMemberNickName(String memberNickName);

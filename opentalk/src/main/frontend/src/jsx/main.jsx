@@ -56,7 +56,6 @@ const MainComponent = () => {
 
     const { loginToken, updateToken } = useContext(TokenContext);
 
-    let imgRef = useRef();
     const [curImgUrl, setCurImgUrl] = useState(null);
 
     const [isReissue, setIsReissue] = useState(false);
@@ -125,11 +124,22 @@ const MainComponent = () => {
             console.log(isLogin);
             if (isLogin){
                 await axios.get('/api/opentalk/member/me', {
-                    headers: {Authorization: loginToken}
+                    headers: {
+                        Authorization: loginToken,
+                    }
                 }).then((res) => {
                     if (res.status === 200){
+                        const blob = new Blob([res.data.imageUrl], { type: 'image/jpeg' });
+    
+                        const myFile = new File([blob], "imageName", { type: 'image/jpeg' });
+            
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            const preview = event.target.result;
+                            setCurImgUrl(preview);
+                        };
+                        reader.readAsDataURL(myFile);
                         setMember(res.data);
-                        setCurImgUrl(res.data.imgUrl);
                         console.log(res.data);
                     }
                 }).catch((error) => console.log(error));
@@ -137,12 +147,6 @@ const MainComponent = () => {
         }    
         fetchMyInfo();
     }, [isLogin, loginToken]);
-
-    useEffect(() => {
-        if (curImgUrl){
-            imgRef.current.setAttribute('src', curImgUrl);
-        }
-    }, [curImgUrl])
 
     useEffect(() => {
         const fetchAllRooms = async () => {
@@ -261,6 +265,7 @@ const MainComponent = () => {
                 })
                 .then((res) => {
                     if (res.data === "Success"){
+                        window.URL.revokeObjectURL(curImgUrl);
                         naviagte(`/opentalk/room/${roomInfo.roomId}`);
                     }
                     else{
@@ -282,6 +287,7 @@ const MainComponent = () => {
                     })
                     .then((res) => {
                         if (res.data === "Success"){
+                            window.URL.revokeObjectURL(curImgUrl);
                             naviagte(`/opentalk/room/${roomInfo.roomId}`);
                         }
                         else if (res.data ==="Incorrect"){
@@ -363,6 +369,7 @@ const MainComponent = () => {
                 .then((res) => {
                     if (res.status === 200){
                         window.alert("로그아웃 되었습니다.");
+                        window.URL.revokeObjectURL(curImgUrl);
                         setIsLogin(false);
                         naviagte("/opentalk/member/login");
                     }
@@ -425,7 +432,7 @@ const MainComponent = () => {
                 <aside>
                     <div style={{ textAlign: 'center' }}>
                         <img alt="프로필 이미지" 
-                            ref={imgRef} 
+                            src={curImgUrl} 
                             style={{width:200, 
                             height:200,
                             backgroundPosition:"center"}}     ></img>

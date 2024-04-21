@@ -8,8 +8,8 @@ import com.example.opentalk.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,11 +24,11 @@ public class MemberController {
         AuthDto.ResponseDto myInfoBySecurity = authService.getMyInfo();
         System.out.println(myInfoBySecurity.getMemberNickName());
         return ResponseEntity.ok(myInfoBySecurity);
-        // return ResponseEntity.ok(memberService.getMyInfoBySecurity());
     }
 
     @PostMapping("/api/opentalk/member/changeImg")
-    public ResponseEntity<Boolean> changeImg(@RequestParam("memberId") String memberId, @RequestParam("newImg") String newImg){
+    public ResponseEntity<Boolean> changeImg(@RequestParam("memberId") String memberId, @RequestParam("newImg") MultipartFile newImg){
+        // 이미지가 엔티티에 저장되었으므로 엔티티를 저장
         return ResponseEntity.ok(memberService.changeImage(memberId, newImg));
     }
 
