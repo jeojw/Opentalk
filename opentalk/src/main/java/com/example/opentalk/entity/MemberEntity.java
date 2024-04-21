@@ -31,7 +31,8 @@ public class MemberEntity {
     private String memberEmail;
     @Enumerated(EnumType.STRING)
     private UserRole authority;
-    @Column(nullable = false)
+    @Lob
+    @Column(nullable = false, columnDefinition = "mediumblob")
     private byte[] imgUrl;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
