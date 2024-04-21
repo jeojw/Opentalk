@@ -7,7 +7,7 @@ import { Container, Row, Col, Button, Form,
 import { TokenContext } from './TokenContext';
 import Resizer from "react-image-file-resizer";
 
-const ProfileComponent = ({setIsUpdateData}) => {
+const ProfileComponent = ({memberId, setIsUpdateData}) => {
     const [member, setMember] = useState('');
 
     const [pwPopupOpen, setPwPopupOpen] = useState(false);
@@ -26,7 +26,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
 
     const [isChangeData, setIsChangeData] = useState(false);
 
-    const { loginToken } = useContext(TokenContext);
+    const { tokenMap } = useContext(TokenContext);
 
     let imgRef = useRef();
     const navigate = useNavigate();
@@ -36,7 +36,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
             try {
                 const response = await axios.get('/api/opentalk/member/me', {
                     headers: {
-                        authorization: loginToken,
+                        authorization: tokenMap[memberId],
                     }
                 });
                 const blob = new Blob([response.data.imageUrl], { type: 'image/jpeg' });
@@ -181,7 +181,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
             PwData.append("exPassword", exPassword);
             PwData.append("newPassword", newPassword);
             axios.post(checkUrl, PwData,{
-                headers: {Authorization: loginToken}
+                headers: {Authorization: tokenMap[memberId]}
             })
             .then((res)=>{
                 if (res.data === true){
@@ -224,9 +224,9 @@ const ProfileComponent = ({setIsUpdateData}) => {
     }
     
     return(
-        <Container className="border border-warning border-3 rounded-3 p-5">
+        <Container>
             <Row style={{ textAlign: 'center' }}>
-                <Col md={{ span: 3, offset: 4}} className="border border-warning border-3 rounded-3 p-5">
+                <Col md={{ span: 3, offset: 4}} className="border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
                     <img 
                         alt="프로필 이미지" 
                         src={curImgUrl}
@@ -237,9 +237,9 @@ const ProfileComponent = ({setIsUpdateData}) => {
                     <br></br>
                     <br></br>
                     <ListGroup>
-                        <ListGroupItem>이름: {member.memberName}</ListGroupItem>
-                        <ListGroupItem>닉네임: {member.memberNickName}</ListGroupItem>
-                        <ListGroupItem>이메일: {member.memberEmail}</ListGroupItem>
+                        <ListGroupItem style={{backgroundColor:"#CDCDCD"}}>이름: {member.memberName}</ListGroupItem>
+                        <ListGroupItem style={{backgroundColor:"#CDCDCD"}}>닉네임: {member.memberNickName}</ListGroupItem>
+                        <ListGroupItem style={{backgroundColor:"#CDCDCD"}}>이메일: {member.memberEmail}</ListGroupItem>
                     </ListGroup>
                     <br></br>
                     <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}
@@ -252,7 +252,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
                         {}
                         <img src={uploadPreview} />
                         <FormControl type='file' accept='image/*' onChange={onChangeImageUpload}></FormControl>
-                        <Button onClick={ChangeImg}>변경하기</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={ChangeImg}>변경하기</Button>
                         <Button variant='dark' onClick={ChangeImgCancle}>변경취소</Button>
                     </Modal>
                     <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}
@@ -307,10 +307,10 @@ const ProfileComponent = ({setIsUpdateData}) => {
                         <Button variant='dark' onClick={ChangePasswordCancle}>변경 취소</Button>
                     </Modal>
                     <div className="d-grid gap-2">
-                        <Button onClick={ChangeImgPopup}>사진 변경</Button>
-                        <Button onClick={ChangeNickNamePopup}>닉네임 변경</Button>
-                        <Button onClick={ChangePasswordPopup}>비밀번호 변경</Button>
-                        <Button onClick={() => {
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={ChangeImgPopup}>사진 변경</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={ChangeNickNamePopup}>닉네임 변경</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={ChangePasswordPopup}>비밀번호 변경</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={() => {
                             navigate("/opentalk/main")
                             window.URL.revokeObjectURL(curImgUrl);
                         }}>이전 페이지</Button>

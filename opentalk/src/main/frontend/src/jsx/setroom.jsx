@@ -146,7 +146,7 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
     return (
         <div>
             <div className="d-grid gap-2 btn-lg">
-                <Button onClick={openModal}>방 생성하기</Button>
+                <Button variant="#CDCDCD" style={{backgroundColor:'#CDCDCD'}} onClick={openModal}>방 생성하기</Button>
             </div>
             <Modal
                 isOpen={isOpen} 

@@ -68,20 +68,20 @@ const FindMemberComponent = () => {
     return(
         <Container style={{ minHeight: '100vh'}}>
             <Row>
-                <Col xs lg="5" md={{ span: 3, offset: 3 }} className="border border-warning border-3 rounded-3 p-5">
-                <h3>아이디 찾기</h3>
+                <Col xs lg="5" md={{ span: 3, offset: 3 }} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
+                <h3 style={{color:"white"}}>아이디 찾기</h3>
                 <Form>
-                    <Form.Label>이메일</Form.Label>
+                    <Form.Label style={{color:"white"}}>이메일</Form.Label>
                     <InputGroup>
                         <FormControl type='email' value={memberEmail} onChange={GetInputEmail}></FormControl>
-                        <Button onClick={CheckMail}>인증번호 받기</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckMail}>인증번호 받기</Button>
                     </InputGroup>
                 </Form>
                 <Form>
-                    <Form.Label>인증번호</Form.Label>
+                    <Form.Label style={{color:"white"}}>인증번호</Form.Label>
                     <InputGroup>
                         <FormControl type='text' value={inputNum} onChange={GetInputNum}></FormControl>
-                        <Button onClick={CheckAuth}>인증하기</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckAuth}>인증하기</Button>
                     </InputGroup>
                 </Form>
                 </Col>

@@ -46,17 +46,17 @@ const ChangePasswordComponent = () =>{
     return(
         <Container style={{ minHeight: '100vh'}}>
             <Row>
-                <Col xs lg="4" md={{ span: 3, offset: 4 }} className="border border-warning border-3 rounded-3 p-5">
-                    <h3>비밀번호 변경하기</h3>
+                <Col xs lg="4" md={{ span: 3, offset: 4 }} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
+                    <h3 style={{color:"white"}}>비밀번호 변경하기</h3>
                     <Form>
-                        <Form.Label>새 비밀번호</Form.Label>
+                        <Form.Label style={{color:"white"}}>새 비밀번호</Form.Label>
                         <Form.Control type='password' value={newPassword} onChange={GetInputPassword}></Form.Control>
-                        <Form.Label>비밀번호 확인</Form.Label>
+                        <Form.Label style={{color:"white"}}>비밀번호 확인</Form.Label>
                         <Form.Control type='password' value={checkPassword} onChange={GetInputCheckPassword}></Form.Control>
                     </Form>
                     <br></br>
                     <div className="d-grid gap-2">
-                        <Button onClick={ChangePassword}>변경하기</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={ChangePassword}>변경하기</Button>
                     </div>
                 </Col>
             </Row>

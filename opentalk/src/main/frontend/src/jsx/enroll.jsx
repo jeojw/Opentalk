@@ -167,18 +167,18 @@ const EnrollComponent = (props) =>{
     return(
         <Container>
             <Row>
-                <Col md={{ span: 6, offset: 3 }} className="border border-warning border-3 rounded-3 p-5">
-                    <h2>회원가입</h2>
-                    <Form.Label>아이디</Form.Label>
+                <Col md={{ span: 6, offset: 3 }} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
+                    <h2 style={{color:"white"}}>회원가입</h2>
+                    <Form.Label style={{color:"white"}}>아이디</Form.Label>
                     <InputGroup>
                         <FormControl
                             type="text"
                             value={memberId}
                             onChange={GetInputId}
                         ></FormControl>
-                        <Button onClick={CheckIdDuplicate}>아이디 중복 확인</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckIdDuplicate}>아이디 중복 확인</Button>
                     </InputGroup>
-                    <Form.Label>비밀번호</Form.Label>
+                    <Form.Label style={{color:"white"}}>비밀번호</Form.Label>
                     <InputGroup>
                         <FormControl
                             type="password"
@@ -186,7 +186,7 @@ const EnrollComponent = (props) =>{
                             onChange={GetInputPw}
                         ></FormControl>
                     </InputGroup>
-                    <Form.Label>이름</Form.Label>
+                    <Form.Label style={{color:"white"}}>이름</Form.Label>
                     <InputGroup>
                         <FormControl
                             type="text"
@@ -194,35 +194,35 @@ const EnrollComponent = (props) =>{
                             onChange={GetInputName}
                         ></FormControl>
                     </InputGroup>
-                    <Form.Label>닉네임</Form.Label>
+                    <Form.Label style={{color:"white"}}>닉네임</Form.Label>
                     <InputGroup>
                         <FormControl
                             type="text"
                             value={memberNickName}
                             onChange={GetInputNickName}
                         ></FormControl>
-                        <Button onClick={CheckNickNameDuplicate}>닉네임 중복 확인</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckNickNameDuplicate}>닉네임 중복 확인</Button>
                     </InputGroup>
-                    <Form.Label>이메일</Form.Label>
+                    <Form.Label style={{color:"white"}}>이메일</Form.Label>
                     <InputGroup>
                         <FormControl
                             type="email"
                             value={memberEmail}
                             onChange={GetInputEmail}
                         ></FormControl>
-                        <Button onClick={CheckMail}>인증번호 받기</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckMail}>인증번호 받기</Button>
                     </InputGroup>
-                    <Form.Label>인증번호</Form.Label>
+                    <Form.Label style={{color:"white"}}>인증번호</Form.Label>
                     <InputGroup>
                         <FormControl
                             type="text"
                             value={inputNum}
                             onChange={GetInputNum}
                         ></FormControl>
-                        <Button onClick={CheckAuth}>인증하기</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckAuth}>인증하기</Button>
                     </InputGroup>
                     <br></br>
-                    <Button onClick={CheckAll}>회원가입</Button>
+                    <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckAll}>회원가입</Button>
                 </Col>
             </Row>
         </Container>

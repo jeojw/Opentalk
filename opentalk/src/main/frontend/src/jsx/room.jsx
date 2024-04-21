@@ -314,17 +314,21 @@ const RoomComponent = ({setIsChangeData}) => {
     }
 
     return(
-        <Container className="border border-warning border-3 rounded-3 p-5">
-            <Row>
-                <Col>
-                    {/* Option Chaining!!! */}
-                    <h1>{roomInformation?.roomName}</h1> 
-                </Col>
-            </Row>
-            <Container className="border border-warning border-1 rounded-1 p-5">
+        <Container>
+            <Container>
+                <Row>
+                    <Col className="border-#B6B6B6 border-3 rounded-1 p-5 d-flex justify-content-left align-items-center"
+                    style={{backgroundColor:"#B6B6B6", height:"110px"}}>
+                        {/* Option Chaining!!! */}
+                        <h1>{roomInformation?.roomName}</h1> 
+                    </Col>
+                </Row>
+            </Container>
+            <Container className="border-#898989 border-1 rounded-1 p-5"
+            style={{backgroundColor:"#898989"}}>
                 <Row>
                     <Col 
-                        className="border border-warning border-1 rounded-1 p-4"  
+                        className="border-#898989 border-1 rounded-1 p-4"  
                         xs={6} 
                         style={{ width:'800px', height:'400px', overflowY: 'auto', maxHeight: '400px'
                                         ,display: "flex", flexDirection: "column-reverse" }}>
@@ -375,12 +379,12 @@ const RoomComponent = ({setIsChangeData}) => {
                         )}
                     </Col>
                     <Col 
-                        className="border border-warning border-1 rounded-1 p-4" 
+                        className="border-#9D9D9D border-1 rounded-1 p-4" 
                         xs={6} 
-                        style={{ width:'335px', height:'400px', overflowY: 'auto', maxHeight: '400px' }}>
+                        style={{ width:'335px', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#B9B9B9" }}>
                         <h3>참여명단</h3>
                         {roomInformation?.members.map((_member, index) => (
-                            <ListGroup>
+                            <ListGroup className='gap-2'>
                                 <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                 {_member?.memberNickName}
                                 {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
@@ -403,7 +407,7 @@ const RoomComponent = ({setIsChangeData}) => {
                             <InputGroup style={{width:"800px"}}>
                                 <Form.Control type="text" value={chat} placeholder='채팅 내용을 입력해 주세요.' onChange={handleChange} />            
                             </InputGroup>
-                            <Button onClick={() => publishChat(chat)}>전송</Button>          
+                            <Button variant='#B9B9B9' style={{backgroundColor:"#B9B9B9"}} onClick={() => publishChat(chat)}>전송</Button>          
                         </FormGroup>
                     </Col>
                 </Row>

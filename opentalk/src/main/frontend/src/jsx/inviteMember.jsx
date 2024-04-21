@@ -56,7 +56,7 @@ const InviteMemberComponent = ({roomInfo, role}) => {
     return (
         <div>
             {role === "ROLE_MANAGER" && (
-                <Button onClick={OpenInviteModal}>초대하기</Button>
+                <Button variant='#B9B9B9' style={{backgroundColor:"#B9B9B9"}} onClick={OpenInviteModal}>초대하기</Button>
             )}
             <Modal isOpen={isOpen} onRequestClose={CloseInviteModal}
             style={{

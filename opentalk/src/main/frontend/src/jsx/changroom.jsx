@@ -167,7 +167,7 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
     return(
         <div>
             {role === "ROLE_MANAGER" && (
-            <Button onClick={openModal}>설정 변경</Button>
+            <Button variant='#B9B9B9' style={{backgroundColor:"#B9B9B9"}} onClick={openModal}>설정 변경</Button>
             )} 
             <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}
             style={{
