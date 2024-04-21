@@ -320,7 +320,7 @@ const RoomComponent = ({setIsChangeData}) => {
                     <Col className="border-#B6B6B6 border-3 rounded-1 p-5 d-flex justify-content-left align-items-center"
                     style={{backgroundColor:"#B6B6B6", height:"110px"}}>
                         {/* Option Chaining!!! */}
-                        <h1>{roomInformation?.roomName}</h1> 
+                        <h2>{roomInformation?.roomName}</h2> 
                     </Col>
                 </Row>
             </Container>
@@ -384,7 +384,7 @@ const RoomComponent = ({setIsChangeData}) => {
                         className="border-#9D9D9D border-1 rounded-1 p-4" 
                         xs={6} 
                         style={{ width:'335px', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#B9B9B9" }}>
-                        <h3>참여명단</h3>
+                        <h5>참여명단</h5>
                         {roomInformation?.members.map((_member, index) => (
                             <ListGroup style={{marginBottom: '6px'}}>
                                 <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
