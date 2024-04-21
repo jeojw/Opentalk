@@ -33,12 +33,10 @@ public class AuthService {
 
     private final String SERVER = "Server";
 
-    UsernamePasswordAuthenticationToken curUserInfo;
-
-
     @Transactional
     public AuthDto.ResponseDto getMyInfo(){ //??? 왜 anonymous가 발생할까....
-        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(curUserInfo.getPrincipal().toString());
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(SecurityContextHolder.getContext().getAuthentication().getName());
+
         return memberEntity.map(AuthDto.ResponseDto::toResponse).orElse(null);
     }
     // 로그인: 인증 정보 저장 및 비어 토큰 발급
@@ -50,7 +48,6 @@ public class AuthService {
         Authentication authentication = authenticationManagerBuilder.getObject()
                 .authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        curUserInfo = authenticationToken;
 
         return generateToken(SERVER, authentication.getName(), getAuthorities(authentication));
     }
