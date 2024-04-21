@@ -60,6 +60,7 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
             nativeQuery = true)
     void ChangeImg(@Param("memberId") String memberId, @Param("newImage") String newImage);
 
+
     boolean existsByMemberId(String memberId);
 
     boolean existsByMemberNickName(String memberNickName);

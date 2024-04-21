@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button, Form, 
     FormControl, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { TokenContext } from './TokenContext';
+import Resizer from "react-image-file-resizer";
 
 const ProfileComponent = ({setIsUpdateData}) => {
     const [member, setMember] = useState('');
@@ -18,6 +19,8 @@ const ProfileComponent = ({setIsUpdateData}) => {
     const [newPassword, setNewPassword] = useState("");
 
     const [checkPassword, setCheckPassword] = useState("");
+    const [uploadPreview, setUploadPreview] = useState();
+    const [uploadImgBlob, setUploadImgBlob] = useState(null);
     const [uploadImgUrl, setUploadImgUrl] = useState(null);
     const [curImgUrl, setCurImgUrl] = useState(null);
 
@@ -30,14 +33,24 @@ const ProfileComponent = ({setIsUpdateData}) => {
 
     useEffect(() => {
         const fetchMemberStatus = async () => {
-            try{
+            try {
                 const response = await axios.get('/api/opentalk/member/me', {
-                    headers: {authorization: loginToken}
-                    });
+                    headers: {
+                        authorization: loginToken,
+                    }
+                });
+                const blob = new Blob([response.data.imageUrl], { type: 'image/jpeg' });
+    
+                const myFile = new File([blob], "imageName", { type: 'image/jpeg' });
+                console.log(myFile);
+    
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const preview = event.target.result;
+                    setCurImgUrl(preview);
+                };
+                reader.readAsDataURL(myFile);
                 setMember(response.data);
-                setCurImgUrl(response.data.imgUrl);
-                console.log(response.data);
-                
             } catch (error) {
                 console.error(error);
             }
@@ -45,12 +58,6 @@ const ProfileComponent = ({setIsUpdateData}) => {
 
         fetchMemberStatus();
     }, [isChangeData]);
-
-    useEffect(() => {
-        if (curImgUrl){
-            imgRef.current.setAttribute('src', curImgUrl);
-        }
-    }, [curImgUrl])
 
     const GetExPassword = (event) =>{
         setExPassword(event.target.value);
@@ -94,50 +101,69 @@ const ProfileComponent = ({setIsUpdateData}) => {
 
     const ChangeImgCancle = () => {
         setUploadImgUrl("");
+        setUploadPreview("");
         setImgPopupOpen(false);
     }
 
-    const onChangeImageUpload = (event) => {
+    const resizeFile = (file) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(file, 200, 200, "JPEG", 100, 0, (uri) => {
+        resolve(uri);
+      },'base64');
+    });
+
+    const dataURItoBlob = (dataURI) => {
+        const byteString = atob(dataURI.split(',')[1]);
+        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: mimeString });
+    };
+
+    const onChangeImageUpload = async (event) => {
+        console.log(event.target.files);
         if (!event.target.files[0]){
             window.alert("이미지를 선택해 주세요.");
             return;
         }
         const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = ()=> {
-            setUploadImgUrl(reader.result);
+        try {
+            const compressedFile = await resizeFile(file);
+            const blob = dataURItoBlob(compressedFile);
+            setUploadPreview(compressedFile);
+            setUploadImgBlob(blob);
+        } catch (error) {
+            console.log(error);
         }
     }
 
-    useEffect(() => {
-        if (uploadImgUrl) {
-            imgRef.current.setAttribute("src", uploadImgUrl);
-        }
-    }, [uploadImgUrl]);
-
-    const ChangeImg = () => {
+    const ChangeImg = async () => {
         if (window.confirm("변경하시겠습니까?")){
-            localStorage.setItem('profile', JSON.stringify(uploadImgUrl));
-            const profile = localStorage.getItem('profile');
-            const isVaild = JSON.parse(profile);
-            if (!isVaild){
+            if (!uploadImgBlob){
                 window.alert("이미지를 선택해 주세요.");
                 return;
             }
-            imgRef.current.setAttribute('src', isVaild);
+
+            console.log(uploadImgBlob);
 
             const changeData = new FormData();
-            console.log(imgRef.current);
             changeData.append("memberId", member.memberId)
-            changeData.append("newImg", isVaild)
+            changeData.append("newImg", uploadImgBlob)
             const changUrl = "/api/opentalk/member/changeImg";
-            axios.post(changUrl, changeData)
+            axios.post(changUrl, changeData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+              })
             .then((res) => {
                 if(res.data === true){
                     window.alert("변경되었습니다!")
                     setImgPopupOpen(false);
                     setIsChangeData(prevState => !prevState);
+                    setUploadPreview("");
                 }
             })
             .catch((error) => console.log(error));
@@ -203,7 +229,7 @@ const ProfileComponent = ({setIsUpdateData}) => {
                 <Col md={{ span: 3, offset: 4}} className="border border-warning border-3 rounded-3 p-5">
                     <img 
                         alt="프로필 이미지" 
-                        ref={imgRef}
+                        src={curImgUrl}
                         style={{width:200, 
                                 height:200,
                                 backgroundPosition:"center"}}    
@@ -223,7 +249,8 @@ const ProfileComponent = ({setIsUpdateData}) => {
                             height: '400px', // 원하는 높이로 설정
                         }
                     }}>
-                        <img ref={imgRef} img = "img"/>
+                        {}
+                        <img src={uploadPreview} />
                         <FormControl type='file' accept='image/*' onChange={onChangeImageUpload}></FormControl>
                         <Button onClick={ChangeImg}>변경하기</Button>
                         <Button variant='dark' onClick={ChangeImgCancle}>변경취소</Button>
@@ -283,7 +310,10 @@ const ProfileComponent = ({setIsUpdateData}) => {
                         <Button onClick={ChangeImgPopup}>사진 변경</Button>
                         <Button onClick={ChangeNickNamePopup}>닉네임 변경</Button>
                         <Button onClick={ChangePasswordPopup}>비밀번호 변경</Button>
-                        <Button onClick={() => navigate("/opentalk/main")}>이전 페이지</Button>
+                        <Button onClick={() => {
+                            navigate("/opentalk/main")
+                            window.URL.revokeObjectURL(curImgUrl);
+                        }}>이전 페이지</Button>
                     </div>
                 </Col>
             </Row>

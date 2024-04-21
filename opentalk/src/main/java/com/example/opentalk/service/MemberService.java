@@ -11,8 +11,14 @@ import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,18 +41,52 @@ public class MemberService {
                 .memberNickName(signupDto.getMemberNickName())
                 .memberEmail(signupDto.getMemberEmail())
                 .authority(signupDto.getAuthority())
-                .imgUrl("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAMAAzAMBIgACEQEDEQH/xAAaAAEAAwEBAQAAAAAAAAAAAAAAAwQFAQIG/8QAMxABAAIBAgMFBAoDAQAAAAAAAAECAwQRITFBBTJRYXESEyKBM0JSU2JykqHB0UORsRX/xAAYAQEBAQEBAAAAAAAAAAAAAAAAAgEDBP/EABsRAQEBAQEBAQEAAAAAAAAAAAABAhESMSFB/9oADAMBAAIRAxEAPwD64B73kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN/QAJAAAAAAAAAAAAAAAAAAAAeqUtktFKRvMg5EbzEV3mfCIXcHZ17bTmn2Y8I4yuaXTU08ct79bf0nc7tcyr00enr/jifzTuk9xi+7p/pII7VcV7aPT2+pEflVM/Z1q8cMzb8M82mNmrGWPn5iYmYmJjbnu42tXpaamu88LxHC38Me9LY7zW8bTHR1zrqLOPIDWAAAAAAAAAAAAAAHLj0avZmD2MUZrd+3L0ZmOk5MtKR1nZv7RHCOXRG7/ABWYAOSwAAABR7Twe3jjNHOvP0XnLRFqzWeUxs2XlLHz49ZKTS81tziXl3cgAAAAAAAAAAAAAFjQRvq6R0jeWz1Y2hnbVU8921Llv6vPxwBCgAAAACOY1i6+NtZk85if2QJ9bO+qyfm2/ZA7z440AaAAAAAAAAAAAAO0vNL1tHSd2/S0XpW0TvExu+f8PJf7O1EVj3N52r9WZRuKzWkHXaRyWADQAB5yX93jm89HqOPn5MztPU+3MYqWjaOc+KszqbVGZmZ35zMzuOy47OYAAAAAAAAAAAAAAADR0evjhjz/ACsv78uO+/VgcEmHUZcH0V9o8EXCppuf7GbTtO0fSY4mPwpP/Tx/d3/ZHmq6vG+08eDOv2n91j/VKrm1OXNwvbh4RwhszS6W9Zr9onHp/ndnA6ScRb0AawAAAAAAAAAAAAB2AcHYiZnaImZ6bLWLs/LfabzFI8+bLZGydVOuxz5Tu16aDBXb2om/rKeuLHXu0rHyTdxvlhRW08qTv6PXucv3V/0y3jZntvl8/Nbx3scx6w5wfQ+vH1l4vhxX72Os/I9s8sH5jWydn4bdyJpPTZTzaHLj5fHH4VTUrLOKoeO8bbCmAAAAAAAAAAAACfTaTLqLRPdx9bJNFpPffHkmYpHTxa0REREV4VjlEI1riplFhwY8MfBXj49UoOfVgAADAAAJ48wGodRpseePija32oZWo099PPx93paG25etb1mLxvE81Z1Ymx8+LOs0s6ed43nH0mOivPlydZeudnHAGgAAAAAAsaPTTqMvH6OvGZQREzO1ectvTYow4a0r4bzPmnV5G5iWIiKxERERHKAHF0AAAAAAAAAAAActWL1mtoiYnnuxdVgtp8s1nuz3Z8m2g1mGM2C0fWjjWVZvKyxihtMcx2cwAAAACeQLfZuOL6iLfVrH7tb/AKqdmU9nT+19qVtx1f10k/ABLQAAAAAAAAAAAA2/oAY/aGL3eptaO7f4lZqdqU3wxf7M8fRl/wA8XbN7HPX5QBTH/9k=")
+                .imgUrl(signupDto.getImgUrl())
                 .build();
         memberRepository.save(member);
     }
 
-    public boolean changeImage(String memberId, String newImg){
-        Optional<MemberEntity> member = memberRepository.findByMemberId(memberId);
-        if (member.isPresent()){
-            memberRepository.ChangeImg(member.get().getMemberId(), newImg);
-            return true;
+    public boolean changeImage(String memberId, MultipartFile newImg) {
+        Optional<MemberEntity> memberOptional = memberRepository.findByMemberId(memberId);
+        if (memberOptional.isPresent()) {
+            try {
+                MemberEntity member = memberOptional.get();
+
+                // MultipartFile을 byte 배열로 변환하여 엔티티에 저장
+                member.setImgUrl(newImg.getBytes());
+
+                // 이미지가 엔티티에 저장되었으므로 엔티티를 저장
+                memberRepository.save(member);
+
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return false;
+    }
+
+    private String saveImageToFileSystem(MultipartFile newImg) throws IOException {
+        // 이미지를 저장할 디렉토리 경로 설정 (원하는 경로로 변경하세요)
+        String uploadDir = "src/main/resources/static/images";
+
+        // 디렉토리가 존재하지 않으면 생성
+        Path uploadPath = Paths.get(uploadDir);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        // 파일명 생성 (원하는 파일명으로 변경하세요)
+        String fileName = System.currentTimeMillis() + "_" + newImg.getOriginalFilename();
+
+        // 파일 경로 설정
+        Path filePath = uploadPath.resolve(fileName);
+
+        // 파일 저장
+        Files.copy(newImg.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // 파일의 상대 경로를 반환
+        return "/images/" + fileName;
     }
 
     @Transactional

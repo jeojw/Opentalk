@@ -6,10 +6,11 @@ import com.example.opentalk.dto.InviteDto;
 import com.example.opentalk.service.AuthService;
 import com.example.opentalk.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,12 +25,16 @@ public class MemberController {
         AuthDto.ResponseDto myInfoBySecurity = authService.getMyInfo();
         System.out.println(myInfoBySecurity.getMemberNickName());
         return ResponseEntity.ok(myInfoBySecurity);
-        // return ResponseEntity.ok(memberService.getMyInfoBySecurity());
     }
 
     @PostMapping("/api/opentalk/member/changeImg")
-    public ResponseEntity<Boolean> changeImg(@RequestParam("memberId") String memberId, @RequestParam("newImg") String newImg){
-        return ResponseEntity.ok(memberService.changeImage(memberId, newImg));
+    public ResponseEntity<Boolean> changeImg(@RequestParam("memberId") String memberId, @RequestParam("newImg") MultipartFile newImg){
+        try {
+            return ResponseEntity.ok(memberService.changeImage(memberId, newImg));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
     }
 
     @PostMapping("/api/opentalk/member/searchNickName")
