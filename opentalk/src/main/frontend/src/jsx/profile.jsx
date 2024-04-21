@@ -150,8 +150,8 @@ const ProfileComponent = ({setIsUpdateData}) => {
             console.log(uploadImgBlob);
 
             const changeData = new FormData();
-            changeData.append("memberId", member.memberId)
-            changeData.append("newImg", uploadImgBlob)
+            changeData.append("memberId", member.memberId);
+            changeData.append("newImg", uploadImgBlob);
             const changUrl = "/api/opentalk/member/changeImg";
             axios.post(changUrl, changeData, {
                 headers: {

@@ -51,13 +51,8 @@ public class MemberService {
         if (memberOptional.isPresent()) {
             try {
                 MemberEntity member = memberOptional.get();
-
-                // MultipartFile을 byte 배열로 변환하여 엔티티에 저장
                 member.setImgUrl(newImg.getBytes());
-
-                // 이미지가 엔티티에 저장되었으므로 엔티티를 저장
                 memberRepository.save(member);
-
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
