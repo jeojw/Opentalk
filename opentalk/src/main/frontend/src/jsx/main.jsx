@@ -430,7 +430,7 @@ const MainComponent = () => {
             <Col xs={3} md={9} span={12} offset={12} lg="5" className="border-#7B7B7B border-3 rounded-2 p-5"
             style={{
                 backgroundColor: "#7B7B7B",
-                width:"300px", height: "800px"
+                width:"300px", height: "840px"
                 }}>
                 <aside>
                     <div style={{ textAlign: 'center' }}>
@@ -462,16 +462,17 @@ const MainComponent = () => {
                     </div>
                 </aside>
             </Col>
-            <Col className="border-#9D9D9D border-3 rounded-2 p-5" style={{backgroundColor:"#9D9D9D", height: "800px"}}>
+            <Col className="border-#9D9D9D border-3 rounded-2 p-5" style={{backgroundColor:"#9D9D9D", height: "840px"}}>
                 <SetRoomComponent
                     onDataUpdate={setIsUpdateTrigger}
                 />
                 <br></br>
                 <ListGroup>
                     {chatRoomList.map(room=>(
-                        <ListGroupItem className='gap-3' style={{backgroundColor:'#CDCDCD'}}>{room.roomName} | {room.curParticipates} / {room.limitParticipates}
+                        <ListGroupItem style={{backgroundColor:'#CDCDCD',  marginBottom: '10px'}}>{room.roomName} | {room.curParticipates} / {room.limitParticipates}
                         {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
                         <br></br>방장: {room.roomManager}
+                        <br></br>
                         <br></br>{room.introduction}
                         {room.roomTags.length > 0 && (
                             <div>
@@ -525,6 +526,9 @@ const MainComponent = () => {
                     limit={3}
                     changePage={(page) => {
                         handlePageChange(page)
+                    }}
+                    style={{
+                        backgroundColor: "white"
                     }}
                 />
             </Col>

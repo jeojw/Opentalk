@@ -314,7 +314,7 @@ const RoomComponent = ({setIsChangeData}) => {
     }
 
     return(
-        <Container>
+        <Container className="border border-#B6B6B6 border-3 rounded-1 p-5">
             <Container>
                 <Row>
                     <Col className="border-#B6B6B6 border-3 rounded-1 p-5 d-flex justify-content-left align-items-center"
@@ -333,7 +333,7 @@ const RoomComponent = ({setIsChangeData}) => {
                         style={{ width:'800px', height:'400px', overflowY: 'auto', maxHeight: '400px'
                                         ,display: "flex", flexDirection: "column-reverse" }}>
                         {chatList && chatList.length > 0 && (
-                        <ListGroup>
+                        <ListGroup style={{marginBottom: '10px'}}>
                             {chatList.map((_chatMessage) => {
                                 let color;
                                 let style;
@@ -344,7 +344,8 @@ const RoomComponent = ({setIsChangeData}) => {
                                 } else
                                     color = '#FFFFFF';
                                 style = {
-                                    backgroundColor: color
+                                    backgroundColor: color,
+                                    marginBottom: '6px'
                                 };
                                 return (
                                     <ListGroupItem style={style}>
@@ -367,7 +368,8 @@ const RoomComponent = ({setIsChangeData}) => {
                                 } else
                                     color = '#FFFFFF';
                                 style = {
-                                    backgroundColor: color
+                                    backgroundColor: color,
+                                    marginBottom: '6px'
                                 };
                                 return (
                                     <ListGroupItem style={style}>
@@ -384,7 +386,7 @@ const RoomComponent = ({setIsChangeData}) => {
                         style={{ width:'335px', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#B9B9B9" }}>
                         <h3>참여명단</h3>
                         {roomInformation?.members.map((_member, index) => (
-                            <ListGroup className='gap-2'>
+                            <ListGroup style={{marginBottom: '6px'}}>
                                 <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                 {_member?.memberNickName}
                                 {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
