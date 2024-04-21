@@ -335,15 +335,18 @@ const RoomComponent = ({setIsChangeData}) => {
                         {chatList && chatList.length > 0 && (
                         <ListGroup style={{marginBottom: '10px'}}>
                             {chatList.map((_chatMessage) => {
+                                let fontcolor = "#000000";
                                 let color;
                                 let style;
                                 if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
-                                    color  = '#FFF824';
+                                    color  = "#B9B9B9";
                                 } else if (_chatMessage.member.memberNickName === 'system') {
-                                    color  = '#A2A2A2';
+                                    color  = '#000000';
+                                    fontcolor = "#FFFFFF"
                                 } else
                                     color = '#FFFFFF';
                                 style = {
+                                    color: fontcolor,
                                     backgroundColor: color,
                                     marginBottom: '6px'
                                 };
@@ -359,15 +362,18 @@ const RoomComponent = ({setIsChangeData}) => {
                         {preChatList && preChatList.length > 0 && (
                         <ListGroup>
                             {preChatList.map((_chatMessage) => {
+                                let fontcolor = "#000000";
                                 let color;
                                 let style;
                                 if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
-                                    color  = '#FFF824';
+                                    color  = "#B9B9B9";
                                 } else if (_chatMessage.member.memberNickName === 'system') {
-                                    color  = '#A2A2A2';
+                                    color  = '#000000';
+                                    fontcolor = "#FFFFFF"
                                 } else
                                     color = '#FFFFFF';
                                 style = {
+                                    color: fontcolor,
                                     backgroundColor: color,
                                     marginBottom: '6px'
                                 };
