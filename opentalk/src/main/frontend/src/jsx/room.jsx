@@ -317,8 +317,8 @@ const RoomComponent = ({setIsChangeData}) => {
         <Container className="border border-#B6B6B6 border-3 rounded-1 p-5">
             <Container>
                 <Row>
-                    <Col className="border border-#B6B6B6 border-3 rounded-1 p-5 d-flex justify-content-left align-items-center"
-                    style={{backgroundColor:"#B6B6B6", height:"110px"}}>
+                    <Col className="border border-#C3C3C3 border-3 rounded-1 p-5 d-flex justify-content-left align-items-center"
+                    style={{backgroundColor:"#C3C3C3", height:"110px"}}>
                         {/* Option Chaining!!! */}
                         <h2>{roomInformation?.roomName}</h2> 
                     </Col>
@@ -338,32 +338,17 @@ const RoomComponent = ({setIsChangeData}) => {
                                 let fontcolor = "#000000";
                                 let color;
                                 let textAlign = "left";
-                                let content;
                                 if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
-                                    color  = "#B9B9B9";
-                                    content = (
-                                        <>
-                                            {_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}
-                                        </>
-                                    );
+                                    color  = "#C3C3C3";
                                 } else if (_chatMessage.member.memberNickName === 'system') {
                                     color  = '#000000';
                                     fontcolor = "#FFFFFF"
-                                    content = (
-                                        <>
-                                            {_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}
-                                        </>
-                                    );
                                 } else{
                                     color = '#FFFFFF';
                                     textAlign = "right"
-                                    content = (
-                                        <>
-                                            {_chatMessage.message}&nbsp;: {_chatMessage.member.memberNickName}
-                                        </>
-                                    );
                                 }
                                 const style = {
+                                    border: color,
                                     color: fontcolor,
                                     backgroundColor: color,
                                     marginBottom: '6px',
@@ -371,7 +356,10 @@ const RoomComponent = ({setIsChangeData}) => {
                                 };
                                 return (
                                     <ListGroupItem style={style}>
-                                        {content}
+                                        <strong>{_chatMessage.member.memberNickName}</strong>
+                                        <br></br>
+                                        <hr/>
+                                        {_chatMessage.message}
                                     </ListGroupItem>
                                 );
                             })}
@@ -384,32 +372,18 @@ const RoomComponent = ({setIsChangeData}) => {
                                 let fontcolor = "#000000";
                                 let color;
                                 let textAlign = "left";
-                                let content;
                                 if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
-                                    color  = "#B9B9B9";
-                                    content = (
-                                        <>
-                                            {_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}
-                                        </>
-                                    );
+                                    color  = "#C3C3C3";
                                 } else if (_chatMessage.member.memberNickName === 'system') {
                                     color  = '#000000';
                                     fontcolor = "#FFFFFF"
-                                    content = (
-                                        <>
-                                            {_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}
-                                        </>
-                                    );
+
                                 } else{
                                     color = '#FFFFFF';
                                     textAlign = "right"
-                                    content = (
-                                        <>
-                                            {_chatMessage.message}&nbsp;: {_chatMessage.member.memberNickName}
-                                        </>
-                                    );
                                 }
                                 const style = {
+                                    border: color,
                                     color: fontcolor,
                                     backgroundColor: color,
                                     marginBottom: '6px',
@@ -417,7 +391,10 @@ const RoomComponent = ({setIsChangeData}) => {
                                 };
                                 return (
                                     <ListGroupItem style={style}>
-                                        {content}
+                                        <strong>{_chatMessage.member.memberNickName}</strong>
+                                        <br></br>
+                                        <hr/>
+                                        {_chatMessage.message}
                                     </ListGroupItem>
                                 );
                             })}
@@ -427,7 +404,7 @@ const RoomComponent = ({setIsChangeData}) => {
                     <Col 
                         className="border-#9D9D9D border-1 rounded-1 p-4" 
                         xs={6} 
-                        style={{ width:'335px', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#B9B9B9" }}>
+                        style={{ width:'335px', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
                         <h5>참여명단</h5>
                         {roomInformation?.members.map((_member, index) => (
                             <ListGroup style={{marginBottom: '6px'}}>
@@ -453,7 +430,7 @@ const RoomComponent = ({setIsChangeData}) => {
                             <InputGroup style={{width:"800px"}}>
                                 <Form.Control type="text" value={chat} placeholder='채팅 내용을 입력해 주세요.' onChange={handleChange} />            
                             </InputGroup>
-                            <Button variant='#B9B9B9' style={{backgroundColor:"#B9B9B9"}} onClick={() => publishChat(chat)}>전송</Button>          
+                            <Button variant='#C3C3C3' style={{backgroundColor:"#C3C3C3"}} onClick={() => publishChat(chat)}>전송</Button>          
                         </FormGroup>
                     </Col>
                 </Row>

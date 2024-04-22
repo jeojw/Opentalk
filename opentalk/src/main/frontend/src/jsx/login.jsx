@@ -44,20 +44,23 @@ const LoginComponent = () => {
     }
 
    return (
-    <Container style={{ minHeight: '100vh'}}>
+        <Container style={{ minHeight: '100vh'}}>
             <Row>
                 <Col md={{ span: 3, offset: 4 }} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
-                    <h2 style={{color:"white"}}>로그인</h2>
+                    <h2 style={{color:"white"}}>
+                        <strong>로그인</strong>
+                    </h2>
+                    <hr/>
                     <Form onSubmit={CheckLogin}>
                         <FormGroup>
-                            <Form.Label style={{color:"white"}}>아이디</Form.Label>
+                            <Form.Label style={{color:"white"}}><strong>아이디</strong></Form.Label>
                             <Form.Control type="text" placeholder="아이디를 입력하세요" value={memberId} onChange={(e) => setMemberId(e.target.value)} />
                         </FormGroup>
                         <FormGroup>
-                            <Form.Label style={{color:"white"}}>비밀번호</Form.Label>
+                            <Form.Label style={{color:"white"}}><strong>비밀번호</strong></Form.Label>
                             <Form.Control type="password" placeholder="비밀번호를 입력하세요" value={memberPw} onChange={(e) => setMemberPw(e.target.value)} />
                         </FormGroup>
-                        <br></br>
+                        <hr/>
                         <div className="d-grid gap-2">
                             <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckLogin} size='4'>로그인</Button>
                             <Button variant='#E0E0E0' style={{backgroundColor:"#E0E0E0"}} onClick={() => navigate("/opentalk/member/enroll")}>회원가입</Button>
@@ -74,7 +77,6 @@ const LoginComponent = () => {
                 </Col>
             </Row>
         </Container>
-
     );
 }
 

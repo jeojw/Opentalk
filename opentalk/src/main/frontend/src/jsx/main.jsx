@@ -407,7 +407,7 @@ const MainComponent = () => {
                 <br></br>방장: {_message.inviter}
                 <br></br>메세지: {_message.message}
                 <br></br>
-                <Button variant="#747474" style={{color:"white", backgroundColor:'#747474'}} onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}>입장하기</Button>
+                <Button variant="5F5F5F" style={{color:"white", backgroundColor:'5F5F5F'}} onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}>입장하기</Button>
                 <Button variant='dark'>메세지 지우기</Button>
                 </ListGroupItem>
             ))}
@@ -418,7 +418,7 @@ const MainComponent = () => {
             <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-#7B7B7B border-3 rounded-2 p-5"
             style={{
                 backgroundColor: "#7B7B7B",
-                width:"300px", height: "840px"
+                width:"300px", height: "975px"
                 }}>
                 <aside>
                     <div style={{ textAlign: 'center' }}>
@@ -426,8 +426,15 @@ const MainComponent = () => {
                             src={curImgUrl} 
                             style={{width:200, 
                             height:200,
-                            backgroundPosition:"center"}}></img>
-                        <p>환영합니다, {member?.memberNickName}님</p>
+                            backgroundPosition:"center",
+                            borderRadius: "50%"}}></img>
+                        <p style={{color:"white"}}>환영합니다</p>
+                        <h4 style={{color:"white"}}>
+                            <strong>    
+                                {member?.memberNickName}님
+                            </strong>
+                        </h4>
+                        <hr/>
                     </div>
                     <div className="d-grid gap-4">
                         <Button 
@@ -450,29 +457,34 @@ const MainComponent = () => {
                     </div>
                 </aside>
             </Col>
-            <Col className="border border-#9D9D9D border-3 rounded-2 p-5" style={{backgroundColor:"#9D9D9D", height: "840px"}}>
+            <Col className="border border-#C3C3C3 border-3 rounded-2 p-5" style={{backgroundColor:"#C3C3C3", height: "975px"}}>
                 <SetRoomComponent
                     onDataUpdate={setIsUpdateTrigger}
                 />
                 <br></br>
                 <ListGroup>
                     {chatRoomList.map(room=>(
-                        <ListGroupItem style={{backgroundColor:'#CDCDCD',  marginBottom: '10px'}}>{room.roomName} | {room.curParticipates} / {room.limitParticipates}
+                        <ListGroupItem style={{border:'#8F8F8F', backgroundColor:'#8F8F8F',  marginBottom: '10px'}}>
+                            <strong>
+                                {room.roomName} | {room.curParticipates} / {room.limitParticipates}
+                            </strong>
                         {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
-                        <br></br>방장: {room.roomManager}
-                        <br></br>
-                        <br></br>{room.introduction}
+                        <hr/>
+                        <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img> 
+                        <strong>{room.roomManager}</strong>
+                        <hr/>
+                        {room.introduction}
                         {room.roomTags.length > 0 && (
                             <div>
                                 <ListGroup className="list-group-horizontal list-group-flush gap-2">        
                                 {room.roomTags.map(tag=>(
-                                    <ListGroupItem style={{backgroundColor:'#CDCDCD', color:"#898989"}}># {tag.tagName}</ListGroupItem>
+                                    <ListGroupItem style={{border:"#8F8F8F", backgroundColor:'#8F8F8F', color:"#4B4B4B"}}># {tag.tagName}</ListGroupItem>
                                 ))}
                                 </ListGroup>
                             </div>
                         )}
                         <div className="d-flex flex-row gap-2">
-                            <Button variant="#747474" style={{color:"white", backgroundColor:'#747474'}} onClick={() => EnterRoom({roomInfo: room})}>입장하기</Button>
+                            <Button variant="#CDCDCD" style={{backgroundColor:'#CDCDCD'}} onClick={() => EnterRoom({roomInfo: room})}><strong>입장하기</strong></Button>
                             {room.roomManager === member?.memberNickName && (
                             <Button variant="dark" onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
                             )}
@@ -501,9 +513,13 @@ const MainComponent = () => {
                             style={{flex: '5'}}></FormControl>
                         
                     </InputGroup>
-                    <Button variant="#CDCDCD" style={{backgroundColor:'#CDCDCD'}} onClick={search}>검색</Button>
+                    <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F'}} onClick={search}>
+                        <strong>
+                            검색
+                        </strong>
+                    </Button>
                         {isSearch && (
-                        <Button variant="#747474" style={{color:"white", backgroundColor:'#747474'}} onClick={initSearch}>초기화</Button>
+                        <Button variant="#8F8F8F" style={{color:"white", backgroundColor:'#8F8F8F'}} onClick={initSearch}>초기화</Button>
                     )}
                 </FormGroup>
                 <br></br>

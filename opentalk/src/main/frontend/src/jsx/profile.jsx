@@ -95,18 +95,6 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
         setImgPopupOpen(false);
     }
 
-    const dataURItoBlob = (dataURI) => {
-        const byteString = atob(dataURI.split(',')[1]);
-        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-        for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-        const blob = new Blob([ab], { type: mimeString });
-        return blob;
-    };
-
     const resizeFile = (file) =>
         new Promise((resolve) => {
             const reader = new FileReader();
@@ -233,14 +221,15 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
                         src={curImgUrl}
                         style={{width:200, 
                                 height:200,
-                                backgroundPosition:"center"}}    
+                                backgroundPosition:"center",
+                                borderRadius: "50%"}}    
                     ></img>
                     <br></br>
                     <br></br>
                     <ListGroup>
-                        <ListGroupItem style={{backgroundColor:"#CDCDCD",  marginBottom: '5px'}}>이름: {member.memberName}</ListGroupItem>
-                        <ListGroupItem style={{backgroundColor:"#CDCDCD",  marginBottom: '5px'}}>닉네임: {member.memberNickName}</ListGroupItem>
-                        <ListGroupItem style={{backgroundColor:"#CDCDCD"}}>이메일: {member.memberEmail}</ListGroupItem>
+                        <ListGroupItem style={{border:'#CDCDCD', backgroundColor:"#CDCDCD",  marginBottom: '5px'}}>이름: <strong>{member.memberName}</strong></ListGroupItem>
+                        <ListGroupItem style={{border:'#CDCDCD', backgroundColor:"#CDCDCD",  marginBottom: '5px'}}>닉네임: <strong>{member.memberNickName}</strong></ListGroupItem>
+                        <ListGroupItem style={{border:'#CDCDCD', backgroundColor:"#CDCDCD"}}>이메일: <strong>{member.memberEmail}</strong></ListGroupItem>
                     </ListGroup>
                     <br></br>
                     <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}
