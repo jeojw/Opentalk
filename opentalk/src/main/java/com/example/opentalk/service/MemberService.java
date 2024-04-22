@@ -24,7 +24,12 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +44,8 @@ public class MemberService {
     private String bucketName;
     @Value("${spring.cloud.gcp.storage.credentials.location}")
     private String keyFileName;
+    @Value("${spring.cloud.gcp.storage.project-id}")
+    private String bucketId;
 
     public void singUp(AuthDto.SignupDto signupDto){
         MemberEntity member = MemberEntity.builder()
@@ -53,11 +60,32 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    public void deletePreImage(String objectURL){
+        String projectId = bucketId;
+        String objectName = "null";
+        String bucketName_param = bucketName;
+        Pattern pattern = Pattern.compile("/([^/]+)$");
+        Matcher matcher = pattern.matcher(objectURL);
+        if (matcher.find()) {
+            objectName = matcher.group(1);
+        }
+
+        Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+        Blob blob = storage.get(bucketName_param, objectName);
+
+        Storage.BlobSourceOption precondition =
+                Storage.BlobSourceOption.generationMatch(blob.getGeneration());
+
+        storage.delete(bucketName, objectName, precondition);
+    }
+
     public boolean changeImage(String memberId, MultipartFile newImg) throws IOException {
         Optional<MemberEntity> memberOptional = memberRepository.findByMemberId(memberId);
+        Optional<String> curImg = memberRepository.returnCurImg(memberId);
 
         if (memberOptional.isPresent()) {
             InputStream keyFile = ResourceUtils.getURL(keyFileName).openStream();
+            System.out.print(keyFileName);
 
             String uuid = UUID.randomUUID().toString();
             String ext = newImg.getContentType();
@@ -69,6 +97,8 @@ public class MemberService {
 
             String imgUrl = "https://storage.googleapis.com/" + bucketName + "/" + uuid;
 
+            curImg.ifPresent(this::deletePreImage);
+
             if (newImg.isEmpty()) {
                 imgUrl = null;
                 return false;
@@ -77,22 +107,13 @@ public class MemberService {
                         .setContentType(ext).build();
 
                 Blob blob = storage.create(blobInfo, newImg.getInputStream());
+                memberOptional.get().setImgUrl(imgUrl);
+                memberRepository.save(memberOptional.get());
             }
 
             return true;
         }
         return false;
-    }
-
-    private String createSaveFileName(String originalFilename) {
-        String ext = extractExt(originalFilename);
-        String uuid = UUID.randomUUID().toString();
-        return uuid + "." + ext;
-    }
-
-    private String extractExt(String originalFilename) {
-        int pos = originalFilename.lastIndexOf(".");
-        return originalFilename.substring(pos + 1);
     }
 
     @Transactional
