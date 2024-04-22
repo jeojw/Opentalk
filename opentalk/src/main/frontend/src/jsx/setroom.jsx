@@ -162,7 +162,7 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                 <Row>
                     <Col>
                         <InputGroup>
-                            <InputGroup.Text>방 이름</InputGroup.Text>
+                            <InputGroup.Text style={{backgroundColor:'#8F8F8F'}}>방 이름</InputGroup.Text>
                             <FormControl 
                                 type='text' 
                                 value={roomName} 
@@ -171,7 +171,7 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                         </InputGroup>
                         <br></br>
                         <InputGroup>
-                            <InputGroup.Text>인원수</InputGroup.Text>
+                            <InputGroup.Text style={{backgroundColor:'#8F8F8F'}}>인원수</InputGroup.Text>
                             <FormControl 
                                 type="number"
                                 min={3} 
@@ -182,7 +182,7 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                         </InputGroup>
                         <br></br>
                         <InputGroup className='d-flex flex-row gap-1'>
-                            <InputGroup.Text>비밀번호</InputGroup.Text>
+                            <InputGroup.Text style={{backgroundColor:'#8F8F8F'}}>비밀번호</InputGroup.Text>
                             <Form.Check 
                                 type='checkbox' 
                                 checked={existLock} 
@@ -213,7 +213,7 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                                 placeholder='태그 입력' 
                                 onChange={GetInputTag}
                             ></FormControl>
-                            <Button onClick={()=>AppendTag(tag)}>태그 추가</Button>
+                            <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F'}} onClick={()=>AppendTag(tag)}>태그 추가</Button>
                         </InputGroup>
 
                         <ListGroup className="list-group list-group-horizontal">
@@ -223,8 +223,8 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                         </ListGroup>
                         <br></br>
                         <div className='d-flex flex-row gap-2'>
-                            <Button onClick={MakeRoom}>방 생성하기</Button>
-                            <Button onClick={closeModal}>생성 취소</Button>
+                            <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F'}} onClick={MakeRoom}><strong>방 생성하기</strong></Button>
+                            <Button variant="dark" style={{color:'#FFFFFF'}} onClick={closeModal}><strong>생성 취소</strong></Button>
                         </div>
                     </Col>
                 </Row>

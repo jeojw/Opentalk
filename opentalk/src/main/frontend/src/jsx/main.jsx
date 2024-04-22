@@ -464,7 +464,7 @@ const MainComponent = () => {
                 <br></br>
                 <ListGroup>
                     {chatRoomList.map(room=>(
-                        <ListGroupItem style={{border:'#8F8F8F', backgroundColor:'#8F8F8F',  marginBottom: '10px'}}>
+                        <ListGroupItem style={{border:'#8F8F8F', backgroundColor:'#8F8F8F',  marginBottom: '5px'}}>
                             <strong>
                                 {room.roomName} | {room.curParticipates} / {room.limitParticipates}
                             </strong>

@@ -68,19 +68,26 @@ const InviteMemberComponent = ({roomInfo, role}) => {
                 <Row>
                     <Col>
                         <InputGroup>
-                            <InputGroup.Text>닉네임</InputGroup.Text>
+                            <InputGroup.Text style={{backgroundColor:'#8F8F8F'}}><strong>닉네임</strong></InputGroup.Text>
                             <FormControl type="text" value={nickName} onChange={GetInputNickName}></FormControl>
-                            <Button onClick={() => SearchByNickName(nickName)}>검색</Button>
+                            <Button variant='#8F8F8F' style={{backgroundColor:'#8F8F8F'}} onClick={() => SearchByNickName(nickName)}><strong>검색</strong></Button>
                         </InputGroup>
+                        <hr/>
                     </Col>
                 </Row>
                 <Row>
-                    <Col style={{ overflowY: 'auto', maxHeight: '400px' }}>
+                    <Col style={{ overflowY: 'auto', maxHeight: '400px'}}>
                         {searchList && searchList.length > 0 && (
                             <ListGroup>
                                 {searchList.map((_member, index) => (
-                                    <ListGroupItem>{_member.memberNickName}<Button onClick={() => InviteMember(_member.memberNickName)}>초대</Button></ListGroupItem>
+                                    <ListGroupItem style={{ backgroundColor:"#CDCDCD", marginBottom: '7px' }}><strong>{_member.memberNickName}</strong>
+                                    <hr style={{border: "1px solid #808080"}}/>
+                                    <Button variant='#8F8F8F' 
+                                    style={{backgroundColor:'#8F8F8F'}}
+                                    onClick={() => InviteMember(_member.memberNickName)}>
+                                    <strong>초대</strong></Button></ListGroupItem>
                                 ))}
+                                <hr/>
                             </ListGroup>
                         )}
                         <Button variant='dark' onClick={CloseInviteModal}>취소</Button>
