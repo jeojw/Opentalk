@@ -4,6 +4,8 @@ import com.example.opentalk.Jwt.JwtAccessDeniedHandler;
 import com.example.opentalk.Jwt.JwtAuthenticationEntryPoint;
 import com.example.opentalk.Jwt.JwtAuthenticationFilter;
 import com.example.opentalk.Jwt.JwtTokenProvider;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -76,6 +78,11 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public Storage storage() {
+        return StorageOptions.getDefaultInstance().getService();
     }
 
 }

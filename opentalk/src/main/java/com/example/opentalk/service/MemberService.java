@@ -8,21 +8,23 @@ import com.example.opentalk.entity.MemberEntity;
 import com.example.opentalk.repository.ChatRoomRepository;
 import com.example.opentalk.repository.InviteMessageRepository;
 import com.example.opentalk.repository.MemberRepository;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.io.InputStream;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +35,10 @@ public class MemberService {
     private final BCryptPasswordEncoder encoder;
     private final InviteMessageRepository inviteMessageRepository;
     private final ResourceLoader resourceLoader;
+    @Value("${spring.cloud.gcp.storage.bucket}")
+    private String bucketName;
+    @Value("${spring.cloud.gcp.storage.credentials.location}")
+    private String keyFileName;
 
     public void singUp(AuthDto.SignupDto signupDto){
         MemberEntity member = MemberEntity.builder()
@@ -49,17 +55,29 @@ public class MemberService {
 
     public boolean changeImage(String memberId, MultipartFile newImg) throws IOException {
         Optional<MemberEntity> memberOptional = memberRepository.findByMemberId(memberId);
+
         if (memberOptional.isPresent()) {
-            String originalFilename = newImg.getOriginalFilename();
-            String saveFileName = createSaveFileName(originalFilename);
+            InputStream keyFile = ResourceUtils.getURL(keyFileName).openStream();
 
-            String uploadDirectory = "classpath:static/";
-            Path uploadPath = Paths.get(resourceLoader.getResource(uploadDirectory).getURI());
-            File destinationFile = uploadPath.resolve(saveFileName).toFile();
-            newImg.transferTo(destinationFile);
+            String uuid = UUID.randomUUID().toString();
+            String ext = newImg.getContentType();
 
-            memberOptional.get().setImgUrl("/static/" + saveFileName);
-            memberRepository.save(memberOptional.get());
+            Storage storage = StorageOptions.newBuilder()
+                    .setCredentials(GoogleCredentials.fromStream(keyFile))
+                    .build()
+                    .getService();
+
+            String imgUrl = "https://storage.googleapis.com/" + bucketName + "/" + uuid;
+
+            if (newImg.isEmpty()) {
+                imgUrl = null;
+                return false;
+            } else {
+                BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, uuid)
+                        .setContentType(ext).build();
+
+                Blob blob = storage.create(blobInfo, newImg.getInputStream());
+            }
 
             return true;
         }
