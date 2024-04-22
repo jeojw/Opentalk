@@ -29,6 +29,38 @@ const RoomComponent = ({setIsChangeData}) => {
     const client = useRef({});
     const navigate = useNavigate();
 
+    const preventGoBack = () => {
+        window.history.pushState(null, "", window.location.href);
+        ExitRoom();
+    };
+
+    const exitWindow = (event) => {
+        event.preventDefault(); // 이벤트 기본 동작 방지
+        event.returnValue = ''; 
+        window.history.pushState(null, "", window.location.href);
+        ExitRoom();
+    };
+
+    useEffect(() => {
+        (() => {
+            window.history.pushState(null, "", window.location.href);
+            window.addEventListener("popstate", preventGoBack);
+        })();
+        return () => {
+            window.removeEventListener("popstate", preventGoBack);
+        };
+    },[myInfo]);
+
+    useEffect(() => {
+        (() => {
+            window.history.pushState(null, "", window.location.href);
+            window.addEventListener("beforeunload", exitWindow);
+        })();
+        return () => {
+            window.removeEventListener("beforeunload", exitWindow);
+        };
+    },[myInfo]);
+
     useEffect(() => {
         const fetchInfo = async () => {
             console.log(loginToken);
@@ -271,45 +303,38 @@ const RoomComponent = ({setIsChangeData}) => {
     const ExitRoom = () => {
         if (window.confirm("방을 나가시겠습니까?")){
             console.log(myInfo);
-            if (myInfo?.memberNickName === undefined){
-                window.alert("이미 로그아웃 되었습니다.")
-                navigate("/opentalk/member/login");
-            }
-            else{
-                const exitUrl = '/api/opentalk/exitRoom';
-                console.log(roomInformation);
-                axios.post(exitUrl, {
-                    chatroom: roomInformation,
-                    member: myInfo,
-                    role: role
-                })
-                .then((res) => {
-                    if (res.status === 200){
-                        navigate("/opentalk/main");
-                        setIsChangeRoom(prevState => !prevState);
-                        console.log(isChangeRoom);
-                    }
-                })
-                .catch((error) => console.log(error));
-                
-                const curTime = new Date();
-                const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
-                const kr_Time = new Date(utc + (KR_TIME_DIFF));
-
-                client.current.publish({
-                    destination: '/pub/chat/exit',
-                    body: JSON.stringify({
-                        chatRoom: roomInformation,
-                        member: {
-                            memberId:"system",
-                            memberNickName:"system"
-                        },
-                        message: `${myInfo?.memberNickName}님이 채팅방을 나갔습니다.`,
-                        timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
-                    })
-                });
-            }
+            const exitUrl = '/api/opentalk/exitRoom';
+            console.log(roomInformation);
+            axios.post(exitUrl, {
+                chatroom: roomInformation,
+                member: myInfo,
+                role: role
+            })
+            .then((res) => {
+                if (res.status === 200){
+                    navigate("/opentalk/main");
+                    setIsChangeRoom(prevState => !prevState);
+                    console.log(isChangeRoom);
+                }
+            })
+            .catch((error) => console.log(error));
             
+            const curTime = new Date();
+            const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+            const kr_Time = new Date(utc + (KR_TIME_DIFF));
+
+            client.current.publish({
+                destination: '/pub/chat/exit',
+                body: JSON.stringify({
+                    chatRoom: roomInformation,
+                    member: {
+                        memberId:"system",
+                        memberNickName:"system"
+                    },
+                    message: `${myInfo?.memberNickName}님이 채팅방을 나갔습니다.`,
+                    timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
+                })
+            });
         }
     }
 
