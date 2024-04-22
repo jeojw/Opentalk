@@ -34,7 +34,7 @@ public class AuthService {
     private final String SERVER = "Server";
 
     @Transactional
-    public AuthDto.ResponseDto getMyInfo(){ //??? 왜 anonymous가 발생할까....
+    public AuthDto.ResponseDto getMyInfo(){
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(SecurityContextHolder.getContext().getAuthentication().getName());
 
         return memberEntity.map(AuthDto.ResponseDto::toResponse).orElse(null);

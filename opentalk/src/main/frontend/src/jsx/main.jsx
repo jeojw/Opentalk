@@ -129,16 +129,7 @@ const MainComponent = () => {
                     }
                 }).then((res) => {
                     if (res.status === 200){
-                        const blob = new Blob([res.data.imageUrl], { type: 'image/jpeg' });
-    
-                        const myFile = new File([blob], "imageName", { type: 'image/jpeg' });
-            
-                        const reader = new FileReader();
-                        reader.onload = (event) => {
-                            const preview = event.target.result;
-                            setCurImgUrl(preview);
-                        };
-                        reader.readAsDataURL(myFile);
+                        setCurImgUrl(res.data.imgUrl);
                         setMember(res.data);
                         console.log(res.data);
                     }
@@ -265,7 +256,6 @@ const MainComponent = () => {
                 })
                 .then((res) => {
                     if (res.data === "Success"){
-                        window.URL.revokeObjectURL(curImgUrl);
                         naviagte(`/opentalk/room/${roomInfo.roomId}`);
                     }
                     else{
@@ -287,7 +277,6 @@ const MainComponent = () => {
                     })
                     .then((res) => {
                         if (res.data === "Success"){
-                            window.URL.revokeObjectURL(curImgUrl);
                             naviagte(`/opentalk/room/${roomInfo.roomId}`);
                         }
                         else if (res.data ==="Incorrect"){
@@ -369,7 +358,6 @@ const MainComponent = () => {
                 .then((res) => {
                     if (res.status === 200){
                         window.alert("로그아웃 되었습니다.");
-                        window.URL.revokeObjectURL(curImgUrl);
                         setIsLogin(false);
                         naviagte("/opentalk/member/login");
                     }
@@ -419,7 +407,7 @@ const MainComponent = () => {
                 <br></br>방장: {_message.inviter}
                 <br></br>메세지: {_message.message}
                 <br></br>
-                <Button onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}>입장하기</Button>
+                <Button variant="#747474" style={{color:"white", backgroundColor:'#747474'}} onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}>입장하기</Button>
                 <Button variant='dark'>메세지 지우기</Button>
                 </ListGroupItem>
             ))}
@@ -427,7 +415,7 @@ const MainComponent = () => {
             <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={closeModal}>닫기</Button>
         </Modal>
         <Row className="justify-content-end">
-            <Col xs={3} md={9} span={12} offset={12} lg="5" className="border-#7B7B7B border-3 rounded-2 p-5"
+            <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-#7B7B7B border-3 rounded-2 p-5"
             style={{
                 backgroundColor: "#7B7B7B",
                 width:"300px", height: "840px"
@@ -462,7 +450,7 @@ const MainComponent = () => {
                     </div>
                 </aside>
             </Col>
-            <Col className="border-#9D9D9D border-3 rounded-2 p-5" style={{backgroundColor:"#9D9D9D", height: "840px"}}>
+            <Col className="border border-#9D9D9D border-3 rounded-2 p-5" style={{backgroundColor:"#9D9D9D", height: "840px"}}>
                 <SetRoomComponent
                     onDataUpdate={setIsUpdateTrigger}
                 />
@@ -476,7 +464,7 @@ const MainComponent = () => {
                         <br></br>{room.introduction}
                         {room.roomTags.length > 0 && (
                             <div>
-                                <ListGroup className="list-group-horizontal list-group-flush gap-2 list-group-sm">        
+                                <ListGroup className="list-group-horizontal list-group-flush gap-2">        
                                 {room.roomTags.map(tag=>(
                                     <ListGroupItem style={{backgroundColor:'#CDCDCD', color:"#898989"}}># {tag.tagName}</ListGroupItem>
                                 ))}
@@ -494,7 +482,7 @@ const MainComponent = () => {
                 </ListGroup>
                 <br></br>
                 <FormGroup className="d-flex align-items-center justify-content-center">
-                    <InputGroup style={{width:"800px"}}>
+                    <InputGroup style={{width:"700px"}}>
                         <Form.Select 
                             onChange={selectMenuHandle} 
                             value={selectManu}
@@ -515,7 +503,7 @@ const MainComponent = () => {
                     </InputGroup>
                     <Button variant="#CDCDCD" style={{backgroundColor:'#CDCDCD'}} onClick={search}>검색</Button>
                         {isSearch && (
-                        <Button onClick={initSearch}>초기화</Button>
+                        <Button variant="#747474" style={{color:"white", backgroundColor:'#747474'}} onClick={initSearch}>초기화</Button>
                     )}
                 </FormGroup>
                 <br></br>

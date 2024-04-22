@@ -31,9 +31,8 @@ public class MemberEntity {
     private String memberEmail;
     @Enumerated(EnumType.STRING)
     private UserRole authority;
-    @Lob
-    @Column(nullable = false, columnDefinition = "mediumblob")
-    private byte[] imgUrl;
+    @Column(nullable = false)
+    private String imgUrl;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
     private List<ChatRoomMemberEntity> rooms;
@@ -53,7 +52,7 @@ public class MemberEntity {
     public MemberEntity(String memberId,
                         String memberPassword, String memberName,
                         String memberNickName, String memberEmail,
-                        UserRole authority, byte[] imgUrl){
+                        UserRole authority, String imgUrl){
         this.memberId = memberId;
         this.memberPassword = memberPassword;
         this.memberName = memberName;

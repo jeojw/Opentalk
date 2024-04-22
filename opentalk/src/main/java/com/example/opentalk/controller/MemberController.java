@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -27,7 +28,7 @@ public class MemberController {
     }
 
     @PostMapping("/api/opentalk/member/changeImg")
-    public ResponseEntity<Boolean> changeImg(@RequestParam("memberId") String memberId, @RequestParam("newImg") MultipartFile newImg){
+    public ResponseEntity<Boolean> changeImg(@RequestParam("memberId") String memberId, @RequestParam("newImg") MultipartFile newImg) throws IOException {
         // 이미지가 엔티티에 저장되었으므로 엔티티를 저장
         return ResponseEntity.ok(memberService.changeImage(memberId, newImg));
     }

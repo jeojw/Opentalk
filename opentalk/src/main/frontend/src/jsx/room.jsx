@@ -317,14 +317,14 @@ const RoomComponent = ({setIsChangeData}) => {
         <Container className="border border-#B6B6B6 border-3 rounded-1 p-5">
             <Container>
                 <Row>
-                    <Col className="border-#B6B6B6 border-3 rounded-1 p-5 d-flex justify-content-left align-items-center"
+                    <Col className="border border-#B6B6B6 border-3 rounded-1 p-5 d-flex justify-content-left align-items-center"
                     style={{backgroundColor:"#B6B6B6", height:"110px"}}>
                         {/* Option Chaining!!! */}
                         <h2>{roomInformation?.roomName}</h2> 
                     </Col>
                 </Row>
             </Container>
-            <Container className="border-#898989 border-1 rounded-1 p-5"
+            <Container className="border border-#898989 border-3 rounded-1 p-5"
             style={{backgroundColor:"#898989"}}>
                 <Row>
                     <Col 
@@ -337,22 +337,41 @@ const RoomComponent = ({setIsChangeData}) => {
                             {chatList.map((_chatMessage) => {
                                 let fontcolor = "#000000";
                                 let color;
-                                let style;
+                                let textAlign = "left";
+                                let content;
                                 if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
                                     color  = "#B9B9B9";
+                                    content = (
+                                        <>
+                                            {_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}
+                                        </>
+                                    );
                                 } else if (_chatMessage.member.memberNickName === 'system') {
                                     color  = '#000000';
                                     fontcolor = "#FFFFFF"
-                                } else
+                                    content = (
+                                        <>
+                                            {_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}
+                                        </>
+                                    );
+                                } else{
                                     color = '#FFFFFF';
-                                style = {
+                                    textAlign = "right"
+                                    content = (
+                                        <>
+                                            {_chatMessage.message}&nbsp;: {_chatMessage.member.memberNickName}
+                                        </>
+                                    );
+                                }
+                                const style = {
                                     color: fontcolor,
                                     backgroundColor: color,
-                                    marginBottom: '6px'
+                                    marginBottom: '6px',
+                                    textAlign: textAlign,
                                 };
                                 return (
                                     <ListGroupItem style={style}>
-                                        {_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}
+                                        {content}
                                     </ListGroupItem>
                                 );
                             })}
@@ -364,22 +383,41 @@ const RoomComponent = ({setIsChangeData}) => {
                             {preChatList.map((_chatMessage) => {
                                 let fontcolor = "#000000";
                                 let color;
-                                let style;
+                                let textAlign = "left";
+                                let content;
                                 if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
                                     color  = "#B9B9B9";
+                                    content = (
+                                        <>
+                                            {_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}
+                                        </>
+                                    );
                                 } else if (_chatMessage.member.memberNickName === 'system') {
                                     color  = '#000000';
                                     fontcolor = "#FFFFFF"
-                                } else
+                                    content = (
+                                        <>
+                                            {_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}
+                                        </>
+                                    );
+                                } else{
                                     color = '#FFFFFF';
-                                style = {
+                                    textAlign = "right"
+                                    content = (
+                                        <>
+                                            {_chatMessage.message}&nbsp;: {_chatMessage.member.memberNickName}
+                                        </>
+                                    );
+                                }
+                                const style = {
                                     color: fontcolor,
                                     backgroundColor: color,
-                                    marginBottom: '6px'
+                                    marginBottom: '6px',
+                                    textAlign: textAlign,
                                 };
                                 return (
                                     <ListGroupItem style={style}>
-                                        {_chatMessage.member.memberNickName}&nbsp;: {_chatMessage.message}&nbsp;{_chatMessage.timeStamp}
+                                        {content}
                                     </ListGroupItem>
                                 );
                             })}

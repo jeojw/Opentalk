@@ -26,7 +26,7 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
 
     const [isChangeData, setIsChangeData] = useState(false);
 
-    const { tokenMap } = useContext(TokenContext);
+    const { loginToken } = useContext(TokenContext);
 
     let imgRef = useRef();
     const navigate = useNavigate();
@@ -36,21 +36,11 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
             try {
                 const response = await axios.get('/api/opentalk/member/me', {
                     headers: {
-                        authorization: tokenMap[memberId],
+                        authorization: loginToken,
                     }
                 });
-                const blob = new Blob([response.data.imageUrl], { type: 'image/jpeg' });
-    
-                const myFile = new File([blob], "imageName", { type: 'image/jpeg' });
-                console.log(myFile);
-    
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const preview = event.target.result;
-                    setCurImgUrl(preview);
-                };
-                reader.readAsDataURL(myFile);
                 setMember(response.data);
+                setCurImgUrl(response.data.imgUrl);
             } catch (error) {
                 console.error(error);
             }
@@ -105,13 +95,6 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
         setImgPopupOpen(false);
     }
 
-    const resizeFile = (file) =>
-    new Promise((resolve) => {
-      Resizer.imageFileResizer(file, 200, 200, "JPEG", 100, 0, (uri) => {
-        resolve(uri);
-      },'base64');
-    });
-
     const dataURItoBlob = (dataURI) => {
         const byteString = atob(dataURI.split(',')[1]);
         const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
@@ -120,21 +103,41 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
         for (let i = 0; i < byteString.length; i++) {
             ia[i] = byteString.charCodeAt(i);
         }
-        return new Blob([ab], { type: mimeString });
+        const blob = new Blob([ab], { type: mimeString });
+        return blob;
     };
 
+    const resizeFile = (file) =>
+        new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 200;
+                    canvas.height = 200;
+                    ctx.drawImage(img, 0, 0, 200, 200);
+                    canvas.toBlob((blob) => {
+                        resolve(blob);
+                    }, 'image/jpeg', 0.8);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+    });
+
     const onChangeImageUpload = async (event) => {
-        console.log(event.target.files);
-        if (!event.target.files[0]){
+        if (!event.target.files || event.target.files.length === 0){
             window.alert("이미지를 선택해 주세요.");
             return;
         }
         const file = event.target.files[0];
         try {
             const compressedFile = await resizeFile(file);
-            const blob = dataURItoBlob(compressedFile);
-            setUploadPreview(compressedFile);
-            setUploadImgBlob(blob);
+            const blobUrl = URL.createObjectURL(compressedFile);
+            setUploadPreview(blobUrl);
+            setUploadImgUrl(compressedFile);
         } catch (error) {
             console.log(error);
         }
@@ -142,16 +145,14 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
 
     const ChangeImg = async () => {
         if (window.confirm("변경하시겠습니까?")){
-            if (!uploadImgBlob){
+            if (!uploadImgUrl){
                 window.alert("이미지를 선택해 주세요.");
                 return;
             }
 
-            console.log(uploadImgBlob);
-
             const changeData = new FormData();
             changeData.append("memberId", member.memberId);
-            changeData.append("newImg", uploadImgBlob);
+            changeData.append("newImg", uploadImgUrl);
             const changUrl = "/api/opentalk/member/changeImg";
             axios.post(changUrl, changeData, {
                 headers: {
@@ -181,7 +182,7 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
             PwData.append("exPassword", exPassword);
             PwData.append("newPassword", newPassword);
             axios.post(checkUrl, PwData,{
-                headers: {Authorization: tokenMap[memberId]}
+                headers: {Authorization: loginToken}
             })
             .then((res)=>{
                 if (res.data === true){
@@ -226,7 +227,7 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
     return(
         <Container>
             <Row style={{ textAlign: 'center' }}>
-                <Col md={{ span: 3, offset: 4}} className="border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
+                <Col md={{ span: 3, offset: 4}} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
                     <img 
                         alt="프로필 이미지" 
                         src={curImgUrl}
@@ -237,8 +238,8 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
                     <br></br>
                     <br></br>
                     <ListGroup>
-                        <ListGroupItem style={{backgroundColor:"#CDCDCD"}}>이름: {member.memberName}</ListGroupItem>
-                        <ListGroupItem style={{backgroundColor:"#CDCDCD"}}>닉네임: {member.memberNickName}</ListGroupItem>
+                        <ListGroupItem style={{backgroundColor:"#CDCDCD",  marginBottom: '5px'}}>이름: {member.memberName}</ListGroupItem>
+                        <ListGroupItem style={{backgroundColor:"#CDCDCD",  marginBottom: '5px'}}>닉네임: {member.memberNickName}</ListGroupItem>
                         <ListGroupItem style={{backgroundColor:"#CDCDCD"}}>이메일: {member.memberEmail}</ListGroupItem>
                     </ListGroup>
                     <br></br>

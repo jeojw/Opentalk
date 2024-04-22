@@ -9,19 +9,20 @@ import com.example.opentalk.repository.ChatRoomRepository;
 import com.example.opentalk.repository.InviteMessageRepository;
 import com.example.opentalk.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +30,9 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final RedisService redisService;
     private final BCryptPasswordEncoder encoder;
     private final InviteMessageRepository inviteMessageRepository;
+    private final ResourceLoader resourceLoader;
 
     public void singUp(AuthDto.SignupDto signupDto){
         MemberEntity member = MemberEntity.builder()
@@ -46,42 +47,34 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public boolean changeImage(String memberId, MultipartFile newImg) {
+    public boolean changeImage(String memberId, MultipartFile newImg) throws IOException {
         Optional<MemberEntity> memberOptional = memberRepository.findByMemberId(memberId);
         if (memberOptional.isPresent()) {
-            try {
-                MemberEntity member = memberOptional.get();
-                member.setImgUrl(newImg.getBytes());
-                memberRepository.save(member);
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            String originalFilename = newImg.getOriginalFilename();
+            String saveFileName = createSaveFileName(originalFilename);
+
+            String uploadDirectory = "classpath:static/";
+            Path uploadPath = Paths.get(resourceLoader.getResource(uploadDirectory).getURI());
+            File destinationFile = uploadPath.resolve(saveFileName).toFile();
+            newImg.transferTo(destinationFile);
+
+            memberOptional.get().setImgUrl("/static/" + saveFileName);
+            memberRepository.save(memberOptional.get());
+
+            return true;
         }
         return false;
     }
 
-    private String saveImageToFileSystem(MultipartFile newImg) throws IOException {
-        // 이미지를 저장할 디렉토리 경로 설정 (원하는 경로로 변경하세요)
-        String uploadDir = "src/main/resources/static/images";
+    private String createSaveFileName(String originalFilename) {
+        String ext = extractExt(originalFilename);
+        String uuid = UUID.randomUUID().toString();
+        return uuid + "." + ext;
+    }
 
-        // 디렉토리가 존재하지 않으면 생성
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        // 파일명 생성 (원하는 파일명으로 변경하세요)
-        String fileName = System.currentTimeMillis() + "_" + newImg.getOriginalFilename();
-
-        // 파일 경로 설정
-        Path filePath = uploadPath.resolve(fileName);
-
-        // 파일 저장
-        Files.copy(newImg.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        // 파일의 상대 경로를 반환
-        return "/images/" + fileName;
+    private String extractExt(String originalFilename) {
+        int pos = originalFilename.lastIndexOf(".");
+        return originalFilename.substring(pos + 1);
     }
 
     @Transactional

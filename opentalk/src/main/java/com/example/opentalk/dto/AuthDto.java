@@ -29,12 +29,12 @@ public class AuthDto {
         private String memberNickName;
         private String memberName;
         private String memberEmail;
-        private byte[] imgUrl;
+        private String imgUrl;
 
         @Builder
         public ResponseDto(String memberId, String memberNickName,
                            String memberName, String memberEmail,
-                           byte[] imgUrl){
+                           String imgUrl){
             this.memberId = memberId;
             this.memberNickName = memberNickName;
             this.memberName = memberName;
@@ -61,13 +61,13 @@ public class AuthDto {
         private String memberEmail;
         private String memberName;
         private String memberNickName;
-        private byte[] imgUrl;
+        private String imgUrl;
         private UserRole authority;
 
         @Builder
         public SignupDto(String memberId, String memberPassword,
                          String memberEmail, String memberName,
-                         String memberNickName, byte[] imgUrl,
+                         String memberNickName, String imgUrl,
                          UserRole authority) {
             this.memberId = memberId;
             this.memberPassword = memberPassword;
