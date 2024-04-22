@@ -18,6 +18,7 @@ bin/
 !**/src/test/**/bin/
 **/application.properties
 **/*.ppk
+ancient-medium-416905-3d79dd8ce928.json
 
 ### IntelliJ IDEA ###
 .idea
