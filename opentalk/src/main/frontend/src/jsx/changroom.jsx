@@ -21,7 +21,6 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
     const [preExistLock, setPreExistLock] = useState(false);
 
     const [password, setPassword] = useState("");
-    const [prePassword, setPrePassword] = useState("");
 
     const [tag, setTag] = useState("");
     const [tags, setTags] = useState([]);
@@ -38,7 +37,6 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                 setPreRoomName(response.data.roomName);
                 setPreExistLock(response.data.existLock);
                 setPreInfo(response.data.introduction);
-                setPrePassword(response.data.roomPassword);
                 setPreParticipants(response.data.limitParticipates);
                 setPreTags(response.data.roomTags);
             } catch (error) {
@@ -52,7 +50,6 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
         setRoomName(preRoomName);
         setExistLock(preExistLock);
         setInfo(preInfo);
-        setPassword(prePassword);
         setParticipants(preParticipates);
         setTags(preTags);
     }, []);
@@ -70,7 +67,7 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
         setRoomName(preRoomName);
         setExistLock(preExistLock);
         setInfo(preInfo);
-        setPassword(prePassword);
+        setPassword("");
         setParticipants(preParticipates);
         setTags(preTags);
     }
@@ -167,7 +164,12 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
     return(
         <div>
             {role === "ROLE_MANAGER" && (
-            <Button variant='#B9B9B9' style={{backgroundColor:"#B9B9B9"}} onClick={openModal}>설정 변경</Button>
+            <Button variant='#B9B9B9' style={{  backgroundColor:"#B9B9B9", 
+                                                borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px",
+                                                borderTopRightRadius: "25px",
+                                                borderBottomRightRadius: "25px"
+                                            }} onClick={openModal}>설정 변경</Button>
             )} 
             <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}
             style={{
@@ -179,25 +181,35 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                 <Row>
                     <Col>
                     <InputGroup>
-                        <InputGroup.Text>방 이름</InputGroup.Text>
+                        <InputGroup.Text style={{backgroundColor: "#B9B9B9", 
+                                                borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px"}}><strong>방 이름</strong></InputGroup.Text>
                         <FormControl 
                             type='text' 
                             value={roomName} 
-                            onChange={GetInputName}></FormControl>
+                            onChange={GetInputName}
+                            style={{borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"}}></FormControl>
                     </InputGroup>
                     <br></br>
                     <InputGroup>
-                        <InputGroup.Text>인원수</InputGroup.Text>
+                        <InputGroup.Text style={{backgroundColor: "#B9B9B9", 
+                                                borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px"}}><strong>인원수</strong></InputGroup.Text>
                         <FormControl 
                             type='number'
                             min={3}
                             max={20}
                             value={participants} 
-                            onChange={GetInputParticipates}></FormControl>
+                            onChange={GetInputParticipates}
+                            style={{borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"}}></FormControl>
                     </InputGroup>
                     <br></br>
                     <InputGroup className='d-flex flex-row gap-1'>
-                        <InputGroup.Text>비밀번호</InputGroup.Text>
+                        <InputGroup.Text style={{backgroundColor: "#B9B9B9", 
+                                                borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px"}}><strong>비밀번호</strong></InputGroup.Text>
                         <Form.Check 
                             size={20}
                             type='checkbox' 
@@ -208,7 +220,9 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                             type='password' 
                             value={password} 
                             onChange={GetInputPassword} 
-                            disabled={!existLock}></FormControl>
+                            disabled={!existLock}
+                            style={{borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"}}></FormControl>
                     </InputGroup>
                     <br></br>
                     <InputGroup>
@@ -217,6 +231,10 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                             value={info}
                             placeholder='방 소개문 입력'
                             onChange={GetInputInfo}
+                            style={{borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"}}
                         ></FormControl>
                     </InputGroup>
                     <br></br>
@@ -226,22 +244,48 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                             value={tag}
                             placeholder='태그 입력'
                             onChange={GetInputTag}
+                            style={{borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px"}}
                         ></FormControl>
                         <Button
                             onClick={()=>AppendTag(tag)}
-                        >태그 추가</Button>
+                            variant="#B9B9B9"
+                            style={{ backgroundColor:"#B9B9B9",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"}}
+                        ><strong>태그 추가</strong></Button>
                     </InputGroup>
                     <br></br>
                     <ListGroup className="list-group list-group-horizontal">
                         {tags?.map((t)=> (
-                            <ListGroupItem>#{t.tagName} <Button onClick={()=>tagDelete(t)}>삭제</Button></ListGroupItem>
+                            <ListGroupItem style={{
+                            borderTopLeftRadius: "25px",
+                            borderBottomLeftRadius: "25px",
+                            borderTopRightRadius: "25px",
+                            borderBottomRightRadius: "25px"
+                        }}>#{t.tagName} <Button variant='dark' onClick={()=>tagDelete(t)} style={{
+                            borderTopLeftRadius: "25px",
+                            borderBottomLeftRadius: "25px",
+                            borderTopRightRadius: "25px",
+                            borderBottomRightRadius: "25px"}}>삭제</Button></ListGroupItem>
                         )
                         )}
                     </ListGroup>
                     <br></br>
                     <div className='d-flex flex-row gap-2'>
-                        <Button onClick={changeRoomModal}>변경하기</Button>
-                        <Button onClick={cancleSetModal}>변경 취소</Button>
+                        <Button variant='#B9B9B9' style={{
+                            backgroundColor:"#B9B9B9",
+                            borderTopLeftRadius: "25px",
+                            borderBottomLeftRadius: "25px",
+                            borderTopRightRadius: "25px",
+                            borderBottomRightRadius: "25px"
+                        }} onClick={changeRoomModal}><strong>변경하기</strong></Button>
+                        <Button variant='dark' style={{
+                            borderTopLeftRadius: "25px",
+                            borderBottomLeftRadius: "25px",
+                            borderTopRightRadius: "25px",
+                            borderBottomRightRadius: "25px"
+                        }} onClick={cancleSetModal}>변경 취소</Button>
                     </div>
                 </Col>
             </Row>

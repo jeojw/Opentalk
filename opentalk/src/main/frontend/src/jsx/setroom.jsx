@@ -146,7 +146,12 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
     return (
         <div>
             <div className="d-grid gap-2 btn-lg">
-                <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F'}} onClick={openModal}>
+                <Button variant="#8F8F8F" style={{
+                                backgroundColor:'#8F8F8F', 
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"}} onClick={openModal}>
                     <strong>방 생성하기</strong>
                 </Button>
             </div>
@@ -162,27 +167,40 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                 <Row>
                     <Col>
                         <InputGroup>
-                            <InputGroup.Text style={{backgroundColor:'#8F8F8F'}}>방 이름</InputGroup.Text>
+                            <InputGroup.Text style={{backgroundColor:'#8F8F8F',
+                                                    borderTopLeftRadius: "25px",
+                                                    borderBottomLeftRadius: "25px",
+                                                    }}><strong>방 이름</strong></InputGroup.Text>
                             <FormControl 
                                 type='text' 
                                 value={roomName} 
                                 onChange={GetInputName}
+                                style={{borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}
                             ></FormControl>
                         </InputGroup>
                         <br></br>
                         <InputGroup>
-                            <InputGroup.Text style={{backgroundColor:'#8F8F8F'}}>인원수</InputGroup.Text>
+                            <InputGroup.Text style={{backgroundColor:'#8F8F8F',
+                                                    borderTopLeftRadius: "25px",
+                                                    borderBottomLeftRadius: "25px",
+                                                    }}><strong>인원수</strong></InputGroup.Text>
                             <FormControl 
                                 type="number"
                                 min={3} 
                                 max={20} 
                                 value={participants} 
                                 onChange={GetInputParticipates}
+                                style={{borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}
                             ></FormControl>
                         </InputGroup>
                         <br></br>
                         <InputGroup className='d-flex flex-row gap-1'>
-                            <InputGroup.Text style={{backgroundColor:'#8F8F8F'}}>비밀번호</InputGroup.Text>
+                            <InputGroup.Text style={{backgroundColor:'#8F8F8F',
+                                                    borderTopLeftRadius: "25px",
+                                                    borderBottomLeftRadius: "25px",
+                                                    }}><strong>비밀번호</strong></InputGroup.Text>
                             <Form.Check 
                                 type='checkbox' 
                                 checked={existLock} 
@@ -194,6 +212,8 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                                 value={password} 
                                 onChange={GetInputPassword} 
                                 disabled={!existLock}
+                                style={{borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}
                             ></FormControl>
                         </InputGroup>
                         <br></br>
@@ -203,6 +223,10 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                                 value={info} 
                                 placeholder='방 소개문 입력' 
                                 onChange={GetInputInfo}
+                                style={{borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}
                             ></FormControl>
                         </InputGroup>
                         <br></br>
@@ -212,19 +236,41 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                                 value={tag}
                                 placeholder='태그 입력' 
                                 onChange={GetInputTag}
+                                style={{borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",}}
                             ></FormControl>
-                            <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F'}} onClick={()=>AppendTag(tag)}>태그 추가</Button>
+                            <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F', 
+                                                            borderTopRightRadius: "25px",
+                                                            borderBottomRightRadius: "25px"
+                                                            }} onClick={()=>AppendTag(tag)}><strong>태그 추가</strong></Button>
                         </InputGroup>
 
                         <ListGroup className="list-group list-group-horizontal">
                             {tags.map((t)=> (
-                                <ListGroupItem>#{t.tagName} <Button onClick={()=>tagDelete(t)}>삭제</Button></ListGroupItem>
+                                <ListGroupItem style={{borderTopLeftRadius: "25px",
+                                                        borderBottomLeftRadius: "25px",
+                                                        borderTopRightRadius: "25px",
+                                                        borderBottomRightRadius: "25px"
+                                                    }}>#{t.tagName} <Button variant='dark' onClick={()=>tagDelete(t)} 
+                                                    style={{borderTopLeftRadius: "25px",
+                                                            borderBottomLeftRadius: "25px",
+                                                            borderTopRightRadius: "25px",
+                                                            borderBottomRightRadius: "25px"
+                                                }}>삭제</Button></ListGroupItem>
                             ))}
                         </ListGroup>
                         <br></br>
                         <div className='d-flex flex-row gap-2'>
-                            <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F'}} onClick={MakeRoom}><strong>방 생성하기</strong></Button>
-                            <Button variant="dark" style={{color:'#FFFFFF'}} onClick={closeModal}><strong>생성 취소</strong></Button>
+                            <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F', 
+                                                        borderTopLeftRadius: "25px",
+                                                        borderBottomLeftRadius: "25px",
+                                                        borderTopRightRadius: "25px",
+                                                        borderBottomRightRadius: "25px"}} onClick={MakeRoom}><strong>방 생성하기</strong></Button>
+                            <Button variant="dark" style={{color:'#FFFFFF', 
+                                                        borderTopLeftRadius: "25px",
+                                                        borderBottomLeftRadius: "25px",
+                                                        borderTopRightRadius: "25px",
+                                                        borderBottomRightRadius: "25px"}} onClick={closeModal}>생성 취소</Button>
                         </div>
                     </Col>
                 </Row>

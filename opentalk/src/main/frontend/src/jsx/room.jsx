@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import axios from "axios";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate} from 'react-router-dom';
 import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
 import ChangRoomComponent from './changroom';
@@ -8,6 +8,7 @@ import InviteMemberComponent from './inviteMember';
 import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { format } from 'date-fns'
 import { TokenContext } from './TokenContext';
+import { useBeforeUnload } from 'react-beforeunload';
 
 const RoomComponent = ({setIsChangeData}) => {
 
@@ -34,9 +35,7 @@ const RoomComponent = ({setIsChangeData}) => {
         ExitRoom();
     };
 
-    const exitWindow = (event) => {
-        event.preventDefault(); // 이벤트 기본 동작 방지
-        event.returnValue = ''; 
+    const exitWindow = () => {
         window.history.pushState(null, "", window.location.href);
         ExitRoom();
     };
@@ -378,6 +377,10 @@ const RoomComponent = ({setIsChangeData}) => {
                                     backgroundColor: color,
                                     marginBottom: '6px',
                                     textAlign: textAlign,
+                                    borderTopLeftRadius: "15px",
+                                    borderBottomLeftRadius: "15px",
+                                    borderTopRightRadius: "15px",
+                                    borderBottomRightRadius: "15px"
                                 };
                                 return (
                                     <ListGroupItem style={style}>
@@ -413,6 +416,10 @@ const RoomComponent = ({setIsChangeData}) => {
                                     backgroundColor: color,
                                     marginBottom: '6px',
                                     textAlign: textAlign,
+                                    borderTopLeftRadius: "15px",
+                                    borderBottomLeftRadius: "15px",
+                                    borderTopRightRadius: "15px",
+                                    borderBottomRightRadius: "15px"
                                 };
                                 return (
                                     <ListGroupItem style={style}>
@@ -432,14 +439,29 @@ const RoomComponent = ({setIsChangeData}) => {
                         style={{ width:'335px', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
                         <h5>참여명단</h5>
                         {roomInformation?.members.map((_member, index) => (
-                            <ListGroup style={{marginBottom: '6px'}}>
+                            <ListGroup style={{marginBottom: '6px', 
+                                            borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                            borderTopRightRadius: "25px",
+                                            borderBottomRightRadius: "25px"}}>
                                 <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                 {_member?.memberNickName}
                                 {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                                <Button onClick={() => ForcedExit(_member)}>강퇴하기</Button>
+                                <Button variant='dark' onClick={() => ForcedExit(_member)} style={{
+                                                                                                    borderTopLeftRadius: "25px",
+                                                                                                    borderBottomLeftRadius: "25px",
+                                                                                                    borderTopRightRadius: "25px",
+                                                                                                    borderBottomRightRadius: "25px"
+                                                                                                }}>강퇴하기</Button>
                                 )}
                                 {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                                <Button onClick={() => AuthMandate(_member)}>방장위임</Button>
+                                <Button variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
+                                    backgroundColor: "#C3C3C3",
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"
+                                }}>방장위임</Button>
                                 )}
                                 </ListGroupItem>
                             </ListGroup>
@@ -453,16 +475,30 @@ const RoomComponent = ({setIsChangeData}) => {
                             className="d-flex align-items-center justify-content-center"
                             onSubmit={(event)=>handleSubmit(event)}>
                             <InputGroup style={{width:"800px"}}>
-                                <Form.Control type="text" value={chat} placeholder='채팅 내용을 입력해 주세요.' onChange={handleChange} />            
+                                <Form.Control type="text" 
+                                    value={chat} 
+                                    placeholder='채팅 내용을 입력해 주세요.' 
+                                    onChange={handleChange} style={{borderTopLeftRadius: "25px",
+                                                                    borderBottomLeftRadius: "25px",
+                                                                    borderTopRightRadius: "25px",
+                                                                    borderBottomRightRadius: "25px"}} />            
                             </InputGroup>
-                            <Button variant='#C3C3C3' style={{backgroundColor:"#C3C3C3"}} onClick={() => publishChat(chat)}>전송</Button>          
+                            <Button variant='#C3C3C3' style={{  backgroundColor:"#C3C3C3", 
+                                                                borderTopLeftRadius: "25px",
+                                                                borderBottomLeftRadius: "25px",
+                                                                borderTopRightRadius: "25px",
+                                                                borderBottomRightRadius: "25px"
+                                                            }} onClick={() => publishChat(chat)}>전송</Button>          
                         </FormGroup>
                     </Col>
                 </Row>
             </Container>
             <br></br>
             <FormGroup className="d-flex align-items-center justify-content-center gap-3">
-                <Button variant="dark" onClick={ExitRoom}>나가기</Button>
+                <Button variant="dark" style={{ borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px",
+                                                borderTopRightRadius: "25px",
+                                                borderBottomRightRadius: "25px"}} onClick={ExitRoom}>나가기</Button>
                 <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeRoom}>
                     {() => setIsChangeData(isChangeRoom)}
                 </ChangRoomComponent>

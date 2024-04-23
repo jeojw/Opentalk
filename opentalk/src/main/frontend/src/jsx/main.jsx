@@ -11,6 +11,7 @@ import { Container, Row, Col, Button, Form,
 import { PaginationControl } from 'react-bootstrap-pagination-control';
 import Modal from 'react-modal';
 import { TokenContext } from './TokenContext';
+import { useBeforeUnload } from 'react-router-dom';
 
 const MainComponent = () => {
     const ChatRoomRole = {
@@ -50,7 +51,7 @@ const MainComponent = () => {
     
     const [selectManu, setSelectManu] = useState("default");
     const [searchKeyword, setSearchKeyword] = useState("");
-    const naviagte = useNavigate();
+    const navigate = useNavigate();
 
     const history = createBrowserHistory();
 
@@ -88,7 +89,7 @@ const MainComponent = () => {
                     }
                 } catch(error) {
                     window.alert("로그아웃 상태입니다. 로그인하여 주십시오");
-                    naviagte('/opentalk/member/login');   
+                    navigate('/opentalk/member/login');   
                     setIsReissue(false); 
                     setIsLogin(false);  
                 }
@@ -160,6 +161,21 @@ const MainComponent = () => {
         setChatRoomList(allChatRoomList.slice(indexOfFirstPost, indexOfLastPost))
         console.log(chatRoomList);
     }, [allChatRoomList, page, indexOfFirstPost, indexOfLastPost]);
+
+    const exitWindow = () => {
+        window.history.pushState(null, "", window.location.href);
+        LogOut();
+    };
+
+    useEffect(() => {
+        (() => {
+            window.history.pushState(null, "", window.location.href);
+            window.addEventListener("beforeunload", exitWindow);
+        })();
+        return () => {
+            window.removeEventListener("beforeunload", exitWindow);
+        };
+    },[member, loginToken]);
 
     const GetInputSearchKeyword = (event) => {
         setSearchKeyword(event.target.value);
@@ -235,7 +251,7 @@ const MainComponent = () => {
     const EnterRoom = ({roomInfo}) => {
         if (!isLogin){
             window.alert("이미 로그아웃 되었습니다.");
-            naviagte("/opentalk/member/login");
+            navigate("/opentalk/member/login");
         }
         else{
             const enterUrl = '/api/opentalk/enterRoom';
@@ -256,7 +272,7 @@ const MainComponent = () => {
                 })
                 .then((res) => {
                     if (res.data === "Success"){
-                        naviagte(`/opentalk/room/${roomInfo.roomId}`);
+                        navigate(`/opentalk/room/${roomInfo.roomId}`);
                     }
                     else{
                         window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
@@ -277,7 +293,7 @@ const MainComponent = () => {
                     })
                     .then((res) => {
                         if (res.data === "Success"){
-                            naviagte(`/opentalk/room/${roomInfo.roomId}`);
+                            navigate(`/opentalk/room/${roomInfo.roomId}`);
                         }
                         else if (res.data ==="Incorrect"){
                             window.alert("비밀번호가 잘못되었습니다.")
@@ -303,7 +319,7 @@ const MainComponent = () => {
         if (window.confirm("입장하시겠습니까?")){
             if (!isLogin){
                 window.alert("이미 로그아웃 되었습니다.");
-                naviagte("/opentalk/member/login");
+                navigate("/opentalk/member/login");
             }
             else{
                 let currentRole;
@@ -318,7 +334,7 @@ const MainComponent = () => {
                 axios.post(enterUrl, data)
                 .then((res) => {
                     if (res.data === "Success"){
-                        naviagte(`/opentalk/room/${roomId}`);
+                        navigate(`/opentalk/room/${roomId}`);
                     }
                     else{
                         window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
@@ -336,11 +352,11 @@ const MainComponent = () => {
 
     const GoProfile = () => {
         if (isLogin){
-            naviagte("/opentalk/profile");
+            navigate("/opentalk/profile");
         }
         else{
             window.alert("이미 로그아웃 되었습니다.");
-            naviagte("/opentalk/member/login");
+            navigate("/opentalk/member/login");
         }
         return (
             <ProfileComponent setIsUpdateData={setIsUpdateTrigger}/>
@@ -359,7 +375,7 @@ const MainComponent = () => {
                     if (res.status === 200){
                         window.alert("로그아웃 되었습니다.");
                         setIsLogin(false);
-                        naviagte("/opentalk/member/login");
+                        navigate("/opentalk/member/login");
                     }
                 })
                 .catch((error) => console.log(error));
@@ -367,7 +383,7 @@ const MainComponent = () => {
         }
         else{
             alert("이미 로그아웃되었습니다.");
-            naviagte("/opentalk/member/login");
+            navigate("/opentalk/member/login");
         }
         
     };
@@ -403,16 +419,37 @@ const MainComponent = () => {
         <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal}>
             <ListGroup>
             {messageList.map((_message) => (
-                <ListGroupItem>방 이름: {_message.roomName}
-                <br></br>방장: {_message.inviter}
-                <br></br>메세지: {_message.message}
-                <br></br>
-                <Button variant="5F5F5F" style={{color:"white", backgroundColor:'5F5F5F'}} onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}>입장하기</Button>
-                <Button variant='dark'>메세지 지우기</Button>
+                <ListGroupItem style={{ borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"
+                                        }}><strong>{_message.roomName}</strong>
+                <hr/><img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img> <strong>{_message.inviter}</strong>
+                <hr/>{_message.message}
+                <hr/>
+                <Button variant="#8F8F8F" style={{
+                                    backgroundColor:'#8F8F8F', 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"
+                                    }} onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}><strong>입장하기</strong></Button>
+                <div style={{width:"4px", display:"inline-block"}}/>
+                <Button variant='dark' style={{borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px",
+                                                borderTopRightRadius: "25px",
+                                                borderBottomRightRadius: "25px"}}
+                                                >메세지 지우기</Button>
+                
+                
                 </ListGroupItem>
             ))}
             </ListGroup> 
-            <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={closeModal}>닫기</Button>
+            <Button variant='dark' onClick={closeModal} style={{borderTopLeftRadius: "25px",
+                                                                borderBottomLeftRadius: "25px",
+                                                                borderTopRightRadius: "25px",
+                                                                borderBottomRightRadius: "25px"
+                                                                }}>닫기</Button>
         </Modal>
         <Row className="justify-content-end">
             <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-#7B7B7B border-3 rounded-2 p-5"
@@ -441,18 +478,36 @@ const MainComponent = () => {
                             className="btn-lg" 
                             variant='#CDCDCD'
                             onClick={GoProfile}
-                            style={{backgroundColor:"#CDCDCD"}}
+                            style={{
+                                backgroundColor:"#CDCDCD",
+                                borderTopLeftRadius: "50px",
+                                borderBottomLeftRadius: "50px",
+                                borderTopRightRadius: "50px",
+                                borderBottomRightRadius: "50px"
+                            }}
                         >프로필 설정</Button>
                         <Button 
                             className="btn-lg" 
                             variant='#CDCDCD'
                             onClick={openMessageBox}
-                            style={{backgroundColor:"#CDCDCD"}}
+                            style={{
+                                backgroundColor:"#CDCDCD",
+                                borderTopLeftRadius: "50px",
+                                borderBottomLeftRadius: "50px",
+                                borderTopRightRadius: "50px",
+                                borderBottomRightRadius: "50px"
+                            }}
                         >메세지함</Button>
                         <Button 
                             className="btn-lg" 
                             variant="dark" 
                             onClick={LogOut}
+                            style={{
+                                borderTopLeftRadius: "50px",
+                                borderBottomLeftRadius: "50px",
+                                borderTopRightRadius: "50px",
+                                borderBottomRightRadius: "50px"
+                            }}
                         >로그아웃</Button>
                     </div>
                 </aside>
@@ -464,7 +519,11 @@ const MainComponent = () => {
                 <br></br>
                 <ListGroup>
                     {chatRoomList.map(room=>(
-                        <ListGroupItem style={{border:'#8F8F8F', backgroundColor:'#8F8F8F',  marginBottom: '5px'}}>
+                        <ListGroupItem style={{border:'#8F8F8F', backgroundColor:'#8F8F8F',  marginBottom: '5px', 
+                                                borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px",
+                                                borderTopRightRadius: "25px",
+                                                borderBottomRightRadius: "25px"}}>
                             <strong>
                                 {room.roomName} | {room.curParticipates} / {room.limitParticipates}
                             </strong>
@@ -484,9 +543,18 @@ const MainComponent = () => {
                             </div>
                         )}
                         <div className="d-flex flex-row gap-2">
-                            <Button variant="#CDCDCD" style={{backgroundColor:'#CDCDCD'}} onClick={() => EnterRoom({roomInfo: room})}><strong>입장하기</strong></Button>
+                            <Button variant="#CDCDCD" style={{  backgroundColor:'#CDCDCD', 
+                                                                borderTopLeftRadius: "25px",
+                                                                borderBottomLeftRadius: "25px",
+                                                                borderTopRightRadius: "25px",
+                                                                borderBottomRightRadius: "25px"
+                                                            }} onClick={() => EnterRoom({roomInfo: room})}><strong>입장하기</strong></Button>
                             {room.roomManager === member?.memberNickName && (
-                            <Button variant="dark" onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
+                            <Button variant="dark" style={{ borderTopLeftRadius: "25px",
+                                                            borderBottomLeftRadius: "25px",
+                                                            borderTopRightRadius: "25px",
+                                                            borderBottomRightRadius: "25px"
+                        }} onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
                             )}
                         </div>
                     </ListGroupItem>
@@ -498,7 +566,10 @@ const MainComponent = () => {
                         <Form.Select 
                             onChange={selectMenuHandle} 
                             value={selectManu}
-                            style={{flex: '1'}}
+                            style={{flex: '1', 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                }}
                         >
                             {menuList.map((item) => {
                                 return <option value={item.value} key={item.value}>
@@ -510,16 +581,30 @@ const MainComponent = () => {
                             type='text' 
                             value={searchKeyword} 
                             onChange={GetInputSearchKeyword}
-                            style={{flex: '5'}}></FormControl>
+                            style={{flex: '5',
+                            borderTopRightRadius: "25px",
+                            borderBottomRightRadius: "25px"}}></FormControl>
                         
                     </InputGroup>
-                    <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F'}} onClick={search}>
+                    <Button variant="#8F8F8F" style={{
+                                    backgroundColor:'#8F8F8F', 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"
+                                }} onClick={search}>
                         <strong>
                             검색
                         </strong>
                     </Button>
                         {isSearch && (
-                        <Button variant="#8F8F8F" style={{color:"white", backgroundColor:'#8F8F8F'}} onClick={initSearch}>초기화</Button>
+                        <Button variant="#8F8F8F" style={{
+                                color:"white", 
+                                backgroundColor:'#8F8F8F', 
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"}} onClick={initSearch}>초기화</Button>
                     )}
                 </FormGroup>
                 <br></br>

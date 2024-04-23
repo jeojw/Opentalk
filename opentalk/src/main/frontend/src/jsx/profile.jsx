@@ -20,7 +20,6 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
 
     const [checkPassword, setCheckPassword] = useState("");
     const [uploadPreview, setUploadPreview] = useState();
-    const [uploadImgBlob, setUploadImgBlob] = useState(null);
     const [uploadImgUrl, setUploadImgUrl] = useState(null);
     const [curImgUrl, setCurImgUrl] = useState(null);
 
@@ -211,6 +210,46 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
         .catch((error)=>console.log(error));
         
     }
+
+    const LogOut = () => {
+        if (loginToken !== ""){
+            if (window.confirm("로그아웃 하시겠습니까?")){
+                axios.post("/api/opentalk/auth/logout", {}, {
+                    headers: { 
+                        Authorization: loginToken,
+                    }
+                })
+                .then((res) => {
+                    if (res.status === 200){
+                        window.alert("로그아웃 되었습니다.");
+                        navigate("/opentalk/member/login");
+                    }
+                })
+                .catch((error) => console.log(error));
+            }
+        }
+        else{
+            alert("이미 로그아웃되었습니다.");
+            navigate("/opentalk/member/login");
+        }
+        
+    };
+
+    const exitWindow = () => {
+        window.history.pushState(null, "", window.location.href);
+        LogOut();
+    };
+
+    useEffect(() => {
+        (() => {
+            window.history.pushState(null, "", window.location.href);
+            window.addEventListener("beforeunload", exitWindow);
+        })();
+        return () => {
+            window.removeEventListener("beforeunload", exitWindow);
+        };
+    },[member]);
+
     
     return(
         <Container>
@@ -227,11 +266,34 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
                     <br></br>
                     <br></br>
                     <ListGroup>
-                        <ListGroupItem style={{border:'#CDCDCD', backgroundColor:"#CDCDCD",  marginBottom: '5px'}}>이름: <strong>{member.memberName}</strong></ListGroupItem>
-                        <ListGroupItem style={{border:'#CDCDCD', backgroundColor:"#CDCDCD",  marginBottom: '5px'}}>닉네임: <strong>{member.memberNickName}</strong></ListGroupItem>
-                        <ListGroupItem style={{border:'#CDCDCD', backgroundColor:"#CDCDCD"}}>이메일: <strong>{member.memberEmail}</strong></ListGroupItem>
+                        <ListGroupItem style={{
+                                border:'#CDCDCD', 
+                                backgroundColor:"#CDCDCD",  
+                                marginBottom: '5px',
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"
+                            }}>이름 <hr/><strong>{member.memberName}</strong></ListGroupItem>
+                        <ListGroupItem style={{
+                                border:'#CDCDCD', 
+                                backgroundColor:"#CDCDCD",  
+                                marginBottom: '5px',
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"
+                            }}>닉네임 <hr/><strong>{member.memberNickName}</strong></ListGroupItem>
+                        <ListGroupItem style={{
+                                border:'#CDCDCD', 
+                                backgroundColor:"#CDCDCD",
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"
+                            }}>이메일 <hr/><strong>{member.memberEmail}</strong></ListGroupItem>
                     </ListGroup>
-                    <br></br>
+                    <hr/>
                     <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}
                     style={{
                         content: {
@@ -297,10 +359,34 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
                         <Button variant='dark' onClick={ChangePasswordCancle}>변경 취소</Button>
                     </Modal>
                     <div className="d-grid gap-2">
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={ChangeImgPopup}>사진 변경</Button>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={ChangeNickNamePopup}>닉네임 변경</Button>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={ChangePasswordPopup}>비밀번호 변경</Button>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={() => {
+                        <Button variant='#CDCDCD' style={{
+                                    backgroundColor:"#CDCDCD", 
+                                    borderTopLeftRadius: "50px",
+                                    borderBottomLeftRadius: "50px",
+                                    borderTopRightRadius: "50px",
+                                    borderBottomRightRadius: "50px"
+                                }} onClick={ChangeImgPopup}>사진 변경</Button>
+                        <Button variant='#CDCDCD' style={{
+                                    backgroundColor:"#CDCDCD", 
+                                    borderTopLeftRadius: "50px",
+                                    borderBottomLeftRadius: "50px",
+                                    borderTopRightRadius: "50px",
+                                    borderBottomRightRadius: "50px"
+                                }} onClick={ChangeNickNamePopup}>닉네임 변경</Button>
+                        <Button variant='#CDCDCD' style={{
+                                    backgroundColor:"#CDCDCD", 
+                                    borderTopLeftRadius: "50px",
+                                    borderBottomLeftRadius: "50px",
+                                    borderTopRightRadius: "50px",
+                                    borderBottomRightRadius: "50px"
+                                }} onClick={ChangePasswordPopup}>비밀번호 변경</Button>
+                        <Button variant='#CDCDCD' style={{
+                                    backgroundColor:"#CDCDCD", 
+                                    borderTopLeftRadius: "50px",
+                                    borderBottomLeftRadius: "50px",
+                                    borderTopRightRadius: "50px",
+                                    borderBottomRightRadius: "50px"
+                                }} onClick={() => {
                             navigate("/opentalk/main")
                             window.URL.revokeObjectURL(curImgUrl);
                         }}>이전 페이지</Button>
