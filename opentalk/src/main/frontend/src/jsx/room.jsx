@@ -20,6 +20,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     const [isForcedExist, setIsForcedExist] = useState(false);
     const [isChangeRoom, setIsChangeRoom] = useState(false);
+    const [otherMember, setOtherMember] = useState([]);
 
     const { loginToken } = useContext(TokenContext);
 
@@ -79,6 +80,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             try{
                 const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
                 setRoomInformation(response.data.chatroom);
+                setOtherMember(response.data.chatroom.members);
                 setRole(response.data.role);
             } catch (error){
                 console.log(error);
@@ -87,6 +89,10 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
         fetchRoom();
     }, [isChangeData, isChangeRoom, room_Id, myInfo]);
+
+    useEffect(() =>{
+        setIsChangeRoom(prevState => !prevState);
+    }, [otherMember])
 
     useEffect(() => {
         const isExistInRoom = async () => {
@@ -269,7 +275,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 if (res.data === true){
                     window.alert(`${roomMember.memberNickName}님이 방장이 되었습니다.`);
                     setIsChangeRoom(prevState => !prevState);
-                    console.log(isChangeRoom);
                 }
             })
             .catch((error) => console.log(error));
@@ -492,12 +497,15 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                             borderTopRightRadius: "25px",
                                             borderBottomRightRadius: "25px"}} />            
                             </InputGroup>
-                            <Button className='btn-lg' variant='#C3C3C3' style={{  backgroundColor:"#C3C3C3", 
-                                                                borderTopLeftRadius: "25px",
-                                                                borderBottomLeftRadius: "25px",
-                                                                borderTopRightRadius: "25px",
-                                                                borderBottomRightRadius: "25px"
-                                                            }} onClick={() => publishChat(chat)}><strong>전송</strong></Button>          
+                            <Button className='btn-lg' 
+                            variant='#C3C3C3' 
+                            style={{  backgroundColor:"#C3C3C3", 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"
+                                }} 
+                            onClick={() => publishChat(chat)}><strong>전송</strong></Button>          
                         </FormGroup>
                     </Col>
                 </Row>
