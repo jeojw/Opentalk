@@ -71,13 +71,15 @@ public class MemberService {
             objectName = matcher.group(1);
         }
 
-        Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
-        Blob blob = storage.get(bucketName_param, objectName);
+        if (!objectName.equals("profile_prototype")){
+            Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
+            Blob blob = storage.get(bucketName_param, objectName);
 
-        Storage.BlobSourceOption precondition =
-                Storage.BlobSourceOption.generationMatch(blob.getGeneration());
+            Storage.BlobSourceOption precondition =
+                    Storage.BlobSourceOption.generationMatch(blob.getGeneration());
 
-        storage.delete(bucketName, objectName, precondition);
+            storage.delete(bucketName, objectName, precondition);
+        }
     }
 
     public boolean changeImage(String memberId, MultipartFile newImg) throws IOException {

@@ -147,7 +147,7 @@ const EnrollComponent = (props) =>{
                 memberName: memberName,
                 memberNickName: memberNickName,
                 memberEmail: memberEmail,
-                imgUrl: "null"
+                imgUrl: "https://storage.googleapis.com/opentalk-bucket/profile_prototype"
             }).then((res)=>{
     
             }).catch((error)=> {
