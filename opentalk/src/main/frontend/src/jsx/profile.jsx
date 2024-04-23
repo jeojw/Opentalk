@@ -301,11 +301,24 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
                             height: '400px', // 원하는 높이로 설정
                         }
                     }}>
-                        {}
                         <img src={uploadPreview} />
-                        <FormControl type='file' accept='image/*' onChange={onChangeImageUpload}></FormControl>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={ChangeImg}>변경하기</Button>
-                        <Button variant='dark' onClick={ChangeImgCancle}>변경취소</Button>
+                        <hr/>
+                        <FormControl type='file' accept='image/*' onChange={onChangeImageUpload} 
+                                                style={{borderTopLeftRadius: "50px",
+                                                        borderBottomLeftRadius: "50px",
+                                                        borderTopRightRadius: "50px",
+                                                        borderBottomRightRadius: "50px"}}></FormControl>
+                        <br/>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
+                                                        borderTopLeftRadius: "50px",
+                                                        borderBottomLeftRadius: "50px",
+                                                        borderTopRightRadius: "50px",
+                                                        borderBottomRightRadius: "50px"}} onClick={ChangeImg}>변경하기</Button>
+                        <div style={{width:"4px", display:"inline-block"}}/>
+                        <Button variant='dark' style={{borderTopLeftRadius: "50px",
+                                                        borderBottomLeftRadius: "50px",
+                                                        borderTopRightRadius: "50px",
+                                                        borderBottomRightRadius: "50px"}}  onClick={ChangeImgCancle}>변경취소</Button>
                     </Modal>
                     <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}
                     style={{
@@ -315,15 +328,28 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
                         }
                     }}>
                         <InputGroup>
-                            <InputGroup.Text>새 닉네임</InputGroup.Text>
+                            <InputGroup.Text style={{backgroundColor:"#CDCDCD",
+                                                    borderTopLeftRadius: "50px",
+                                                    borderBottomLeftRadius: "50px",
+                                                    }}><strong>새 닉네임</strong></InputGroup.Text>
                             <Form.Control 
                                 type="text" 
                                 value={newNickName} 
-                                onChange={GetInputNewNickName}></Form.Control>
+                                onChange={GetInputNewNickName}
+                                style={{borderTopRightRadius: "50px",
+                                        borderBottomRightRadius: "50px",}}></Form.Control>
                         </InputGroup>
                         <br></br>
-                        <Button onClick={ChangeNickName}>변경하기</Button>
-                        <Button variant='dark'onClick={ChangeNickNameCancle}>변경 취소</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
+                                                        borderTopLeftRadius: "50px",
+                                                        borderBottomLeftRadius: "50px",
+                                                        borderTopRightRadius: "50px",
+                                                        borderBottomRightRadius: "50px"}} onClick={ChangeNickName}><strong>변경하기</strong></Button>
+                        <div style={{width:"4px", display:"inline-block"}}/>
+                        <Button variant='dark' style={{borderTopLeftRadius: "50px",
+                                                        borderBottomLeftRadius: "50px",
+                                                        borderTopRightRadius: "50px",
+                                                        borderBottomRightRadius: "50px"}}onClick={ChangeNickNameCancle}>변경 취소</Button>
                     </Modal>
                     <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}
                     style={{
@@ -333,30 +359,65 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
                         }
                     }}>
                         <InputGroup>
-                            <InputGroup.Text>현재 비밀번호</InputGroup.Text>
+                            <InputGroup.Text style={{
+                                    backgroundColor:"#CDCDCD", 
+                                    borderTopLeftRadius: "50px",
+                                    borderBottomLeftRadius: "50px",
+                                }}>현재 비밀번호</InputGroup.Text>
                             <Form.Control 
                                 type="password"
                                 value={exPassword}
-                                onChange={GetExPassword}></Form.Control>
+                                onChange={GetExPassword}
+                                style={{ 
+                                    borderTopRightRadius: "50px",
+                                    borderBottomRightRadius: "50px",
+                                }}></Form.Control>
                         </InputGroup>
                         <br></br>
                         <InputGroup>
-                            <InputGroup.Text>새 비밀번호</InputGroup.Text>
+                            <InputGroup.Text style={{
+                                    backgroundColor:"#CDCDCD", 
+                                    borderTopLeftRadius: "50px",
+                                    borderBottomLeftRadius: "50px",
+                                }}><strong>새 비밀번호</strong></InputGroup.Text>
                             <Form.Control type="password" 
                                 value={newPassword} 
-                                onChange={GetInputNewPassword}></Form.Control>
+                                onChange={GetInputNewPassword}
+                                style={{ 
+                                    borderTopRightRadius: "50px",
+                                    borderBottomRightRadius: "50px",
+                                }}></Form.Control>
                         </InputGroup>
                         <br></br>
                         <InputGroup>
-                            <InputGroup.Text>비밀번호 확인</InputGroup.Text>
+                        <InputGroup.Text style={{
+                                    backgroundColor:"#CDCDCD", 
+                                    borderTopLeftRadius: "50px",
+                                    borderBottomLeftRadius: "50px",
+                                }}><strong>비밀번호 확인</strong></InputGroup.Text>
                             <Form.Control type="password" 
                                 value={checkPassword} 
-                                onChange={GetInputCheckPassword}></Form.Control>
+                                onChange={GetInputCheckPassword}
+                                style={{ 
+                                    borderTopRightRadius: "50px",
+                                    borderBottomRightRadius: "50px",
+                                }}></Form.Control>
                         </InputGroup>
                         <br></br>
-                        <br></br>
-                        <Button onClick={ChangePassword}>변경하기</Button>
-                        <Button variant='dark' onClick={ChangePasswordCancle}>변경 취소</Button>
+                        <Button variant='#CDCDCD' style={{
+                                    backgroundColor:"#CDCDCD", 
+                                    borderTopLeftRadius: "50px",
+                                    borderBottomLeftRadius: "50px",
+                                    borderTopRightRadius: "50px",
+                                    borderBottomRightRadius: "50px"
+                                }} onClick={ChangePassword}><strong>변경하기</strong></Button>
+                        <div style={{width:"4px", display:"inline-block"}}/>
+                        <Button variant='dark' style={{
+                                    borderTopLeftRadius: "50px",
+                                    borderBottomLeftRadius: "50px",
+                                    borderTopRightRadius: "50px",
+                                    borderBottomRightRadius: "50px"
+                                }} onClick={ChangePasswordCancle}>변경 취소</Button>
                     </Modal>
                     <div className="d-grid gap-2">
                         <Button variant='#CDCDCD' style={{
