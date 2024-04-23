@@ -22,8 +22,22 @@ const FrontComponent = (props) => {
                 </div>
                 <br></br>
                 <div className="d-flex justify-content-between gap-1">
-                    <Button variant='#CDCDCD' type="button" onClick={LinkToLogin} style={{fontSize: '20px', padding: '10px 100px', backgroundColor:"#CDCDCD"}}>로그인</Button>
-                    <Button variant='#CDCDCD' type="button" onClick={LinkToEnroll} style={{fontSize: '20px', padding: '10px 100px', backgroundColor:"#CDCDCD"}}>회원가입</Button>
+                    <Button variant='#CDCDCD' type="button" onClick={LinkToLogin} 
+                    style={{fontSize: '20px', 
+                    padding: '10px 100px', 
+                    backgroundColor:"#CDCDCD",
+                    borderTopLeftRadius: "25px",
+                    borderBottomLeftRadius: "25px",
+                    borderTopRightRadius: "25px",
+                    borderBottomRightRadius: "25px"}}><strong>로그인</strong></Button>
+                    <Button variant='#CDCDCD' type="button" onClick={LinkToEnroll} 
+                    style={{fontSize: '20px', 
+                    padding: '10px 100px', 
+                    backgroundColor:"#CDCDCD",
+                    borderTopLeftRadius: "25px",
+                    borderBottomLeftRadius: "25px",
+                    borderTopRightRadius: "25px",
+                    borderBottomRightRadius: "25px"}}><strong>회원가입</strong></Button>
                 </div> 
             </Col>
         </Row>

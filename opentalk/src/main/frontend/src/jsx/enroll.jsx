@@ -175,8 +175,12 @@ const EnrollComponent = (props) =>{
                             type="text"
                             value={memberId}
                             onChange={GetInputId}
+                            style={{borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px"}}
                         ></FormControl>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckIdDuplicate}>아이디 중복 확인</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD",
+                                                            borderTopRightRadius: "25px",
+                                                            borderBottomRightRadius: "25px"}} onClick={CheckIdDuplicate}>아이디 중복 확인</Button>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>비밀번호</Form.Label>
                     <InputGroup>
@@ -184,6 +188,10 @@ const EnrollComponent = (props) =>{
                             type="password"
                             value={memberPw}
                             onChange={GetInputPw}
+                            style={{borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"}}
                         ></FormControl>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>이름</Form.Label>
@@ -192,6 +200,10 @@ const EnrollComponent = (props) =>{
                             type="text"
                             value={memberName}
                             onChange={GetInputName}
+                            style={{borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"}}
                         ></FormControl>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>닉네임</Form.Label>
@@ -200,8 +212,12 @@ const EnrollComponent = (props) =>{
                             type="text"
                             value={memberNickName}
                             onChange={GetInputNickName}
+                            style={{borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px"}} 
                         ></FormControl>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckNickNameDuplicate}>닉네임 중복 확인</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD",
+                                                        borderTopRightRadius: "25px",
+                                                        borderBottomRightRadius: "25px"}} onClick={CheckNickNameDuplicate}>닉네임 중복 확인</Button>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>이메일</Form.Label>
                     <InputGroup>
@@ -209,8 +225,12 @@ const EnrollComponent = (props) =>{
                             type="email"
                             value={memberEmail}
                             onChange={GetInputEmail}
+                            style={{borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px"}} 
                         ></FormControl>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckMail}>인증번호 받기</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD",
+                                                        borderTopRightRadius: "25px",
+                                                        borderBottomRightRadius: "25px"}} onClick={CheckMail}>인증번호 받기</Button>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>인증번호</Form.Label>
                     <InputGroup>
@@ -218,11 +238,19 @@ const EnrollComponent = (props) =>{
                             type="text"
                             value={inputNum}
                             onChange={GetInputNum}
+                            style={{borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px"}} 
                         ></FormControl>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckAuth}>인증하기</Button>
+                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD",
+                                                        borderTopRightRadius: "25px",
+                                                        borderBottomRightRadius: "25px"}} onClick={CheckAuth}>인증하기</Button>
                     </InputGroup>
                     <br></br>
-                    <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD"}} onClick={CheckAll}>회원가입</Button>
+                    <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD",
+                                                        borderTopLeftRadius: "25px",
+                                                        borderBottomLeftRadius: "25px",
+                                                        borderTopRightRadius: "25px",
+                                                        borderBottomRightRadius: "25px"}} onClick={CheckAll}>회원가입</Button>
                 </Col>
             </Row>
         </Container>
