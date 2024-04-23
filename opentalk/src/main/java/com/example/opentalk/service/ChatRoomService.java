@@ -174,40 +174,25 @@ public class ChatRoomService {
         return null;
     }
 
-    public void deleteRome(String room_id){
+    public String deleteRoom(String room_id){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(room_id);
         if (chatRoomEntity.isPresent()){
-            Optional<ChatRoomMemberEntity> chatRoomMemberEntity =
-                    chatRoomMemberRepository.findByRoomId(chatRoomEntity.get().getId());
             List<Optional<ChatRoomHashtagEntity>> chatRoomHashtagEntityList =
                     chatRoomHashtagRepository.findByRoomId(chatRoomEntity.get().getId());
-            for (Optional<ChatRoomHashtagEntity> room : chatRoomHashtagEntityList){
-                room.ifPresent(chatRoomHashtagRepository::delete);
+            List<Optional<String>> memberList = chatRoomMemberRepository.findMembers(chatRoomEntity.get().getId());
+            if (!memberList.isEmpty()){
+                return "Fail";
             }
-            chatRoomMemberEntity.ifPresent(roomMemberEntity -> chatRoomMemberRepository.deleteById(roomMemberEntity.getId()));
-            chatMessageRepository.deleteLog(chatRoomEntity.get().getId());
-            chatRoomRepository.deleteById(chatRoomEntity.get().getId());
-        }
-
-    }
-    public boolean deleteRome_Pw(String room_id, String password){
-        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(room_id);
-        if (chatRoomEntity.isPresent()){
-            if (password.equals(chatRoomEntity.get().getRoomPassword())){
-                Optional<ChatRoomMemberEntity> chatRoomMemberEntity =
-                        chatRoomMemberRepository.findByRoomId(chatRoomEntity.get().getId());
-                List<Optional<ChatRoomHashtagEntity>> chatRoomHashtagEntityList =
-                        chatRoomHashtagRepository.findByRoomId(chatRoomEntity.get().getId());
+            else{
                 for (Optional<ChatRoomHashtagEntity> room : chatRoomHashtagEntityList){
                     room.ifPresent(chatRoomHashtagRepository::delete);
                 }
-                chatRoomMemberEntity.ifPresent(roomMemberEntity -> chatRoomMemberRepository.deleteById(roomMemberEntity.getId()));
                 chatMessageRepository.deleteLog(chatRoomEntity.get().getId());
                 chatRoomRepository.deleteById(chatRoomEntity.get().getId());
-                return true;
+                return "Success";
             }
         }
-        return false;
+        return "Fail";
     }
 
     public String enterInvitedRoom(String roomId, String memberId, String inviter){

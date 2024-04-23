@@ -34,14 +34,13 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMemberEn
             nativeQuery = true)
     Optional<ChatRoomMemberEntity> findMember(@Param("room_id") String room_id , @Param("member_id") String member_id);
 
-
     @Query(value = "SELECT * FROM Opentalk.chatroom_member",
             nativeQuery = true)
     List<Optional<ChatRoomMemberEntity>> getAllRooms();
 
-    @Query(value = "SELECT member_id FROM Opentalk.chatroom_member WHERE opentalk_room_list_id = :roomId"
+    @Query(value = "SELECT open_talk_member_id FROM Opentalk.chatroom_member WHERE opentalk_room_list_id = :roomId"
             ,nativeQuery = true)
-    List<String> findMembers(@Param("roomId") String roomId);
+    List<Optional<String>> findMembers(@Param("roomId") Long roomId);
 
     @Query(value = "SELECT COUNT(case when opentalk_room_list_id=:roomId then 1 end) FROM Opentalk.chatroom_member",
             nativeQuery = true)

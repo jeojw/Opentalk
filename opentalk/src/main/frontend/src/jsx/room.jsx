@@ -90,6 +90,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         fetchRoom();
     }, [isChangeData, isChangeRoom, room_Id, myInfo]);
 
+    //강퇴, 입장, 방장 위임 등 발생시 작동하는 훅
     useEffect(() =>{
         setIsChangeRoom(prevState => !prevState);
     }, [otherMember])

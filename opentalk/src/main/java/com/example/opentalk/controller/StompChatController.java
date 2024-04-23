@@ -28,22 +28,29 @@ public class StompChatController {
 
     @MessageMapping("/chat/enter")
     public void enterRoom(ChatMessageDTO chatMessage){
-        chatMessage.setMessage(chatMessage.getMember().getMemberNickName() + "님이 채팅방에 참여하였습니다.");
+        chatMessage.setMessage(chatMessage.getMessage());
         log.info("enterChat : {}", chatMessage);
         template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
     }
 
     @MessageMapping("/chat/exit")
     public void exitRoom(ChatMessageDTO chatMessage){
-        chatMessage.setMessage(chatMessage.getMember().getMemberNickName() + "님이 채팅방에서 나갔습니다.");
+        chatMessage.setMessage(chatMessage.getMessage());
         log.info("exitChat : {}", chatMessage);
+        template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
+    }
+
+    @MessageMapping("/chat/manager")
+    public void assignManager(ChatMessageDTO chatMessage){
+        chatMessage.setMessage(chatMessage.getMessage());
+        log.info("assignManagerChat : {}", chatMessage);
         template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
     }
 
     @MessageMapping("/chat/forcedExit")
     public void forcedExitRoom(ChatMessageDTO chatMessage){
         log.info("forcedExitChat : {}", chatMessage);
-        chatMessage.setMessage(chatMessage.getMember().getMemberNickName() + "님이 채팅방에서 강퇴되었습니다.");
+        chatMessage.setMessage(chatMessage.getMessage());
         template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
     }
 

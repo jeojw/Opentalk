@@ -216,35 +216,17 @@ const MainComponent = () => {
             const deleteUrl = "/api/opentalk/deleteRoom";
             const data = new FormData();
             data.append("room_id", roomInfo.roomId);
-            if (!roomInfo.existLock){
-                axios.post(deleteUrl, data)
-                .then((res) => {
-                    if (res.status === 200){
-                        window.alert("방이 삭제되었습니다.");
-                        setIsUpdateTrigger(prevState => !prevState);
-                    }
-                })
-                .catch((error) => console.log(error));
-            }   
-            else{
-                const inputPassword = window.prompt("비밀번호를 입력해주세요.");
-                if (inputPassword === ""){
-                    window.alert("비밀번호를 입력해주세요.")
+            axios.post(deleteUrl, data)
+            .then((res) => {
+                if (res.data === "Success"){
+                    window.alert("방이 삭제되었습니다.");
+                    setIsUpdateTrigger(prevState => !prevState);
                 }
                 else{
-                    axios.post(deleteUrl + `/${inputPassword}`, data)
-                    .then((res)=> {
-                        if (res.data === true){
-                            window.alert("방이 삭제되었습니다.");
-                            setIsUpdateTrigger(prevState => !prevState);
-                        }
-                        else{
-                            window.alert("비밀번호가 잘못되었습니다.");
-                        }
-                    })
-                    .catch((error) => console.log(error));
+                    window.alert("아직 방에 인원이 남아있습니다.");
                 }
-            }
+            })
+            .catch((error) => console.log(error));  
         }
     }
 
