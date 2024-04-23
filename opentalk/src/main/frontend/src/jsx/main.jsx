@@ -468,14 +468,14 @@ const MainComponent = () => {
             <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-#7B7B7B border-3 rounded-2 p-5"
             style={{
                 backgroundColor: "#7B7B7B",
-                width:"300px", height: "975px"
+                width:"30%", height: "975px"
                 }}>
                 <aside>
                     <div style={{ textAlign: 'center' }}>
                         <img alt="프로필 이미지" 
                             src={curImgUrl} 
-                            style={{width:200, 
-                            height:200,
+                            style={{width:'60%', 
+                            height:'60%',
                             backgroundPosition:"center",
                             borderRadius: "50%"}}></img>
                         <p style={{color:"white"}}>환영합니다</p>
@@ -575,7 +575,7 @@ const MainComponent = () => {
                 </ListGroup>
                 <br></br>
                 <FormGroup className="d-flex align-items-center justify-content-center">
-                    <InputGroup style={{width:"700px"}}>
+                    <InputGroup style={{width:"70%"}}>
                         <Form.Select 
                             onChange={selectMenuHandle} 
                             value={selectManu}

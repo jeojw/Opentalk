@@ -23,6 +23,7 @@
     "react-bootstrap-pagination-control": "^1.0.5",
     "react-cookie": "^7.1.2",
     "react-cropper": "^2.3.3",
+    "react-devtools": "^5.1.0",
     "react-dom": "^18.2.0",
     "react-image-file-resizer": "^0.4.8",
     "react-infinite-scroller": "^1.2.6",
