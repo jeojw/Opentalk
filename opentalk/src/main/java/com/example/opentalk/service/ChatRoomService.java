@@ -8,6 +8,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Log4j2
+@Transactional
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
@@ -29,6 +33,9 @@ public class ChatRoomService {
     private final MemberInviteRepository memberInviteRepository;
 
     private final BCryptPasswordEncoder passwordEncoder;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public String createRoom(ChatRoomDTO chatRoomDTO){
         ChatRoomEntity chatRoomEntity = ChatRoomEntity.toChatRoomEntity(chatRoomDTO);
@@ -102,9 +109,8 @@ public class ChatRoomService {
 
     public boolean changeRoomOption(ChatRoomRequestDto chatRoomRequestDto){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(chatRoomRequestDto.getRoomId());
-        System.out.print("Entity: " + chatRoomEntity);
         if (chatRoomEntity.isPresent()){
-            ChatRoomHashtagEntity chatRoomHashtagEntity;
+
             chatRoomRepository.changeRoomOption(chatRoomRequestDto.isExistLock(),
                     chatRoomRequestDto.getIntroduction(),
                     chatRoomRequestDto.getLimitParticipates(),
@@ -112,27 +118,21 @@ public class ChatRoomService {
                     chatRoomRequestDto.getRoomName(),
                     chatRoomRequestDto.getRoomId());
 
-            List<String> hastTagList = hashTagRepository.findAllTags();
+            chatRoomHashtagRepository.deleteByChatroom(chatRoomEntity.get().getId());
 
-            List<HashTagEntity> hashTagEntities = new ArrayList<>();
             for (HashTagDTO tag : chatRoomRequestDto.getRoomTags()){
-                hashTagEntities.add(HashTagEntity.toHashTagEntity(tag));
-            }
-
-            for (HashTagEntity tagEntity : hashTagEntities){
-                if (hastTagList.contains(tagEntity.getName())){
+                HashTagEntity tagEntity = HashTagEntity.toHashTagEntity(tag);
+                Optional<HashTagEntity> existingTagOptional = hashTagRepository.getTagEntityByName(tagEntity.getName());
+                if (existingTagOptional.isPresent()) {
+                    tagEntity = existingTagOptional.get();
+                } else {
                     hashTagRepository.save(tagEntity);
                 }
-                else{
-                    if (hashTagRepository.returnTagId(tagEntity.getName()).isPresent()) {
-                        hashTagRepository.accumulateTag(hashTagRepository.returnTagId(tagEntity.getName()).get());
-                    }
-                }
-                chatRoomHashtagEntity = ChatRoomHashtagEntity.builder()
+                ChatRoomHashtagEntity roomHashtagEntity = ChatRoomHashtagEntity.builder()
                         .chatroom(chatRoomEntity.get())
                         .hashtag(tagEntity)
                         .build();
-                chatRoomHashtagRepository.save(chatRoomHashtagEntity);
+                chatRoomHashtagRepository.save(roomHashtagEntity);
             }
             return true;
         }

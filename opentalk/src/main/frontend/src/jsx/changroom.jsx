@@ -164,12 +164,14 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
     return(
         <div>
             {role === "ROLE_MANAGER" && (
-            <Button className='btn-lg' variant='#B9B9B9' style={{  backgroundColor:"#B9B9B9", 
-                                                borderTopLeftRadius: "25px",
-                                                borderBottomLeftRadius: "25px",
-                                                borderTopRightRadius: "25px",
-                                                borderBottomRightRadius: "25px"
-                                            }} onClick={openModal}>설정 변경</Button>
+            <Button className='btn-lg'
+            variant='#B9B9B9' 
+            style={{  backgroundColor:"#B9B9B9", 
+                    borderTopLeftRadius: "25px",
+                    borderBottomLeftRadius: "25px",
+                    borderTopRightRadius: "25px",
+                    borderBottomRightRadius: "25px"
+                    }} onClick={openModal}>설정 변경</Button>
             )} 
             <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}
             style={{
@@ -263,7 +265,11 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                             borderBottomLeftRadius: "25px",
                             borderTopRightRadius: "25px",
                             borderBottomRightRadius: "25px"
-                        }}>#{t.tagName} <Button variant='dark' onClick={()=>tagDelete(t)} style={{
+                        }}>#{t.tagName} <Button
+                            className='btn-sm' 
+                            variant='dark' 
+                            onClick={()=>tagDelete(t)} 
+                            style={{
                             borderTopLeftRadius: "25px",
                             borderBottomLeftRadius: "25px",
                             borderTopRightRadius: "25px",

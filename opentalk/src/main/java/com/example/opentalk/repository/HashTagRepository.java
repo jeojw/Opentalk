@@ -20,9 +20,17 @@ public interface HashTagRepository extends JpaRepository<HashTagEntity, Long> {
     @Query(value = "SELECT id FROM Opentalk.hashtag WHERE tag_name = :tagName", nativeQuery = true)
     Optional<Long> returnTagId(@Param("tagName") String tagName);
 
+    @Query(value = "SELECT * FROM Opentalk.hashtag WHERE id = :tagId", nativeQuery = true)
+    Optional<HashTagEntity> getTagEntity(@Param("tagId") Long tagId);
+
+    @Query(value = "SELECT * FROM Opentalk.hashtag WHERE tag_name = :tagName", nativeQuery = true)
+    Optional<HashTagEntity> getTagEntityByName(@Param("tagName") String tagName);
+
     @Modifying
     @Transactional
     @Query(value = "UPDATE Opentalk.hashtag SET tag_accumulate = tag_accumulate + 1 WHERE id = :tag_id",
             nativeQuery = true)
     void accumulateTag(@Param("tag_id") Long tag_id);
+
+    boolean existsByName(String name);
 }

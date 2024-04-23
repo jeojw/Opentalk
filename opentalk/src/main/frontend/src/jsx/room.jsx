@@ -498,6 +498,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                             borderTopRightRadius: "25px",
                                             borderBottomRightRadius: "25px"}} />            
                             </InputGroup>
+                            <div style={{width:"7px", display:"inline-block"}}/>
                             <Button className='btn-lg' 
                             variant='#C3C3C3' 
                             style={{  backgroundColor:"#C3C3C3", 

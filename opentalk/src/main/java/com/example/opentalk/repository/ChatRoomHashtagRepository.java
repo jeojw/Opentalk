@@ -18,8 +18,16 @@ public interface ChatRoomHashtagRepository extends JpaRepository<ChatRoomHashtag
     @Query(value = "SELECT opentalk_room_list_id FROM Opentalk.chatroom_hashtag WHERE tag_id = :tag_id", nativeQuery = true)
     List<Optional<Long>> findByRoomTag(@Param("tag_id") Long tag_id);
 
+    @Query(value = "SELECT tag_id FROM Opentalk.chatroom_hashtag WHERE opentalk_room_list_id = :room_id", nativeQuery = true)
+    List<Optional<Long>> findAllTagsByRoom(@Param("room_id") Long roomId);
+
     @Modifying
     @Transactional
     @Query(value = "INSERT INTO Opentalk.chatroom_hashtag(tag_id, opentalk_room_list_id) Values(:tagId, :roomId)", nativeQuery = true)
     void SaveTagRoom(@Param("tagId") Long tagId, @Param("roomId") Long roomId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM Opentalk.chatroom_hashtag WHERE opentalk_room_list_id =:roomId", nativeQuery = true)
+    void deleteByChatroom(@Param("roomId") Long roomId);
 }

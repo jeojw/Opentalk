@@ -178,9 +178,12 @@ const EnrollComponent = (props) =>{
                             style={{borderTopLeftRadius: "25px",
                                     borderBottomLeftRadius: "25px"}}
                         ></FormControl>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"}} onClick={CheckIdDuplicate}>아이디 중복 확인</Button>
+                        <Button 
+                        variant='#CDCDCD' 
+                        style={{backgroundColor:"#CDCDCD",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"}} 
+                        onClick={CheckIdDuplicate}>아이디 중복 확인</Button>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>비밀번호</Form.Label>
                     <InputGroup>
