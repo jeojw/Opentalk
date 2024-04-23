@@ -56,12 +56,15 @@ const InviteMemberComponent = ({roomInfo, role}) => {
     return (
         <div>
             {role === "ROLE_MANAGER" && (
-                <Button variant='#B9B9B9' style={{  backgroundColor:"#B9B9B9", 
-                                                    borderTopLeftRadius: "25px",
-                                                    borderBottomLeftRadius: "25px",
-                                                    borderTopRightRadius: "25px",
-                                                    borderBottomRightRadius: "25px"
-                                                }} onClick={OpenInviteModal}>초대하기</Button>
+                <Button className='btn-lg' 
+                variant='#B9B9B9'
+                style={{  backgroundColor:"#B9B9B9", 
+                        borderTopLeftRadius: "25px",
+                        borderBottomLeftRadius: "25px",
+                        borderTopRightRadius: "25px",
+                        borderBottomRightRadius: "25px"
+                    }} 
+                onClick={OpenInviteModal}>초대하기</Button>
             )}
             <Modal isOpen={isOpen} onRequestClose={CloseInviteModal}
             style={{
@@ -73,19 +76,24 @@ const InviteMemberComponent = ({roomInfo, role}) => {
                 <Row>
                     <Col>
                         <InputGroup>
-                            <InputGroup.Text style={{   backgroundColor:'#8F8F8F', 
-                                                        borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                    }}><strong>닉네임</strong></InputGroup.Text>
-                            <FormControl type="text" value={nickName} onChange={GetInputNickName}
-                            style={{borderTopRightRadius: "25px",
+                            <FormControl 
+                            type="text" 
+                            value={nickName} 
+                            onChange={GetInputNickName}
+                            placeholder='검색할 닉네임을 입력하세요.'
+                            style={{borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
                                     borderBottomRightRadius: "25px"}}></FormControl>
-                            <Button variant='#8F8F8F' style={{  backgroundColor:'#8F8F8F',
-                                                                borderTopLeftRadius: "25px",
-                                                                borderBottomLeftRadius: "25px",
-                                                                borderTopRightRadius: "25px",
-                                                                borderBottomRightRadius: "25px"
-                                                            }} onClick={() => SearchByNickName(nickName)}><strong>검색</strong></Button>
+                            <Button
+                            variant='#8F8F8F' 
+                            style={{  backgroundColor:'#8F8F8F',
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"
+                                    }} 
+                            onClick={() => SearchByNickName(nickName)}><strong>검색</strong></Button>
                         </InputGroup>
                         <hr/>
                     </Col>
@@ -95,13 +103,16 @@ const InviteMemberComponent = ({roomInfo, role}) => {
                         {searchList && searchList.length > 0 && (
                             <ListGroup>
                                 {searchList.map((_member, index) => (
-                                    <ListGroupItem style={{ backgroundColor:"#CDCDCD", marginBottom: '7px',
-                                                            borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"}}><strong>{_member.memberNickName}</strong>
+                                    <ListGroupItem 
+                                    style={{ backgroundColor:"#CDCDCD", marginBottom: '7px',
+                                            borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                            borderTopRightRadius: "25px",
+                                            borderBottomRightRadius: "25px"}}><strong>{_member.memberNickName}</strong>
                                     <hr style={{border: "1px solid #808080"}}/>
-                                    <Button variant='#8F8F8F' 
+                                    <Button
+                                    className='btn-sm' 
+                                    variant='#8F8F8F' 
                                     style={{backgroundColor:'#8F8F8F',
                                             borderTopLeftRadius: "25px",
                                             borderBottomLeftRadius: "25px",
@@ -113,11 +124,15 @@ const InviteMemberComponent = ({roomInfo, role}) => {
                                 <hr/>
                             </ListGroup>
                         )}
-                        <Button variant='dark' style={{ borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                        borderTopRightRadius: "25px",
-                                                        borderBottomRightRadius: "25px"
-                                                    }} onClick={CloseInviteModal}>취소</Button>
+                        <Button
+                        className='btn-sm'
+                        variant='dark' 
+                        style={{ borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"
+                                }} 
+                        onClick={CloseInviteModal}>취소</Button>
                     </Col>
                 </Row>
                     

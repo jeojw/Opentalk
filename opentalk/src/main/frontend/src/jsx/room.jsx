@@ -20,6 +20,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     const [isForcedExist, setIsForcedExist] = useState(false);
     const [isChangeRoom, setIsChangeRoom] = useState(false);
+    const [otherMember, setOtherMember] = useState([]);
 
     const { loginToken } = useContext(TokenContext);
 
@@ -79,6 +80,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             try{
                 const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
                 setRoomInformation(response.data.chatroom);
+                setOtherMember(response.data.chatroom.members);
                 setRole(response.data.role);
             } catch (error){
                 console.log(error);
@@ -87,6 +89,10 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
         fetchRoom();
     }, [isChangeData, isChangeRoom, room_Id, myInfo]);
+
+    useEffect(() =>{
+        setIsChangeRoom(prevState => !prevState);
+    }, [otherMember])
 
     useEffect(() => {
         const isExistInRoom = async () => {
@@ -269,7 +275,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 if (res.data === true){
                     window.alert(`${roomMember.memberNickName}님이 방장이 되었습니다.`);
                     setIsChangeRoom(prevState => !prevState);
-                    console.log(isChangeRoom);
                 }
             })
             .catch((error) => console.log(error));
@@ -330,6 +335,12 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         }
     }
 
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter'){
+            publishChat(chat);
+        }
+    }
+
     return(
         <Container className="border border-#B6B6B6 border-3 rounded-1 p-5">
             <Container>
@@ -346,8 +357,11 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 <Row>
                     <Col 
                         className="border-#898989 border-1 rounded-1 p-4"  
-                        xs={6} 
-                        style={{ width:'800px', height:'400px', overflowY: 'auto', maxHeight: '400px'
+                        sm={3}
+                        md={3}
+                        xl={3}
+                        lg={3} 
+                        style={{ width:'70%', height:'400px', overflowY: 'auto', maxHeight: '400px'
                                         ,display: "flex", flexDirection: "column-reverse" }}>
                         {chatList && chatList.length > 0 && (
                         <ListGroup style={{marginBottom: '10px'}}>
@@ -428,8 +442,11 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                     </Col>
                     <Col 
                         className="border-#9D9D9D border-1 rounded-1 p-4" 
-                        xs={6} 
-                        style={{ width:'335px', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
+                        sm={1}
+                        md={1}
+                        xl={1}
+                        lg={1} 
+                        style={{ width:'30%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
                         <h5>참여명단</h5>
                         {roomInformation?.members.map((_member, index) => (
                             <ListGroup style={{marginBottom: '6px', 
@@ -439,16 +456,18 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                             borderBottomRightRadius: "25px"}}>
                                 <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                 {_member?.memberNickName}
+                                <div style={{width:"4px", display:"inline-block"}}/>
                                 {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                                <Button variant='dark' onClick={() => ForcedExit(_member)} style={{
+                                <Button className="btn-sm"variant='dark' onClick={() => ForcedExit(_member)} style={{
                                                                                                     borderTopLeftRadius: "25px",
                                                                                                     borderBottomLeftRadius: "25px",
                                                                                                     borderTopRightRadius: "25px",
                                                                                                     borderBottomRightRadius: "25px"
                                                                                                 }}>강퇴하기</Button>
                                 )}
+                                <div style={{width:"4px", display:"inline-block"}}/>
                                 {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                                <Button variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
+                                <Button className="btn-sm" variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
                                     backgroundColor: "#C3C3C3",
                                     borderTopLeftRadius: "25px",
                                     borderBottomLeftRadius: "25px",
@@ -467,28 +486,33 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                         <FormGroup 
                             className="d-flex align-items-center justify-content-center"
                             onSubmit={(event)=>handleSubmit(event)}>
-                            <InputGroup style={{width:"800px"}}>
+                            <InputGroup style={{width:"800px", height:"45px"}}>
                                 <Form.Control type="text" 
                                     value={chat} 
                                     placeholder='채팅 내용을 입력해 주세요.' 
-                                    onChange={handleChange} style={{borderTopLeftRadius: "25px",
-                                                                    borderBottomLeftRadius: "25px",
-                                                                    borderTopRightRadius: "25px",
-                                                                    borderBottomRightRadius: "25px"}} />            
+                                    onChange={handleChange}
+                                    onKeyDown={handleKeyDown}
+                                     style={{borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                            borderTopRightRadius: "25px",
+                                            borderBottomRightRadius: "25px"}} />            
                             </InputGroup>
-                            <Button variant='#C3C3C3' style={{  backgroundColor:"#C3C3C3", 
-                                                                borderTopLeftRadius: "25px",
-                                                                borderBottomLeftRadius: "25px",
-                                                                borderTopRightRadius: "25px",
-                                                                borderBottomRightRadius: "25px"
-                                                            }} onClick={() => publishChat(chat)}>전송</Button>          
+                            <Button className='btn-lg' 
+                            variant='#C3C3C3' 
+                            style={{  backgroundColor:"#C3C3C3", 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"
+                                }} 
+                            onClick={() => publishChat(chat)}><strong>전송</strong></Button>          
                         </FormGroup>
                     </Col>
                 </Row>
             </Container>
             <br></br>
             <FormGroup className="d-flex align-items-center justify-content-center gap-3">
-                <Button variant="dark" style={{ borderTopLeftRadius: "25px",
+                <Button className='btn-lg' variant="dark" style={{ borderTopLeftRadius: "25px",
                                                 borderBottomLeftRadius: "25px",
                                                 borderTopRightRadius: "25px",
                                                 borderBottomRightRadius: "25px"}} onClick={ExitRoom}>나가기</Button>

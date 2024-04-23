@@ -164,7 +164,7 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
     return(
         <div>
             {role === "ROLE_MANAGER" && (
-            <Button variant='#B9B9B9' style={{  backgroundColor:"#B9B9B9", 
+            <Button className='btn-lg' variant='#B9B9B9' style={{  backgroundColor:"#B9B9B9", 
                                                 borderTopLeftRadius: "25px",
                                                 borderBottomLeftRadius: "25px",
                                                 borderTopRightRadius: "25px",

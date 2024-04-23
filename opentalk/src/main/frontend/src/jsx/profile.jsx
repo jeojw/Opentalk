@@ -258,8 +258,7 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
                     <img 
                         alt="프로필 이미지" 
                         src={curImgUrl}
-                        style={{width:200, 
-                                height:200,
+                        style={{width:'80%',
                                 backgroundPosition:"center",
                                 borderRadius: "50%"}}    
                     ></img>
