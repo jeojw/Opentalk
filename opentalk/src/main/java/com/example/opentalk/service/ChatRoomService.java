@@ -317,7 +317,9 @@ public class ChatRoomService {
 
         if (!chatRoomEntityList.isEmpty()){
             for (ChatRoomEntity chatRoomEntity : chatRoomEntityList){
-                chatRoomDTOList.add(ChatRoomDTO.toChatRoomDTO(chatRoomEntity));
+                ChatRoomDTO chatRoomDTO = ChatRoomDTO.toChatRoomDTO(chatRoomEntity);
+                chatRoomDTO.setCurParticipates(getParticipates(chatRoomEntity.getRoomId()));
+                chatRoomDTOList.add(chatRoomDTO);
             }
         }
         return chatRoomDTOList;

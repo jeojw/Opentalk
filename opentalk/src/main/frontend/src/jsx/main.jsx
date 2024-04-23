@@ -11,7 +11,6 @@ import { Container, Row, Col, Button, Form,
 import { PaginationControl } from 'react-bootstrap-pagination-control';
 import Modal from 'react-modal';
 import { TokenContext } from './TokenContext';
-import { useBeforeUnload } from 'react-router-dom';
 
 const MainComponent = () => {
     const ChatRoomRole = {
@@ -159,7 +158,6 @@ const MainComponent = () => {
 
     useEffect(() => {
         setChatRoomList(allChatRoomList.slice(indexOfFirstPost, indexOfLastPost))
-        console.log(chatRoomList);
     }, [allChatRoomList, page, indexOfFirstPost, indexOfLastPost]);
 
     const exitWindow = () => {
@@ -191,14 +189,12 @@ const MainComponent = () => {
         }
         else{
             setIsSearch(true);
-            console.log(selectManu);
             axios.post("/api/opentalk/searchRooms", {
                 type:selectManu,
                 keyword:searchKeyword
             })
             .then((res) => {
-                console.log(res.data);
-                setChatRoomList(res.data);
+                setChatRoomList(res.data.slice(indexOfFirstPost, indexOfLastPost));
                 setPageLength(res.data.length);
             })
             .catch((error) => console.log(error));
@@ -610,9 +606,6 @@ const MainComponent = () => {
                     limit={3}
                     changePage={(page) => {
                         handlePageChange(page)
-                    }}
-                    style={{
-                        backgroundColor: "white"
                     }}
                 />
             </Col>
