@@ -7,6 +7,7 @@ import com.example.opentalk.entity.InviteEntity;
 import com.example.opentalk.entity.MemberEntity;
 import com.example.opentalk.repository.ChatRoomRepository;
 import com.example.opentalk.repository.InviteMessageRepository;
+import com.example.opentalk.repository.MemberInviteRepository;
 import com.example.opentalk.repository.MemberRepository;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Blob;
@@ -15,7 +16,6 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -39,7 +39,8 @@ public class MemberService {
     private final ChatRoomRepository chatRoomRepository;
     private final BCryptPasswordEncoder encoder;
     private final InviteMessageRepository inviteMessageRepository;
-    private final ResourceLoader resourceLoader;
+    private final MemberInviteRepository memberInviteRepository;
+
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
     @Value("${spring.cloud.gcp.storage.credentials.location}")
@@ -197,5 +198,15 @@ public class MemberService {
             }
         }
         return returnList;
+    }
+
+    @Transactional
+    public void removeInviteMessages(String inviter, String invitedMember){
+        Optional<InviteEntity> message = inviteMessageRepository.getInviteMessage(inviter, invitedMember);
+        Optional<MemberEntity> InvitedEntity = memberRepository.findByMemberNickName(invitedMember);
+        if (InvitedEntity.isPresent() && message.isPresent()){
+            memberInviteRepository.deleteEntity(message.get().getId(), InvitedEntity.get().getId());
+            inviteMessageRepository.deleteMessage(invitedMember, inviter);
+        }
     }
 }

@@ -75,4 +75,9 @@ public class MemberController {
     public ResponseEntity<List<InviteDto>> allInviteMessages(@RequestParam("memberNickName") String memberNickName){
         return ResponseEntity.ok(memberService.getAllInviteMessages(memberNickName));
     }
+
+    @PostMapping("/api/opentalk/member/deleteMessage")
+    public void deleteMessage(@RequestParam("inviter") String inviter, @RequestParam("invitedMember") String invitedMember){
+        memberService.removeInviteMessages(inviter, invitedMember);
+    }
 }

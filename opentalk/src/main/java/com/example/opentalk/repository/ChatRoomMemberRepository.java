@@ -66,17 +66,17 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMemberEn
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Opentalk.chatroom_member SET role = 'MANAGER' " +
+    @Query(value = "UPDATE Opentalk.chatroom_member SET role = 'ROLE_MANAGER' " +
             "WHERE opentalk_room_list_id = :roomId AND open_talk_member_id = :memberId",
             nativeQuery = true)
-    int setManager(@Param("roomId") Long roomId, @Param("memberId") Long memberId);
+    void setManager(@Param("roomId") Long roomId, @Param("memberId") Long memberId);
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE Opentalk.chatroom_member SET role = 'PARTICIPATES' " +
+    @Query(value = "UPDATE Opentalk.chatroom_member SET role = 'ROLE_PARTICIPATE' " +
             "WHERE opentalk_room_list_id = :roomId AND open_talk_member_id = :memberId",
             nativeQuery = true)
-    int setParticipate(@Param("roomId") Long roomId, @Param("memberId") Long memberId);
+    void setParticipate(@Param("roomId") Long roomId, @Param("memberId") Long memberId);
 
     @Query(value = "SELECT EXISTS (SELECT * FROM Opentalk.chatroom_member " +
             "WHERE opentalk_room_list_id = :roomId AND open_talk_member_id = :memberId) as success",

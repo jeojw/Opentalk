@@ -273,6 +273,7 @@ const MainComponent = () => {
                 .then((res) => {
                     if (res.data === "Success"){
                         navigate(`/opentalk/room/${roomInfo.roomId}`);
+                        setIsUpdateTrigger(prevState => !prevState);
                     }
                     else{
                         window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
@@ -310,7 +311,7 @@ const MainComponent = () => {
         }
         return (
             <div>
-                <RoomComponent setIsChangeData={setIsUpdateTrigger}/>
+                <RoomComponent isChangeData={isUpdateTrigger} setIsChangeData={setIsUpdateTrigger}/>
             </div>
         );
     }
@@ -348,6 +349,18 @@ const MainComponent = () => {
                 <RoomComponent setIsChangeData={setIsUpdateTrigger}/>
             </div>
         );
+    }
+
+    const DeleteInviteMessage = ({Inviter, Invited_member}) => {
+        const deleteUrl = '/api/opentalk/member/deleteMessage';
+        const data = new FormData();
+        data.append("inviter", Inviter);
+        data.append("invitedMember", Invited_member);
+        axios.post(deleteUrl, data)
+        .then((res) =>{
+            setIsUpdateTrigger(prevState => !prevState);
+        })
+        .catch((error) => console.log(error));
     }
 
     const GoProfile = () => {
@@ -412,7 +425,7 @@ const MainComponent = () => {
         }
 
         fetchAllMessages();
-    },[isMessageBoxOpen, isLogin])
+    },[isMessageBoxOpen, isLogin, isUpdateTrigger])
 
    return (
     <Container>
@@ -439,7 +452,7 @@ const MainComponent = () => {
                                                 borderBottomLeftRadius: "25px",
                                                 borderTopRightRadius: "25px",
                                                 borderBottomRightRadius: "25px"}}
-                                                >메세지 지우기</Button>
+                                                onClick={()=> DeleteInviteMessage({Inviter: _message.inviter, Invited_member:_message.invitedMember})}>메세지 지우기</Button>
                 
                 
                 </ListGroupItem>

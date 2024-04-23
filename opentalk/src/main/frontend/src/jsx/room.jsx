@@ -8,9 +8,8 @@ import InviteMemberComponent from './inviteMember';
 import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { format } from 'date-fns'
 import { TokenContext } from './TokenContext';
-import { useBeforeUnload } from 'react-beforeunload';
 
-const RoomComponent = ({setIsChangeData}) => {
+const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     const [roomInformation, setRoomInformation] = useState();
     const [myInfo, setMyInfo] = useState();
@@ -62,7 +61,6 @@ const RoomComponent = ({setIsChangeData}) => {
 
     useEffect(() => {
         const fetchInfo = async () => {
-            console.log(loginToken);
             try{
                 const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
                     headers: {authorization: loginToken}
@@ -78,7 +76,6 @@ const RoomComponent = ({setIsChangeData}) => {
 
     useEffect(() => {
         const fetchRoom = async () => {
-            console.log(isChangeRoom);
             try{
                 const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
                 setRoomInformation(response.data.chatroom);
@@ -89,7 +86,7 @@ const RoomComponent = ({setIsChangeData}) => {
         }
 
         fetchRoom();
-    }, [isChangeRoom, room_Id, myInfo]);
+    }, [isChangeData, isChangeRoom, room_Id, myInfo]);
 
     useEffect(() => {
         const isExistInRoom = async () => {
@@ -97,7 +94,6 @@ const RoomComponent = ({setIsChangeData}) => {
                 const response = await axios.get(`/api/opentalk/isExistInRoom/${room_Id}/${myInfo.memberNickName}`);
                 if (response.data !== true){
                     navigate("/opentalk/main");
-                    setIsForcedExist(false);
                 }
             } catch (error){
                 console.log(error);
@@ -105,7 +101,7 @@ const RoomComponent = ({setIsChangeData}) => {
         }
 
         isExistInRoom();
-    }, [isForcedExist, myInfo, room_Id]);
+    }, [isChangeRoom, isForcedExist, myInfo, room_Id]);
 
     useEffect(() => {
         const fetchChatLog = async () => {
@@ -147,7 +143,6 @@ const RoomComponent = ({setIsChangeData}) => {
             })
         });
         setIsChangeRoom(prevState => !prevState);
-        console.log(isChangeRoom);
     }
 
     const connect = () => {
@@ -231,15 +226,13 @@ const RoomComponent = ({setIsChangeData}) => {
             axios.post(checkUrl, {
                 chatroom: roomInformation,
                 member: roomMember,
-                role: "PARTICIPATES"
+                role: "ROLE_PARTICIPATE"
             })
             .then((res) => {
                 if (res.data === true){
                     window.alert("강제퇴장 되었습니다.");
                     setIsChangeRoom(prevState => !prevState);
-                    console.log(isChangeRoom);
                     setIsForcedExist(prevState => !prevState);
-                    window.location.reload();
                 }
             })
             .catch((error) => console.log(error));
