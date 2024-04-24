@@ -61,16 +61,6 @@ const MainComponent = () => {
     const [isReissue, setIsReissue] = useState(false);
     const [isLogin, setIsLogin] = useState(false);
 
-    // useEffect(() => {
-    //     let unlisten = history.listen((location) => {
-    //         if (history.action === "POP")
-    //     })
-
-    //     return () => {
-    //         unlisten();
-    //     };
-    // }, [history])
-
     useEffect(() => {
         const reissueToken = async () =>{
             if (isReissue){
@@ -160,10 +150,12 @@ const MainComponent = () => {
         setChatRoomList(allChatRoomList.slice(indexOfFirstPost, indexOfLastPost))
     }, [allChatRoomList, page, indexOfFirstPost, indexOfLastPost]);
 
-    const exitWindow = () => {
-        window.history.pushState(null, "", window.location.href);
+    const exitWindow = (event) => {
+        event.preventDefault();
+        event.returnValue = "";
         LogOut();
     };
+
 
     useEffect(() => {
         (() => {
@@ -173,7 +165,7 @@ const MainComponent = () => {
         return () => {
             window.removeEventListener("beforeunload", exitWindow);
         };
-    },[member, loginToken]);
+    },[]);
 
     const GetInputSearchKeyword = (event) => {
         setSearchKeyword(event.target.value);
@@ -356,21 +348,18 @@ const MainComponent = () => {
 
     const LogOut = () => {
         if (loginToken !== ""){
-            if (window.confirm("로그아웃 하시겠습니까?")){
-                axios.post("/api/opentalk/auth/logout", {}, {
-                    headers: { 
-                        Authorization: loginToken,
-                    }
-                })
-                .then((res) => {
-                    if (res.status === 200){
-                        window.alert("로그아웃 되었습니다.");
-                        setIsLogin(false);
-                        navigate("/opentalk/member/login");
-                    }
-                })
-                .catch((error) => console.log(error));
-            }
+            axios.post("/api/opentalk/auth/logout", {}, {
+                headers: { 
+                    Authorization: loginToken,
+                }
+            })
+            .then((res) => {
+                if (res.status === 200){
+                    setIsLogin(false);
+                    navigate("/opentalk/member/login");
+                }
+            })
+            .catch((error) => console.log(error));
         }
         else{
             alert("이미 로그아웃되었습니다.");

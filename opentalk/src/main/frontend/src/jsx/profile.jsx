@@ -213,20 +213,17 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
 
     const LogOut = () => {
         if (loginToken !== ""){
-            if (window.confirm("로그아웃 하시겠습니까?")){
-                axios.post("/api/opentalk/auth/logout", {}, {
-                    headers: { 
-                        Authorization: loginToken,
-                    }
-                })
-                .then((res) => {
-                    if (res.status === 200){
-                        window.alert("로그아웃 되었습니다.");
-                        navigate("/opentalk/member/login");
-                    }
-                })
-                .catch((error) => console.log(error));
-            }
+            axios.post("/api/opentalk/auth/logout", {}, {
+                headers: { 
+                    Authorization: loginToken,
+                }
+            })
+            .then((res) => {
+                if (res.status === 200){
+                    navigate("/opentalk/member/login");
+                }
+            })
+            .catch((error) => console.log(error));
         }
         else{
             alert("이미 로그아웃되었습니다.");
@@ -235,10 +232,11 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
         
     };
 
-    const exitWindow = () => {
-        window.history.pushState(null, "", window.location.href);
+    const exitWindow = (event) => {
+        event.preventDefault();
+        event.returnValue = "로그아웃 하시겠습니까?";
         LogOut();
-    };
+    }
 
     useEffect(() => {
         (() => {

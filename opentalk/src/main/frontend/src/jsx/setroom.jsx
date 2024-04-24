@@ -146,12 +146,17 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
     return (
         <div>
             <div className="d-grid gap-2 btn-lg">
-                <Button variant="#8F8F8F" style={{
-                                backgroundColor:'#8F8F8F', 
-                                borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px",
-                                borderTopRightRadius: "25px",
-                                borderBottomRightRadius: "25px"}} onClick={openModal}>
+                <Button 
+                className='btn-lg'
+                variant="#8F8F8F" 
+                style={{
+                        backgroundColor:'#8F8F8F', 
+                        borderTopLeftRadius: "25px",
+                        borderBottomLeftRadius: "25px",
+                        borderTopRightRadius: "25px",
+                        borderBottomRightRadius: "25px"
+                }} 
+                onClick={openModal}>
                     <strong>방 생성하기</strong>
                 </Button>
             </div>
