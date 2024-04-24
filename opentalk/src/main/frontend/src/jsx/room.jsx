@@ -51,7 +51,10 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     },[roomInformation, myInfo, role]);
 
     useEffect(() => {
-        window.addEventListener("beforeunload", exitWindow);
+        (async () => {
+            window.history.pushState(null, "", window.location.href);
+            window.addEventListener("beforeunload", exitWindow);
+        })();
         return () => {
             window.removeEventListener("beforeunload", exitWindow);
         };
@@ -325,24 +328,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
             })
         });
-
-        if (loginToken !== ""){
-            axios.post("/api/opentalk/auth/logout", {}, {
-                headers: { 
-                    Authorization: loginToken,
-                }
-            })
-            .then((res) => {
-                if (res.status === 200){
-                    navigate("/opentalk/member/login");
-                }
-            })
-            .catch((error) => console.log(error));
-        }
-        else{
-            alert("이미 로그아웃되었습니다.");
-            navigate("/opentalk/member/login");
-        }
     }
 
     const ExitRoom = () => {
@@ -563,9 +548,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                                 borderBottomLeftRadius: "25px",
                                                 borderTopRightRadius: "25px",
                                                 borderBottomRightRadius: "25px"}} onClick={ExitRoom}>나가기</Button>
-                <ChangRoomComponent room_Id={room_Id} role={role} isChangRoom={isChangeRoom} setIsChangeRoom={setIsChangeRoom}>
-                    {() => setIsChangeData(isChangeRoom)}
-                </ChangRoomComponent>
+                <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeData}/>
                 <InviteMemberComponent roomInfo = {roomInformation} role={role}/>
             </FormGroup>
         </Container>

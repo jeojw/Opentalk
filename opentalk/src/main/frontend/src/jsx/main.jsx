@@ -1,9 +1,8 @@
-import React, {useState, useEffect, useRef, useContext} from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, {useState, useEffect, useContext} from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SetRoomComponent from './setroom';
 import RoomComponent from './room';
-import {createBrowserHistory} from "history";
 import ProfileComponent from './profile';
 import { Container, Row, Col, Button, Form, 
     FormControl, InputGroup, ListGroup, ListGroupItem, 
@@ -40,7 +39,6 @@ const MainComponent = () => {
     const [isMessageBoxOpen, setIsMessageBoxOpen] = useState(false);
     const [messageList, setMessageList] = useState([]);
 
-    const chatRoomLength = allChatRoomList.length;
     const handlePageChange = (page)=>{
         setPage(page);
     }
@@ -52,7 +50,6 @@ const MainComponent = () => {
     const [searchKeyword, setSearchKeyword] = useState("");
     const navigate = useNavigate();
 
-    const history = createBrowserHistory();
 
     const { loginToken, updateToken } = useContext(TokenContext);
 
@@ -131,39 +128,26 @@ const MainComponent = () => {
 
     useEffect(() => {
         const fetchAllRooms = async () => {
-            if (isLogin){
-                try{
-                    const roomResponse = await axios.get("/api/opentalk/rooms");
-                    setAllChatRoomList(roomResponse.data);
-                    console.log(allChatRoomList);
-                    setPageLength(roomResponse.data.length);
-                } catch (error){
-                    console.error(error);
-                }
+            try{
+                const roomResponse = await axios.get("/api/opentalk/rooms");
+                setAllChatRoomList(roomResponse.data);
+                console.log(allChatRoomList);
+                setPageLength(roomResponse.data.length);
+            } catch (error){
+                console.error(error);
             }
-        };
-
+            }
         fetchAllRooms();
-    }, [isUpdateTrigger, isLogin]);
+
+        const intervalId = setInterval(fetchAllRooms, 10000);
+        return () => {
+            clearInterval(intervalId);
+        }
+    }, []);
 
     useEffect(() => {
         setChatRoomList(allChatRoomList.slice(indexOfFirstPost, indexOfLastPost))
     }, [allChatRoomList, page, indexOfFirstPost, indexOfLastPost]);
-
-    const exitWindow = (event) => {
-        event.preventDefault();
-        LogOut();
-    };
-
-    useEffect(() => {
-        (() => {
-            window.history.pushState(null, "", window.location.href);
-            window.addEventListener("beforeunload", exitWindow);
-        })();
-        return () => {
-            window.removeEventListener("beforeunload", exitWindow);
-        };
-    },[]);
 
     const GetInputSearchKeyword = (event) => {
         setSearchKeyword(event.target.value);
@@ -172,7 +156,6 @@ const MainComponent = () => {
     const selectMenuHandle = (event) => {
         setSelectManu(event.target.value);
     }
-
     const search = () => {
         if (searchKeyword.length <= 0){
             window.alert("한글자 이상의 검색어를 입력해주세요.")

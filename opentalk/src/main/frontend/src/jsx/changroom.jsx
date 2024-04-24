@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import axios from'axios';
 import { Form, Button, Row, Col, InputGroup, FormControl,ListGroup,ListGroupItem, } from 'react-bootstrap';
 
-const ChangRoomComponent = ({room_Id, role, isChangRoom, setIsChangeRoom}) => {
+const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [preRoomName, setPreRoomName] = useState("");
@@ -77,7 +77,7 @@ const ChangRoomComponent = ({room_Id, role, isChangRoom, setIsChangeRoom}) => {
             }
         })
         .catch((error) => console.log(error));
-        
+        console.log(typeof(setIsChangeStatus));
     }
 
     const GetInputName = (event) => {

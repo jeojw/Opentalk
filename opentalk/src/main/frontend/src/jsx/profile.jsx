@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button, Form, 
     FormControl, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { TokenContext } from './TokenContext';
-import Resizer from "react-image-file-resizer";
 
 const ProfileComponent = ({memberId, setIsUpdateData}) => {
     const [member, setMember] = useState('');
@@ -210,43 +209,6 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
         .catch((error)=>console.log(error));
         
     }
-
-    const LogOut = () => {
-        if (loginToken !== ""){
-            axios.post("/api/opentalk/auth/logout", {}, {
-                headers: { 
-                    Authorization: loginToken,
-                }
-            })
-            .then((res) => {
-                if (res.status === 200){
-                    navigate("/opentalk/member/login");
-                }
-            })
-            .catch((error) => console.log(error));
-        }
-        else{
-            alert("이미 로그아웃되었습니다.");
-            navigate("/opentalk/member/login");
-        }
-        
-    };
-
-    const exitWindow = (event) => {
-        event.preventDefault();
-        LogOut();
-    }
-
-    useEffect(() => {
-        (() => {
-            window.history.pushState(null, "", window.location.href);
-            window.addEventListener("beforeunload", exitWindow);
-        })();
-        return () => {
-            window.removeEventListener("beforeunload", exitWindow);
-        };
-    },[member]);
-
     
     return(
         <Container>
