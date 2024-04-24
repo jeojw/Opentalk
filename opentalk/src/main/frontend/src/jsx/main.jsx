@@ -152,10 +152,8 @@ const MainComponent = () => {
 
     const exitWindow = (event) => {
         event.preventDefault();
-        event.returnValue = "";
         LogOut();
     };
-
 
     useEffect(() => {
         (() => {

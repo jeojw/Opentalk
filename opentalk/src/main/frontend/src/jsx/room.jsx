@@ -37,7 +37,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     const exitWindow = (event) => {
         event.preventDefault();
-        event.returnValue = "로그아웃 하시겠습니까?";
         ExitRoom_Unload();
     };
 
@@ -52,10 +51,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     },[roomInformation, myInfo, role]);
 
     useEffect(() => {
-        (async () => {
-            window.history.pushState(null, "", window.location.href);
-            window.addEventListener("beforeunload", exitWindow);
-        })();
+        window.addEventListener("beforeunload", exitWindow);
         return () => {
             window.removeEventListener("beforeunload", exitWindow);
         };
