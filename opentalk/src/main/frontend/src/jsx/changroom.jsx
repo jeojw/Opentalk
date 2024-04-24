@@ -1,15 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {useCookies} from 'react-cookie';
 import Modal from 'react-modal';
 import axios from'axios';
-import { Form, Button, Container, Row, Col, InputGroup, 
-    InputGroupText, FormControl, FormGroup, FormLabel,
-    ListGroup,
-    ListGroupItem, } from 'react-bootstrap';
+import { Form, Button, Row, Col, InputGroup, FormControl,ListGroup,ListGroupItem, } from 'react-bootstrap';
 
-const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
-    const [roomInfo, setRoomInfo] = useState();
-
+const ChangRoomComponent = ({room_Id, role, isChangRoom, setIsChangeRoom}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [preRoomName, setPreRoomName] = useState("");
@@ -33,33 +27,26 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
         const fetchCurRoomInfo = async () => {
             try{
                 const response = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
-                setRoomInfo(response.data);
                 setPreRoomName(response.data.roomName);
                 setPreExistLock(response.data.existLock);
                 setPreInfo(response.data.introduction);
                 setPreParticipants(response.data.limitParticipates);
                 setPreTags(response.data.roomTags);
+
+                setRoomName(response.data.roomName);
+                setExistLock(response.data.existLock);
+                setInfo(response.data.introduction);
+                setParticipants(response.data.limitParticipates);
+                setTags(response.data.roomTags);
             } catch (error) {
                 console.log(error);
             }
         }
         fetchCurRoomInfo();
-    }, [room_Id]);
-
-    useEffect(() => {
-        setRoomName(preRoomName);
-        setExistLock(preExistLock);
-        setInfo(preInfo);
-        setParticipants(preParticipates);
-        setTags(preTags);
     }, []);
 
     const openModal = () => {
         setIsOpen(true);
-    }
-
-    const closeModal = () => {
-        setIsOpen(false);
     }
 
     const cancleSetModal = () => {

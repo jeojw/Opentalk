@@ -567,7 +567,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                                 borderBottomLeftRadius: "25px",
                                                 borderTopRightRadius: "25px",
                                                 borderBottomRightRadius: "25px"}} onClick={ExitRoom}>나가기</Button>
-                <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeRoom}>
+                <ChangRoomComponent room_Id={room_Id} role={role} isChangRoom={isChangeRoom} setIsChangeRoom={setIsChangeRoom}>
                     {() => setIsChangeData(isChangeRoom)}
                 </ChangRoomComponent>
                 <InviteMemberComponent roomInfo = {roomInformation} role={role}/>

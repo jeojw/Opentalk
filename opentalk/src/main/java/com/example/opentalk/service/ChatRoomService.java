@@ -114,7 +114,7 @@ public class ChatRoomService {
             chatRoomRepository.changeRoomOption(chatRoomRequestDto.isExistLock(),
                     chatRoomRequestDto.getIntroduction(),
                     chatRoomRequestDto.getLimitParticipates(),
-                    chatRoomRequestDto.getRoomPassword(),
+                    passwordEncoder.encode(chatRoomRequestDto.getRoomPassword()),
                     chatRoomRequestDto.getRoomName(),
                     chatRoomRequestDto.getRoomId());
 

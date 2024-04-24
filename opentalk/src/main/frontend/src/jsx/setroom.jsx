@@ -252,16 +252,22 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
 
                         <ListGroup className="list-group list-group-horizontal">
                             {tags.map((t)=> (
-                                <ListGroupItem style={{borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                        borderTopRightRadius: "25px",
-                                                        borderBottomRightRadius: "25px"
-                                                    }}>#{t.tagName} <Button variant='dark' onClick={()=>tagDelete(t)} 
-                                                    style={{borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"
-                                                }}>삭제</Button></ListGroupItem>
+                                <ListGroupItem 
+                                style={{borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"
+                                        }}>#{t.tagName} 
+                                        <Button 
+                                            className='btn-sm'
+                                            variant='dark' 
+                                            onClick={()=>tagDelete(t)} 
+                                            style={{borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px",
+                                                borderTopRightRadius: "25px",
+                                                borderBottomRightRadius: "25px"
+                                            }}
+                                        >삭제</Button></ListGroupItem>
                             ))}
                         </ListGroup>
                         <br></br>
