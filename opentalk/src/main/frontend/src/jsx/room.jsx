@@ -8,6 +8,7 @@ import InviteMemberComponent from './inviteMember';
 import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { format } from 'date-fns'
 import { TokenContext } from './TokenContext';
+import { useQuery, useMutation } from 'react-query';
 
 const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
@@ -19,7 +20,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     const [role, setRole] = useState();
 
     const [isForcedExist, setIsForcedExist] = useState(false);
-    const [isChangeRoom, setIsChangeRoom] = useState(false);
     const [otherMember, setOtherMember] = useState([]);
 
     const { loginToken } = useContext(TokenContext);
@@ -29,6 +29,25 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     let {room_Id} = useParams();  
     const client = useRef({});
     const navigate = useNavigate();
+
+    const { data: roomData, isLoading, isError, refetch} = useQuery(['room', room_Id, myInfo], async () => {
+        const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
+        return response.data;
+    }, {
+        enabled: !!room_Id && !!myInfo,
+    });
+
+    const { mutate: updateRoom } = useMutation(async () => {
+        await refetch();
+     });
+
+    useEffect(() => {
+        if (!isLoading && !isError && roomData) {
+            setRoomInformation(roomData.chatroom);
+            setOtherMember(roomData.chatroom.members);
+            setRole(roomData.role);
+        }
+    }, [roomData, isLoading, isError]);
 
     const preventGoBack = () => {
         window.history.pushState(null, "", window.location.href);
@@ -74,27 +93,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         fetchInfo();
     }, [loginToken]);
 
-
-    useEffect(() => {
-        const fetchRoom = async () => {
-            try{
-                const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
-                setRoomInformation(response.data.chatroom);
-                setOtherMember(response.data.chatroom.members);
-                setRole(response.data.role);
-            } catch (error){
-                console.log(error);
-            }
-        }
-
-        fetchRoom();
-    }, [isChangeData, isChangeRoom, room_Id, myInfo]);
-
-    //강퇴, 입장, 방장 위임 등 발생시 작동하는 훅
-    useEffect(() =>{
-        setIsChangeRoom(prevState => !prevState);
-    }, [otherMember])
-
     useEffect(() => {
         const isExistInRoom = async () => {
             try{
@@ -108,7 +106,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         }
 
         isExistInRoom();
-    }, [isChangeRoom, isForcedExist, myInfo, room_Id]);
+    }, [isForcedExist, myInfo, room_Id]);
 
     useEffect(() => {
         const fetchChatLog = async () => {
@@ -136,6 +134,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         const curTime = new Date();
         const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
         const kr_Time = new Date(utc + (KR_TIME_DIFF));
+        updateRoom();
 
         client.current.publish({
             destination: '/pub/chat/enter',
@@ -149,7 +148,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 timeStamp: format(kr_Time, "yyyy-MM-dd-hh-mm")
             })
         });
-        setIsChangeRoom(prevState => !prevState);
     }
 
     const connect = () => {
@@ -238,7 +236,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             .then((res) => {
                 if (res.data === true){
                     window.alert("강제퇴장 되었습니다.");
-                    setIsChangeRoom(prevState => !prevState);
+                    updateRoom();
                     setIsForcedExist(prevState => !prevState);
                 }
             })
@@ -275,7 +273,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             .then((res) => {
                 if (res.data === true){
                     window.alert(`${roomMember.memberNickName}님이 방장이 되었습니다.`);
-                    setIsChangeRoom(prevState => !prevState);
+                    updateRoom();
                 }
             })
             .catch((error) => console.log(error));
@@ -307,7 +305,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         })
         .then((res) => {
             if (res.status === 200){
-                setIsChangeRoom(prevState => !prevState);
+                updateRoom();
             }
         })
         .catch((error) => console.log(error));
@@ -341,8 +339,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             .then((res) => {
                 if (res.status === 200){
                     navigate("/opentalk/main");
-                    setIsChangeRoom(prevState => !prevState);
-                    console.log(isChangeRoom);
+                    updateRoom();
                 }
             })
             .catch((error) => console.log(error));

@@ -10,6 +10,7 @@ import { Container, Row, Col, Button, Form,
 import { PaginationControl } from 'react-bootstrap-pagination-control';
 import Modal from 'react-modal';
 import { TokenContext } from './TokenContext';
+import { useQuery, useMutation } from 'react-query';
 
 const MainComponent = () => {
     const ChatRoomRole = {
@@ -24,9 +25,9 @@ const MainComponent = () => {
     ];
 
     const [isUpdateTrigger, setIsUpdateTrigger] = useState(false);
+    const [allChatRoomList, setAllChatRoomList] = useState([]);
 
     const [chatRoomList, setChatRoomList] = useState([]);
-    const [allChatRoomList, setAllChatRoomList] = useState([]);
     const [page, setPage] = useState(1);
     const [isSearch, setIsSearch] = useState(false);
 
@@ -57,6 +58,21 @@ const MainComponent = () => {
 
     const [isReissue, setIsReissue] = useState(false);
     const [isLogin, setIsLogin] = useState(false);
+
+    const { data: allChatRooms, isLoading, isError, refetch } = useQuery('allChatRooms', async () => {
+        const roomResponse = await axios.get("/api/opentalk/rooms");
+        return roomResponse.data;
+    })
+
+    useEffect(() => {
+        if (!isLoading && !isError && allChatRooms) {
+            setAllChatRoomList(allChatRooms);
+        }
+    }, [allChatRooms, isLoading, isError]);
+
+    const { mutate: updateRooms } = useMutation(async () => {
+       await refetch();
+    });
 
     useEffect(() => {
         const reissueToken = async () =>{
@@ -126,24 +142,6 @@ const MainComponent = () => {
         fetchMyInfo();
     }, [isLogin, loginToken]);
 
-    useEffect(() => {
-        const fetchAllRooms = async () => {
-            try{
-                const roomResponse = await axios.get("/api/opentalk/rooms");
-                setAllChatRoomList(roomResponse.data);
-                console.log(allChatRoomList);
-                setPageLength(roomResponse.data.length);
-            } catch (error){
-                console.error(error);
-            }
-            }
-        fetchAllRooms();
-
-        const intervalId = setInterval(fetchAllRooms, 10000);
-        return () => {
-            clearInterval(intervalId);
-        }
-    }, []);
 
     useEffect(() => {
         setChatRoomList(allChatRoomList.slice(indexOfFirstPost, indexOfLastPost))
@@ -223,6 +221,7 @@ const MainComponent = () => {
                 })
                 .then((res) => {
                     if (res.data === "Success"){
+                        updateRooms();
                         navigate(`/opentalk/room/${roomInfo.roomId}`);
                         setIsUpdateTrigger(prevState => !prevState);
                     }
@@ -245,6 +244,7 @@ const MainComponent = () => {
                     })
                     .then((res) => {
                         if (res.data === "Success"){
+                            updateRooms();
                             navigate(`/opentalk/room/${roomInfo.roomId}`);
                         }
                         else if (res.data ==="Incorrect"){
