@@ -206,6 +206,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     };
 
     const EnterRoom = () => {
+        updateRoom();
         const curTime = new Date();
         const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
         const kr_Time = new Date(utc + (KR_TIME_DIFF));
@@ -243,6 +244,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             .then((res) => {
                 if (res.data === true){
                     window.alert(`${roomMember.memberNickName}님이 방장이 되었습니다.`);
+                    updateRoom();
                     setIsChangeManager(prevState => !prevState);
                     const curTime = new Date();
                     const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
@@ -278,6 +280,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             .then((res) => {
                 if (res.data === true){
                     window.alert("강제퇴장 되었습니다.");
+                    updateRoom();
                     setIsChangeMember(prevState => !prevState);
                     if (!client.current.connected) return;
                     const curTime = new Date();
@@ -312,6 +315,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         })
         .then((res) => {
             if (res.status === 200){
+                updateRoom();
                 setIsChangeMember(prevState => !prevState);
                 const curTime = new Date();
                 const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
@@ -347,6 +351,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             .then((res) => {
                 if (res.status === 200){
                     setIsChangeMember(prevState => !prevState);
+                    updateRoom();
                     navigate("/opentalk/main");
                     const curTime = new Date();
                     const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);

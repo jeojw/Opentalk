@@ -490,7 +490,7 @@ const MainComponent = () => {
                             <strong>
                                 {room.roomName} | {room.curParticipates} / {room.limitParticipates}
                             </strong>
-                        {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock.jpg`} width={20}></img>}
+                        {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock_symbol.png`} width={20} style={{filter: '#8F8F8F(100%)'}}></img>}
                         <hr/>
                         <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img> 
                         <strong>{room.roomManager}</strong>
