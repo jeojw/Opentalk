@@ -18,6 +18,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     const [preChatList, setPreChatList] = useState([]);
     const [chat, setChat] = useState("");
     const [role, setRole] = useState();
+    const [curParticipates, setCurParticipates] = useState(0);
 
     const [isChangeManager, setIsChangeManager] = useState(false);
     const [isChangeMember, setIsChangeMember] = useState(false);
@@ -49,6 +50,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             setRoomInformation(roomData.chatroom);
             setOtherMember(roomData.chatroom.members);
             setRole(roomData.role);
+            setCurParticipates(roomData.chatroom.curParticipates);
         }
     }, [roomData, isLoading, isError]);
 
@@ -549,7 +551,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                                 borderBottomLeftRadius: "25px",
                                                 borderTopRightRadius: "25px",
                                                 borderBottomRightRadius: "25px"}} onClick={ExitRoom}>나가기</Button>
-                <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeData} curParticipates={roomInformation.curParticipates}/>
+                <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeData} curParticipates={curParticipates}/>
                 <InviteMemberComponent roomInfo = {roomInformation} role={role}/>
             </FormGroup>
         </Container>

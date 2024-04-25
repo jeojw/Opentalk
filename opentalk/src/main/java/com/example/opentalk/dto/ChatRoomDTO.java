@@ -29,7 +29,8 @@ public class ChatRoomDTO {
     public ChatRoomDTO() {}
 
     @Builder
-    public ChatRoomDTO (String roomId, String roomName, String roomPassword, Integer limitParticipates,
+    public ChatRoomDTO (String roomId, String roomName, String roomPassword,
+                        Integer limitParticipates, boolean existLock,
                         Integer curParticipates, String introduction, String roomManager,
                         List<AuthDto.ResponseDto> talkers, List<HashTagDTO> roomTags){
         this.roomId = roomId;
@@ -38,7 +39,7 @@ public class ChatRoomDTO {
         this.curParticipates = curParticipates;
         this.limitParticipates = limitParticipates;
         this.introduction = introduction;
-        this.existLock = !this.roomPassword.isEmpty();
+        this.existLock = existLock;
         this.roomManager = roomManager;
         this.members = talkers;
         this.roomTags = roomTags;
@@ -59,6 +60,7 @@ public class ChatRoomDTO {
                 .roomName(chatRoomEntity.getRoomName())
                 .roomPassword(chatRoomEntity.getRoomPassword())
                 .curParticipates(chatRoomEntity.getMembers().size())
+                .existLock(chatRoomEntity.isExistLock())
                 .limitParticipates(chatRoomEntity.getLimitParticipates())
                 .introduction(chatRoomEntity.getIntroduction())
                 .roomManager(chatRoomEntity.getRoomManager())

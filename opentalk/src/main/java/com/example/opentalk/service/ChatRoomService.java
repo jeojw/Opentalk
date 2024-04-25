@@ -112,11 +112,14 @@ public class ChatRoomService {
     public boolean changeRoomOption(ChatRoomRequestDto chatRoomRequestDto){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(chatRoomRequestDto.getRoomId());
         if (chatRoomEntity.isPresent()){
-
+            String newPassword = "";
+            if (!chatRoomRequestDto.getRoomPassword().isEmpty()){
+                newPassword = passwordEncoder.encode(chatRoomRequestDto.getRoomPassword());
+            }
             chatRoomRepository.changeRoomOption(chatRoomRequestDto.isExistLock(),
                     chatRoomRequestDto.getIntroduction(),
                     chatRoomRequestDto.getLimitParticipates(),
-                    passwordEncoder.encode(chatRoomRequestDto.getRoomPassword()),
+                    newPassword,
                     chatRoomRequestDto.getRoomName(),
                     chatRoomRequestDto.getRoomId());
 

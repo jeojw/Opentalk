@@ -205,6 +205,7 @@ const MainComponent = () => {
         }
         else{
             const enterUrl = '/api/opentalk/enterRoom';
+            console.log(roomInfo.existLock);
             if (!roomInfo.existLock){
                 let currentRole;
                 console.log(roomInfo);
@@ -234,7 +235,7 @@ const MainComponent = () => {
             }
             else{
                 const inputPassword = window.prompt("비밀번호를 입력해주세요.");
-                console.log(inputPassword);
+                
                 if (inputPassword === ""){
                     window.alert("비밀번호를 입력해주세요.")
                 }else{
