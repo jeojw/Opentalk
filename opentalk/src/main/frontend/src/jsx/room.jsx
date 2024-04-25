@@ -135,11 +135,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         return () => disconnect();
     }, []);
 
-    useEffect(() => {
-        if (myInfo !== undefined)
-            EnterRoom();
-    },[isEnterRoom, myInfo])
-
     const connect = () => {
         client.current = new StompJs.Client({
             webSocketFactory: () => new SockJs('/ws'),
@@ -204,7 +199,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         client.current.subscribe(`/sub/chat/${room_Id}`, ({body}) => {
             setChatList((prevChatList)=>[... prevChatList , JSON.parse(body)])
         });
-        setIsEnterRoom(true);
     };
 
     const EnterRoom = () => {
