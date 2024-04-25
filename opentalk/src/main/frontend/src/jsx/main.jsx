@@ -10,7 +10,7 @@ import { Container, Row, Col, Button, Form,
 import { PaginationControl } from 'react-bootstrap-pagination-control';
 import Modal from 'react-modal';
 import { TokenContext } from './TokenContext';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, QueryClient, useQueryClient } from 'react-query';
 
 const MainComponent = () => {
     const ChatRoomRole = {
@@ -71,8 +71,14 @@ const MainComponent = () => {
         }
     }, [allChatRooms, isLoading, isError]);
 
+    const queryClient = useQueryClient();
+
     const { mutate: updateRooms } = useMutation(async () => {
        await refetch();
+    }, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('allChatRooms');
+        }
     });
 
     useEffect(() => {

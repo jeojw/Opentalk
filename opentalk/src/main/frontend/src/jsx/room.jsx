@@ -8,7 +8,7 @@ import InviteMemberComponent from './inviteMember';
 import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { format } from 'date-fns'
 import { TokenContext } from './TokenContext';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 
 const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
@@ -19,9 +19,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     const [chat, setChat] = useState("");
     const [role, setRole] = useState();
     const [curParticipates, setCurParticipates] = useState(0);
-
-    const [isChangeManager, setIsChangeManager] = useState(false);
-    const [isChangeMember, setIsChangeMember] = useState(false);
     const [isEnterRoom, setIsEnterRoom] = useState(false);
 
     const [otherMember, setOtherMember] = useState([]);
@@ -33,6 +30,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     let {room_Id} = useParams();  
     const client = useRef({});
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const { data: roomData, isLoading, isError, refetch} = useQuery(['roomData', room_Id, myInfo], async () => {
         const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
@@ -43,7 +41,11 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     const { mutate: updateRoom } = useMutation(async () => {
         await refetch();
-     }, [isChangeManager, isChangeMember]);
+     }, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('roomData')
+        }
+     });
 
 
     useEffect(() => {
@@ -245,7 +247,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 if (res.data === true){
                     window.alert(`${roomMember.memberNickName}님이 방장이 되었습니다.`);
                     updateRoom();
-                    setIsChangeManager(prevState => !prevState);
                     const curTime = new Date();
                     const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
                     const kr_Time = new Date(utc + (KR_TIME_DIFF));
@@ -281,7 +282,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 if (res.data === true){
                     window.alert("강제퇴장 되었습니다.");
                     updateRoom();
-                    setIsChangeMember(prevState => !prevState);
                     if (!client.current.connected) return;
                     const curTime = new Date();
                     const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
@@ -316,7 +316,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         .then((res) => {
             if (res.status === 200){
                 updateRoom();
-                setIsChangeMember(prevState => !prevState);
                 const curTime = new Date();
                 const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
                 const kr_Time = new Date(utc + (KR_TIME_DIFF));
@@ -350,7 +349,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             })
             .then((res) => {
                 if (res.status === 200){
-                    setIsChangeMember(prevState => !prevState);
                     updateRoom();
                     navigate("/opentalk/main");
                     const curTime = new Date();
