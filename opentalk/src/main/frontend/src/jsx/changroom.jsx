@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import axios from'axios';
 import { Form, Button, Row, Col, InputGroup, FormControl,ListGroup,ListGroupItem, } from 'react-bootstrap';
 
-const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
+const ChangRoomComponent = ({room_Id, role, setIsChangeRoom, curParticipates}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [preRoomName, setPreRoomName] = useState("");
@@ -83,7 +83,8 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
         setRoomName(event.target.value);
     }
     const GetInputParticipates = (event) => {
-        if (event.target.value >= preParticipates){
+        console.log(curParticipates);
+        if (event.target.value >= curParticipates){
             if (event.target.value > 20){
                 window.alert("방의 인원수는 최대 20명까지 가능합니다.");
             }
@@ -91,11 +92,8 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                 setParticipants(event.target.value);
             }
         }
-        else if (event.target.value >= 3 && event.targat.value < preParticipates){
+        else if (event.target.value < curParticipates){
             window.alert("현재 인원의 수보다 적게 설정이 불가능합니다.");
-        }
-        else {
-            window.alert("방의 인원수는 최소 3명부터 가능합니다.");
         }
     }
     const GetInputPassword = (event) => {

@@ -76,7 +76,9 @@ public class ChatRoomService {
                 ChatRoomMemberEntity chatRoomMemberEntity =
                         chatRoomMemberRepository.findByRoomMemberId(chatRoomEntity.get().getId(),
                                                         memberEntity.get().getId()).get();
-                return ChatRoomMemberDTO.toChatRoomMemberDTO(chatRoomMemberEntity);
+                ChatRoomMemberDTO chatRoomMember = ChatRoomMemberDTO.toChatRoomMemberDTO(chatRoomMemberEntity);
+                chatRoomMember.getChatroom().setCurParticipates(getParticipates(roomId));
+                return chatRoomMember;
             }
         }
         return null;

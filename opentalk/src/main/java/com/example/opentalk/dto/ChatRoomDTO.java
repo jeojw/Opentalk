@@ -58,6 +58,7 @@ public class ChatRoomDTO {
                 .roomId(chatRoomEntity.getRoomId())
                 .roomName(chatRoomEntity.getRoomName())
                 .roomPassword(chatRoomEntity.getRoomPassword())
+                .curParticipates(chatRoomEntity.getMembers().size())
                 .limitParticipates(chatRoomEntity.getLimitParticipates())
                 .introduction(chatRoomEntity.getIntroduction())
                 .roomManager(chatRoomEntity.getRoomManager())
