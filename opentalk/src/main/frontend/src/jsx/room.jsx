@@ -23,6 +23,33 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     const [otherMember, setOtherMember] = useState([]);
 
+    const [startIndex, setStartIndex] = useState(0);
+    const [endIndex, setEndIndex] = useState(30);
+
+    const chatContainerRef = useRef(null);
+
+    useEffect(() => {
+        scrollToIndex();
+    }, [startIndex, endIndex]);
+
+    const scrollToIndex = () => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight - chatContainerRef.current.clientHeight;
+        }
+    };
+
+    const handleScroll = (e) => {
+        const { scrollTop, scrollHeight, clientHeight } = e.target;
+        const threshold = (scrollHeight - clientHeight) * -1;
+        
+        if (scrollTop <= threshold) {
+            if (startIndex >= 10)
+                setStartIndex(prevStartIndex => prevStartIndex - 10);
+            else
+                setStartIndex(0);
+        }
+    };   
+    
     const { loginToken } = useContext(TokenContext);
 
     const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
@@ -122,6 +149,8 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 data.append("roomId", room_Id);
                 const response = await axios.post("/api/opentalk/chatLog", data);
                 setPreChatList(response.data);
+                setStartIndex(response.data.length - 10);
+                setEndIndex(response.data.length);
             } catch (error){
                 console.log(error);
             }
@@ -395,7 +424,9 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                         md={3}
                         xl={3}
                         lg={3} 
-                        style={{ width:'70%', height:'400px', overflowY: 'auto', maxHeight: '400px'
+                        ref={chatContainerRef}
+                        onScroll={handleScroll}
+                        style={{ width:'70%', height:'400px', overflowY: 'scroll', maxHeight: '400px'
                                         ,display: "flex", flexDirection: "column-reverse" }}>
                         {chatList && chatList.length > 0 && (
                         <ListGroup style={{marginBottom: '10px'}}>
@@ -436,8 +467,8 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                         )}
                         <br></br>
                         {preChatList && preChatList.length > 0 && (
-                        <ListGroup>
-                            {preChatList.map((_chatMessage) => {
+                        <ListGroup style={{marginBottom: '10px' }}>
+                            {preChatList.slice(startIndex, endIndex).map((_chatMessage) => {
                                 let fontcolor = "#000000";
                                 let color;
                                 let textAlign = "left";
