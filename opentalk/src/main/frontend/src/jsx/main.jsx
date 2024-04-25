@@ -386,7 +386,12 @@ const MainComponent = () => {
 
    return (
     <Container>
-        <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal}>
+        <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
+                    content: {
+                        width: '1000px', // 원하는 너비로 설정
+                        height: '600px', // 원하는 높이로 설정
+                    }
+                }}>
             <ListGroup>
             {messageList.map((_message) => (
                 <ListGroupItem style={{ borderTopLeftRadius: "25px",

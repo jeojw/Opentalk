@@ -384,7 +384,7 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
                                     borderBottomLeftRadius: "50px",
                                     borderTopRightRadius: "50px",
                                     borderBottomRightRadius: "50px"
-                                }} onClick={ChangeImgPopup}>사진 변경</Button>
+                                }} onClick={ChangeImgPopup}>프로필 이미지 변경</Button>
                         <Button variant='#CDCDCD' style={{
                                     backgroundColor:"#CDCDCD", 
                                     borderTopLeftRadius: "50px",
@@ -399,8 +399,7 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
                                     borderTopRightRadius: "50px",
                                     borderBottomRightRadius: "50px"
                                 }} onClick={ChangePasswordPopup}>비밀번호 변경</Button>
-                        <Button variant='#CDCDCD' style={{
-                                    backgroundColor:"#CDCDCD", 
+                        <Button variant='dark' style={{
                                     borderTopLeftRadius: "50px",
                                     borderBottomLeftRadius: "50px",
                                     borderTopRightRadius: "50px",
