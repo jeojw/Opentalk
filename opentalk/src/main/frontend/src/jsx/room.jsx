@@ -26,6 +26,8 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     const [startIndex, setStartIndex] = useState(0);
     const [endIndex, setEndIndex] = useState(30);
 
+    const [prevScroll, setPrevScroll] = useState(0);
+
     const chatContainerRef = useRef(null);
 
     useEffect(() => {
@@ -34,7 +36,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     const scrollToIndex = () => {
         if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight - chatContainerRef.current.clientHeight;
+            chatContainerRef.current.scrollTop = prevScroll;
         }
     };
 
@@ -47,6 +49,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 setStartIndex(prevStartIndex => prevStartIndex - 10);
             else
                 setStartIndex(0);
+            setPrevScroll(scrollTop);
         }
     };   
     
