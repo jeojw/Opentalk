@@ -67,6 +67,7 @@ const MainComponent = () => {
     useEffect(() => {
         if (!isLoading && !isError && allChatRooms) {
             setAllChatRoomList(allChatRooms);
+            setPageLength(allChatRooms.length);
         }
     }, [allChatRooms, isLoading, isError]);
 

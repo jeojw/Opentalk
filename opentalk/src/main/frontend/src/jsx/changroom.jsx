@@ -77,7 +77,6 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
             }
         })
         .catch((error) => console.log(error));
-        console.log(typeof(setIsChangeStatus));
     }
 
     const GetInputName = (event) => {
@@ -100,7 +99,12 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
         }
     }
     const GetInputPassword = (event) => {
-        setPassword(event.target.value);
+        if (existLock){
+            setPassword(event.target.value);
+        }
+        else{
+            setPassword('');
+        }
     }
     const GetCheckExistPw = (event) => {
         setExistLock(event.target.checked);
@@ -210,6 +214,7 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom}) => {
                             value={password} 
                             onChange={GetInputPassword} 
                             disabled={!existLock}
+                            placeholder='비밀번호를 입력해주세요.'
                             style={{borderTopRightRadius: "25px",
                                     borderBottomRightRadius: "25px"}}></FormControl>
                     </InputGroup>

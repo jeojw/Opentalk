@@ -19,7 +19,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     const [chat, setChat] = useState("");
     const [role, setRole] = useState();
 
-    const [isForcedExist, setIsForcedExist] = useState(false);
     const [otherMember, setOtherMember] = useState([]);
 
     const { loginToken } = useContext(TokenContext);
@@ -104,9 +103,8 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 console.log(error);
             }
         }
-
         isExistInRoom();
-    }, [isForcedExist, myInfo, room_Id]);
+    }, [roomData, myInfo, room_Id]);
 
     useEffect(() => {
         const fetchChatLog = async () => {
@@ -237,7 +235,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 if (res.data === true){
                     window.alert("강제퇴장 되었습니다.");
                     updateRoom();
-                    setIsForcedExist(prevState => !prevState);
                 }
             })
             .catch((error) => console.log(error));
