@@ -67,7 +67,7 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom, curParticipates}) =
             limitParticipates: participants,
             introduction: info,
             existLock: existLock,
-            roomTags: tags            
+            roomTags: tags        
         })
         .then((res) => {
             if (res.data === true){

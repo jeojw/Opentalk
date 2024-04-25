@@ -22,6 +22,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     const [isChangeManager, setIsChangeManager] = useState(false);
     const [isChangeMember, setIsChangeMember] = useState(false);
+    const [isEnterRoom, setIsEnterRoom] = useState(false);
 
     const [otherMember, setOtherMember] = useState([]);
 
@@ -132,27 +133,10 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         return () => disconnect();
     }, []);
 
-    const enterRoom = () => {
-        if (!client.current.connected) return;
-
-        const curTime = new Date();
-        const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
-        const kr_Time = new Date(utc + (KR_TIME_DIFF));
-        updateRoom();
-
-        client.current.publish({
-            destination: '/pub/chat/enter',
-            body: JSON.stringify({
-                chatRoom: roomInformation,
-                member: {
-                    memberId:"system",
-                    memberNickName:"system"
-                },
-                message: `${myInfo.memberNickName}님이 채팅방에 참여했습니다.`,
-                timeStamp: format(kr_Time, "yyyy-MM-dd-hh-mm")
-            })
-        });
-    }
+    useEffect(() => {
+        if (myInfo !== undefined)
+            EnterRoom();
+    },[isEnterRoom, myInfo])
 
     const connect = () => {
         client.current = new StompJs.Client({
@@ -168,13 +152,12 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             heartbeatOutgoing: 4000,
             onConnect: () => {
                 subscribe();
-                enterRoom();
             },
             onStompError: (frame) => {
                 console.error(frame);
             }
         });
-        client.current.activate();  
+        client.current.activate(); 
     };
 
     const disconnect = () => {
@@ -219,7 +202,27 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         client.current.subscribe(`/sub/chat/${room_Id}`, ({body}) => {
             setChatList((prevChatList)=>[... prevChatList , JSON.parse(body)])
         });
+        setIsEnterRoom(true);
     };
+
+    const EnterRoom = () => {
+        const curTime = new Date();
+        const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+        const kr_Time = new Date(utc + (KR_TIME_DIFF));
+
+        client.current.publish({
+            destination: '/pub/chat/enter',
+            body: JSON.stringify({
+                chatRoom: roomInformation,
+                member: {
+                    memberId:"system",
+                    memberNickName:"system"
+                },
+                message: `${myInfo.memberNickName}님이 채팅방에 참여했습니다.`,
+                timeStamp: format(kr_Time, "yyyy-MM-dd-hh-mm")
+            })
+        });
+    }
 
     const handleChange = (event) => {
         setChat(event.target.value);
@@ -482,34 +485,48 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                         lg={1} 
                         style={{ width:'30%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
                         <h5>참여명단</h5>
+                        <span className='border rounded-pill d-flex align-items-center' style={{backgroundColor: "white",
+                                                                            marginBottom: '6px',
+                                                                            borderTopLeftRadius: "25px",
+                                                                            borderBottomLeftRadius: "25px",
+                                                                            borderTopRightRadius: "25px",
+                                                                            borderBottomRightRadius: "25px",
+                                                                            display: 'inline-block',
+                                                                            padding: '0.5rem 1rem'}}>
+                        {roomInformation?.roomManager === myInfo?.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
+                        {myInfo?.memberNickName}</span>
+                        <hr/>
                         {roomInformation?.members.map((_member, index) => (
                             <ListGroup style={{marginBottom: '6px', 
                                             borderTopLeftRadius: "25px",
                                             borderBottomLeftRadius: "25px",
                                             borderTopRightRadius: "25px",
                                             borderBottomRightRadius: "25px"}}>
-                                <ListGroupItem>{roomInformation.roomManager ===_member.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
-                                {_member?.memberNickName}
-                                <div style={{width:"4px", display:"inline-block"}}/>
-                                {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                                <Button className="btn-sm"variant='dark' onClick={() => ForcedExit(_member)} style={{
-                                                                                                    borderTopLeftRadius: "25px",
-                                                                                                    borderBottomLeftRadius: "25px",
-                                                                                                    borderTopRightRadius: "25px",
-                                                                                                    borderBottomRightRadius: "25px"
-                                                                                                }}>강퇴하기</Button>
+                                {_member?.memberNickName !== myInfo?.memberNickName && (
+                                     <ListGroupItem>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
+                                        <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
+                                        {_member?.memberNickName}
+                                        <div style={{width:"4px", display:"inline-block"}}/>
+                                        {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
+                                        <Button className="btn-sm"variant='dark' onClick={() => ForcedExit(_member)} style={{
+                                                                                                            borderTopLeftRadius: "25px",
+                                                                                                            borderBottomLeftRadius: "25px",
+                                                                                                            borderTopRightRadius: "25px",
+                                                                                                            borderBottomRightRadius: "25px"
+                                                                                                        }}>강퇴하기</Button>
+                                        )}
+                                        <div style={{width:"4px", display:"inline-block"}}/>
+                                        {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
+                                            <Button className="btn-sm" variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
+                                                backgroundColor: "#C3C3C3",
+                                                borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px",
+                                                borderTopRightRadius: "25px",
+                                                borderBottomRightRadius: "25px"
+                                            }}>방장위임</Button>
+                                        )}
+                                    </ListGroupItem>
                                 )}
-                                <div style={{width:"4px", display:"inline-block"}}/>
-                                {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                                <Button className="btn-sm" variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
-                                    backgroundColor: "#C3C3C3",
-                                    borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px",
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"
-                                }}>방장위임</Button>
-                                )}
-                                </ListGroupItem>
                             </ListGroup>
                         ))}
                     </Col>
