@@ -8,7 +8,7 @@ import { Form, Button, Container, Row, Col, InputGroup,
     ListGroupItem, } from 'react-bootstrap';
 import { TokenContext } from './TokenContext';
 
-export const SetRoomComponent = ({onDataUpdate}) =>{
+export const SetRoomComponent = ({onDataUpdate, updateFunction}) =>{
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [roomId, setRoomId] = useState("");
@@ -53,7 +53,12 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
     }
 
     const GetInputName = (event) => {
-        setRoomName(event.target.value);
+        if (event.target.length <= 1){
+            window.alert("한 글자 이상의 방 이름을 입력해 주세요.")
+        }
+        else{
+            setRoomName(event.target.value);
+        }
     }
     const GetInputParticipates = (event) => {
         if (event.target.value >= 3){
@@ -134,6 +139,7 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
         .then((res)=>{
             if (res.status === 200){
                 alert("방이 생성되었습니다.");
+                updateFunction();
                 setRoomId(res.data);
                 closeModal();
                 onDataUpdate(prevState => !prevState);
@@ -180,6 +186,7 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                                 type='text' 
                                 value={roomName} 
                                 onChange={GetInputName}
+                                placeholder='한 글자 이상의 방 이름을 입력해 주세요.'
                                 style={{borderTopRightRadius: "25px",
                                         borderBottomRightRadius: "25px"}}
                             ></FormControl>
@@ -209,7 +216,7 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                             <Form.Check 
                                 type='checkbox' 
                                 checked={existLock} 
-                                onChange={GetCheckExistPw} 
+                                onChange={GetCheckExistPw}
                                 style={{zoom:1.6}}
                             />
                             <FormControl 
@@ -217,6 +224,7 @@ export const SetRoomComponent = ({onDataUpdate}) =>{
                                 value={password} 
                                 onChange={GetInputPassword} 
                                 disabled={!existLock}
+                                placeholder='비밀번호를 입력해주세요.'
                                 style={{borderTopRightRadius: "25px",
                                         borderBottomRightRadius: "25px"}}
                             ></FormControl>

@@ -194,6 +194,7 @@ const MainComponent = () => {
             .then((res) => {
                 if (res.data === "Success"){
                     window.alert("방이 삭제되었습니다.");
+                    updateRooms();
                     setIsUpdateTrigger(prevState => !prevState);
                 }
                 else{
@@ -484,6 +485,7 @@ const MainComponent = () => {
             <Col className="border border-#C3C3C3 border-3 rounded-2 p-5" style={{backgroundColor:"#C3C3C3", height: "975px"}}>
                 <SetRoomComponent
                     onDataUpdate={setIsUpdateTrigger}
+                    updateFunction={updateRooms}
                 />
                 <br></br>
                 <ListGroup>
