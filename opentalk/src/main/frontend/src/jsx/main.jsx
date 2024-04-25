@@ -431,8 +431,8 @@ const MainComponent = () => {
                     <div style={{ textAlign: 'center' }}>
                         <img alt="프로필 이미지" 
                             src={curImgUrl} 
-                            style={{width:'60%', 
-                            height:'60%',
+                            style={{width:'70%', 
+                            height:'70%',
                             backgroundPosition:"center",
                             borderRadius: "50%"}}></img>
                         <p style={{color:"white"}}>환영합니다</p>
