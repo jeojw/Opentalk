@@ -384,7 +384,7 @@ const MainComponent = () => {
         }
 
         fetchAllMessages();
-    },[isMessageBoxOpen, isLogin, isUpdateTrigger, member.memberNickName])
+    },[isMessageBoxOpen, isLogin, isUpdateTrigger])
 
     const renderPaginationItems = () => {
         const paginationItems = [];
