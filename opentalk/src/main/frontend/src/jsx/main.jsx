@@ -60,13 +60,15 @@ const MainComponent = () => {
         queryKey:['allChatRooms'],
         queryFn: async () => {
         const roomResponse = await axios.get("/api/opentalk/rooms");
-        const responseData = roomResponse.data;
-        if (allChatRooms && !isLoading && !isError) {
-            setAllChatRoomList(responseData);
-            setPageLength(responseData.length);
-        }
-        return responseData;
+        return roomResponse.data;
     },})
+
+    useEffect(() => {
+        if (allChatRooms && !isLoading && !isError) {
+            setAllChatRoomList(allChatRooms);
+            setPageLength(allChatRooms.length);
+        }
+    }, [allChatRooms]);
 
     const queryClient = useQueryClient();
 
