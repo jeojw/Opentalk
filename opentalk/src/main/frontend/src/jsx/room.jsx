@@ -172,7 +172,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 role: role
             })
             .then((res) => {
-                if (res.status === 200){
+                if (res.data === true){
                     const curTime = new Date();
                     const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
                     const kr_Time = new Date(utc + (KR_TIME_DIFF));
@@ -213,7 +213,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 role: role
             })
             .then((res) => {
-                if (res.status === 200){
+                if (res.data === true){
                     const curTime = new Date();
                     const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
                     const kr_Time = new Date(utc + (KR_TIME_DIFF));
