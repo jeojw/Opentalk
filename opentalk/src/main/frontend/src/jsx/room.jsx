@@ -68,13 +68,13 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     },  enabled: !!room_Id && !!myInfo,
     });
 
-    const { mutate } = useMutation(async () => {
+    const { mutate: updateRooms } = useMutation(async () => {
         await refetch();
-     }, {
+    }, {
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey:['roomData', room_Id, myInfo]})
         }
-     });
+    });
 
 
     useEffect(() => {
@@ -292,6 +292,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                         })
                     });
                 }
+                updateRooms();
             })
             .catch((error) => console.log(error));
             
@@ -326,7 +327,9 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                             timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                         })
                     });
+                    updateRooms();
                 }
+                
             })
             .catch((error) => console.log(error));
             
@@ -358,7 +361,9 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                         timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                     })
                 });
+                updateRooms();
             }
+            
         })
         .catch((error) => console.log(error));
         
@@ -375,7 +380,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             })
             .then((res) => {
                 if (res.status === 200){
-                    navigate("/opentalk/main");
                     const curTime = new Date();
                     const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
                     const kr_Time = new Date(utc + (KR_TIME_DIFF));
@@ -392,6 +396,8 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                             timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                         })
                     });
+                    navigate("/opentalk/main");
+                    updateRooms();
                 }
             })
             .catch((error) => console.log(error));
