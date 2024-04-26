@@ -10,7 +10,7 @@ import { Container, Row, Col, Button, Form,
 import CustomPagination from '../css/CustomPagination.css'
 import Modal from 'react-modal';
 import { TokenContext } from './TokenContext';
-import { useQuery, useMutation, QueryClient, useQueryClient } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import Pagination from "react-bootstrap/Pagination";
 
 const MainComponent = () => {
@@ -384,7 +384,7 @@ const MainComponent = () => {
         }
 
         fetchAllMessages();
-    },[isMessageBoxOpen, isLogin, isUpdateTrigger])
+    },[isMessageBoxOpen, isLogin, isUpdateTrigger, member.memberNickName])
 
     const renderPaginationItems = () => {
         const paginationItems = [];

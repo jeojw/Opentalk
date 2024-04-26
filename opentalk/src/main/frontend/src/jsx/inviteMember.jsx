@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios'
 import Modal from 'react-modal';
-import { Row, Col, Button, Form, FormGroup, FormControl, ListGroup, ListGroupItem, InputGroup, Container } from 'react-bootstrap'
+import { Row, Col, Button, FormControl, ListGroup, ListGroupItem, InputGroup} from 'react-bootstrap'
 
 const InviteMemberComponent = ({roomInfo, role}) => {
     const [isOpen, setIsOpen] = useState(false);

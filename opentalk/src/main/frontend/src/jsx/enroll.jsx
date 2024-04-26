@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Container, Row, Col, Button, Form, 
-    FormControl, InputGroup,
-    FormGroup} from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, FormControl, InputGroup,} from 'react-bootstrap';
 
 const EnrollComponent = (props) =>{
     const [memberId, setMemberId] = useState('');
@@ -18,8 +16,6 @@ const EnrollComponent = (props) =>{
     const [checkNickName, setCheckNickName] = useState(false);
     const [checkEmail, setCheckEmail] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-
-    const [selectedImage, setSelectedImage] = useState(null);
 
     const navigate = useNavigate();
 

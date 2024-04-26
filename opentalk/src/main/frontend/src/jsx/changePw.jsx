@@ -25,7 +25,7 @@ const ChangePasswordComponent = () =>{
     }
 
     const ChangePassword = (e) => {
-        if (newPassword != checkPassword){
+        if (newPassword !== checkPassword){
             alert("비밀번호가 일치하지 않습니다.")
         }
         else{
@@ -64,12 +64,13 @@ const ChangePasswordComponent = () =>{
                     </Form>
                     <br></br>
                     <div className="d-grid gap-2">
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD",
-                                                        borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                        borderTopRightRadius: "25px",
-                                                        borderBottomRightRadius: "25px"}} 
-                                                        onClick={ChangePassword}>변경하기</Button>
+                        <Button variant='#CDCDCD' 
+                        style={{backgroundColor:"#CDCDCD",
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"}} 
+                                onClick={ChangePassword}>변경하기</Button>
                     </div>
                 </Col>
             </Row>

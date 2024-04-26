@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Container, Row, Col, Button, Form, 
-    FormControl, InputGroup} from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, FormControl, InputGroup} from 'react-bootstrap';
 
 const FindMemberComponent = () => {
     const [memberEmail, setMemberEmail] = useState('');
@@ -23,8 +22,8 @@ const FindMemberComponent = () => {
         axios.post(checkUrl, {
             email: memberEmail,
             sendType: "findId"
-        }).
-        then((res)=>{
+        })
+        .then((res)=>{
             setAuthNum(res.data);
         })
         .catch((error) => console.log(error));
