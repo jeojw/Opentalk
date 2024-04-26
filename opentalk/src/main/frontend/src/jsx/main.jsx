@@ -339,14 +339,14 @@ const MainComponent = () => {
             .then((res) => {
                 if (res.status === 200){
                     localStorage.removeItem("token");
-                    navigate("/opentalk/member/login");
+                    navigate("/");
                 }
             })
             .catch((error) => console.log(error));
         }
         else{
             alert("이미 로그아웃되었습니다.");
-            navigate("/opentalk/member/login");
+            navigate("/");
         }
         
     };
