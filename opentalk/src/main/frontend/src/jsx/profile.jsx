@@ -28,16 +28,21 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
 
     useEffect(() => {
         const fetchMemberStatus = async () => {
-            try {
-                const response = await axios.get('/api/opentalk/member/me', {
-                    headers: {
-                        authorization: localStorage.getItem("token"),
-                    }
-                });
-                setMember(response.data);
-                setCurImgUrl(response.data.imgUrl);
-            } catch (error) {
-                console.error(error);
+            if (localStorage.getItem("token")){
+                try {
+                    const response = await axios.get('/api/opentalk/member/me', {
+                        headers: {
+                            authorization: localStorage.getItem("token"),
+                        }
+                    });
+                    setMember(response.data);
+                    setCurImgUrl(response.data.imgUrl);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            else{
+                navigate("/");
             }
         };
 
