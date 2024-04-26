@@ -1,14 +1,19 @@
-import React, { useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import { Form, Button, Container, Row, Col, FormGroup } from 'react-bootstrap';
 
 const LoginComponent = () => {
-    
     const [memberId, setMemberId] = useState("");
     const [memberPw, setMemberPw] = useState("");
     const [isForget, setIsForget] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(()=>{
+        if (localStorage.getItem("token")){
+            navigate("/opentalk/main");
+        }
+    },[])
     
     const CheckLogin = (e) => {
         const checkloginUrl = '/api/opentalk/auth/login'

@@ -343,8 +343,8 @@ public class ChatRoomService {
     public boolean isExistInRoom(String roomId, String nickName){
         Optional<MemberEntity> member = memberRepository.findByMemberNickName(nickName);
         Optional<ChatRoomEntity> room = chatRoomRepository.findByRoomId(roomId);
-        System.out.print("Optional:" + member.isPresent() +  room.isPresent());
         if (member.isPresent() && room.isPresent()){
+            System.out.print("isExist: " + chatRoomMemberRepository.existByRoomMemberId(room.get().getId(), member.get().getId()));
             return Objects.equals(chatRoomMemberRepository.existByRoomMemberId(room.get().getId(), member.get().getId()), BigInteger.ONE);
         }
         return false;
