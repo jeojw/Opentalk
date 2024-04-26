@@ -1,9 +1,16 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 
 const FrontComponent = (props) => {
     const navigate = useNavigate();
+
+    useEffect(()=>{
+        if (localStorage.getItem("token")){
+            navigate("/opentalk/main");
+        }
+    },[])
 
     const LinkToLogin = () =>{
         navigate("/opentalk/member/login")
