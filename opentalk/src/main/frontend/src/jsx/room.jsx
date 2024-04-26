@@ -18,7 +18,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     const [chat, setChat] = useState("");
     const [role, setRole] = useState();
     const [curParticipates, setCurParticipates] = useState(0);
-    const [isEnterRoom, setIsEnterRoom] = useState(false);
 
     const [otherMember, setOtherMember] = useState([]);
 
@@ -60,12 +59,13 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const { data: roomData, isLoading, isError, refetch} = useQuery({
+    const { data: roomData, isLoading, isError} = useQuery({
         queryKey:['roomData'], 
         queryFn: async () => {
-        const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
-        return response.data;
-    },  enabled: !!room_Id && !!myInfo,
+            const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
+            return response.data;
+        },  
+        enabled: !!room_Id && !!myInfo,
     }, [room_Id, myInfo]);
 
 
@@ -112,7 +112,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries(['roomData']);
-            refetch();
         }
     });
 
@@ -159,7 +158,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries('roomData');
-            refetch();
         }
     });
 
@@ -201,7 +199,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries('roomData');
-            refetch();
         }
     });
 
@@ -244,7 +241,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries('roomData');
-            refetch();
         }
     });
 

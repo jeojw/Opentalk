@@ -56,7 +56,7 @@ const MainComponent = () => {
 
     const [isReissue, setIsReissue] = useState(false);
 
-    const { data: allChatRooms, isLoading, isError, refetch } = useQuery({
+    const { data: allChatRooms, isLoading, isError } = useQuery({
         queryKey:['allChatRooms'],
         queryFn: async () => {
         const roomResponse = await axios.get("/api/opentalk/rooms");
@@ -72,9 +72,7 @@ const MainComponent = () => {
 
     const queryClient = useQueryClient();
 
-    const { mutate: updateRooms } = useMutation(async () => {
-       await refetch();
-    }, {
+    const { mutate: updateRooms } = useMutation(async () => {}, {
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey:["allChatRooms"]});
         }
@@ -105,7 +103,6 @@ const MainComponent = () => {
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries("allChatRooms");
-            refetch();
         }
     });
 
@@ -185,7 +182,6 @@ const MainComponent = () => {
     }, {
         onSuccess:() => {
             queryClient.invalidateQueries("allChatRooms");
-            refetch();
         }
     });
 
@@ -231,7 +227,6 @@ const MainComponent = () => {
     }, {
         onSuccess:() => {
             queryClient.invalidateQueries("allChatRooms");
-            refetch();
         }
     });
 
