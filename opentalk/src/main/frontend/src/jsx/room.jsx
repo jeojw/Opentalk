@@ -117,13 +117,18 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     useEffect(() => {
         const fetchInfo = async () => {
-            try{
-                const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
-                    headers: {authorization: localStorage.getItem("token")}
-                });
-                setMyInfo(myselfResponse.data);
-            } catch (error){
-                console.log(error);
+            if (localStorage.getItem("token")){
+                try{
+                    const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
+                        headers: {authorization: localStorage.getItem("token")}
+                    });
+                    setMyInfo(myselfResponse.data);
+                } catch (error){
+                    console.log(error);
+                }
+            }
+            else{
+                navigate("/");
             }
         }
         fetchInfo();
