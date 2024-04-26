@@ -71,45 +71,36 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     }, [room_Id, myInfo]);
 
 
-    const { mutate: mutateAuthMandate } = useMutation((roomMember) => {
-        return new Promise((resolve, reject) => {
-            const changeUrl = "/api/opentalk/authMandate";
-            axios.post(changeUrl, {
+    const { mutate: mutateAuthMandate } = useMutation(async (roomMember) => {
+        const changeUrl = "/api/opentalk/authMandate";
+        try{
+            const res = await axios.post(changeUrl, {
                 roomId:room_Id,
                 manager:myInfo.memberNickName,
                 newManager:roomMember.memberNickName
-            })
-            .then((res) => {
-                if (res.data === true){
-                    window.alert(`${roomMember.memberNickName}님이 방장이 되었습니다.`);
-                    const curTime = new Date();
-                    const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
-                    const kr_Time = new Date(utc + (KR_TIME_DIFF));
-                    
-                    client.current.publish({
-                        destination: '/pub/chat/exit',
-                        body: JSON.stringify({
-                            chatRoom: roomInformation,
-                            member: {
-                                memberId:"system",
-                                memberNickName:"system"
-                            },
-                            message: `${roomMember.memberNickName}님이 방장이 되었습니다.`,
-                            timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
-                        })
-                    });
-
-                    resolve();
-                }
-                else {
-                    reject();
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-                reject();
             });
-        })
+            if (res.data === true){
+                window.alert(`${roomMember.memberNickName}님이 방장이 되었습니다.`);
+                const curTime = new Date();
+                const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+                const kr_Time = new Date(utc + (KR_TIME_DIFF));
+                
+                client.current.publish({
+                    destination: '/pub/chat/exit',
+                    body: JSON.stringify({
+                        chatRoom: roomInformation,
+                        member: {
+                            memberId:"system",
+                            memberNickName:"system"
+                        },
+                        message: `${roomMember.memberNickName}님이 방장이 되었습니다.`,
+                        timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
+                    })
+                });
+            }
+        } catch(error){
+            console.log(error);
+        }
         
     }, {
         onSuccess: () =>{
@@ -117,129 +108,108 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         }
     });
 
-    const { mutate: mutateForcedExit } = useMutation((roomMember) => {
-        return new Promise((resolve, reject) => {
-            const checkUrl = "/api/opentalk/forcedExit";
-            axios.post(checkUrl, {
+    const { mutate: mutateForcedExit } = useMutation(async (roomMember) => {
+        const checkUrl = "/api/opentalk/forcedExit";
+        try{
+            const res = await axios.post(checkUrl, {
                 chatroom: roomInformation,
                 member: roomMember,
                 role: "ROLE_PARTICIPATE"
-            })
-            .then((res) => {
-                if (res.data === true){
-                    window.alert("강제퇴장 되었습니다.");
-                    if (!client.current.connected) return;
-                    const curTime = new Date();
-                    const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
-                    const kr_Time = new Date(utc + (KR_TIME_DIFF));
-
-                    client.current.publish({
-                        destination: '/pub/chat/forcedExit',
-                        body: JSON.stringify({
-                            chatRoom: roomInformation,
-                            member: {
-                                memberId:"system",
-                                memberNickName:"system"
-                            },
-                            message: `${roomMember.memberNickName}님이 강퇴되었습니다.`,
-                            timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
-                        })
-                    });
-                    resolve();
-                }
-                else{
-                    reject();
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-                reject();
             });
-        })
-        
+            if (res.data === true){
+                window.alert("강제퇴장 되었습니다.");
+                if (!client.current.connected) return;
+                const curTime = new Date();
+                const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+                const kr_Time = new Date(utc + (KR_TIME_DIFF));
+
+                client.current.publish({
+                    destination: '/pub/chat/forcedExit',
+                    body: JSON.stringify({
+                        chatRoom: roomInformation,
+                        member: {
+                            memberId:"system",
+                            memberNickName:"system"
+                        },
+                        message: `${roomMember.memberNickName}님이 강퇴되었습니다.`,
+                        timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
+                    })
+                });
+            }
+        } catch(error){
+            console.log(error);
+        }
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries('roomData');
         }
     });
 
-    const { mutate: mutateExitRoom_Unload } = useMutation(() => {
-        return new Promise((resolve, reject) => {
-            const exitUrl = '/api/opentalk/exitRoom';
-            axios.post(exitUrl, {
+    const { mutate: mutateExitRoom_Unload } = useMutation(async () => {
+        const exitUrl = '/api/opentalk/exitRoom';
+        try{
+            const res = await axios.post(exitUrl, {
                 chatroom: roomInformation,
                 member: myInfo,
                 role: role
-            })
-            .then((res) => {
-                if (res.data === true){
-                    const curTime = new Date();
-                    const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
-                    const kr_Time = new Date(utc + (KR_TIME_DIFF));
-
-                    client.current.publish({
-                        destination: '/pub/chat/exit',
-                        body: JSON.stringify({
-                            chatRoom: roomInformation,
-                            member: {
-                                memberId:"system",
-                                memberNickName:"system"
-                            },
-                            message: `${myInfo?.memberNickName}님이 채팅방을 나갔습니다.`,
-                            timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
-                        })
-                    });
-                    resolve();
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-                reject();
             });
-        })
-        
+            if (res.data === true){
+                const curTime = new Date();
+                const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+                const kr_Time = new Date(utc + (KR_TIME_DIFF));
+
+                client.current.publish({
+                    destination: '/pub/chat/exit',
+                    body: JSON.stringify({
+                        chatRoom: roomInformation,
+                        member: {
+                            memberId:"system",
+                            memberNickName:"system"
+                        },
+                        message: `${myInfo?.memberNickName}님이 채팅방을 나갔습니다.`,
+                        timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
+                    })
+                });
+            }
+        } catch(error){
+            console.log(error);
+        }
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries('roomData');
         }
     });
 
-    const { mutate: mutateExitRoom } = useMutation(() => {
-        return new Promise((resolve, reject) => {
-            const exitUrl = '/api/opentalk/exitRoom';
-            axios.post(exitUrl, {
+    const { mutate: mutateExitRoom } = useMutation(async () => {
+        const exitUrl = '/api/opentalk/exitRoom';
+        try{
+            const res = await axios.post(exitUrl, {
                 chatroom: roomInformation,
                 member: myInfo,
                 role: role
-            })
-            .then((res) => {
-                if (res.data === true){
-                    const curTime = new Date();
-                    const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
-                    const kr_Time = new Date(utc + (KR_TIME_DIFF));
-
-                    client.current.publish({
-                        destination: '/pub/chat/exit',
-                        body: JSON.stringify({
-                            chatRoom: roomInformation,
-                            member: {
-                                memberId:"system",
-                                memberNickName:"system"
-                            },
-                            message: `${myInfo?.memberNickName}님이 채팅방을 나갔습니다.`,
-                            timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
-                        })
-                    });
-                    navigate("/opentalk/main");
-                    resolve();
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-                reject();
             });
-        })
-        
+            if (res.data === true){
+                const curTime = new Date();
+                const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+                const kr_Time = new Date(utc + (KR_TIME_DIFF));
+
+                client.current.publish({
+                    destination: '/pub/chat/exit',
+                    body: JSON.stringify({
+                        chatRoom: roomInformation,
+                        member: {
+                            memberId:"system",
+                            memberNickName:"system"
+                        },
+                        message: `${myInfo?.memberNickName}님이 채팅방을 나갔습니다.`,
+                        timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
+                    })
+                });
+                navigate("/opentalk/main");
+            }
+        } catch(error){
+            console.log(error);
+        }
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries('roomData');
