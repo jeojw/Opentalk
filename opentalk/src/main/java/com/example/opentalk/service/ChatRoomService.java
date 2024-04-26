@@ -271,7 +271,7 @@ public class ChatRoomService {
         }
     }
 
-    public void exitRoom(ChatRoomMemberDTO chatRoomMemberDTO){
+    public boolean exitRoom(ChatRoomMemberDTO chatRoomMemberDTO){
         Optional<ChatRoomEntity> chatRoomEntity =
                 chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId());
         Optional<MemberEntity> memberEntity =
@@ -280,8 +280,9 @@ public class ChatRoomService {
             Optional<ChatRoomMemberEntity> chatRoomMemberEntity =
                     chatRoomMemberRepository.findByRoomMemberId(chatRoomEntity.get().getId(), memberEntity.get().getId());
             chatRoomMemberEntity.ifPresent(roomMemberEntity -> chatRoomMemberRepository.deleteById(roomMemberEntity.getId()));
+            return true;
         }
-
+        return false;
     }
 
     public List<ChatRoomDTO> findAllRooms(){
