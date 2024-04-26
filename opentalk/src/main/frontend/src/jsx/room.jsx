@@ -63,7 +63,17 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         queryKey:['roomData'], 
         queryFn: async () => {
             const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
-            return response.data;
+            const responseData = response.data;
+        
+        // 데이터 처리 및 상태 업데이트
+            if (!isLoading && !isError && responseData) {
+                setRoomInformation(responseData.chatroom);
+                setOtherMember(responseData.chatroom.members);
+                setRole(responseData.role);
+                setCurParticipates(responseData.chatroom.curParticipates);
+            }
+
+            return responseData;
         },  
         enabled: !!room_Id && !!myInfo,
     }, [room_Id, myInfo]);
@@ -243,16 +253,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             queryClient.invalidateQueries('roomData');
         }
     });
-
-
-    useEffect(() => {
-        if (roomData && !isLoading && !isError) {
-            setRoomInformation(roomData.chatroom);
-            setOtherMember(roomData.chatroom.members);
-            setRole(roomData.role);
-            setCurParticipates(roomData.chatroom.curParticipates);
-        }
-    }, [roomData]);
 
     const preventGoBack = () => {
         window.history.pushState(null, "", window.location.href);
