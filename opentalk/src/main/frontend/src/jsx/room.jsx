@@ -60,18 +60,19 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const { data: roomData, isLoading, isError, refetch} = useQuery(['roomData', room_Id, myInfo], async () => {
+    const { data: roomData, isLoading, isError, refetch} = useQuery({
+        queryKey:['roomData', room_Id, myInfo], 
+        queryFn: async () => {
         const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
         return response.data;
-    }, {
-        enabled: !!room_Id && !!myInfo,
+    },  enabled: !!room_Id && !!myInfo,
     });
 
     const { mutate: updateRoom } = useMutation(async () => {
         await refetch();
      }, {
         onSuccess: () => {
-            queryClient.invalidateQueries('roomData')
+            queryClient.invalidateQueries({queryKey:['roomData']})
         }
      });
 

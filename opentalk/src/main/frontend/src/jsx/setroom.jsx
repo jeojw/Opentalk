@@ -19,8 +19,6 @@ export const SetRoomComponent = ({onDataUpdate, updateFunction}) =>{
     const [tag, setTag] = useState("");
     const [tags, setTags] = useState([]);
 
-    const navigate = useNavigate();
-
     useEffect(() => {
         const fetchManager = async () =>{
             if (localStorage.getItem("token")){

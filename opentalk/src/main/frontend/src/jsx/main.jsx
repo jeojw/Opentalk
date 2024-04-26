@@ -56,10 +56,12 @@ const MainComponent = () => {
 
     const [isReissue, setIsReissue] = useState(false);
 
-    const { data: allChatRooms, isLoading, isError, refetch } = useQuery('allChatRooms', async () => {
+    const { data: allChatRooms, isLoading, isError, refetch } = useQuery({
+        queryKey:['allChatRooms'],
+        queryFn: async () => {
         const roomResponse = await axios.get("/api/opentalk/rooms");
         return roomResponse.data;
-    })
+    },})
 
     useEffect(() => {
         if (!isLoading && !isError && allChatRooms) {
@@ -73,8 +75,8 @@ const MainComponent = () => {
     const { mutate: updateRooms } = useMutation(async () => {
        await refetch();
     }, {
-        onSuccess: () => {
-            queryClient.invalidateQueries('allChatRooms');
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({queryKey:["allChatRooms"]});
         }
     });
 
@@ -190,7 +192,6 @@ const MainComponent = () => {
             .then((res) => {
                 if (res.data === "Success"){
                     window.alert("방이 삭제되었습니다.");
-                    updateRooms();
                     setIsUpdateTrigger(prevState => !prevState);
                 }
                 else{
@@ -226,7 +227,6 @@ const MainComponent = () => {
                 })
                 .then((res) => {
                     if (res.data === "Success"){
-                        updateRooms();
                         navigate(`/opentalk/room/${roomInfo.roomId}`);
                         setIsUpdateTrigger(prevState => !prevState);
                     }
@@ -249,7 +249,6 @@ const MainComponent = () => {
                     })
                     .then((res) => {
                         if (res.data === "Success"){
-                            updateRooms();
                             navigate(`/opentalk/room/${roomInfo.roomId}`);
                         }
                         else if (res.data ==="Incorrect"){
