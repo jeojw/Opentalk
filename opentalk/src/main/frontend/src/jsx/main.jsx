@@ -138,6 +138,9 @@ const MainComponent = () => {
                     }
                 }).catch((error) => console.log(error));
             }
+            else{
+                navigate("/");
+            }
         }    
         fetchMyInfo();
     }, []);
