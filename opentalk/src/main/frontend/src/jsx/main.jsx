@@ -64,8 +64,10 @@ const MainComponent = () => {
     },})
 
     useEffect(() => {
-        setAllChatRoomList(allChatRooms);
-        setPageLength(allChatRooms.length);
+        if (allChatRooms) {
+            setAllChatRoomList(allChatRooms);
+            setPageLength(allChatRooms.length);
+        }
     }, [allChatRooms]);
 
     const queryClient = useQueryClient();

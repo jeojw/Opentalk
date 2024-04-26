@@ -78,10 +78,12 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
 
     useEffect(() => {
-        setRoomInformation(roomData.chatroom);
-        setOtherMember(roomData.chatroom.members);
-        setRole(roomData.role);
-        setCurParticipates(roomData.chatroom.curParticipates);
+        if (roomData) {
+            setRoomInformation(roomData.chatroom);
+            setOtherMember(roomData.chatroom.members);
+            setRole(roomData.role);
+            setCurParticipates(roomData.chatroom.curParticipates);
+        }
     }, [roomData]);
 
     const preventGoBack = () => {
