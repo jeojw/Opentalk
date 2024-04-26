@@ -61,12 +61,12 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     const queryClient = useQueryClient();
 
     const { data: roomData, isLoading, isError, refetch} = useQuery({
-        queryKey:['roomData', room_Id, myInfo], 
+        queryKey:['roomData'], 
         queryFn: async () => {
         const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
         return response.data;
     },  enabled: !!room_Id && !!myInfo,
-    });
+    }, [room_Id, myInfo]);
 
 
     const { mutate: mutateAuthMandate } = useMutation((roomMember) => {
@@ -111,7 +111,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         
     }, {
         onSuccess: () =>{
-            queryClient.invalidateQueries('roomData');
+            queryClient.invalidateQueries(['roomData']);
             refetch();
         }
     });
