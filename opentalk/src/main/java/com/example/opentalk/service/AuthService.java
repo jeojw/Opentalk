@@ -34,11 +34,12 @@ public class AuthService {
     private final String SERVER = "Server";
 
     @Transactional
-    public AuthDto.ResponseDto getMyInfo(){
-        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(SecurityContextHolder.getContext().getAuthentication().getName());
+    public AuthDto.ResponseDto getMyInfo(String token){
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(getPrincipal(token));
 
         return memberEntity.map(AuthDto.ResponseDto::toResponse).orElse(null);
     }
+
     // 로그인: 인증 정보 저장 및 비어 토큰 발급
     @Transactional
     public AuthDto.TokenDto login(AuthDto.LoginDto loginDto) {
@@ -95,7 +96,7 @@ public class AuthService {
             redisService.deleteValues("RT(" + provider + "):" + memberId); // 삭제
         }
 
-        // AT, RT 생성 및 Redis에 RT 저장
+        // AT, RT 생성 및 Redis에 AT, RT 저장
         AuthDto.TokenDto tokenDto = jwtTokenProvider.createToken(memberId, authorities);
         saveRefreshToken(provider, memberId, tokenDto.getRefreshToken());
         return tokenDto;

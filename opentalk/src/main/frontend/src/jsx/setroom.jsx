@@ -6,7 +6,6 @@ import { Form, Button, Container, Row, Col, InputGroup,
     InputGroupText, FormControl, FormGroup, FormLabel,
     ListGroup,
     ListGroupItem, } from 'react-bootstrap';
-import { TokenContext } from './TokenContext';
 
 export const SetRoomComponent = ({onDataUpdate, updateFunction}) =>{
     const [isOpen, setIsOpen] = useState(false);
@@ -19,24 +18,23 @@ export const SetRoomComponent = ({onDataUpdate, updateFunction}) =>{
     const [info, setInfo] = useState("");
     const [tag, setTag] = useState("");
     const [tags, setTags] = useState([]);
-    
-    const {loginToken} = useContext(TokenContext);
 
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchManager = async () =>{
-            try{
-                const response = await axios.get("/api/opentalk/member/me", {
-                    headers: {Authorization: loginToken}
-                })
-                setManger(response.data);
-            } catch (error) {
-                console.log(error);
+            if (localStorage.getItem("token")){
+                try{
+                    const response = await axios.get("/api/opentalk/member/me", {
+                        headers: {Authorization: localStorage.getItem("token")}
+                    })
+                    setManger(response.data);
+                } catch (error) {
+                    console.log(error);
+                }
             }
         }
         fetchManager();
-        console.log(manager);
     }, []);
     
     const openModal = () => {

@@ -4,7 +4,6 @@ import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button, Form, 
     FormControl, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
-import { TokenContext } from './TokenContext';
 
 const ProfileComponent = ({memberId, setIsUpdateData}) => {
     const [member, setMember] = useState('');
@@ -24,8 +23,6 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
 
     const [isChangeData, setIsChangeData] = useState(false);
 
-    const { loginToken } = useContext(TokenContext);
-
     let imgRef = useRef();
     const navigate = useNavigate();
 
@@ -34,7 +31,7 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
             try {
                 const response = await axios.get('/api/opentalk/member/me', {
                     headers: {
-                        authorization: loginToken,
+                        authorization: localStorage.getItem("token"),
                     }
                 });
                 setMember(response.data);
@@ -168,7 +165,7 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
             PwData.append("exPassword", exPassword);
             PwData.append("newPassword", newPassword);
             axios.post(checkUrl, PwData,{
-                headers: {Authorization: loginToken}
+                headers: {Authorization: localStorage.getItem("token")}
             })
             .then((res)=>{
                 if (res.data === true){

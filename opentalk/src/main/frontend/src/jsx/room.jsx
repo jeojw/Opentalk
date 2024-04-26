@@ -7,7 +7,6 @@ import ChangRoomComponent from './changroom';
 import InviteMemberComponent from './inviteMember';
 import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { format } from 'date-fns'
-import { TokenContext } from './TokenContext';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 
 const RoomComponent = ({isChangeData, setIsChangeData}) => {
@@ -52,8 +51,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             setPrevScroll(scrollTop);
         }
     };   
-    
-    const { loginToken } = useContext(TokenContext);
+
 
     const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
 
@@ -115,13 +113,13 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         return () => {
             window.removeEventListener("beforeunload", exitWindow);
         };
-    },[roomInformation, myInfo, role, loginToken]);
+    },[roomInformation, myInfo, role]);
 
     useEffect(() => {
         const fetchInfo = async () => {
             try{
                 const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
-                    headers: {authorization: loginToken}
+                    headers: {authorization: localStorage.getItem("token")}
                 });
                 setMyInfo(myselfResponse.data);
             } catch (error){
@@ -129,7 +127,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             }
         }
         fetchInfo();
-    }, [loginToken]);
+    }, []);
 
     useEffect(() => {
         const isExistInRoom = async () => {

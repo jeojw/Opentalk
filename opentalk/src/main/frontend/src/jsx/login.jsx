@@ -2,14 +2,12 @@ import React, { useContext, useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import { Form, Button, Container, Row, Col, FormGroup } from 'react-bootstrap';
-import { TokenContext } from './TokenContext';
 
 const LoginComponent = () => {
     
     const [memberId, setMemberId] = useState("");
     const [memberPw, setMemberPw] = useState("");
     const [isForget, setIsForget] = useState(false);
-    const {updateToken} = useContext(TokenContext);
     const navigate = useNavigate();
     
     const CheckLogin = (e) => {
@@ -28,7 +26,7 @@ const LoginComponent = () => {
             })
             .then((res) => {
                 if (res.status === 200){
-                    updateToken(res.headers['authorization']);
+                    localStorage.setItem("token", res.headers['authorization']);
                     navigate("/opentalk/main");
                 }
             })

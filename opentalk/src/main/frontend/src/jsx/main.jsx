@@ -9,7 +9,6 @@ import { Container, Row, Col, Button, Form,
     FormGroup} from 'react-bootstrap';
 import CustomPagination from '../css/CustomPagination.css'
 import Modal from 'react-modal';
-import { TokenContext } from './TokenContext';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import Pagination from "react-bootstrap/Pagination";
 
@@ -53,13 +52,9 @@ const MainComponent = () => {
     const [searchKeyword, setSearchKeyword] = useState("");
     const navigate = useNavigate();
 
-
-    const { loginToken, updateToken } = useContext(TokenContext);
-
     const [curImgUrl, setCurImgUrl] = useState(null);
 
     const [isReissue, setIsReissue] = useState(false);
-    const [isLogin, setIsLogin] = useState(false);
 
     const { data: allChatRooms, isLoading, isError, refetch } = useQuery('allChatRooms', async () => {
         const roomResponse = await axios.get("/api/opentalk/rooms");
@@ -88,56 +83,52 @@ const MainComponent = () => {
             if (isReissue){
                 const reissueUrl = "/api/opentalk/auth/reissue";
                 try{
-                    const reissueRes = await axios.post(reissueUrl, {
+                    const reissueRes = await axios.post(reissueUrl, null, {
                         headers:{
-                            Authorization: loginToken,
-                            Cookie: `refresh-token=${loginToken.split(" ")[1]}`
-                        }
-                    }, {})
+                            Authorization: localStorage.getItem("token")
+                        },
+                        withCredentials: true
+                    })
                     if (reissueRes.status === 200){
-                        updateToken(reissueRes.headers['authorization']);
-                        setIsLogin(true);
+                        localStorage.setItem("token", reissueRes.headers['authorization']);
                     }
                 } catch(error) {
-                    window.alert("로그아웃 상태입니다. 로그인하여 주십시오");
-                    navigate('/opentalk/member/login');   
+                    console.log(error);
                     setIsReissue(false); 
-                    setIsLogin(false);  
                 }
             }
         }
         reissueToken();
-    }, [isReissue, loginToken])
+    }, [isReissue])
 
     useEffect(() => {
         const validateToken = async () =>{
             try{
                 const url = "/api/opentalk/auth/validate";
-                const response = await axios.post(url, {}, {
+                const response = await axios.post(url, null, {
                     headers: {
-                        Authorization: loginToken
+                        Authorization: localStorage.getItem("token")
                     }
                 });
-                if (response.status === 200){
+                if (response.data === true){
+                    setIsReissue(true);
+                }
+                else{
                     setIsReissue(false);
-                    setIsLogin(true);
                 }
             } catch(error){
                 setIsReissue(true);
-                setIsLogin(false);
-                console.log(error); 
             }
         }
         validateToken();
-    }, [loginToken]);
+    }, []);
 
     useEffect(() => {
         const fetchMyInfo = async () => {
-            console.log(isLogin);
-            if (isLogin){
+            if (localStorage.getItem("token")){
                 await axios.get('/api/opentalk/member/me', {
                     headers: {
-                        Authorization: loginToken,
+                        Authorization: localStorage.getItem("token"),
                     }
                 }).then((res) => {
                     if (res.status === 200){
@@ -149,7 +140,7 @@ const MainComponent = () => {
             }
         }    
         fetchMyInfo();
-    }, [isLogin, loginToken]);
+    }, []);
 
 
     useEffect(() => {
@@ -208,7 +199,7 @@ const MainComponent = () => {
     }
 
     const EnterRoom = ({roomInfo}) => {
-        if (!isLogin){
+        if (!localStorage.getItem("token")){
             window.alert("이미 로그아웃 되었습니다.");
             navigate("/opentalk/member/login");
         }
@@ -280,7 +271,7 @@ const MainComponent = () => {
 
     const EnterInvitedRoom = ({roomId, Inviter}) => {
         if (window.confirm("입장하시겠습니까?")){
-            if (!isLogin){
+            if (!localStorage.getItem("token")){
                 window.alert("이미 로그아웃 되었습니다.");
                 navigate("/opentalk/member/login");
             }
@@ -326,7 +317,7 @@ const MainComponent = () => {
     }
 
     const GoProfile = () => {
-        if (isLogin){
+        if (localStorage.getItem("token")){
             navigate("/opentalk/profile");
         }
         else{
@@ -339,15 +330,15 @@ const MainComponent = () => {
     }
 
     const LogOut = () => {
-        if (loginToken !== ""){
+        if (localStorage.getItem("token")){
             axios.post("/api/opentalk/auth/logout", {}, {
                 headers: { 
-                    Authorization: loginToken,
+                    Authorization: localStorage.getItem("token"),
                 }
             })
             .then((res) => {
                 if (res.status === 200){
-                    setIsLogin(false);
+                    localStorage.removeItem("token");
                     navigate("/opentalk/member/login");
                 }
             })
@@ -370,7 +361,7 @@ const MainComponent = () => {
 
     useEffect(() => {
         const fetchAllMessages = async () => {
-            if (isLogin){
+            if (localStorage.getItem("token")){
                 const url = "/api/opentalk/member/allInviteMessages"
                 try{
                     const data = new FormData();
@@ -384,7 +375,7 @@ const MainComponent = () => {
         }
 
         fetchAllMessages();
-    },[isMessageBoxOpen, isLogin, isUpdateTrigger])
+    },[isMessageBoxOpen, isUpdateTrigger])
 
     const renderPaginationItems = () => {
         const paginationItems = [];
