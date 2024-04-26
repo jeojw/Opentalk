@@ -7,10 +7,11 @@ import ProfileComponent from './profile';
 import { Container, Row, Col, Button, Form, 
     FormControl, InputGroup, ListGroup, ListGroupItem, 
     FormGroup} from 'react-bootstrap';
-import { PaginationControl } from 'react-bootstrap-pagination-control';
+import CustomPagination from '../css/CustomPagination.css'
 import Modal from 'react-modal';
 import { TokenContext } from './TokenContext';
 import { useQuery, useMutation, QueryClient, useQueryClient } from 'react-query';
+import Pagination from "react-bootstrap/Pagination";
 
 const MainComponent = () => {
     const ChatRoomRole = {
@@ -41,7 +42,8 @@ const MainComponent = () => {
     const [messageList, setMessageList] = useState([]);
 
     const handlePageChange = (page)=>{
-        setPage(page);
+        if (page >= 1 && page <= Math.ceil(pageLength / 3))
+            setPage(page);
     }
 
     const [member, setMember] = useState();
@@ -384,6 +386,20 @@ const MainComponent = () => {
         fetchAllMessages();
     },[isMessageBoxOpen, isLogin, isUpdateTrigger])
 
+    const renderPaginationItems = () => {
+        const paginationItems = [];
+    
+        for (let i = 1; i <= Math.ceil(pageLength / 3); i++) {
+          paginationItems.push(
+            <Pagination.Item key={i} active={i === page} onClick={() => handlePageChange(i)}>
+              {i}
+            </Pagination.Item>
+          );
+        }
+    
+        return paginationItems;
+      };
+
    return (
     <Container>
         <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
@@ -584,19 +600,19 @@ const MainComponent = () => {
                     )}
                 </FormGroup>
                 <br></br>
-                <PaginationControl
-                    page={page}
-                    between={3}
-                    total={pageLength}
-                    limit={3}
-                    changePage={(page) => {
-                        handlePageChange(page)
-                    }}
-                />
+                <Pagination className="justify-content-center custom-pagination gap-2">
+                    <Pagination.First onClick={()=>handlePageChange(1)} />
+                    <Pagination.Prev onClick={()=>handlePageChange(page - 1)} />
+                    {renderPaginationItems()}
+                    <Pagination.Next onClick={() => handlePageChange(page + 1)} />
+                    <Pagination.Last onClick={() => handlePageChange(Math.ceil(pageLength / 3))} />
+                </Pagination>
             </Col>
         </Row>
     </Container>
     );
+
+    
 }
 
 export default MainComponent;
