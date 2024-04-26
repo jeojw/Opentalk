@@ -78,13 +78,11 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
 
     useEffect(() => {
-        if (!isLoading && !isError && roomData) {
-            setRoomInformation(roomData.chatroom);
-            setOtherMember(roomData.chatroom.members);
-            setRole(roomData.role);
-            setCurParticipates(roomData.chatroom.curParticipates);
-        }
-    }, [roomData, isLoading, isError]);
+        setRoomInformation(roomData.chatroom);
+        setOtherMember(roomData.chatroom.members);
+        setRole(roomData.role);
+        setCurParticipates(roomData.chatroom.curParticipates);
+    }, [roomData]);
 
     const preventGoBack = () => {
         window.history.pushState(null, "", window.location.href);

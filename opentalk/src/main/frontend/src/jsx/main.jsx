@@ -64,18 +64,16 @@ const MainComponent = () => {
     },})
 
     useEffect(() => {
-        if (!isLoading && !isError && allChatRooms) {
-            setAllChatRoomList(allChatRooms);
-            setPageLength(allChatRooms.length);
-        }
-    }, [allChatRooms, isLoading, isError]);
+        setAllChatRoomList(allChatRooms);
+        setPageLength(allChatRooms.length);
+    }, [allChatRooms]);
 
     const queryClient = useQueryClient();
 
     const { mutate: updateRooms } = useMutation(async () => {
        await refetch();
     }, {
-        onSuccess: (data) => {
+        onSuccess: () => {
             queryClient.invalidateQueries({queryKey:["allChatRooms"]});
         }
     });
