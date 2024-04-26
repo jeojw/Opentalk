@@ -81,20 +81,27 @@ const MainComponent = () => {
     });
 
     const { mutate: mutateDeleteRoom } = useMutation(({roomInfo}) => {
-        const deleteUrl = "/api/opentalk/deleteRoom";
-        const data = new FormData();
-        data.append("room_id", roomInfo.roomId);
-        axios.post(deleteUrl, data)
-        .then((res) => {
-            if (res.data === "Success"){
-                window.alert("방이 삭제되었습니다.");
-                setIsUpdateTrigger(prevState => !prevState);
-            }
-            else{
-                window.alert("아직 방에 인원이 남아있습니다.");
-            }
+        return new Promise((resolve, reject) => {
+            const deleteUrl = "/api/opentalk/deleteRoom";
+            const data = new FormData();
+            data.append("room_id", roomInfo.roomId);
+            axios.post(deleteUrl, data)
+            .then((res) => {
+                if (res.data === "Success"){
+                    window.alert("방이 삭제되었습니다.");
+                    resolve();
+                }
+                else{
+                    window.alert("아직 방에 인원이 남아있습니다.");
+                    reject();
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                reject();
+            });  
         })
-        .catch((error) => console.log(error));  
+        
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries("allChatRooms");
@@ -103,45 +110,25 @@ const MainComponent = () => {
     });
 
     const { mutate: mutateEnterRoom } = useMutation(({roomInfo}) => {
-        if (!localStorage.getItem("token")){
-            window.alert("이미 로그아웃 되었습니다.");
-            navigate("/opentalk/member/login");
-        }
-        else{
-            const enterUrl = '/api/opentalk/enterRoom';
-            if (!roomInfo.existLock){
-                let currentRole;
-                console.log(roomInfo);
-                if (roomInfo.manager === member.memberNickName){
-                    currentRole = ChatRoomRole.MANAGER;
-                }
-                else{
-                    currentRole = ChatRoomRole.PARTICIPATE;
-                }
-                setRole(currentRole);
-                axios.post(enterUrl, {
-                    chatroom: roomInfo, 
-                    member: member,
-                    role:role
-                })
-                .then((res) => {
-                    if (res.data === "Success"){
-                        navigate(`/opentalk/room/${roomInfo.roomId}`);
-                        setIsUpdateTrigger(prevState => !prevState);
-                    }
-                    else{
-                        window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
-                    }
-                })
-                .catch((error) => console.log(error));
+        return new Promise((resolve, reject) => {
+            if (!localStorage.getItem("token")){
+                window.alert("이미 로그아웃 되었습니다.");
+                navigate("/opentalk/member/login");
+                reject();
             }
             else{
-                const inputPassword = window.prompt("비밀번호를 입력해주세요.");
-                
-                if (inputPassword === ""){
-                    window.alert("비밀번호를 입력해주세요.")
-                }else{
-                    axios.post(enterUrl + `/${inputPassword}`, {
+                const enterUrl = '/api/opentalk/enterRoom';
+                if (!roomInfo.existLock){
+                    let currentRole;
+                    console.log(roomInfo);
+                    if (roomInfo.manager === member.memberNickName){
+                        currentRole = ChatRoomRole.MANAGER;
+                    }
+                    else{
+                        currentRole = ChatRoomRole.PARTICIPATE;
+                    }
+                    setRole(currentRole);
+                    axios.post(enterUrl, {
                         chatroom: roomInfo, 
                         member: member,
                         role:role
@@ -149,25 +136,52 @@ const MainComponent = () => {
                     .then((res) => {
                         if (res.data === "Success"){
                             navigate(`/opentalk/room/${roomInfo.roomId}`);
-                        }
-                        else if (res.data ==="Incorrect"){
-                            window.alert("비밀번호가 잘못되었습니다.")
+                            resolve();
                         }
                         else{
                             window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
+                            reject();
                         }
                     })
-                    .catch((error) => console.log(error));
+                    .catch((error) => {
+                        console.log(error)
+                        reject();
+                    });
                 }
-           
+                else{
+                    const inputPassword = window.prompt("비밀번호를 입력해주세요.");
+                    
+                    if (inputPassword === ""){
+                        window.alert("비밀번호를 입력해주세요.")
+                    }else{
+                        axios.post(enterUrl + `/${inputPassword}`, {
+                            chatroom: roomInfo, 
+                            member: member,
+                            role:role
+                        })
+                        .then((res) => {
+                            if (res.data === "Success"){
+                                navigate(`/opentalk/room/${roomInfo.roomId}`);
+                                resolve();
+                            }
+                            else if (res.data ==="Incorrect"){
+                                window.alert("비밀번호가 잘못되었습니다.")
+                                reject();
+                            }
+                            else{
+                                window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
+                                reject();
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            reject();
+                        });
+                    }
+                }
             }
+        })
         
-        }
-        return (
-            <div>
-                <RoomComponent isChangeData={isUpdateTrigger} setIsChangeData={setIsUpdateTrigger}/>
-            </div>
-        );
     }, {
         onSuccess:() => {
             queryClient.invalidateQueries("allChatRooms");
@@ -176,38 +190,44 @@ const MainComponent = () => {
     });
 
     const { mutate: mutateEnterInviteRoom } = useMutation(({roomId, Inviter}) => {
-        if (window.confirm("입장하시겠습니까?")){
-            if (!localStorage.getItem("token")){
-                window.alert("이미 로그아웃 되었습니다.");
-                navigate("/opentalk/member/login");
+        return new Promise((resolve, reject) => {
+            if (window.confirm("입장하시겠습니까?")){
+                if (!localStorage.getItem("token")){
+                    window.alert("이미 로그아웃 되었습니다.");
+                    navigate("/opentalk/member/login");
+                    reject();
+                }
+                else{
+                    let currentRole;
+                    const enterUrl = '/api/opentalk/enterInvitedRoom';
+                    currentRole = ChatRoomRole.PARTICIPATE;
+                    setRole(currentRole);
+                    const data = new FormData();
+                    data.append("roomId", roomId);
+                    data.append("memberId", member.memberId);
+                    data.append("inviter", Inviter);
+                    console.log(Inviter);
+                    axios.post(enterUrl, data)
+                    .then((res) => {
+                        if (res.data === "Success"){
+                            navigate(`/opentalk/room/${roomId}`);
+                            resolve();
+                        }
+                        else{
+                            window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
+                            reject();
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                        reject();
+                    });      
+                }
             }
             else{
-                let currentRole;
-                const enterUrl = '/api/opentalk/enterInvitedRoom';
-                currentRole = ChatRoomRole.PARTICIPATE;
-                setRole(currentRole);
-                const data = new FormData();
-                data.append("roomId", roomId);
-                data.append("memberId", member.memberId);
-                data.append("inviter", Inviter);
-                console.log(Inviter);
-                axios.post(enterUrl, data)
-                .then((res) => {
-                    if (res.data === "Success"){
-                        navigate(`/opentalk/room/${roomId}`);
-                    }
-                    else{
-                        window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
-                    }
-                })
-                .catch((error) => console.log(error));      
+                reject();
             }
-        }
-        return (
-            <div>
-                <RoomComponent setIsChangeData={setIsUpdateTrigger}/>
-            </div>
-        );
+        })
     }, {
         onSuccess:() => {
             queryClient.invalidateQueries("allChatRooms");
