@@ -66,6 +66,8 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             return response.data;
         },  
         enabled: !!room_Id && !!myInfo,
+        cacheTime: 30000,
+        staleTime: 5000,
     }, [room_Id, myInfo]);
 
 

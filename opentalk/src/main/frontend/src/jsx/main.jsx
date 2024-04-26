@@ -59,9 +59,12 @@ const MainComponent = () => {
     const { data: allChatRooms, isLoading, isError } = useQuery({
         queryKey:['allChatRooms'],
         queryFn: async () => {
-        const roomResponse = await axios.get("/api/opentalk/rooms");
-        return roomResponse.data;
-    },})
+            const roomResponse = await axios.get("/api/opentalk/rooms");
+            return roomResponse.data;
+        },
+        cacheTime: 30000,
+        staleTime: 5000,
+    })
 
     useEffect(() => {
         if (allChatRooms && !isLoading && !isError) {
