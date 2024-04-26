@@ -68,11 +68,11 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     },  enabled: !!room_Id && !!myInfo,
     });
 
-    const { mutate: updateRoom } = useMutation(async () => {
+    const { mutate } = useMutation(async () => {
         await refetch();
      }, {
         onSuccess: () => {
-            queryClient.invalidateQueries({queryKey:['roomData']})
+            queryClient.invalidateQueries({queryKey:['roomData', room_Id, myInfo]})
         }
      });
 
@@ -238,7 +238,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     };
 
     const EnterRoom = () => {
-        updateRoom();
         const curTime = new Date();
         const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
         const kr_Time = new Date(utc + (KR_TIME_DIFF));
@@ -276,7 +275,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             .then((res) => {
                 if (res.data === true){
                     window.alert(`${roomMember.memberNickName}님이 방장이 되었습니다.`);
-                    updateRoom();
                     const curTime = new Date();
                     const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
                     const kr_Time = new Date(utc + (KR_TIME_DIFF));
@@ -311,7 +309,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             .then((res) => {
                 if (res.data === true){
                     window.alert("강제퇴장 되었습니다.");
-                    updateRoom();
                     if (!client.current.connected) return;
                     const curTime = new Date();
                     const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
@@ -345,7 +342,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         })
         .then((res) => {
             if (res.status === 200){
-                updateRoom();
                 const curTime = new Date();
                 const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
                 const kr_Time = new Date(utc + (KR_TIME_DIFF));
@@ -379,7 +375,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             })
             .then((res) => {
                 if (res.status === 200){
-                    updateRoom();
                     navigate("/opentalk/main");
                     const curTime = new Date();
                     const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
