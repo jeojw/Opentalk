@@ -299,10 +299,10 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     }, []);
 
     useEffect(() => {
-        if (!isExist){
+        if (roomData && !isExist){
             navigate("/opentalk/main");
         }
-    }, [isExist, myInfo, room_Id]);
+    }, [roomData, isExist]);
 
     useEffect(() => {
         const fetchChatLog = async () => {
