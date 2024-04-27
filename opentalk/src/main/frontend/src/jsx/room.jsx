@@ -9,6 +9,7 @@ import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, Li
 import { format } from 'date-fns'
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 
+
 const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     const [roomInformation, setRoomInformation] = useState();
@@ -28,10 +29,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     const chatContainerRef = useRef(null);
 
-    useEffect(() => {
-        scrollToIndex();
-    }, [startIndex, endIndex]);
-
     const scrollToIndex = () => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = prevScroll;
@@ -50,7 +47,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             setPrevScroll(scrollTop);
         }
     };   
-
 
     const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
 
@@ -233,36 +229,6 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         }
     }, [roomData]);
 
-    const preventGoBack = () => {
-        window.history.pushState(null, "", window.location.href);
-        ExitRoom();
-    };
-
-    const exitWindow = (event) => {
-        event.preventDefault();
-        ExitRoom_Unload();
-    };
-
-    useEffect(() => {
-        (async () => {
-            window.history.pushState(null, "", window.location.href);
-            window.addEventListener("popstate", preventGoBack);
-        })();
-        return () => {
-            window.removeEventListener("popstate", preventGoBack);
-        };
-    },[roomInformation, myInfo, role]);
-
-    useEffect(() => {
-        (async () => {
-            window.history.pushState(null, "", window.location.href);
-            window.addEventListener("beforeunload", exitWindow);
-        })();
-        return () => {
-            window.removeEventListener("beforeunload", exitWindow);
-        };
-    },[roomInformation, myInfo, role]);
-
     useEffect(() => {
         const fetchInfo = async () => {
             if (localStorage.getItem("token")){
@@ -312,37 +278,8 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
         fetchChatLog();
     }, [])
-
-    useEffect(() =>{ 
-        connect();
-        return () => disconnect();
-    }, []);
-
-    const connect = () => {
-        client.current = new StompJs.Client({
-            webSocketFactory: () => new SockJs('/ws'),
-            connectHeaders: {
-                "auth-token": "spring-chat-auth-token",
-            },
-            debug: function (str) {
-                console.log(str);
-            },
-            reconnectDelay: 5000,
-            heartbeatIncoming: 4000,
-            heartbeatOutgoing: 4000,
-            onConnect: () => {
-                subscribe();
-            },
-            onStompError: (frame) => {
-                console.error(frame);
-            }
-        });
-        client.current.activate(); 
-    };
-
-    const disconnect = () => {
-        client.current.deactivate();
-    };
+    
+    
   
     const publishChat = (chat) => {
         if (!client.current.connected) return;
@@ -380,28 +317,73 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     const subscribe = () => {
         client.current.subscribe(`/sub/chat/${room_Id}`, ({body}) => {
+            if (JSON.parse(body).member.memberNickName === "system"){
+                queryClient.invalidateQueries("roomData");
+            }
             setChatList((prevChatList)=>[... prevChatList , JSON.parse(body)])
         });
     };
-
-    const EnterRoom = () => {
-        const curTime = new Date();
-        const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
-        const kr_Time = new Date(utc + (KR_TIME_DIFF));
-
-        client.current.publish({
-            destination: '/pub/chat/enter',
-            body: JSON.stringify({
-                chatRoom: roomInformation,
-                member: {
-                    memberId:"system",
-                    memberNickName:"system"
+    useEffect(() =>{ 
+        const connect = () => {
+            client.current = new StompJs.Client({
+                webSocketFactory: () => new SockJs('/ws'),
+                connectHeaders: {
+                    "auth-token": "spring-chat-auth-token",
                 },
-                message: `${myInfo.memberNickName}님이 채팅방에 참여했습니다.`,
-                timeStamp: format(kr_Time, "yyyy-MM-dd-hh-mm")
-            })
-        });
-    }
+                debug: function (str) {
+                    console.log(str);
+                },
+                reconnectDelay: 5000,
+                heartbeatIncoming: 4000,
+                heartbeatOutgoing: 4000,
+                onConnect: () => {
+                    subscribe();
+                },
+                onStompError: (frame) => {
+                    console.error(frame);
+                }
+            });
+            client.current.activate(); 
+            
+        };
+    
+        const disconnect = () => {
+            client.current.deactivate();
+        };
+        connect();
+        
+        return () => disconnect();
+    }, []);
+
+    const preventGoBack = () => {
+        window.history.pushState(null, "", window.location.href);
+        ExitRoom();
+    };
+
+    const exitWindow = (event) => {
+        event.preventDefault();
+        ExitRoom_Unload();
+    };
+
+    useEffect(() => {
+        (async () => {
+            window.history.pushState(null, "", window.location.href);
+            window.addEventListener("popstate", preventGoBack);
+        })();
+        return () => {
+            window.removeEventListener("popstate", preventGoBack);
+        };
+    },[roomInformation, myInfo, role]);
+
+    useEffect(() => {
+        (async () => {
+            window.history.pushState(null, "", window.location.href);
+            window.addEventListener("beforeunload", exitWindow);
+        })();
+        return () => {
+            window.removeEventListener("beforeunload", exitWindow);
+        };
+    },[roomInformation, myInfo, role]);
 
     const handleChange = (event) => {
         setChat(event.target.value);

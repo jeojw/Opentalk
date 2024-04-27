@@ -29,7 +29,6 @@ public class StompChatController {
     @MessageMapping("/chat/enter")
     public void enterRoom(ChatMessageDTO chatMessage){
         chatMessage.setMessage(chatMessage.getMessage());
-        log.info("enterChat : {}", chatMessage);
         template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
     }
 

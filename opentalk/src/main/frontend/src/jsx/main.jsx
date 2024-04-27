@@ -1,18 +1,55 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SetRoomComponent from './setroom';
-import RoomComponent from './room';
 import ProfileComponent from './profile';
 import { Container, Row, Col, Button, Form, 
     FormControl, InputGroup, ListGroup, ListGroupItem, 
     FormGroup} from 'react-bootstrap';
-import CustomPagination from '../css/CustomPagination.css'
 import Modal from 'react-modal';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import Pagination from "react-bootstrap/Pagination";
+import * as StompJs from "@stomp/stompjs";
+import SockJs from "sockjs-client"
+import { format } from 'date-fns'
 
 const MainComponent = () => {
+
+    const client = useRef({});
+
+    const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+
+    useEffect(() =>{ 
+        const connect = () => {
+            client.current = new StompJs.Client({
+                webSocketFactory: () => new SockJs('/ws'),
+                connectHeaders: {
+                    "auth-token": "spring-chat-auth-token",
+                },
+                debug: function (str) {
+                    console.log(str);
+                },
+                reconnectDelay: 5000,
+                heartbeatIncoming: 4000,
+                heartbeatOutgoing: 4000,
+                onConnect: () => {
+                },
+                onStompError: (frame) => {
+                    console.error(frame);
+                }
+            });
+            client.current.activate(); 
+            
+        };
+    
+        const disconnect = () => {
+            client.current.deactivate();
+        };
+        connect();
+        
+        return () => disconnect();
+    }, []);
+
     const ChatRoomRole = {
         PARTICIPATE: 'ROLE_PARTICIPATE',
         MANAGER: 'ROLE_MANAGER'
@@ -56,6 +93,8 @@ const MainComponent = () => {
 
     const [isReissue, setIsReissue] = useState(false);
 
+    const queryClient = useQueryClient();
+
     const { data: allChatRooms, isLoading, isError, isFetching, isFetched } = useQuery({
         queryKey:['allChatRooms'],
         queryFn: async () => {
@@ -72,15 +111,13 @@ const MainComponent = () => {
         refetchOnWindowFocus: true,
         refetchOnReconnect: true,
     })
-
+    
     useEffect(() => {
         if (allChatRooms && !isLoading && !isError && !isFetching && isFetched) {
             setAllChatRoomList(allChatRooms);
             setPageLength(allChatRooms.length);
         }
-    }, [allChatRooms]);
-
-    const queryClient = useQueryClient();
+    }, [allChatRooms, isLoading, isError, isFetching, isFetched]);
 
     const { mutate: updateRooms } = useMutation(async () => {}, {
         onSuccess: () => {
@@ -118,14 +155,13 @@ const MainComponent = () => {
         else{
             const enterUrl = '/api/opentalk/enterRoom';
             let currentRole;
-                console.log(roomInfo);
-                if (roomInfo.manager === member.memberNickName){
-                    currentRole = ChatRoomRole.MANAGER;
-                }
-                else{
-                    currentRole = ChatRoomRole.PARTICIPATE;
-                }
-                setRole(currentRole);
+            if (roomInfo.manager === member.memberNickName){
+                currentRole = ChatRoomRole.MANAGER;
+            }
+            else{
+                currentRole = ChatRoomRole.PARTICIPATE;
+            }
+            setRole(currentRole);
             if (!roomInfo.existLock){
                 try{
                     const res = await axios.post(enterUrl, {
@@ -134,10 +170,25 @@ const MainComponent = () => {
                         role:role
                     });
                     if (res.data === "Success"){
+                        const curTime = new Date();
+                        const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+                        const kr_Time = new Date(utc + (KR_TIME_DIFF));
+
+                        client.current.publish({destination: "/pub/chat/enter", body: JSON.stringify({
+                            chatRoom: roomInfo,
+                            member: {
+                                memberId:"system",
+                                memberNickName:"system"
+                            },
+                            message: `${member?.memberNickName}님이 채팅방에 입장했습니다.`,
+                            timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
+                        })});
+
                         navigate(`/opentalk/room/${roomInfo.roomId}`);
                     }
                     else{
                         window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
+                        
                     }
                 } catch(error){
                     console.log(error);
@@ -156,6 +207,20 @@ const MainComponent = () => {
                             role:role
                         });
                         if (res.data === "Success"){
+                            const curTime = new Date();
+                            const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+                            const kr_Time = new Date(utc + (KR_TIME_DIFF));
+
+                            client.current.publish({destination: "/pub/chat/enter", body: JSON.stringify({
+                                chatRoom: roomInfo,
+                                member: {
+                                    memberId:"system",
+                                    memberNickName:"system"
+                                },
+                                message: `${member?.memberNickName}님이 채팅방에 입장했습니다.`,
+                                timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
+                            })});
+    
                             navigate(`/opentalk/room/${roomInfo.roomId}`);
                         }
                         else if (res.data ==="Incorrect"){
