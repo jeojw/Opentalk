@@ -30,7 +30,7 @@ const FindMemberPassword = (props) =>{
     const CheckAuth = () =>{
         const checkUrl = `/api/opentalk/findPw/mailauthCheck`
         if (String(inputNum) !== String(authNum)){
-            alert("인증이 실패하였습니다. 다시 시도해주십시오.")
+            window.alert("인증이 실패하였습니다. 다시 시도해주십시오.")
         }
         else{
             axios.post(checkUrl, {
@@ -41,7 +41,7 @@ const FindMemberPassword = (props) =>{
                     navigate("/opentalk/member/changePw", {state: {memberEmail: memberEmail}});
                 }
                 else{
-                    alert("인증이 실패하였습니다. 다시 시도해주십시오.")
+                    window.alert("인증이 실패하였습니다. 다시 시도해주십시오.")
                 }
             }).catch((error) => console.log(error))
         }
