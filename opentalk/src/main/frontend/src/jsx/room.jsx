@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useContext } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import axios from "axios";
 import { useParams, useNavigate} from 'react-router-dom';
 import * as StompJs from "@stomp/stompjs";
@@ -8,6 +8,7 @@ import InviteMemberComponent from './inviteMember';
 import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { format } from 'date-fns'
 import { useQuery, useMutation, useQueryClient } from 'react-query';
+import "../css/CustomPagination.css"
 
 
 const RoomComponent = ({isChangeData, setIsChangeData}) => {
@@ -34,6 +35,10 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             chatContainerRef.current.scrollTop = prevScroll;
         }
     };
+
+    useEffect(() => {
+        scrollToIndex();
+    }, [startIndex, endIndex]);
 
     const handleScroll = (e) => {
         const { scrollTop, scrollHeight, clientHeight } = e.target;
@@ -449,16 +454,21 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                         <ListGroup style={{marginBottom: '10px'}}>
                             {chatList.map((_chatMessage) => {
                                 let fontcolor = "#000000";
-                                let color;
+                                let color = "";
                                 let textAlign = "left";
+                                let itemClassName = "d-flex justify-content-start";
                                 if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
                                     color  = "#C3C3C3";
+                                    itemClassName = "d-flex justify-content-start";
                                 } else if (_chatMessage.member.memberNickName === 'system') {
                                     color  = '#000000';
-                                    fontcolor = "#FFFFFF"
+                                    fontcolor = "#FFFFFF";
+                                    itemClassName = "d-flex justify-content-center";
+
                                 } else{
                                     color = '#FFFFFF';
-                                    textAlign = "right"
+                                    textAlign = "right";
+                                    itemClassName = "d-flex justify-content-end";
                                 }
                                 const style = {
                                     border: color,
@@ -469,15 +479,19 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                     borderTopLeftRadius: "15px",
                                     borderBottomLeftRadius: "15px",
                                     borderTopRightRadius: "15px",
-                                    borderBottomRightRadius: "15px"
+                                    borderBottomRightRadius: "15px",
                                 };
                                 return (
-                                    <ListGroupItem style={style}>
-                                        <strong>{_chatMessage.member.memberNickName}</strong>
-                                        <br></br>
-                                        <hr/>
-                                        {_chatMessage.message}
-                                    </ListGroupItem>
+                                    <Row>
+                                        <Col className={itemClassName}>
+                                            <ListGroupItem style={style}>
+                                                <strong>{_chatMessage.member.memberNickName}</strong>
+                                                <br></br>
+                                                <hr/>
+                                                {_chatMessage.message}
+                                            </ListGroupItem>
+                                        </Col>
+                                    </Row>
                                 );
                             })}
                         </ListGroup>
@@ -487,17 +501,21 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                         <ListGroup style={{marginBottom: '10px' }}>
                             {preChatList.slice(startIndex, endIndex).map((_chatMessage) => {
                                 let fontcolor = "#000000";
-                                let color;
+                                let color = "";
                                 let textAlign = "left";
+                                let itemClassName = "d-flex justify-content-start";
                                 if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
                                     color  = "#C3C3C3";
+                                    itemClassName = "d-flex justify-content-start";
                                 } else if (_chatMessage.member.memberNickName === 'system') {
                                     color  = '#000000';
-                                    fontcolor = "#FFFFFF"
+                                    fontcolor = "#FFFFFF";
+                                    itemClassName = "d-flex justify-content-center";
 
                                 } else{
                                     color = '#FFFFFF';
-                                    textAlign = "right"
+                                    textAlign = "right";
+                                    itemClassName = "d-flex justify-content-end";
                                 }
                                 const style = {
                                     border: color,
@@ -508,15 +526,19 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                     borderTopLeftRadius: "15px",
                                     borderBottomLeftRadius: "15px",
                                     borderTopRightRadius: "15px",
-                                    borderBottomRightRadius: "15px"
+                                    borderBottomRightRadius: "15px",
                                 };
                                 return (
-                                    <ListGroupItem style={style}>
-                                        <strong>{_chatMessage.member.memberNickName}</strong>
-                                        <br></br>
-                                        <hr/>
-                                        {_chatMessage.message}
-                                    </ListGroupItem>
+                                    <Row>
+                                        <Col className={itemClassName}>
+                                            <ListGroupItem style={style}>
+                                                <strong>{_chatMessage.member.memberNickName}</strong>
+                                                <br></br>
+                                                <hr/>
+                                                {_chatMessage.message}
+                                            </ListGroupItem>
+                                        </Col>
+                                    </Row>
                                 );
                             })}
                         </ListGroup>
