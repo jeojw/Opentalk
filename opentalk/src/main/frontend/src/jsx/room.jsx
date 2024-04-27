@@ -68,23 +68,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             } catch(error){
                 throw new Error('Failed to fetch room data');
             }
-        },  
-        enabled: !!room_Id && !!myInfo,
-        cacheTime: 30000,
-        staleTime: 5000,
-        refetchOnMount: true,
-        refetchOnWindowFocus: true,
-        refetchOnReconnect: true,
-    }, [room_Id, myInfo]);
-
-    const { data: isExist} = useQuery({
-        queryKey:['isExist'], 
-        queryFn: async () => {
-            try{
-                return await axios.get(`/api/opentalk/isExistInRoom/${room_Id}/${myInfo.memberNickName}`);
-            } catch (error){
-                console.log(error);
-            }
+            
         },  
         enabled: !!room_Id && !!myInfo,
         cacheTime: 30000,
@@ -128,7 +112,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         
     }, {
         onSuccess: () =>{
-            queryClient.invalidateQueries('roomData', 'isExist');
+            queryClient.invalidateQueries('roomData');
         }
     });
 
@@ -165,7 +149,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         }
     }, {
         onSuccess: () =>{
-            queryClient.invalidateQueries('roomData', 'isExist');
+            queryClient.invalidateQueries('roomData');
         }
     });
 
@@ -200,7 +184,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         }
     }, {
         onSuccess: () =>{
-            queryClient.invalidateQueries('roomData', 'isExist');
+            queryClient.invalidateQueries('roomData');
         }
     });
 
@@ -236,7 +220,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         }
     }, {
         onSuccess: () =>{
-            queryClient.invalidateQueries('roomData', 'isExist');
+            queryClient.invalidateQueries('roomData');
         }
     });
 
@@ -299,10 +283,18 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     }, []);
 
     useEffect(() => {
-        if (roomData && !isExist){
-            navigate("/opentalk/main");
+        const isExistInRoom = async () => {
+            try{
+                const response = await axios.get(`/api/opentalk/isExistInRoom/${room_Id}/${myInfo.memberNickName}`);
+                if (response.data !== true){
+                    navigate("/opentalk/main");
+                }
+            } catch (error){
+                console.log(error);
+            }
         }
-    }, [roomData, isExist]);
+        isExistInRoom();
+    }, [roomData, myInfo, room_Id]);
 
     useEffect(() => {
         const fetchChatLog = async () => {
