@@ -56,18 +56,25 @@ const MainComponent = () => {
 
     const [isReissue, setIsReissue] = useState(false);
 
-    const { data: allChatRooms, isLoading, isError } = useQuery({
+    const { data: allChatRooms, isLoading, isError, isFetching, isFetched } = useQuery({
         queryKey:['allChatRooms'],
         queryFn: async () => {
-            const roomResponse = await axios.get("/api/opentalk/rooms");
-            return roomResponse.data;
+            try{
+                const roomResponse = await axios.get("/api/opentalk/rooms");
+                return roomResponse.data;
+            } catch(error){
+                throw new Error('Failed to fetch room data');
+            }
         },
         cacheTime: 30000,
         staleTime: 5000,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
     })
 
     useEffect(() => {
-        if (allChatRooms && !isLoading && !isError) {
+        if (allChatRooms && !isLoading && !isError && !isFetching && isFetched) {
             setAllChatRoomList(allChatRooms);
             setPageLength(allChatRooms.length);
         }

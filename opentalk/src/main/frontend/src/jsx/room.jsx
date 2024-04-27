@@ -59,15 +59,22 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const { data: roomData, isLoading, isError} = useQuery({
+    const { data: roomData, isLoading, isError, isFetching, isFetched} = useQuery({
         queryKey:['roomData'], 
         queryFn: async () => {
-            const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
-            return response.data;
+            try{
+                const response = await axios.get(`/api/opentalk/getRoom/${room_Id}/${myInfo.memberId}`);
+                return response.data;
+            } catch(error){
+                throw new Error('Failed to fetch room data');
+            }
         },  
         enabled: !!room_Id && !!myInfo,
         cacheTime: 30000,
         staleTime: 5000,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
     }, [room_Id, myInfo]);
 
 
@@ -104,7 +111,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         
     }, {
         onSuccess: () =>{
-            queryClient.invalidateQueries(['roomData']);
+            queryClient.invalidateQueries('roomData');
         }
     });
 
@@ -216,9 +223,8 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
         }
     });
 
-
     useEffect(() => {
-        if (roomData && !isLoading && !isError) {
+        if (roomData && !isLoading && !isError && !isFetching && isFetched) {
             setRoomInformation(roomData.chatroom);
             setOtherMember(roomData.chatroom.members);
             setRole(roomData.role);
@@ -552,7 +558,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                         {roomInformation?.roomManager === myInfo?.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                         {myInfo?.memberNickName}</span>
                         <hr/>
-                        {roomInformation?.members.map((_member, index) => (
+                        {otherMember.map((_member, index) => (
                             <ListGroup style={{marginBottom: '6px', 
                                             borderTopLeftRadius: "25px",
                                             borderBottomLeftRadius: "25px",
