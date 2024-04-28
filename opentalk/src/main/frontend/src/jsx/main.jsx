@@ -41,7 +41,12 @@ const MainComponent = () => {
             client.current.activate(); 
             
         };
+        const disconnect = () => {
+            client.current.deactivate();
+        };
         connect();
+        
+        return () => disconnect();
     }, []);
 
     const ChatRoomRole = {
@@ -432,8 +437,8 @@ const MainComponent = () => {
             navigate("/opentalk/member/login");
         }
         return (
-            <ProfileComponent setIsUpdateData={setIsUpdateTrigger}/>
-        )
+            <ProfileComponent />
+        );
     }
 
     const LogOut = () => {
@@ -709,6 +714,7 @@ const MainComponent = () => {
             </Col>
         </Row>
     </Container>
+    
     );
 
     
