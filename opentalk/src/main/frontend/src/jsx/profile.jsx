@@ -7,7 +7,7 @@ import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 
-const ProfileComponent = ({setIsUpdateData}) => {
+const ProfileComponent = () => {
     const client = useRef({});
     useEffect(() =>{ 
         const connect = () => {
@@ -35,8 +35,9 @@ const ProfileComponent = ({setIsUpdateData}) => {
             client.current.deactivate();
         };
         connect();
-        
-        return () => disconnect();
+        if (!localStorage.getItem("token")){
+            return () => disconnect();
+        }
     }, []);
 
     const [member, setMember] = useState('');

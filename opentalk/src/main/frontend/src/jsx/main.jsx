@@ -14,7 +14,6 @@ import SockJs from "sockjs-client"
 import { format } from 'date-fns'
 
 const MainComponent = () => {
-
     const client = useRef({});
 
     const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
@@ -38,15 +37,16 @@ const MainComponent = () => {
                     console.error(frame);
                 }
             });
-            client.current.activate(); 
+            client.current.activate();
             
         };
         const disconnect = () => {
             client.current.deactivate();
         };
         connect();
-        
-        return () => disconnect();
+        if (!localStorage.getItem("token")){
+            return ()=>disconnect();
+        }
     }, []);
 
     const ChatRoomRole = {
@@ -351,7 +351,6 @@ const MainComponent = () => {
                     if (res.status === 200){
                         setCurImgUrl(res.data.imgUrl);
                         setMember(res.data);
-                        console.log(res.data);
                     }
                 }).catch((error) => console.log(error));
             }
