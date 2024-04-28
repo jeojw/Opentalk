@@ -1,13 +1,10 @@
-import React, {useState, useEffect, useContext} from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
 import Modal from 'react-modal';
 import axios from'axios';
-import { Form, Button, Container, Row, Col, InputGroup, 
-    InputGroupText, FormControl, FormGroup, FormLabel,
-    ListGroup,
-    ListGroupItem, } from 'react-bootstrap';
+import { Form, Button, Row, Col, InputGroup, FormControl, ListGroup, ListGroupItem, } from 'react-bootstrap';
+import { useQueryClient, useMutation } from 'react-query';
 
-export const SetRoomComponent = ({onDataUpdate, updateFunction}) =>{
+export const SetRoomComponent = ({stompClient, onDataUpdate}) =>{
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [roomId, setRoomId] = useState("");
@@ -18,6 +15,8 @@ export const SetRoomComponent = ({onDataUpdate, updateFunction}) =>{
     const [info, setInfo] = useState("");
     const [tag, setTag] = useState("");
     const [tags, setTags] = useState([]);
+
+    const queryClient = useQueryClient();
 
     useEffect(() => {
         const fetchManager = async () =>{
@@ -118,31 +117,42 @@ export const SetRoomComponent = ({onDataUpdate, updateFunction}) =>{
         setTags(newTags);
     }
 
-
-    const MakeRoom = () => {
+    const {mutate: mutateMakeRoom} = useMutation(async() =>{
         const makeUrl = `/api/opentalk/makeRoom`
-        console.log(manager);
-        axios.post(makeUrl, {
-            "roomName": roomName,
-            "roomPassword": password,
-            "roomManager": manager.memberNickName,
-            "limitParticipates": participants,
-            "introduction": info,
-            "existLock": existLock,
-            "members": [],
-            "roomTags": tags
-        })
-        .then((res)=>{
+        try{
+            const res = await axios.post(makeUrl, {
+                "roomName": roomName,
+                "roomPassword": password,
+                "roomManager": manager.memberNickName,
+                "limitParticipates": participants,
+                "introduction": info,
+                "existLock": existLock,
+                "members": [],
+                "roomTags": tags
+            })
             if (res.status === 200){
-                alert("방이 생성되었습니다.");
-                updateFunction();
+                window.alert("방이 생성되었습니다.");
                 setRoomId(res.data);
                 closeModal();
                 onDataUpdate(prevState => !prevState);
+
+                stompClient.publish({destination: "/pub/chat/createRoom", body: JSON.stringify({
+                    nickName: "system",
+                    message: `새로운 방을 생성했습니다.`,
+                })});
+                queryClient.invalidateQueries("allChatRooms");
             }
-        })
-        .catch((error) => console.log(error));
-        
+        } catch(error){
+            console.log(error);
+        }
+    },{
+        onSuccess:() => {
+            queryClient.invalidateQueries("allChatRooms");
+        }
+    })
+
+    const MakeRoom = async () => {
+        mutateMakeRoom();
     };
 
     return (

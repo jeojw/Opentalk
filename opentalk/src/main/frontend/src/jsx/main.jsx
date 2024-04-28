@@ -32,6 +32,21 @@ const MainComponent = () => {
                 heartbeatIncoming: 4000,
                 heartbeatOutgoing: 4000,
                 onConnect: () => {
+                    client.current.subscribe(`/sub/chat/deleteRoom`, ({body}) => {
+                        if (JSON.parse(body).nickName === "system"){
+                            queryClient.invalidateQueries("allChatRooms");
+                        }
+                    });
+                    client.current.subscribe(`/sub/chat/createRoom`, ({body}) => {
+                        if (JSON.parse(body).nickName === "system"){
+                            queryClient.invalidateQueries("allChatRooms");
+                        }
+                    });
+                    client.current.subscribe(`/sub/chat/changeNickName`, ({body}) => {
+                        if (JSON.parse(body).nickName === "system"){
+                            queryClient.invalidateQueries("allChatRooms");
+                        }
+                    });
                 },
                 onStompError: (frame) => {
                     console.error(frame);
@@ -44,9 +59,7 @@ const MainComponent = () => {
             client.current.deactivate();
         };
         connect();
-        if (!localStorage.getItem("token")){
-            return ()=>disconnect();
-        }
+        return ()=>disconnect();
     }, []);
 
     const ChatRoomRole = {
@@ -101,7 +114,7 @@ const MainComponent = () => {
                 const roomResponse = await axios.get("/api/opentalk/rooms");
                 return roomResponse.data;
             } catch(error){
-                throw new Error('Failed to fetch room data');
+                console.log(error);
             }
         },
         cacheTime: 30000,
@@ -115,6 +128,7 @@ const MainComponent = () => {
         if (allChatRooms && !isLoading && !isError && !isFetching && isFetched) {
             setAllChatRoomList(allChatRooms);
             setPageLength(allChatRooms.length);
+            console.log(allChatRooms);
         }
     }, [allChatRooms, isLoading, isError, isFetching, isFetched]);
 
@@ -125,21 +139,28 @@ const MainComponent = () => {
     });
 
     const { mutate: mutateDeleteRoom } = useMutation(async ({roomInfo}) => {
-        const deleteUrl = "/api/opentalk/deleteRoom";
-        const data = new FormData();
-        data.append("room_id", roomInfo.roomId);
+        if (window.confirm("방을 삭제하시겠습니까?")){
+            const deleteUrl = "/api/opentalk/deleteRoom";
+            const data = new FormData();
+            data.append("room_id", roomInfo.roomId);
 
-        try {
-            const res = await axios.post(deleteUrl, data);
-            if (res.data === "Success") {
-                window.alert("방이 삭제되었습니다.");
-            } else {
-                window.alert("아직 방에 인원이 남아있습니다.");
+            try {
+                const res = await axios.post(deleteUrl, data);
+                if (res.data === "Success") {
+                    window.alert("방이 삭제되었습니다.");
+                    
+                    client.current.publish({destination: "/pub/chat/deleteRoom", body: JSON.stringify({
+                        nickName: "system",
+                        message: `방이 삭제되었습니다.`,
+                    })});
+                    queryClient.invalidateQueries("allChatRooms");
+                } else {
+                    window.alert("아직 방에 인원이 남아있습니다.");
+                }
+            } catch (error) {
+                console.log(error);
             }
-        } catch (error) {
-            console.log(error);
         }
-        
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries("allChatRooms");
@@ -398,9 +419,7 @@ const MainComponent = () => {
     }
 
     const deleteRoom = ({roomInfo}) => {
-        if (window.confirm("방을 삭제하시겠습니까?")){
-            mutateDeleteRoom({roomInfo});
-        }
+        mutateDeleteRoom({roomInfo});
     }
 
     const EnterRoom = ({roomInfo}) => {
@@ -607,6 +626,7 @@ const MainComponent = () => {
             </Col>
             <Col className="border border-#C3C3C3 border-3 rounded-2 p-5" style={{backgroundColor:"#C3C3C3", height: "975px"}}>
                 <SetRoomComponent
+                    stompClient={client.current}
                     onDataUpdate={setIsUpdateTrigger}
                     updateFunction={updateRooms}
                 />

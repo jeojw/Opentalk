@@ -23,6 +23,11 @@ const ProfileComponent = () => {
                 heartbeatIncoming: 4000,
                 heartbeatOutgoing: 4000,
                 onConnect: () => {
+                    client.current.subscribe(`/sub/chat/changeNickName`, ({body}) => {
+                        if (JSON.parse(body).nickName === "system"){
+                            queryClient.invalidateQueries("allChatRooms");
+                        }
+                    });
                 },
                 onStompError: (frame) => {
                     console.error(frame);
@@ -35,9 +40,7 @@ const ProfileComponent = () => {
             client.current.deactivate();
         };
         connect();
-        if (!localStorage.getItem("token")){
-            return () => disconnect();
-        }
+        return () => disconnect();
     }, []);
 
     const [member, setMember] = useState('');
@@ -257,12 +260,6 @@ const ProfileComponent = () => {
                         window.alert("닉네임이 변경되었습니다.")
                         setIsChangeData(prevState => !prevState);
                         ChangeNickNameCancle();
-
-                        client.current.subscribe(`/sub/chat/changeNickName`, ({body}) => {
-                            if (JSON.parse(body).nickName === "system"){
-                                queryClient.invalidateQueries("allChatRooms");
-                            }
-                        });
 
                         client.current.publish({destination: "/pub/chat/changeNickName", body: JSON.stringify({
                             nickName: "system",

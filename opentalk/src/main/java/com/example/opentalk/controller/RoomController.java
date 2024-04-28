@@ -53,20 +53,17 @@ public class RoomController {
     }
 
     @PostMapping("/api/opentalk/authMandate")
-    @CachePut(value = "authMandateCache", key = "#managerChangeDto.newManager")
     public ResponseEntity<Boolean> authMandate(@RequestBody @Valid  ManagerChangeDto managerChangeDto){
         return ResponseEntity.ok(chatRoomService.authMandate(managerChangeDto));
     }
 
 
     @PostMapping("/api/opentalk/enterRoom")
-    @CachePut(value = "enterRoomCache", key = "#chatRoomMemberDTO.chatroom.roomId")
     public ResponseEntity<String> enterRoom(@RequestBody @Valid ChatRoomMemberDTO chatRoomMemberDTO){
         return ResponseEntity.ok(chatRoomService.enterRoom(chatRoomMemberDTO));
     }
 
     @PostMapping("/api/opentalk/enterInvitedRoom")
-    @CachePut(value = "enterInviteRoomCache", key = "#roomId")
     public ResponseEntity<String> enterInvitedRoom(@RequestParam("roomId") String roomId,
                                                    @RequestParam("memberId") String memberId,
                                                    @RequestParam("inviter") String inviter){
@@ -90,13 +87,11 @@ public class RoomController {
     }
 
     @PostMapping("/api/opentalk/deleteRoom")
-    @CachePut(value = "deleteRoomCache", key = "#room_Id")
     public ResponseEntity<String> deleteRoom(@RequestParam("room_id") String room_id){
         return ResponseEntity.ok(chatRoomService.deleteRoom(room_id));
     }
 
     @PostMapping("/api/opentalk/forcedExit")
-    @CachePut(value = "forcedExitRoomCache", key = "#chatRoomMemberDTO.chatroom.roomId")
     public ResponseEntity<Boolean> forced_Exit(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO){
         return ResponseEntity.ok(chatRoomService.forcedExistRoom(chatRoomMemberDTO));
     }
@@ -112,13 +107,11 @@ public class RoomController {
     }
 
     @PostMapping("/api/opentalk/enterRoom/{password}")
-    @CachePut(value = "enterRoomPwCache", key = "#chatRoomMemberDTO.chatroom.roomId")
     public ResponseEntity<String> enterRoom_Pw(@RequestBody ChatRoomMemberDTO chatRoomMemberDTO, @PathVariable String password){
         return ResponseEntity.ok(chatRoomService.enterRoom_Pw(chatRoomMemberDTO, password));
     }
 
     @PostMapping("/api/opentalk/changeRoom")
-    @CachePut(value = "changRoomCache", key = "#chatRoomRequestDto.roomId")
     public ResponseEntity<Boolean> changRoom(@RequestBody @Valid ChatRoomRequestDto chatRoomRequestDto){
         return ResponseEntity.ok(chatRoomService.changeRoomOption(chatRoomRequestDto));
     }
