@@ -3,6 +3,20 @@ import Modal from 'react-modal';
 import axios from'axios';
 import { Form, Button, Row, Col, InputGroup, FormControl,ListGroup,ListGroupItem, } from 'react-bootstrap';
 import { useQueryClient } from 'react-query';
+import { useMediaQuery } from 'react-responsive';
+
+const Desktop = ({ children }) => {
+    const isDesktop = useMediaQuery({ minWidth: 1224 })
+    return isDesktop ? children : null
+}
+const Tablet = ({ children }) => {
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+    return isTablet ? children : null
+}
+const Mobile = ({ children }) => {
+    const isMobile = useMediaQuery({ maxWidth: 767 })
+    return isMobile ? children : null
+}
 
 const ChangRoomComponent = ({room_Id, role, stompClient, curParticipates}) => {
     const queryClient = useQueryClient();
@@ -167,140 +181,287 @@ const ChangRoomComponent = ({room_Id, role, stompClient, curParticipates}) => {
 
     return(
         <div>
-            {role === "ROLE_MANAGER" && (
-            <Button className='btn-lg'
-            variant='#B9B9B9' 
-            style={{  backgroundColor:"#B9B9B9", 
-                    borderTopLeftRadius: "25px",
-                    borderBottomLeftRadius: "25px",
-                    borderTopRightRadius: "25px",
-                    borderBottomRightRadius: "25px"
-                    }} onClick={openModal}>설정 변경</Button>
-            )} 
-            <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}
-            style={{
-                content: {
-                    width: '800px', // 원하는 너비로 설정
-                    height: '400px', // 원하는 높이로 설정
-                }
-            }}>
-                <Row>
-                    <Col>
-                    <InputGroup>
-                        <InputGroup.Text style={{backgroundColor: "#B9B9B9", 
-                                                borderTopLeftRadius: "25px",
-                                                borderBottomLeftRadius: "25px"}}><strong>방 이름</strong></InputGroup.Text>
-                        <FormControl 
-                            type='text' 
-                            value={roomName} 
-                            onChange={GetInputName}
-                            style={{borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}}></FormControl>
-                    </InputGroup>
-                    <br></br>
-                    <InputGroup>
-                        <InputGroup.Text style={{backgroundColor: "#B9B9B9", 
-                                                borderTopLeftRadius: "25px",
-                                                borderBottomLeftRadius: "25px"}}><strong>인원수</strong></InputGroup.Text>
-                        <FormControl 
-                            type='number'
-                            min={3}
-                            max={20}
-                            value={participants} 
-                            onChange={GetInputParticipates}
-                            style={{borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}}></FormControl>
-                    </InputGroup>
-                    <br></br>
-                    <InputGroup className='d-flex flex-row gap-1'>
-                        <InputGroup.Text style={{backgroundColor: "#B9B9B9", 
-                                                borderTopLeftRadius: "25px",
-                                                borderBottomLeftRadius: "25px"}}><strong>비밀번호</strong></InputGroup.Text>
-                        <Form.Check 
-                            size={20}
-                            type='checkbox' 
-                            checked={existLock} 
-                            onChange={GetCheckExistPw}
-                            style={{zoom:1.6}}/>
-                        <FormControl 
-                            type='password' 
-                            value={password} 
-                            onChange={GetInputPassword} 
-                            disabled={!existLock}
-                            placeholder='비밀번호를 입력해주세요.'
-                            style={{borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}}></FormControl>
-                    </InputGroup>
-                    <br></br>
-                    <InputGroup>
-                        <FormControl
-                            type='text'
-                            value={info}
-                            placeholder='방 소개문 입력'
-                            onChange={GetInputInfo}
-                            style={{borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px",
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}}
-                        ></FormControl>
-                    </InputGroup>
-                    <br></br>
-                    <InputGroup>
-                        <FormControl
-                            type='text'
-                            value={tag}
-                            placeholder='태그 입력'
-                            onChange={GetInputTag}
-                            style={{borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px"}}
-                        ></FormControl>
-                        <Button
-                            onClick={()=>AppendTag(tag)}
-                            variant="#B9B9B9"
-                            style={{ backgroundColor:"#B9B9B9",
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}}
-                        ><strong>태그 추가</strong></Button>
-                    </InputGroup>
-                    <br></br>
-                    <ListGroup className="list-group list-group-horizontal">
-                        {tags?.map((t)=> (
-                            <ListGroupItem style={{
+            <Desktop>
+                {role === "ROLE_MANAGER" && (
+                <Button className='btn-lg'
+                variant='#B9B9B9' 
+                style={{  backgroundColor:"#B9B9B9", 
+                        borderTopLeftRadius: "25px",
+                        borderBottomLeftRadius: "25px",
+                        borderTopRightRadius: "25px",
+                        borderBottomRightRadius: "25px"
+                        }} onClick={openModal}>설정 변경</Button>
+                )} 
+                <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}
+                style={{
+                    content: {
+                        width: '800px', // 원하는 너비로 설정
+                        height: '400px', // 원하는 높이로 설정
+                    }
+                }}>
+                    <Row>
+                        <Col>
+                        <InputGroup>
+                            <InputGroup.Text 
+                            style={{backgroundColor: "#B9B9B9", 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px"}}><strong>방 이름</strong></InputGroup.Text>
+                            <FormControl 
+                                type='text' 
+                                value={roomName} 
+                                onChange={GetInputName}
+                                style={{borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}></FormControl>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup>
+                            <InputGroup.Text 
+                            style={{backgroundColor: "#B9B9B9", 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px"}}><strong>인원수</strong></InputGroup.Text>
+                            <FormControl 
+                                type='number'
+                                min={3}
+                                max={20}
+                                value={participants} 
+                                onChange={GetInputParticipates}
+                                style={{borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}></FormControl>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup className='d-flex flex-row gap-1'>
+                            <InputGroup.Text 
+                            style={{backgroundColor: "#B9B9B9", 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px"}}><strong>비밀번호</strong></InputGroup.Text>
+                            <Form.Check 
+                                size={20}
+                                type='checkbox' 
+                                checked={existLock} 
+                                onChange={GetCheckExistPw}
+                                style={{zoom:1.6}}/>
+                            <FormControl 
+                                type='password' 
+                                value={password} 
+                                onChange={GetInputPassword} 
+                                disabled={!existLock}
+                                placeholder='비밀번호를 입력해주세요.'
+                                style={{borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}></FormControl>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup>
+                            <FormControl
+                                type='text'
+                                value={info}
+                                placeholder='방 소개문 입력'
+                                onChange={GetInputInfo}
+                                style={{borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}
+                            ></FormControl>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup>
+                            <FormControl
+                                type='text'
+                                value={tag}
+                                placeholder='태그 입력'
+                                onChange={GetInputTag}
+                                style={{borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px"}}
+                            ></FormControl>
+                            <Button
+                                onClick={()=>AppendTag(tag)}
+                                variant="#B9B9B9"
+                                style={{ backgroundColor:"#B9B9B9",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}
+                            ><strong>태그 추가</strong></Button>
+                        </InputGroup>
+                        <br></br>
+                        <ListGroup className="list-group list-group-horizontal">
+                            {tags?.map((t)=> (
+                                <ListGroupItem style={{
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"
+                            }}>#{t.tagName} <Button
+                                className='btn-sm' 
+                                variant='dark' 
+                                onClick={()=>tagDelete(t)} 
+                                style={{
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"}}>삭제</Button></ListGroupItem>
+                            )
+                            )}
+                        </ListGroup>
+                        <br></br>
+                        <div className='d-flex flex-row gap-2'>
+                            <Button variant='#B9B9B9' style={{
+                                backgroundColor:"#B9B9B9",
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"
+                            }} onClick={changeRoomModal}><strong>변경하기</strong></Button>
+                            <Button variant='dark' style={{
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"
+                            }} onClick={cancleSetModal}>변경 취소</Button>
+                        </div>
+                    </Col>
+                </Row>
+                </Modal>
+            </Desktop>
+            <Mobile>
+                <div className="d-grid gap-4">
+                    {role === "ROLE_MANAGER" && (
+                    <Button 
+                    variant='#B9B9B9' 
+                    style={{  backgroundColor:"#B9B9B9", 
                             borderTopLeftRadius: "25px",
                             borderBottomLeftRadius: "25px",
                             borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px"
-                        }}>#{t.tagName} <Button
-                            className='btn-sm' 
-                            variant='dark' 
-                            onClick={()=>tagDelete(t)} 
-                            style={{
-                            borderTopLeftRadius: "25px",
-                            borderBottomLeftRadius: "25px",
-                            borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px"}}>삭제</Button></ListGroupItem>
-                        )
-                        )}
-                    </ListGroup>
-                    <br></br>
-                    <div className='d-flex flex-row gap-2'>
-                        <Button variant='#B9B9B9' style={{
-                            backgroundColor:"#B9B9B9",
-                            borderTopLeftRadius: "25px",
-                            borderBottomLeftRadius: "25px",
-                            borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px"
-                        }} onClick={changeRoomModal}><strong>변경하기</strong></Button>
-                        <Button variant='dark' style={{
-                            borderTopLeftRadius: "25px",
-                            borderBottomLeftRadius: "25px",
-                            borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px"
-                        }} onClick={cancleSetModal}>변경 취소</Button>
-                    </div>
-                </Col>
-            </Row>
-            </Modal>
+                            borderBottomRightRadius: "25px",
+                            width: "100%"
+                            }} onClick={openModal}>설정 변경</Button>
+                    )} 
+                </div>
+                <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}
+                style={{
+                    content: {
+                        width: '350px', // 원하는 너비로 설정
+                        height: '400px', // 원하는 높이로 설정
+                    }
+                }}>
+                    <Row>
+                        <Col>
+                        <InputGroup>
+                            <InputGroup.Text 
+                            style={{backgroundColor: "#B9B9B9", 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px"}}><strong>방 이름</strong></InputGroup.Text>
+                            <FormControl 
+                                type='text' 
+                                value={roomName} 
+                                onChange={GetInputName}
+                                style={{borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}></FormControl>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup>
+                            <InputGroup.Text 
+                            style={{backgroundColor: "#B9B9B9", 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px"}}><strong>인원수</strong></InputGroup.Text>
+                            <FormControl 
+                                type='number'
+                                min={3}
+                                max={20}
+                                value={participants} 
+                                onChange={GetInputParticipates}
+                                style={{borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}></FormControl>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup className='d-flex flex-row gap-1'>
+                            <InputGroup.Text 
+                            style={{backgroundColor: "#B9B9B9", 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px"}}><strong>비밀번호</strong></InputGroup.Text>
+                            <Form.Check 
+                                size={20}
+                                type='checkbox' 
+                                checked={existLock} 
+                                onChange={GetCheckExistPw}
+                                style={{zoom:1.6}}/>
+                            <FormControl 
+                                type='password' 
+                                value={password} 
+                                onChange={GetInputPassword} 
+                                disabled={!existLock}
+                                placeholder='비밀번호를 입력해주세요.'
+                                style={{borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}></FormControl>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup>
+                            <FormControl
+                                type='text'
+                                value={info}
+                                placeholder='방 소개문 입력'
+                                onChange={GetInputInfo}
+                                style={{borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}
+                            ></FormControl>
+                        </InputGroup>
+                        <br></br>
+                        <InputGroup>
+                            <FormControl
+                                type='text'
+                                value={tag}
+                                placeholder='태그 입력'
+                                onChange={GetInputTag}
+                                style={{borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px"}}
+                            ></FormControl>
+                            <Button
+                                onClick={()=>AppendTag(tag)}
+                                variant="#B9B9B9"
+                                style={{ backgroundColor:"#B9B9B9",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}
+                            ><strong>태그 추가</strong></Button>
+                        </InputGroup>
+                        <br></br>
+                        <ListGroup className="list-group list-group-horizontal">
+                            {tags?.map((t)=> (
+                                <ListGroupItem style={{
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"
+                            }}>#{t.tagName} <Button
+                                className='btn-sm' 
+                                variant='dark' 
+                                onClick={()=>tagDelete(t)} 
+                                style={{
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"}}>삭제</Button></ListGroupItem>
+                            )
+                            )}
+                        </ListGroup>
+                        <br></br>
+                        <div className='d-flex flex-row gap-2'>
+                            <Button variant='#B9B9B9' style={{
+                                backgroundColor:"#B9B9B9",
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"
+                            }} onClick={changeRoomModal}><strong>변경하기</strong></Button>
+                            <Button variant='dark' style={{
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"
+                            }} onClick={cancleSetModal}>변경 취소</Button>
+                        </div>
+                    </Col>
+                </Row>
+                </Modal>
+            </Mobile>
         </div>
     );
 }

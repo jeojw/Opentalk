@@ -49,11 +49,11 @@ const EnrollComponent = (props) =>{
         const checkUrl = `/api/opentalk/auth/signup/checkId`;
         axios.post(checkUrl, data).then((res)=>{
             if (res.data === true){
-                alert("중복된 아이디입니다.");
+                window.alert("중복된 아이디입니다.");
                 setCheckId(false);
             }
             else{
-                alert("사용 가능한 아이디입니다.");
+                window.alert("사용 가능한 아이디입니다.");
                 setCheckId(true);
             }
         }).catch((error)=>console.log(error))
@@ -65,11 +65,11 @@ const EnrollComponent = (props) =>{
         const checkUrl = `/api/opentalk/auth/signup/checkNickName`;
         axios.post(checkUrl, data).then((res)=>{
             if (res.data === true){
-                alert("중복된 닉네임입니다.");
+                window.alert("중복된 닉네임입니다.");
                 setCheckNickName(false);
             }
             else{
-                alert("사용 가능한 닉네임입니다.");
+                window.alert("사용 가능한 닉네임입니다.");
                 setCheckNickName(true);
             }
         }).catch((error)=>console.log(error))
@@ -82,7 +82,7 @@ const EnrollComponent = (props) =>{
         axios.post(duplicateUrl, data)
         .then((res)=>{
             if (res.data === true){
-                alert("이미 사용중인 이메일입니다.");
+                window.alert("이미 사용중인 이메일입니다.");
             }
             else{
                 const checkUrl = `/api/opentalk/enroll/mailSend`
@@ -109,15 +109,15 @@ const EnrollComponent = (props) =>{
                 authNum: String(authNum)
             }).then((res)=>{
                 if (res.data === "ok"){
-                    alert("인증되었습니다.");
+                    window.alert("인증되었습니다.");
                     setCheckEmail(true);
                 }
                 else{
                     if (checkEmail){
-                        alert("이미 인증되었습니다.");
+                        window.alert("이미 인증되었습니다.");
                     }
                     else{
-                        alert("인증이 실패하였습니다. 다시 시도해주십시오.");
+                        window.alert("인증이 실패하였습니다. 다시 시도해주십시오.");
                         setCheckEmail(false);
                     }
                 }
@@ -154,7 +154,7 @@ const EnrollComponent = (props) =>{
                     console.log(error);
                 }
             });
-            alert("회원가입이 완료되었습니다.")
+            window.alert("회원가입이 완료되었습니다.")
             navigate("/opentalk/member/login");
         }
         
@@ -179,7 +179,7 @@ const EnrollComponent = (props) =>{
                         style={{backgroundColor:"#CDCDCD",
                                 borderTopRightRadius: "25px",
                                 borderBottomRightRadius: "25px"}} 
-                        onClick={CheckIdDuplicate}>아이디 중복 확인</Button>
+                        onClick={CheckIdDuplicate}>중복 확인</Button>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>비밀번호</Form.Label>
                     <InputGroup>
@@ -216,7 +216,7 @@ const EnrollComponent = (props) =>{
                         ></FormControl>
                         <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD",
                                                         borderTopRightRadius: "25px",
-                                                        borderBottomRightRadius: "25px"}} onClick={CheckNickNameDuplicate}>닉네임 중복 확인</Button>
+                                                        borderBottomRightRadius: "25px"}} onClick={CheckNickNameDuplicate}>중복 확인</Button>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>이메일</Form.Label>
                     <InputGroup>

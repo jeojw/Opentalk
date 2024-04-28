@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import { Form, Button, Container, Row, Col, FormGroup } from 'react-bootstrap';
+import { useMediaQuery } from 'react-responsive';
 
 const LoginComponent = () => {
     const [memberId, setMemberId] = useState("");
@@ -14,6 +15,15 @@ const LoginComponent = () => {
             navigate("/opentalk/main");
         }
     },[])
+
+    const isDesktopOrLaptop = useMediaQuery({
+        query: '(min-device-width: 1224px)'
+    });
+
+    const isMobile = useMediaQuery({
+        query: '(min-device-width: 768px)'
+    });
+
     
     const CheckLogin = (e) => {
         const checkloginUrl = '/api/opentalk/auth/login'
@@ -73,37 +83,43 @@ const LoginComponent = () => {
                         </FormGroup>
                         <hr/>
                         <div className="d-grid gap-2">
-                            <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
-                                                            borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"
-                                                            }} onClick={CheckLogin} size='4'>로그인</Button>
-                            <Button variant='#E0E0E0' style={{backgroundColor:"#E0E0E0", 
-                                                            borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/member/enroll")}>회원가입</Button>
-                            <Button variant='warning' style={{borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"}} onClick={() => setIsForget(prevState => !prevState)}>계정을 잊어버리셨나요?</Button>
+                            <Button variant='#CDCDCD' 
+                            style={{backgroundColor:"#CDCDCD", 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"
+                                    }} onClick={CheckLogin} size='4'>로그인</Button>
+                            <Button variant='#E0E0E0' 
+                            style={{backgroundColor:"#E0E0E0", 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/member/enroll")}>회원가입</Button>
+                            <Button variant='warning' 
+                            style={{borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"}} onClick={() => setIsForget(prevState => !prevState)}>계정을 잊어버리셨나요?</Button>
                             {isForget && (
                             <div className="d-grid gap-2">
-                                <Button variant='warning' style={{borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/member/findId")}>아이디 찾기</Button>
-                                <Button variant='warning' style={{borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/member/authId")}>비밀번호 찾기</Button>
+                                <Button variant='warning' 
+                                style={{borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/member/findId")}>아이디 찾기</Button>
+                                <Button variant='warning' 
+                                style={{borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/member/authId")}>비밀번호 찾기</Button>
                             </div>
                             )}
-                            <Button variant='dark' style={{borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"}} onClick={() => navigate("/")}>시작화면으로</Button>
+                            <Button variant='dark' 
+                            style={{borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"}} onClick={() => navigate("/")}>시작화면으로</Button>
                         </div>
                     </Form>
                 </Col>

@@ -12,6 +12,20 @@ import Pagination from "react-bootstrap/Pagination";
 import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
 import { format } from 'date-fns'
+import { useMediaQuery } from 'react-responsive';
+
+const Desktop = ({ children }) => {
+    const isDesktop = useMediaQuery({ minWidth: 1224 })
+    return isDesktop ? children : null
+}
+const Tablet = ({ children }) => {
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+    return isTablet ? children : null
+}
+const Mobile = ({ children }) => {
+    const isMobile = useMediaQuery({ maxWidth: 767 })
+    return isMobile ? children : null
+}
 
 const MainComponent = () => {
     const client = useRef({});
@@ -527,218 +541,453 @@ const MainComponent = () => {
       };
 
    return (
-    <Container>
-        <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
-                    content: {
-                        width: '1000px', // 원하는 너비로 설정
-                        height: '600px', // 원하는 높이로 설정
-                    }
-                }}>
-            <ListGroup>
-            {messageList.map((_message) => (
-                <ListGroupItem style={{ borderTopLeftRadius: "25px",
+    <div>
+        <Desktop>
+            <Container>
+                <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
+                            content: {
+                                width: '1000px', // 원하는 너비로 설정
+                                height: '600px', // 원하는 높이로 설정
+                            }
+                        }}>
+                    <ListGroup>
+                    {messageList.map((_message) => (
+                        <ListGroupItem style={{ borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px",
+                                                borderTopRightRadius: "25px",
+                                                borderBottomRightRadius: "25px"
+                                                }}><strong>{_message.roomName}</strong>
+                        <hr/><img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img> <strong>{_message.inviter}</strong>
+                        <hr/>{_message.message}
+                        <hr/>
+                        <Button variant="#8F8F8F" 
+                                style={{
+                                        backgroundColor:'#8F8F8F', 
+                                        borderTopLeftRadius: "25px",
                                         borderBottomLeftRadius: "25px",
                                         borderTopRightRadius: "25px",
                                         borderBottomRightRadius: "25px"
-                                        }}><strong>{_message.roomName}</strong>
-                <hr/><img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img> <strong>{_message.inviter}</strong>
-                <hr/>{_message.message}
-                <hr/>
-                <Button variant="#8F8F8F" style={{
-                                    backgroundColor:'#8F8F8F', 
-                                    borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px",
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"
-                                    }} onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}><strong>입장하기</strong></Button>
-                <div style={{width:"4px", display:"inline-block"}}/>
-                <Button variant='dark' style={{borderTopLeftRadius: "25px",
-                                                borderBottomLeftRadius: "25px",
-                                                borderTopRightRadius: "25px",
-                                                borderBottomRightRadius: "25px"}}
-                                                onClick={()=> DeleteInviteMessage({Inviter: _message.inviter, Invited_member:_message.invitedMember})}>메세지 지우기</Button>
-                
-                
-                </ListGroupItem>
-            ))}
-            </ListGroup> 
-            <Button variant='dark' onClick={closeModal} style={{borderTopLeftRadius: "25px",
-                                                                borderBottomLeftRadius: "25px",
-                                                                borderTopRightRadius: "25px",
-                                                                borderBottomRightRadius: "25px"
-                                                                }}>닫기</Button>
-        </Modal>
-        <Row className="justify-content-end">
-            <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-#7B7B7B border-3 rounded-2 p-5"
-            style={{
-                backgroundColor: "#7B7B7B",
-                width:"30%", height: "975px"
-                }}>
-                <aside>
-                    <div style={{ textAlign: 'center' }}>
-                        <img alt="프로필 이미지" 
-                            src={curImgUrl} 
-                            style={{width:'70%', 
-                            height:'70%',
-                            backgroundPosition:"center",
-                            borderRadius: "50%"}}></img>
-                        <p style={{color:"white"}}>환영합니다</p>
-                        <h4 style={{color:"white"}}>
-                            <strong>    
-                                {member?.memberNickName}님
-                            </strong>
-                        </h4>
-                        <hr/>
-                    </div>
-                    <div className="d-grid gap-4">
-                        <Button 
-                            className="btn-lg" 
-                            variant='#CDCDCD'
-                            onClick={GoProfile}
-                            style={{
-                                backgroundColor:"#CDCDCD",
-                                borderTopLeftRadius: "50px",
-                                borderBottomLeftRadius: "50px",
-                                borderTopRightRadius: "50px",
-                                borderBottomRightRadius: "50px"
-                            }}
-                        >프로필 설정</Button>
-                        <Button 
-                            className="btn-lg" 
-                            variant='#CDCDCD'
-                            onClick={openMessageBox}
-                            style={{
-                                backgroundColor:"#CDCDCD",
-                                borderTopLeftRadius: "50px",
-                                borderBottomLeftRadius: "50px",
-                                borderTopRightRadius: "50px",
-                                borderBottomRightRadius: "50px"
-                            }}
-                        >메세지함</Button>
-                        <Button 
-                            className="btn-lg" 
-                            variant="dark" 
-                            onClick={LogOut}
-                            style={{
-                                borderTopLeftRadius: "50px",
-                                borderBottomLeftRadius: "50px",
-                                borderTopRightRadius: "50px",
-                                borderBottomRightRadius: "50px"
-                            }}
-                        >로그아웃</Button>
-                    </div>
-                </aside>
-            </Col>
-            <Col className="border border-#C3C3C3 border-3 rounded-2 p-5" style={{backgroundColor:"#C3C3C3", height: "975px"}}>
-                <SetRoomComponent
-                    stompClient={client.current}
-                    onDataUpdate={setIsUpdateTrigger}
-                    updateFunction={updateRooms}
-                />
-                <br></br>
-                <ListGroup>
-                    {chatRoomList.map(room=>(
-                        <ListGroupItem style={{border:'#8F8F8F', backgroundColor:'#8F8F8F',  marginBottom: '5px', 
-                                                borderTopLeftRadius: "25px",
-                                                borderBottomLeftRadius: "25px",
-                                                borderTopRightRadius: "25px",
-                                                borderBottomRightRadius: "25px"}}>
-                            <strong>
-                                {room.roomName} | {room.curParticipates} / {room.limitParticipates}
-                            </strong>
-                        {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock_symbol.png`} width={20} style={{filter: '#8F8F8F(100%)'}}></img>}
-                        <hr/>
-                        <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img> 
-                        <strong>{room.roomManager}</strong>
-                        <hr/>
-                        {room.introduction}
-                        {room.roomTags.length > 0 && (
-                            <div>
-                                <ListGroup className="list-group-horizontal list-group-flush gap-2">        
-                                {room.roomTags.map(tag=>(
-                                    <ListGroupItem style={{border:"#8F8F8F", backgroundColor:'#8F8F8F', color:"#4B4B4B"}}># {tag.tagName}</ListGroupItem>
-                                ))}
-                                </ListGroup>
-                            </div>
-                        )}
-                        <div className="d-flex flex-row gap-2">
-                            <Button variant="#CDCDCD" style={{  backgroundColor:'#CDCDCD', 
-                                                                borderTopLeftRadius: "25px",
-                                                                borderBottomLeftRadius: "25px",
-                                                                borderTopRightRadius: "25px",
-                                                                borderBottomRightRadius: "25px"
-                                                            }} onClick={() => EnterRoom({roomInfo: room})}><strong>입장하기</strong></Button>
-                            {room.roomManager === member?.memberNickName && (
-                            <Button variant="dark" style={{ borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"
-                        }} onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
-                            )}
-                        </div>
-                        {() => ChangRoom(room)}
-                    </ListGroupItem>
-                    ))}
-                </ListGroup>
-                <br></br>
-                <FormGroup className="d-flex align-items-center justify-content-center">
-                    <InputGroup style={{width:"70%"}}>
-                        <Form.Select 
-                            onChange={selectMenuHandle} 
-                            value={selectManu}
-                            style={{flex: '1', 
-                                    borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px",
-                                }}
-                        >
-                            {menuList.map((item) => {
-                                return <option value={item.value} key={item.value}>
-                                    {item.name}
-                                </option>;
-                            })}
-                        </Form.Select>
-                        <FormControl 
-                            type='text' 
-                            value={searchKeyword} 
-                            onChange={GetInputSearchKeyword}
-                            style={{flex: '5',
-                            borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px"}}></FormControl>
+                                        }} 
+                                onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}><strong>입장하기</strong></Button>
+                        <div style={{width:"4px", display:"inline-block"}}/>
+                        <Button variant='dark' 
+                                style={{borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}
+                                onClick={()=> DeleteInviteMessage({Inviter: _message.inviter, Invited_member:_message.invitedMember})}>메세지 지우기</Button>
                         
-                    </InputGroup>
-                    <Button variant="#8F8F8F" style={{
-                                    backgroundColor:'#8F8F8F', 
-                                    borderTopLeftRadius: "25px",
+                        
+                        </ListGroupItem>
+                    ))}
+                    </ListGroup> 
+                    <Button variant='dark' 
+                            onClick={closeModal} 
+                            style={{borderTopLeftRadius: "25px",
                                     borderBottomLeftRadius: "25px",
                                     borderTopRightRadius: "25px",
                                     borderBottomRightRadius: "25px"
-                                }} onClick={search}>
-                        <strong>
-                            검색
-                        </strong>
-                    </Button>
-                        {isSearch && (
-                        <Button variant="#8F8F8F" style={{
-                                color:"white", 
-                                backgroundColor:'#8F8F8F', 
-                                borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px",
-                                borderTopRightRadius: "25px",
-                                borderBottomRightRadius: "25px"}} onClick={initSearch}>초기화</Button>
-                    )}
-                </FormGroup>
-                <br></br>
-                <Pagination className="justify-content-center custom-pagination gap-2">
-                    <Pagination.First onClick={()=>handlePageChange(1)} />
-                    <Pagination.Prev onClick={()=>handlePageChange(page - 1)} />
-                    {renderPaginationItems()}
-                    <Pagination.Next onClick={() => handlePageChange(page + 1)} />
-                    <Pagination.Last onClick={() => handlePageChange(Math.ceil(pageLength / 3))} />
-                </Pagination>
-            </Col>
-        </Row>
-    </Container>
-    
+                                    }}>닫기</Button>
+                </Modal>
+                <Row className="justify-content-end">
+                    <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-#7B7B7B border-3 rounded-2 p-5"
+                    style={{
+                        backgroundColor: "#7B7B7B",
+                        width:"30%", height: "975px"
+                        }}>
+                        <aside>
+                            <div style={{ textAlign: 'center' }}>
+                                <img alt="프로필 이미지" 
+                                    src={curImgUrl} 
+                                    style={{width:'70%', 
+                                    height:'70%',
+                                    backgroundPosition:"center",
+                                    borderRadius: "50%"}}></img>
+                                <p style={{color:"white"}}>환영합니다</p>
+                                <h4 style={{color:"white"}}>
+                                    <strong>    
+                                        {member?.memberNickName}님
+                                    </strong>
+                                </h4>
+                                <hr/>
+                            </div>
+                            <div className="d-grid gap-4">
+                                <Button 
+                                    className="btn-lg" 
+                                    variant='#CDCDCD'
+                                    onClick={GoProfile}
+                                    style={{
+                                        backgroundColor:"#CDCDCD",
+                                        borderTopLeftRadius: "50px",
+                                        borderBottomLeftRadius: "50px",
+                                        borderTopRightRadius: "50px",
+                                        borderBottomRightRadius: "50px"
+                                    }}
+                                >프로필 설정</Button>
+                                <Button 
+                                    className="btn-lg" 
+                                    variant='#CDCDCD'
+                                    onClick={openMessageBox}
+                                    style={{
+                                        backgroundColor:"#CDCDCD",
+                                        borderTopLeftRadius: "50px",
+                                        borderBottomLeftRadius: "50px",
+                                        borderTopRightRadius: "50px",
+                                        borderBottomRightRadius: "50px"
+                                    }}
+                                >메세지함</Button>
+                                <Button 
+                                    className="btn-lg" 
+                                    variant="dark" 
+                                    onClick={LogOut}
+                                    style={{
+                                        borderTopLeftRadius: "50px",
+                                        borderBottomLeftRadius: "50px",
+                                        borderTopRightRadius: "50px",
+                                        borderBottomRightRadius: "50px"
+                                    }}
+                                >로그아웃</Button>
+                            </div>
+                        </aside>
+                    </Col>
+                    <Col className="border border-#C3C3C3 border-3 rounded-2 p-5" style={{backgroundColor:"#C3C3C3", height: "975px"}}>
+                        <SetRoomComponent
+                            stompClient={client.current}
+                            onDataUpdate={setIsUpdateTrigger}
+                            updateFunction={updateRooms}
+                        />
+                        <br></br>
+                        <ListGroup>
+                            {chatRoomList.map(room=>(
+                                <ListGroupItem 
+                                style={{border:'#8F8F8F', 
+                                        backgroundColor:'#8F8F8F',  
+                                        marginBottom: '5px', 
+                                        borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}>
+                                    <strong>
+                                        {room.roomName} | {room.curParticipates} / {room.limitParticipates}
+                                    </strong>
+                                {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock_symbol.png`} width={20} style={{filter: '#8F8F8F(100%)'}}></img>}
+                                <hr/>
+                                <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img> 
+                                <strong>{room.roomManager}</strong>
+                                <hr/>
+                                {room.introduction}
+                                {room.roomTags.length > 0 && (
+                                    <div>
+                                        <ListGroup className="list-group-horizontal list-group-flush gap-2">        
+                                        {room.roomTags.map(tag=>(
+                                            <ListGroupItem style={{border:"#8F8F8F", backgroundColor:'#8F8F8F', color:"#4B4B4B"}}># {tag.tagName}</ListGroupItem>
+                                        ))}
+                                        </ListGroup>
+                                    </div>
+                                )}
+                                <div className="d-flex flex-row gap-2">
+                                    <Button variant="#CDCDCD" 
+                                    style={{ backgroundColor:'#CDCDCD', 
+                                            borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                            borderTopRightRadius: "25px",
+                                            borderBottomRightRadius: "25px"
+                                            }} onClick={() => EnterRoom({roomInfo: room})}><strong>입장하기</strong></Button>
+                                    {room.roomManager === member?.memberNickName && (
+                                    <Button variant="dark" 
+                                    style={{ borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                            borderTopRightRadius: "25px",
+                                            borderBottomRightRadius: "25px"
+                                }} onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
+                                    )}
+                                </div>
+                                {() => ChangRoom(room)}
+                            </ListGroupItem>
+                            ))}
+                        </ListGroup>
+                        <br></br>
+                        <FormGroup className="d-flex align-items-center justify-content-center">
+                            <InputGroup style={{width:"70%"}}>
+                                <Form.Select 
+                                    onChange={selectMenuHandle} 
+                                    value={selectManu}
+                                    style={{flex: '1', 
+                                            borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                        }}
+                                >
+                                    {menuList.map((item) => {
+                                        return <option value={item.value} key={item.value}>
+                                            {item.name}
+                                        </option>;
+                                    })}
+                                </Form.Select>
+                                <FormControl 
+                                    type='text' 
+                                    value={searchKeyword} 
+                                    onChange={GetInputSearchKeyword}
+                                    style={{flex: '5',
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"}}></FormControl>
+                                
+                            </InputGroup>
+                            <Button variant="#8F8F8F" style={{
+                                            backgroundColor:'#8F8F8F', 
+                                            borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                            borderTopRightRadius: "25px",
+                                            borderBottomRightRadius: "25px"
+                                        }} onClick={search}>
+                                <strong>
+                                    검색
+                                </strong>
+                            </Button>
+                                {isSearch && (
+                                <Button variant="#8F8F8F" style={{
+                                        color:"white", 
+                                        backgroundColor:'#8F8F8F', 
+                                        borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}} onClick={initSearch}>초기화</Button>
+                            )}
+                        </FormGroup>
+                        <br></br>
+                        <Pagination className="justify-content-center custom-pagination gap-2">
+                            <Pagination.First onClick={()=>handlePageChange(1)} />
+                            <Pagination.Prev onClick={()=>handlePageChange(page - 1)} />
+                            {renderPaginationItems()}
+                            <Pagination.Next onClick={() => handlePageChange(page + 1)} />
+                            <Pagination.Last onClick={() => handlePageChange(Math.ceil(pageLength / 3))} />
+                        </Pagination>
+                    </Col>
+                </Row>
+            </Container>
+        </Desktop>
+        <Mobile>
+            <Container>
+                <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
+                            content: {
+                                width: '300px', // 원하는 너비로 설정
+                                height: '600px', // 원하는 높이로 설정
+                            }
+                        }}>
+                    <ListGroup>
+                    {messageList.map((_message) => (
+                        <ListGroupItem style={{ borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px",
+                                                borderTopRightRadius: "25px",
+                                                borderBottomRightRadius: "25px"
+                                                }}><strong>{_message.roomName}</strong>
+                        <hr/><img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img> <strong>{_message.inviter}</strong>
+                        <hr/>{_message.message}
+                        <hr/>
+                        <Button variant="#8F8F8F" 
+                                style={{
+                                        backgroundColor:'#8F8F8F', 
+                                        borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"
+                                        }} 
+                                onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}><strong>입장하기</strong></Button>
+                        <div style={{width:"4px", display:"inline-block"}}/>
+                        <Button variant='dark' 
+                                style={{borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}
+                                onClick={()=> DeleteInviteMessage({Inviter: _message.inviter, Invited_member:_message.invitedMember})}>메세지 지우기</Button>
+                        
+                        
+                        </ListGroupItem>
+                    ))}
+                    </ListGroup> 
+                    <Button variant='dark' 
+                            onClick={closeModal} 
+                            style={{borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"
+                                    }}>닫기</Button>
+                </Modal>
+                <Row className="justify-content-end">
+                    <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-#7B7B7B border-3 rounded-2 p-5"
+                    style={{
+                        backgroundColor: "#7B7B7B",
+                        width:"100%", height: "600px"
+                        }}>
+                        <div style={{ textAlign: 'center' }}>
+                            <img alt="프로필 이미지" 
+                                src={curImgUrl} 
+                                style={{width:'70%', 
+                                height:'70%',
+                                backgroundPosition:"center",
+                                borderRadius: "50%"}}></img>
+                            <p style={{color:"white"}}>환영합니다</p>
+                            <h4 style={{color:"white"}}>
+                                <strong>    
+                                    {member?.memberNickName}님
+                                </strong>
+                            </h4>
+                            <hr/>
+                        </div>
+                        <div className="d-grid gap-4">
+                            <Button 
+                                className="btn-lg" 
+                                variant='#CDCDCD'
+                                onClick={GoProfile}
+                                style={{
+                                    backgroundColor:"#CDCDCD",
+                                    borderTopLeftRadius: "50px",
+                                    borderBottomLeftRadius: "50px",
+                                    borderTopRightRadius: "50px",
+                                    borderBottomRightRadius: "50px"
+                                }}
+                            >프로필 설정</Button>
+                            <Button 
+                                className="btn-lg" 
+                                variant='#CDCDCD'
+                                onClick={openMessageBox}
+                                style={{
+                                    backgroundColor:"#CDCDCD",
+                                    borderTopLeftRadius: "50px",
+                                    borderBottomLeftRadius: "50px",
+                                    borderTopRightRadius: "50px",
+                                    borderBottomRightRadius: "50px"
+                                }}
+                            >메세지함</Button>
+                            <Button 
+                                className="btn-lg" 
+                                variant="dark" 
+                                onClick={LogOut}
+                                style={{
+                                    borderTopLeftRadius: "50px",
+                                    borderBottomLeftRadius: "50px",
+                                    borderTopRightRadius: "50px",
+                                    borderBottomRightRadius: "50px"
+                                }}
+                            >로그아웃</Button>
+                        </div>
+                    </Col>
+                    <Col className="border border-#C3C3C3 border-3 rounded-2 p-5" style={{backgroundColor:"#C3C3C3", height: "975px"}}>
+                        <SetRoomComponent
+                            stompClient={client.current}
+                            onDataUpdate={setIsUpdateTrigger}
+                            updateFunction={updateRooms}
+                        />
+                        <br></br>
+                        <ListGroup>
+                            {chatRoomList.map(room=>(
+                                <ListGroupItem 
+                                style={{border:'#8F8F8F', 
+                                        backgroundColor:'#8F8F8F',  
+                                        marginBottom: '5px', 
+                                        borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}}>
+                                    <strong>
+                                        {room.roomName} | {room.curParticipates} / {room.limitParticipates}
+                                    </strong>
+                                {room.existLock && <img alt="잠금 이미지" src={`${process.env.PUBLIC_URL}/lock_symbol.png`} width={20} style={{filter: '#8F8F8F(100%)'}}></img>}
+                                <hr/>
+                                <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img> 
+                                <strong>{room.roomManager}</strong>
+                                <hr/>
+                                {room.introduction}
+                                {room.roomTags.length > 0 && (
+                                    <div>
+                                        <ListGroup className="list-group-horizontal list-group-flush gap-2">        
+                                        {room.roomTags.map(tag=>(
+                                            <ListGroupItem style={{border:"#8F8F8F", backgroundColor:'#8F8F8F', color:"#4B4B4B"}}># {tag.tagName}</ListGroupItem>
+                                        ))}
+                                        </ListGroup>
+                                    </div>
+                                )}
+                                <div className="d-flex flex-row gap-2">
+                                    <Button variant="#CDCDCD" 
+                                    style={{ backgroundColor:'#CDCDCD', 
+                                            borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                            borderTopRightRadius: "25px",
+                                            borderBottomRightRadius: "25px"
+                                            }} onClick={() => EnterRoom({roomInfo: room})}><strong>입장하기</strong></Button>
+                                    {room.roomManager === member?.memberNickName && (
+                                    <Button variant="dark" 
+                                    style={{ borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                            borderTopRightRadius: "25px",
+                                            borderBottomRightRadius: "25px"
+                                }} onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
+                                    )}
+                                </div>
+                                {() => ChangRoom(room)}
+                            </ListGroupItem>
+                            ))}
+                        </ListGroup>
+                        <br></br>
+                        <FormGroup className="d-flex align-items-center justify-content-center">
+                            <InputGroup style={{width:"70%"}}>
+                                <Form.Select 
+                                    onChange={selectMenuHandle} 
+                                    value={selectManu}
+                                    style={{flex: '1', 
+                                            borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                        }}
+                                >
+                                    {menuList.map((item) => {
+                                        return <option value={item.value} key={item.value}>
+                                            {item.name}
+                                        </option>;
+                                    })}
+                                </Form.Select>
+                                <FormControl 
+                                    type='text' 
+                                    value={searchKeyword} 
+                                    onChange={GetInputSearchKeyword}
+                                    style={{flex: '5',
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"}}></FormControl>
+                                
+                            </InputGroup>
+                            <Button variant="#8F8F8F" style={{
+                                            backgroundColor:'#8F8F8F', 
+                                            borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                            borderTopRightRadius: "25px",
+                                            borderBottomRightRadius: "25px"
+                                        }} onClick={search}>
+                                <strong>
+                                    검색
+                                </strong>
+                            </Button>
+                                {isSearch && (
+                                <Button variant="#8F8F8F" style={{
+                                        color:"white", 
+                                        backgroundColor:'#8F8F8F', 
+                                        borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"}} onClick={initSearch}>초기화</Button>
+                            )}
+                        </FormGroup>
+                        <br></br>
+                        <Pagination className="justify-content-center custom-pagination gap-2">
+                            <Pagination.First onClick={()=>handlePageChange(1)} />
+                            <Pagination.Prev onClick={()=>handlePageChange(page - 1)} />
+                            {renderPaginationItems()}
+                            <Pagination.Next onClick={() => handlePageChange(page + 1)} />
+                            <Pagination.Last onClick={() => handlePageChange(Math.ceil(pageLength / 3))} />
+                        </Pagination>
+                    </Col>
+                </Row>
+            </Container>
+        </Mobile>
+    </div>
+
     );
 
     

@@ -32,7 +32,7 @@ const FindMemberComponent = () => {
     const CheckAuth = () =>{
         const checkUrl = `/api/opentalk/findId/mailauthCheck`
         if (String(authNum) !== String(inputNum)){
-            alert("인증이 실패하였습니다. 다시 시도해주십시오.")
+            window.alert("인증이 실패하였습니다. 다시 시도해주십시오.")
         }
         else{
             axios.post(checkUrl, {
@@ -58,7 +58,7 @@ const FindMemberComponent = () => {
                     
                 }
                 else{
-                    alert("인증이 실패하였습니다. 다시 시도해주십시오.")
+                    window.alert("인증이 실패하였습니다. 다시 시도해주십시오.")
                 }
             }).catch((error) => console.log(error))
         }
@@ -76,10 +76,11 @@ const FindMemberComponent = () => {
                         style={{borderTopLeftRadius: "25px",
                                 borderBottomLeftRadius: "25px",
                                 }}></FormControl>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px",
-                                                        }} onClick={CheckMail}>인증번호 받기</Button>
+                        <Button variant='#CDCDCD' 
+                        style={{backgroundColor:"#CDCDCD", 
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px",
+                            }} onClick={CheckMail}>인증번호 받기</Button>
                     </InputGroup>
                 </Form>
                 <Form>
@@ -89,10 +90,11 @@ const FindMemberComponent = () => {
                         style={{borderTopLeftRadius: "25px",
                                 borderBottomLeftRadius: "25px",
                                 }}></FormControl>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px",
-                                                        }} onClick={CheckAuth}>인증하기</Button>
+                        <Button variant='#CDCDCD' 
+                        style={{backgroundColor:"#CDCDCD", 
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px",
+                            }} onClick={CheckAuth}>인증하기</Button>
                     </InputGroup>
                 </Form>
                 </Col>

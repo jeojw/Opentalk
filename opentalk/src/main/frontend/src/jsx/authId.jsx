@@ -23,7 +23,7 @@ const AuthIdComponent = () =>{
                 navigate("/opentalk/member/findPw")
             }
             else{
-                alert("존재하지 않는 아이디입니다.")
+                window.alert("존재하지 않는 아이디입니다.")
             }
         })
         .catch((error) => console.log(error));
@@ -43,11 +43,12 @@ const AuthIdComponent = () =>{
                             borderBottomRightRadius: "25px"}}></FormControl>
                     <br></br>
                     <div className="d-grid gap-2">
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
-                                                            borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"}} onClick={AuthId}>확인하기</Button>
+                        <Button variant='#CDCDCD' 
+                        style={{backgroundColor:"#CDCDCD", 
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"}} onClick={AuthId}>확인하기</Button>
                     </div>
                 </Form>
                 </Col>
