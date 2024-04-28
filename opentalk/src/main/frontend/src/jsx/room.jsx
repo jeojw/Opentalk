@@ -427,8 +427,8 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
     }
 
     return(
-        <Container className="border border-#B6B6B6 border-3 rounded-1 p-5">
-            <Container>
+        <Container className="border border-#B6B6B6 border-3 rounded-1 p-5" style={{maxWidth:'850px'}}>
+            <Container style={{maxWidth:'750px'}}>
                 <Row>
                     <Col className="border border-#C3C3C3 border-3 rounded-1 p-5 d-flex justify-content-left align-items-center"
                     style={{backgroundColor:"#C3C3C3", height:"110px"}}>
@@ -438,7 +438,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 </Row>
             </Container>
             <Container className="border border-#898989 border-3 rounded-1 p-5"
-            style={{backgroundColor:"#898989"}}>
+            style={{backgroundColor:"#898989", maxWidth:'750px'}}>
                 <Row>
                     <Col 
                         className="border-#898989 border-1 rounded-1 p-4"  
@@ -448,8 +448,13 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                         lg={3} 
                         ref={chatContainerRef}
                         onScroll={handleScroll}
-                        style={{ width:'70%', height:'400px', overflowY: 'scroll', maxHeight: '400px'
-                                        ,display: "flex", flexDirection: "column-reverse" }}>
+                        style={{ 
+                            width:'60%', 
+                            height:'400px', 
+                            overflowY: 'scroll', 
+                            maxHeight: '400px',
+                            display: "flex",
+                            flexDirection: "column-reverse" }}>
                         {chatList && chatList.length > 0 && (
                         <ListGroup style={{marginBottom: '10px'}}>
                             {chatList.map((_chatMessage) => {
@@ -550,16 +555,17 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                         md={1}
                         xl={1}
                         lg={1} 
-                        style={{ width:'30%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
+                        style={{ width:'40%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
                         <h5>참여명단</h5>
-                        <span className='border rounded-pill d-flex align-items-center' style={{backgroundColor: "white",
-                                                                            marginBottom: '6px',
-                                                                            borderTopLeftRadius: "25px",
-                                                                            borderBottomLeftRadius: "25px",
-                                                                            borderTopRightRadius: "25px",
-                                                                            borderBottomRightRadius: "25px",
-                                                                            display: 'inline-block',
-                                                                            padding: '0.5rem 1rem'}}>
+                        <span className='border rounded-pill d-flex align-items-center' 
+                        style={{backgroundColor: "white",
+                                marginBottom: '6px',
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px",
+                                display: 'inline-block',
+                                padding: '0.5rem 1rem'}}>
                         {roomInformation?.roomManager === myInfo?.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                         {myInfo?.memberNickName}</span>
                         <hr/>
@@ -573,14 +579,19 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                      <ListGroupItem>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
                                         <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                         {_member?.memberNickName}
+                                        <br></br>
                                         <div style={{width:"4px", display:"inline-block"}}/>
                                         {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                                        <Button className="btn-sm"variant='dark' onClick={() => ForcedExit(_member)} style={{
-                                                                                                            borderTopLeftRadius: "25px",
-                                                                                                            borderBottomLeftRadius: "25px",
-                                                                                                            borderTopRightRadius: "25px",
-                                                                                                            borderBottomRightRadius: "25px"
-                                                                                                        }}>강퇴하기</Button>
+                                        <Button className="btn-sm"
+                                        variant='dark' 
+                                        onClick={() => ForcedExit(_member)} 
+                                        style={{
+                                            width:"75px",
+                                            borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                            borderTopRightRadius: "25px",
+                                            borderBottomRightRadius: "25px"
+                                        }}>강퇴하기</Button>
                                         )}
                                         <div style={{width:"4px", display:"inline-block"}}/>
                                         {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
@@ -604,7 +615,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                         <FormGroup 
                             className="d-flex align-items-center justify-content-center"
                             onSubmit={(event)=>handleSubmit(event)}>
-                            <InputGroup style={{width:"800px", height:"45px"}}>
+                            <InputGroup style={{width:"500px", height:"45px"}}>
                                 <Form.Control type="text" 
                                     value={chat} 
                                     placeholder='채팅 내용을 입력해 주세요.' 
@@ -631,10 +642,12 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
             </Container>
             <br></br>
             <FormGroup className="d-flex align-items-center justify-content-center gap-3">
-                <Button className='btn-lg' variant="dark" style={{ borderTopLeftRadius: "25px",
-                                                borderBottomLeftRadius: "25px",
-                                                borderTopRightRadius: "25px",
-                                                borderBottomRightRadius: "25px"}} onClick={ExitRoom}>나가기</Button>
+                <Button className='btn-lg' 
+                variant="dark" 
+                style={{ borderTopLeftRadius: "25px",
+                        borderBottomLeftRadius: "25px",
+                        borderTopRightRadius: "25px",
+                        borderBottomRightRadius: "25px"}} onClick={ExitRoom}>나가기</Button>
                 <ChangRoomComponent room_Id={room_Id} role={role} stompClient={client.current} curParticipates={curParticipates}/>
                 <InviteMemberComponent roomInfo = {roomInformation} role={role}/>
             </FormGroup>

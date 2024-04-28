@@ -1,11 +1,44 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Button, Form, 
-    FormControl, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, FormControl, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
+import * as StompJs from "@stomp/stompjs";
+import SockJs from "sockjs-client"
+import { useQuery, useQueryClient, useMutation } from 'react-query';
 
-const ProfileComponent = ({memberId, setIsUpdateData}) => {
+const ProfileComponent = ({setIsUpdateData}) => {
+    const client = useRef({});
+    useEffect(() =>{ 
+        const connect = () => {
+            client.current = new StompJs.Client({
+                webSocketFactory: () => new SockJs('/ws'),
+                connectHeaders: {
+                    "auth-token": "spring-chat-auth-token",
+                },
+                debug: function (str) {
+                    console.log(str);
+                },
+                reconnectDelay: 5000,
+                heartbeatIncoming: 4000,
+                heartbeatOutgoing: 4000,
+                onConnect: () => {
+                },
+                onStompError: (frame) => {
+                    console.error(frame);
+                }
+            });
+            client.current.activate(); 
+            
+        };
+        const disconnect = () => {
+            client.current.deactivate();
+        };
+        connect();
+        
+        return () => disconnect();
+    }, []);
+
     const [member, setMember] = useState('');
 
     const [pwPopupOpen, setPwPopupOpen] = useState(false);
@@ -23,11 +56,13 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
 
     const [isChangeData, setIsChangeData] = useState(false);
 
-    let imgRef = useRef();
     const navigate = useNavigate();
+    
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        const fetchMemberStatus = async () => {
+    const { data: myInfo, isLoading, isError, isFetching, isFetched} = useQuery({
+        queryKey:['myInfo'], 
+        queryFn: async () => {
             if (localStorage.getItem("token")){
                 try {
                     const response = await axios.get('/api/opentalk/member/me', {
@@ -35,19 +70,29 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
                             authorization: localStorage.getItem("token"),
                         }
                     });
-                    setMember(response.data);
-                    setCurImgUrl(response.data.imgUrl);
+                    return response.data;
                 } catch (error) {
                     console.error(error);
-                }
+                } 
             }
             else{
                 navigate("/");
             }
-        };
+        },  
+        cacheTime: 30000,
+        staleTime: 5000,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+    }, []);
 
-        fetchMemberStatus();
-    }, [isChangeData]);
+    useEffect(() => {
+        if (myInfo && !isLoading && !isError && !isFetching && isFetched){
+            setMember(myInfo);
+            setCurImgUrl(myInfo.imgUrl);
+        }
+        
+    }, [myInfo, isLoading, isError, isFetching, isFetched]);
 
     const GetExPassword = (event) =>{
         setExPassword(event.target.value);
@@ -131,7 +176,7 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
         }
     }
 
-    const ChangeImg = async () => {
+    const { mutate: mutateChangeImg } = useMutation(async() => {
         if (window.confirm("변경하시겠습니까?")){
             if (!uploadImgUrl){
                 window.alert("이미지를 선택해 주세요.");
@@ -142,23 +187,32 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
             changeData.append("memberId", member.memberId);
             changeData.append("newImg", uploadImgUrl);
             const changUrl = "/api/opentalk/member/changeImg";
-            axios.post(changUrl, changeData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-              })
-            .then((res) => {
-                if(res.data === true){
+            try{
+                const res = await axios.post(changUrl, changeData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+                if (res.data === true){
                     window.alert("변경되었습니다!")
                     setImgPopupOpen(false);
                     setIsChangeData(prevState => !prevState);
                     setUploadPreview("");
                 }
-            })
-            .catch((error) => console.log(error));
+            } catch (error){
+                console.log(error);
+            }
         }
-        
+    }, {
+        onSuccess:() =>{
+            queryClient.invalidateQueries("MyInfo");
+        }
+    })
+
+    const ChangeImg = () => {
+        mutateChangeImg();
     }
+
     const ChangePassword = () =>{
         if (newPassword !== checkPassword){
             alert("비밀번호가 일치하지 않습니다.");
@@ -184,32 +238,51 @@ const ProfileComponent = ({memberId, setIsUpdateData}) => {
             .catch((error)=>console.log(error));
         }
     }
-    const ChangeNickName = () =>{
+
+    const { mutate :mutateChangeNickName } = useMutation(async () =>{
         const data = new FormData();
         data.append("memberNickName", newNickName);
         const duplicateUrl = "/api/opentalk/member/checkNickName";
-        axios.post(duplicateUrl, data)
-        .then((res)=>{
+        try{
+            const res = await axios.post(duplicateUrl, data);
             if (!res.data){
-                const checkUrl = "/api/opentalk/member/changeNickname";
-                axios.post(checkUrl, {
-                memberId: member.memberId,
-                memberNickName: newNickName
-            })
-            .then((res)=>{
-                alert("닉네임이 변경되었습니다.")
-                setIsChangeData(prevState => !prevState);
-                setIsUpdateData(prevState => !prevState);
-                ChangeNickNameCancle();
-            })
-            .catch((error) => console.log(error));
-            }
-            else{
-                alert("이미 존재하는 닉네임입니다.")
-            }
-        })
-        .catch((error)=>console.log(error));
-        
+                try{
+                    const checkUrl = "/api/opentalk/member/changeNickname";
+                    const res2 = await axios.post(checkUrl, {
+                    memberId: member.memberId,
+                    memberNickName: newNickName
+                    })
+                    if (res2.status === 200){
+                        window.alert("닉네임이 변경되었습니다.")
+                        setIsChangeData(prevState => !prevState);
+                        ChangeNickNameCancle();
+
+                        client.current.subscribe(`/sub/chat/changeNickName`, ({body}) => {
+                            if (JSON.parse(body).nickName === "system"){
+                                queryClient.invalidateQueries("allChatRooms");
+                            }
+                        });
+
+                        client.current.publish({destination: "/pub/chat/changeNickName", body: JSON.stringify({
+                            nickName: "system",
+                            message: `닉네임이 변경되었습니다.`,
+                        })});
+                    } else{
+                        alert("이미 존재하는 닉네임입니다.")
+                    }
+                } catch(error){
+                    console.log(error);
+                }
+            } 
+        } catch(error){
+            console.log(error);
+        }}, {
+            onSuccess:() =>{
+                queryClient.invalidateQueries("myInfo");
+        }});
+
+    const ChangeNickName = () =>{
+        mutateChangeNickName();
     }
     
     return(

@@ -1,6 +1,7 @@
 package com.example.opentalk.controller;
 
 import com.example.opentalk.dto.ChatMessageDTO;
+import com.example.opentalk.dto.SystemMessageDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -37,6 +38,12 @@ public class StompChatController {
         chatMessage.setMessage(chatMessage.getMessage());
         log.info("exitChat : {}", chatMessage);
         template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
+    }
+
+    @MessageMapping("/chat/changeNickName")
+    public void changeName(SystemMessageDto message){
+        message.setMessage(message.getMessage());
+        template.convertAndSend("/sub/chat/changeNickName", message);
     }
 
     @MessageMapping("/chat/manager")
