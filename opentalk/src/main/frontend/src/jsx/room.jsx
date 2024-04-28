@@ -635,7 +635,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                                 borderBottomLeftRadius: "25px",
                                                 borderTopRightRadius: "25px",
                                                 borderBottomRightRadius: "25px"}} onClick={ExitRoom}>나가기</Button>
-                <ChangRoomComponent room_Id={room_Id} role={role} setIsChangeRoom={setIsChangeData} curParticipates={curParticipates}/>
+                <ChangRoomComponent room_Id={room_Id} role={role} stompClient={client.current} curParticipates={curParticipates}/>
                 <InviteMemberComponent roomInfo = {roomInformation} role={role}/>
             </FormGroup>
         </Container>

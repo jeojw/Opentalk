@@ -2,8 +2,10 @@ import React, {useState, useEffect} from 'react';
 import Modal from 'react-modal';
 import axios from'axios';
 import { Form, Button, Row, Col, InputGroup, FormControl,ListGroup,ListGroupItem, } from 'react-bootstrap';
+import { format } from 'date-fns';
 
-const ChangRoomComponent = ({room_Id, role, setIsChangeRoom, curParticipates}) => {
+const ChangRoomComponent = ({room_Id, role, stompClient, curParticipates}) => {
+    const [roomData, setRoomData] = useState();
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [preRoomName, setPreRoomName] = useState("");
@@ -23,10 +25,13 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom, curParticipates}) =
     const [participants, setParticipants] = useState(0);
     const [preParticipates, setPreParticipants] = useState(0);
 
+    const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+
     useEffect(() =>{
         const fetchCurRoomInfo = async () => {
             try{
                 const response = await axios.get(`/api/opentalk/getRoom/${room_Id}`);
+                setRoomData(response.data);
                 setPreRoomName(response.data.roomName);
                 setPreExistLock(response.data.existLock);
                 setPreInfo(response.data.introduction);
@@ -72,7 +77,22 @@ const ChangRoomComponent = ({room_Id, role, setIsChangeRoom, curParticipates}) =
         .then((res) => {
             if (res.data === true){
                 window.alert("방 설정이 변경되었습니다.");
-                setIsChangeRoom(prevState => !prevState);
+                const curTime = new Date();
+                const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+                const kr_Time = new Date(utc + (KR_TIME_DIFF));
+                
+                stompClient.publish({
+                    destination: '/pub/chat/exit',
+                    body: JSON.stringify({
+                        chatRoom: roomData,
+                        member: {
+                            memberId:"system",
+                            memberNickName:"system"
+                        },
+                        message: `방 설정이 변경되었습니다.`,
+                        timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
+                    })
+                });
                 setIsOpen(false);
             }
         })

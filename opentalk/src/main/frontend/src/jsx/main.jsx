@@ -41,13 +41,7 @@ const MainComponent = () => {
             client.current.activate(); 
             
         };
-    
-        const disconnect = () => {
-            client.current.deactivate();
-        };
         connect();
-        
-        return () => disconnect();
     }, []);
 
     const ChatRoomRole = {
@@ -147,6 +141,14 @@ const MainComponent = () => {
         }
     });
 
+    const {mutate: mutateChangRoom} = useMutation(async ({roomInfo}) =>{
+        client.current.subscribe(`/sub/chat/${roomInfo.roomId}`, ({body}) => {
+            if (JSON.parse(body).member.memberNickName === "system"){
+                queryClient.invalidateQueries("allChatRooms");
+            }
+        });
+    })
+
     const { mutate: mutateEnterRoom } = useMutation(async ({roomInfo}) => {
         if (!localStorage.getItem("token")){
             window.alert("이미 로그아웃 되었습니다.");
@@ -170,6 +172,11 @@ const MainComponent = () => {
                         role:role
                     });
                     if (res.data === "Success"){
+                        client.current.subscribe(`/sub/chat/${roomInfo.roomId}`, ({body}) => {
+                            if (JSON.parse(body).member.memberNickName === "system"){
+                                queryClient.invalidateQueries("allChatRooms");
+                            }
+                        });
                         const curTime = new Date();
                         const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
                         const kr_Time = new Date(utc + (KR_TIME_DIFF));
@@ -207,6 +214,12 @@ const MainComponent = () => {
                             role:role
                         });
                         if (res.data === "Success"){
+                            client.current.subscribe(`/sub/chat/${roomInfo.roomId}`, ({body}) => {
+                                if (JSON.parse(body).member.memberNickName === "system"){
+                                    queryClient.invalidateQueries("allChatRooms");
+                                }
+                            });
+
                             const curTime = new Date();
                             const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
                             const kr_Time = new Date(utc + (KR_TIME_DIFF));
@@ -392,6 +405,10 @@ const MainComponent = () => {
 
     const EnterInvitedRoom = ({roomId, Inviter}) => {
         mutateEnterInviteRoom({roomId, Inviter});
+    }
+
+    const ChangRoom = ({roomInfo}) => {
+        mutateChangRoom({roomInfo});
     }
 
     const DeleteInviteMessage = ({Inviter, Invited_member}) => {
@@ -630,6 +647,7 @@ const MainComponent = () => {
                         }} onClick={() => deleteRoom({roomInfo: room})}>삭제하기</Button>
                             )}
                         </div>
+                        {() => ChangRoom(room)}
                     </ListGroupItem>
                     ))}
                 </ListGroup>
