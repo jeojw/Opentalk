@@ -2,9 +2,11 @@ import React, {useState, useEffect} from 'react';
 import Modal from 'react-modal';
 import axios from'axios';
 import { Form, Button, Row, Col, InputGroup, FormControl,ListGroup,ListGroupItem, } from 'react-bootstrap';
-import { format } from 'date-fns';
+import { useQueryClient } from 'react-query';
 
 const ChangRoomComponent = ({room_Id, role, stompClient, curParticipates}) => {
+    const queryClient = useQueryClient();
+
     const [roomData, setRoomData] = useState();
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
@@ -64,39 +66,32 @@ const ChangRoomComponent = ({room_Id, role, stompClient, curParticipates}) => {
         setTags(preTags);
     }
 
-    const changeRoomModal = () => {
-        axios.post("/api/opentalk/changeRoom", {
-            roomId: room_Id,
-            roomName: roomName,
-            roomPassword: password,
-            limitParticipates: participants,
-            introduction: info,
-            existLock: existLock,
-            roomTags: tags        
-        })
-        .then((res) => {
+    const changeRoomModal = async () => {
+        try{
+            const res = await axios.post("/api/opentalk/changeRoom", {
+                roomId: room_Id,
+                roomName: roomName,
+                roomPassword: password,
+                limitParticipates: participants,
+                introduction: info,
+                existLock: existLock,
+                roomTags: tags        
+            })
             if (res.data === true){
-                window.alert("방 설정이 변경되었습니다.");
-                const curTime = new Date();
-                const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
-                const kr_Time = new Date(utc + (KR_TIME_DIFF));
-                
+                window.alert("방 설정이 변경되었습니다.");          
                 stompClient.publish({
-                    destination: '/pub/chat/exit',
+                    destination: '/pub/chat/changeRoom',
                     body: JSON.stringify({
-                        chatRoom: roomData,
-                        member: {
-                            memberId:"system",
-                            memberNickName:"system"
-                        },
-                        message: `방 설정이 변경되었습니다.`,
-                        timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
+                        nickName: "system",
+                        message: "방 설정이 변경되었습니다."
                     })
                 });
+                queryClient.invalidateQueries("allChatRooms");
                 setIsOpen(false);
             }
-        })
-        .catch((error) => console.log(error));
+        } catch(error){
+            console.log(error);
+        }
     }
 
     const GetInputName = (event) => {

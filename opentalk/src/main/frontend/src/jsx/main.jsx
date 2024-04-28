@@ -32,6 +32,11 @@ const MainComponent = () => {
                 heartbeatIncoming: 4000,
                 heartbeatOutgoing: 4000,
                 onConnect: () => {
+                    client.current.subscribe(`/sub/chat/changeRoom`, ({body}) => {
+                        if (JSON.parse(body).nickName === "system"){
+                            queryClient.invalidateQueries("allChatRooms");
+                        }
+                    });
                     client.current.subscribe(`/sub/chat/deleteRoom`, ({body}) => {
                         if (JSON.parse(body).nickName === "system"){
                             queryClient.invalidateQueries("allChatRooms");

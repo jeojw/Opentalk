@@ -46,6 +46,12 @@ public class StompChatController {
         template.convertAndSend("/sub/chat/changeNickName", message);
     }
 
+    @MessageMapping("/chat/changeRoom")
+    public void changeRoom(SystemMessageDto message){
+        message.setMessage(message.getMessage());
+        template.convertAndSend("/sub/chat/changeRoom", message);
+    }
+
     @MessageMapping("/chat/createRoom")
     public void createRoom(SystemMessageDto message){
         message.setMessage(message.getMessage());
