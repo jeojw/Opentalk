@@ -403,9 +403,18 @@ const RoomComponent = () => {
         return () => disconnect();
     }, []);
 
+    let isExiting = false;
+
     const preventGoBack = () => {
-        window.history.pushState(null, "", window.location.href);
-        ExitRoom();
+        if (!isExiting){
+            window.history.pushState(null, "", window.location.href);
+            ExitRoom();
+            isExiting = true;
+            setTimeout(() => {
+                isExiting = false;
+            }, 1000);
+        }
+        
     };
 
     const exitWindow = (event) => {

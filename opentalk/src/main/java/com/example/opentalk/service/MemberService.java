@@ -10,10 +10,8 @@ import com.example.opentalk.repository.InviteMessageRepository;
 import com.example.opentalk.repository.MemberInviteRepository;
 import com.example.opentalk.repository.MemberRepository;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.WriteChannel;
+import com.google.cloud.storage.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -106,10 +105,16 @@ public class MemberService {
                 imgUrl = null;
                 return false;
             } else {
-                BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, uuid)
+                BlobId blobId = BlobId.of(bucketName, uuid);
+                BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
                         .setContentType(ext).build();
 
-                Blob blob = storage.create(blobInfo, newImg.getInputStream());
+                try (WriteChannel writer = storage.writer(blobInfo)){
+                    byte[] imageData = newImg.getBytes();
+                    writer.write(ByteBuffer.wrap(imageData));
+                } catch (Exception ex){
+                    ex.printStackTrace();
+                }
                 memberOptional.get().setImgUrl(imgUrl);
                 memberRepository.save(memberOptional.get());
             }
