@@ -1,5 +1,6 @@
 import { BrowserView, MobileView } from 'react-device-detect';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
 import Login from './jsx/login'
 import Front from './jsx/front'
 import Enroll from './jsx/enroll'
@@ -13,6 +14,14 @@ import Profile from './jsx/profile'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
+  const setMobileHeight = () => {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`)
+  }
+
+  useEffect(() => {
+      setMobileHeight();
+  });
   return (
     <Router>
       <div>

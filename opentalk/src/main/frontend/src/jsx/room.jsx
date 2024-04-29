@@ -27,7 +27,8 @@ const RoomComponent = () => {
     const [preChatList, setPreChatList] = useState([]);
     const [chat, setChat] = useState("");
     const [role, setRole] = useState();
-    const [curParticipates, setCurParticipates] = useState(0);
+    const [curParticipates, setCurParticipates] = useState(0)
+    
 
     const [otherMember, setOtherMember] = useState([]);
 
@@ -826,7 +827,7 @@ const RoomComponent = () => {
                             onScroll={handleScroll}
                             style={{ 
                                 width:'100%',
-                                height: "400px",
+                                height: "calc(var(--vh, 1vh) * 60)",
                                 overflowY: 'scroll', 
                                 display: "flex",
                                 flexDirection: "column-reverse" }}>
