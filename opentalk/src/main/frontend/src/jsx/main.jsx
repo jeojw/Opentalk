@@ -103,6 +103,15 @@ const MainComponent = () => {
     const [isMessageBoxOpen, setIsMessageBoxOpen] = useState(false);
     const [messageList, setMessageList] = useState([]);
 
+    const [show, setShow] = useState(false);
+
+    const handleShow = (e) => {
+        setShow(true);
+    }
+
+    const handleClose = (e) => {
+        setShow(false);
+    }
 
     const handlePageChange = (page)=>{
         if (page >= 1 && page <= Math.ceil(pageLength / 3))
