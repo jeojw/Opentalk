@@ -162,7 +162,7 @@ const InviteMemberComponent = ({roomInfo, role}) => {
                             borderBottomLeftRadius: "25px",
                             borderTopRightRadius: "25px",
                             borderBottomRightRadius: "25px",
-                            width: "100%"
+                            width: "380px"
                         }} 
                     onClick={OpenInviteModal}>초대하기</Button>
                 )}

@@ -330,7 +330,7 @@ const ChangRoomComponent = ({room_Id, role, stompClient, curParticipates}) => {
                             borderBottomLeftRadius: "25px",
                             borderTopRightRadius: "25px",
                             borderBottomRightRadius: "25px",
-                            width: "100%"
+                            width: "380px"
                             }} onClick={openModal}>설정 변경</Button>
                     )} 
                 </div>

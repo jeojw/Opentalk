@@ -19,7 +19,7 @@ const Mobile = ({ children }) => {
     const isMobile = useMediaQuery({ maxWidth: 767 })
     return isMobile ? children : null
 }
-const RoomComponent = ({isChangeData, setIsChangeData}) => {
+const RoomComponent = () => {
 
     const [roomInformation, setRoomInformation] = useState();
     const [myInfo, setMyInfo] = useState();
@@ -694,11 +694,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 style={{backgroundColor:"#898989", maxWidth:'767px'}}>
                     <Row>
                         <Accordion defaultActiveKey="0">
-                            <Accordion.Header 
-                            style={{borderTopLeftRadius: "50px",
-                                borderBottomLeftRadius: "50px",
-                                borderTopRightRadius: "50px",
-                                borderBottomRightRadius: "50px"}}>참여명단</Accordion.Header>
+                            <Accordion.Header>참여명단</Accordion.Header>
                             <Accordion.Body>
                                 <Col 
                                     className="border-#9D9D9D border-1 rounded-1 p-4" 
@@ -760,6 +756,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                 </Col>
                             </Accordion.Body>
                         </Accordion>
+                        <br></br>
                         <hr/>
                         <Col 
                             className="border-#898989 border-1 rounded-1 p-4"  
@@ -899,7 +896,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                             borderBottomLeftRadius: "25px",
                                             borderTopRightRadius: "25px",
                                             borderBottomRightRadius: "25px",
-                                            width:"300px"
+                                            width: "380px",
                                         }} 
                                     onClick={() => publishChat(chat)}><strong>전송</strong></Button>
                             </div>
@@ -915,7 +912,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                                 borderBottomLeftRadius: "25px",
                                 borderTopRightRadius: "25px",
                                 borderBottomRightRadius: "25px",
-                                width: "300px"}} onClick={ExitRoom}>나가기</Button>
+                                width: "380px"}} onClick={ExitRoom}>나가기</Button>
                         <hr/>
                         <ChangRoomComponent room_Id={room_Id} role={role} stompClient={client.current} curParticipates={curParticipates}/>
                         <InviteMemberComponent roomInfo = {roomInformation} role={role}/>
