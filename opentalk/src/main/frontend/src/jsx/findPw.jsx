@@ -38,7 +38,7 @@ const FindMemberPassword = (props) =>{
                 authNum: String(authNum)
             }).then((res)=>{
                 if (res.data === "ok"){
-                    navigate("/opentalk/member/changePw", {state: {memberEmail: memberEmail}});
+                    navigate("/opentalk/changePw", {state: {memberEmail: memberEmail}});
                 }
                 else{
                     window.alert("인증이 실패하였습니다. 다시 시도해주십시오.")

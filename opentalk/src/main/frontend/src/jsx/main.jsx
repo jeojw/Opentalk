@@ -202,7 +202,7 @@ const MainComponent = () => {
     const { mutate: mutateEnterRoom } = useMutation(async ({roomInfo}) => {
         if (!localStorage.getItem("token")){
             window.alert("이미 로그아웃 되었습니다.");
-            navigate("/opentalk/member/login");
+            navigate("/opentalk/login");
         }
         else{
             const enterUrl = '/api/opentalk/enterRoom';
@@ -309,7 +309,7 @@ const MainComponent = () => {
         if (window.confirm("입장하시겠습니까?")){
             if (!localStorage.getItem("token")){
                 window.alert("이미 로그아웃 되었습니다.");
-                navigate("/opentalk/member/login");
+                navigate("/opentalk/login");
             }
             else{
                 try{
@@ -476,7 +476,7 @@ const MainComponent = () => {
         }
         else{
             window.alert("이미 로그아웃 되었습니다.");
-            navigate("/opentalk/member/login");
+            navigate("/opentalk/login");
         }
         return (
             <ProfileComponent />

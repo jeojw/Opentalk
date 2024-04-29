@@ -27,11 +27,11 @@ const FrontComponent = (props) => {
     },[])
 
     const LinkToLogin = () =>{
-        navigate("/opentalk/member/login")
+        navigate("/opentalk/login")
     }
 
     const LinkToEnroll = () => {
-        navigate("/opentalk/member/enroll")
+        navigate("/opentalk/enroll")
     }
 
    return (

@@ -43,15 +43,15 @@ const FindMemberComponent = () => {
                 emailData.append("memberEmail", memberEmail)
                 console.log(emailData);
                 if (res.data === "ok"){
-                    axios.post(`/api/opentalk/member/findId`, emailData)
+                    axios.post(`/api/opentalk/findId`, emailData)
                     .then((res) => {
                         if (res.data !== "fail"){
                             window.alert(`회원님의 아이디는 ${res.data} 입니다.`)
-                            navigate("/opentalk/member/login")
+                            navigate("/opentalk/login")
                         }
                         else{
                             window.alert(`존재하지 않는 회원입니다.`)
-                            navigate("/opentalk/member/login")
+                            navigate("/opentalk/login")
                         }
                     })
                     .catch((error)=>console.log(error))

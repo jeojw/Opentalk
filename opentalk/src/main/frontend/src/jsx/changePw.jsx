@@ -8,7 +8,7 @@ const ChangePasswordComponent = () =>{
     const [newPassword, setNewPassword] = useState('');
     const [checkPassword, setCheckPassword] = useState('');
     const location = useLocation();
-    const naviagte = useNavigate();
+    const navigate = useNavigate();
 
     useEffect(() =>{
         if (location.state && location.state.memberEmail){
@@ -41,7 +41,7 @@ const ChangePasswordComponent = () =>{
             .then((res)=>{
                 if (res.status === 200){
                     window.alert("비밀번호가 변경되었습니다.")
-                    naviagte("/opentalk/member/login");
+                    navigate("/opentalk/login");
                 }
             })
             .catch((error)=>console.log(error));

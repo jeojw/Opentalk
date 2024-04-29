@@ -29,13 +29,13 @@ const App = () => {
           <Routes>
             <Route path="/opentalk/profile" element={<Profile/>}></Route>
             <Route path="/opentalk/room/:room_Id" element={<Room/>}></Route>
-            <Route path ="/opentalk/member/authId" element={<AuthId/>}></Route>
-            <Route path = "/opentalk/member/changePw" element={<ChangePw/>}></Route>
-            <Route path = "/opentalk/member/findId" element={<FindId/>}></Route>
-            <Route path = "/opentalk/member/findPw" element={<FindPw/>}></Route>
-            <Route path = "/opentalk/member/login" element={<Login/>}></Route>
+            <Route path ="/opentalk/authId" element={<AuthId/>}></Route>
+            <Route path = "/opentalk/changePw" element={<ChangePw/>}></Route>
+            <Route path = "/opentalk/findId" element={<FindId/>}></Route>
+            <Route path = "/opentalk/findPw" element={<FindPw/>}></Route>
+            <Route path = "/opentalk/login" element={<Login/>}></Route>
             <Route path = "/" element={<Front/>}></Route>
-            <Route path = "/opentalk/member/enroll" element={<Enroll/>}></Route>
+            <Route path = "/opentalk/enroll" element={<Enroll/>}></Route>
             <Route path = "/opentalk/main" element={<Main/>}></Route>
           </Routes>
         </BrowserView>
@@ -43,13 +43,13 @@ const App = () => {
           <Routes>
             <Route path="/opentalk/profile" element={<ProfileMobile/>}></Route>
             <Route path="/opentalk/room/:room_Id" element={<RoomMobile/>}></Route>
-            <Route path ="/opentalk/member/authId" element={<AuthIdMobile/>}></Route>
-            <Route path = "/opentalk/member/changePw" element={<ChangePwMobile/>}></Route>
-            <Route path = "/opentalk/member/findId" element={<FindIdMobile/>}></Route>
-            <Route path = "/opentalk/member/findPw" element={<FindPwMobile/>}></Route>
-            <Route path = "/opentalk/member/login" element={<LoginMobile/>}></Route>
+            <Route path ="/opentalk/authId" element={<AuthIdMobile/>}></Route>
+            <Route path = "/opentalk/changePw" element={<ChangePwMobile/>}></Route>
+            <Route path = "/opentalk/findId" element={<FindIdMobile/>}></Route>
+            <Route path = "/opentalk/findPw" element={<FindPwMobile/>}></Route>
+            <Route path = "/opentalk/login" element={<LoginMobile/>}></Route>
             <Route path = "/" element={<FrontMobile/>}></Route>
-            <Route path = "/opentalk/member/enroll" element={<EnrollMobile/>}></Route>
+            <Route path = "/opentalk/enroll" element={<EnrollMobile/>}></Route>
             <Route path = "/opentalk/main" element={<MainMobile/>}></Route>
           </Routes>
         </MobileView>

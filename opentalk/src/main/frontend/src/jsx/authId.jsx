@@ -20,7 +20,7 @@ const AuthIdComponent = () =>{
         axios.post(checkUrl, data)
         .then((res) => {
             if (res.data){
-                navigate("/opentalk/member/findPw")
+                navigate("/opentalk/findPw")
             }
             else{
                 window.alert("존재하지 않는 아이디입니다.")

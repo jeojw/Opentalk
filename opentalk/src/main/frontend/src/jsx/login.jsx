@@ -95,7 +95,7 @@ const LoginComponent = () => {
                                     borderTopLeftRadius: "25px",
                                     borderBottomLeftRadius: "25px",
                                     borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/member/enroll")}>회원가입</Button>
+                                    borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/enroll")}>회원가입</Button>
                             <Button variant='warning' 
                             style={{borderTopLeftRadius: "25px",
                                     borderBottomLeftRadius: "25px",
@@ -107,12 +107,12 @@ const LoginComponent = () => {
                                 style={{borderTopLeftRadius: "25px",
                                         borderBottomLeftRadius: "25px",
                                         borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/member/findId")}>아이디 찾기</Button>
+                                        borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/findId")}>아이디 찾기</Button>
                                 <Button variant='warning' 
                                 style={{borderTopLeftRadius: "25px",
                                         borderBottomLeftRadius: "25px",
                                         borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/member/authId")}>비밀번호 찾기</Button>
+                                        borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/authId")}>비밀번호 찾기</Button>
                             </div>
                             )}
                             <Button variant='dark' 
