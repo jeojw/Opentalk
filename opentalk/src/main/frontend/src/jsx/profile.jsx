@@ -223,7 +223,7 @@ const ProfileComponent = () => {
         }
     }, {
         onSuccess:() =>{
-            queryClient.invalidateQueries("MyInfo");
+            queryClient.invalidateQueries("myInfo");
         }
     })
 
