@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SetRoomComponent from './setroom';
 import ProfileComponent from './profile';
-import { Container, Row, Col, Button, Form, 
-    FormControl, InputGroup, ListGroup, ListGroupItem, 
-    FormGroup} from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, FormControl, InputGroup, ListGroup, ListGroupItem, FormGroup} from 'react-bootstrap';
 import Modal from 'react-modal';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import Pagination from "react-bootstrap/Pagination";

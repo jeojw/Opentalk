@@ -5,7 +5,7 @@ import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
 import ChangRoomComponent from './changroom';
 import InviteMemberComponent from './inviteMember';
-import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, ListGroupItem, Accordion } from 'react-bootstrap';
 import { format } from 'date-fns'
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import "../css/CustomPagination.css"
@@ -51,7 +51,24 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
 
     useEffect(() => {
         scrollToIndex();
-    }, [startIndex, endIndex]);
+    }, [startIndex]);
+
+
+    const handleScroll_Mobile = () =>{
+        const scrollTop = window.scrollY;
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+
+        const threshold = (scrollHeight - clientHeight) * -1;
+
+        if (scrollTop <= threshold) {
+            if (startIndex >= 10)
+                setStartIndex(prevStartIndex => prevStartIndex - 10);
+            else
+                setStartIndex(0);
+            setPrevScroll(scrollTop);
+        }
+    }
 
     const handleScroll = (e) => {
         const { scrollTop, scrollHeight, clientHeight } = e.target;
@@ -64,7 +81,7 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 setStartIndex(0);
             setPrevScroll(scrollTop);
         }
-    };   
+    };
 
     const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
 
@@ -669,244 +686,249 @@ const RoomComponent = ({isChangeData, setIsChangeData}) => {
                 </Container>
             </Desktop>
             <Mobile>
-                <Container className="border border-#B6B6B6 border-3 rounded-1 p-5" style={{maxWidth:'767px'}}>
-                    <Container style={{maxWidth:'767px'}}>
-                        <Row>
-                            <Col className="border border-#C3C3C3 border-3 rounded-1 p-5 d-flex justify-content-left align-items-center"
-                            style={{backgroundColor:"#C3C3C3", height:"110px"}}>
-                                {/* Option Chaining!!! */}
-                                <h2>{roomInformation?.roomName}</h2> 
-                            </Col>
-                        </Row>
-                    </Container>
-                    <Container className="border border-#898989 border-3 rounded-1 p-5"
-                    style={{backgroundColor:"#898989", maxWidth:'767px'}}>
-                        <Row>
-                        <Col 
-                                className="border-#9D9D9D border-1 rounded-1 p-4" 
-                                sm={1}
-                                md={1}
-                                xl={1}
-                                lg={1} 
-                                style={{ width:'100%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
-                                <h5>참여명단</h5>
-                                <span className='border rounded-pill d-flex align-items-center' 
-                                style={{backgroundColor: "white",
-                                        marginBottom: '6px',
-                                        borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px",
-                                        display: 'inline-block',
-                                        padding: '0.5rem 1rem'}}>
-                                {roomInformation?.roomManager === myInfo?.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
-                                {myInfo?.memberNickName}</span>
-                                <hr/>
-                                {otherMember.map((_member, index) => (
-                                    <ListGroup style={{marginBottom: '6px', 
-                                                    borderTopLeftRadius: "25px",
-                                                    borderBottomLeftRadius: "25px",
-                                                    borderTopRightRadius: "25px",
-                                                    borderBottomRightRadius: "25px"}}>
-                                        {_member?.memberNickName !== myInfo?.memberNickName && (
-                                            <ListGroupItem>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
-                                                <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
-                                                {_member?.memberNickName}
-                                                <br></br>
-                                                <div style={{width:"4px", display:"inline-block"}}/>
-                                                {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                                                <Button className="btn-sm"
-                                                variant='dark' 
-                                                onClick={() => ForcedExit(_member)} 
-                                                style={{
-                                                    width:"75px",
-                                                    borderTopLeftRadius: "25px",
-                                                    borderBottomLeftRadius: "25px",
-                                                    borderTopRightRadius: "25px",
-                                                    borderBottomRightRadius: "25px"
-                                                }}>강퇴하기</Button>
-                                                )}
-                                                <div style={{width:"4px", display:"inline-block"}}/>
-                                                {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                                                    <Button className="btn-sm" variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
-                                                        backgroundColor: "#C3C3C3",
+                <Container style={{maxWidth:'767px'}}>
+                    <Row>
+                        <Col className="border border-#C3C3C3 border-3 rounded-1 p-5 d-flex justify-content-left align-items-center"
+                        style={{backgroundColor:"#C3C3C3", height:"110px"}}>
+                            {/* Option Chaining!!! */}
+                            <h2>{roomInformation?.roomName}</h2> 
+                        </Col>
+                    </Row>
+                </Container>
+                <Container className="border border-#898989 border-3 rounded-1 p-5"
+                style={{backgroundColor:"#898989", maxWidth:'767px'}}>
+                    <Row>
+                        <Accordion defaultActiveKey="0">
+                            <Accordion.Header 
+                            style={{borderTopLeftRadius: "50px",
+                                borderBottomLeftRadius: "50px",
+                                borderTopRightRadius: "50px",
+                                borderBottomRightRadius: "50px"}}>참여명단</Accordion.Header>
+                            <Accordion.Body>
+                                <Col 
+                                    className="border-#9D9D9D border-1 rounded-1 p-4" 
+                                    sm={1}
+                                    md={1}
+                                    xl={1}
+                                    lg={1} 
+                                    style={{ width:'100%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
+                                    <span className='border rounded-pill d-flex align-items-center' 
+                                    style={{backgroundColor: "white",
+                                            marginBottom: '6px',
+                                            borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                            borderTopRightRadius: "25px",
+                                            borderBottomRightRadius: "25px",
+                                            display: 'inline-block',
+                                            padding: '0.5rem 1rem'}}>
+                                    {roomInformation?.roomManager === myInfo?.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
+                                    {myInfo?.memberNickName}</span>
+                                    <hr/>
+                                    {otherMember.map((_member, index) => (
+                                        <ListGroup style={{marginBottom: '6px', 
+                                                        borderTopLeftRadius: "25px",
+                                                        borderBottomLeftRadius: "25px",
+                                                        borderTopRightRadius: "25px",
+                                                        borderBottomRightRadius: "25px"}}>
+                                            {_member?.memberNickName !== myInfo?.memberNickName && (
+                                                <ListGroupItem>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
+                                                    <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
+                                                    {_member?.memberNickName}
+                                                    <br></br>
+                                                    <div style={{width:"4px", display:"inline-block"}}/>
+                                                    {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
+                                                    <Button className="btn-sm"
+                                                    variant='dark' 
+                                                    onClick={() => ForcedExit(_member)} 
+                                                    style={{
+                                                        width:"75px",
                                                         borderTopLeftRadius: "25px",
                                                         borderBottomLeftRadius: "25px",
                                                         borderTopRightRadius: "25px",
                                                         borderBottomRightRadius: "25px"
-                                                    }}>방장위임</Button>
-                                                )}
-                                            </ListGroupItem>
-                                        )}
-                                    </ListGroup>
-                                ))}
-                            </Col>
-                            <hr/>
-                            <Col 
-                                className="border-#898989 border-1 rounded-1 p-4"  
-                                sm={3}
-                                md={3}
-                                xl={3}
-                                lg={3} 
-                                ref={chatContainerRef}
-                                onScroll={handleScroll}
-                                style={{ 
-                                    width:'100%', 
-                                    height:'400px', 
-                                    overflowY: 'scroll', 
-                                    maxHeight: '400px',
-                                    display: "flex",
-                                    flexDirection: "column-reverse" }}>
-                                {chatList && chatList.length > 0 && (
-                                <ListGroup style={{marginBottom: '10px'}}>
-                                    {chatList.map((_chatMessage) => {
-                                        let fontcolor = "#000000";
-                                        let color = "";
-                                        let textAlign = "left";
-                                        let itemClassName = "d-flex justify-content-start";
-                                        if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
-                                            color  = "#C3C3C3";
-                                            itemClassName = "d-flex justify-content-start";
-                                        } else if (_chatMessage.member.memberNickName === 'system') {
-                                            color  = '#000000';
-                                            fontcolor = "#FFFFFF";
-                                            itemClassName = "d-flex justify-content-center";
+                                                    }}>강퇴하기</Button>
+                                                    )}
+                                                    <div style={{width:"4px", display:"inline-block"}}/>
+                                                    {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
+                                                        <Button className="btn-sm" variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
+                                                            backgroundColor: "#C3C3C3",
+                                                            borderTopLeftRadius: "25px",
+                                                            borderBottomLeftRadius: "25px",
+                                                            borderTopRightRadius: "25px",
+                                                            borderBottomRightRadius: "25px"
+                                                        }}>방장위임</Button>
+                                                    )}
+                                                </ListGroupItem>
+                                            )}
+                                        </ListGroup>
+                                    ))}
+                                </Col>
+                            </Accordion.Body>
+                        </Accordion>
+                        <hr/>
+                        <Col 
+                            className="border-#898989 border-1 rounded-1 p-4"  
+                            sm={3}
+                            md={3}
+                            xl={3}
+                            lg={3} 
+                            ref={chatContainerRef}
+                            onScroll={handleScroll_Mobile}
+                            style={{ 
+                                width:'100%', 
+                                height:'400px', 
+                                overflowY: 'scroll', 
+                                maxHeight: '400px',
+                                display: "flex",
+                                flexDirection: "column-reverse" }}>
+                            {chatList && chatList.length > 0 && (
+                            <ListGroup style={{marginBottom: '10px'}}>
+                                {chatList.map((_chatMessage) => {
+                                    let fontcolor = "#000000";
+                                    let color = "";
+                                    let textAlign = "left";
+                                    let itemClassName = "d-flex justify-content-start";
+                                    if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
+                                        color  = "#C3C3C3";
+                                        itemClassName = "d-flex justify-content-start";
+                                    } else if (_chatMessage.member.memberNickName === 'system') {
+                                        color  = '#000000';
+                                        fontcolor = "#FFFFFF";
+                                        itemClassName = "d-flex justify-content-center";
 
-                                        } else{
-                                            color = '#FFFFFF';
-                                            textAlign = "right";
-                                            itemClassName = "d-flex justify-content-end";
-                                        }
-                                        const style = {
-                                            border: color,
-                                            color: fontcolor,
-                                            backgroundColor: color,
-                                            marginBottom: '6px',
-                                            textAlign: textAlign,
-                                            borderTopLeftRadius: "15px",
-                                            borderBottomLeftRadius: "15px",
-                                            borderTopRightRadius: "15px",
-                                            borderBottomRightRadius: "15px",
-                                        };
-                                        return (
-                                            <Row>
-                                                <Col className={itemClassName}>
-                                                    <ListGroupItem style={style}>
-                                                        <strong>{_chatMessage.member.memberNickName}</strong>
-                                                        <br></br>
-                                                        <hr/>
-                                                        {_chatMessage.message}
-                                                    </ListGroupItem>
-                                                </Col>
-                                            </Row>
-                                        );
-                                    })}
-                                </ListGroup>
-                                )}
-                                <br></br>
-                                {preChatList && preChatList.length > 0 && (
-                                <ListGroup style={{marginBottom: '10px' }}>
-                                    {preChatList.slice(startIndex, endIndex).map((_chatMessage) => {
-                                        let fontcolor = "#000000";
-                                        let color = "";
-                                        let textAlign = "left";
-                                        let itemClassName = "d-flex justify-content-start";
-                                        if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
-                                            color  = "#C3C3C3";
-                                            itemClassName = "d-flex justify-content-start";
-                                        } else if (_chatMessage.member.memberNickName === 'system') {
-                                            color  = '#000000';
-                                            fontcolor = "#FFFFFF";
-                                            itemClassName = "d-flex justify-content-center";
+                                    } else{
+                                        color = '#FFFFFF';
+                                        textAlign = "right";
+                                        itemClassName = "d-flex justify-content-end";
+                                    }
+                                    const style = {
+                                        border: color,
+                                        color: fontcolor,
+                                        backgroundColor: color,
+                                        marginBottom: '6px',
+                                        textAlign: textAlign,
+                                        borderTopLeftRadius: "15px",
+                                        borderBottomLeftRadius: "15px",
+                                        borderTopRightRadius: "15px",
+                                        borderBottomRightRadius: "15px",
+                                    };
+                                    return (
+                                        <Row>
+                                            <Col className={itemClassName}>
+                                                <ListGroupItem style={style}>
+                                                    <strong>{_chatMessage.member.memberNickName}</strong>
+                                                    <br></br>
+                                                    <hr/>
+                                                    {_chatMessage.message}
+                                                </ListGroupItem>
+                                            </Col>
+                                        </Row>
+                                    );
+                                })}
+                            </ListGroup>
+                            )}
+                            <br></br>
+                            {preChatList && preChatList.length > 0 && (
+                            <ListGroup style={{marginBottom: '10px' }}>
+                                {preChatList.slice(startIndex, endIndex).map((_chatMessage) => {
+                                    let fontcolor = "#000000";
+                                    let color = "";
+                                    let textAlign = "left";
+                                    let itemClassName = "d-flex justify-content-start";
+                                    if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
+                                        color  = "#C3C3C3";
+                                        itemClassName = "d-flex justify-content-start";
+                                    } else if (_chatMessage.member.memberNickName === 'system') {
+                                        color  = '#000000';
+                                        fontcolor = "#FFFFFF";
+                                        itemClassName = "d-flex justify-content-center";
 
-                                        } else{
-                                            color = '#FFFFFF';
-                                            textAlign = "right";
-                                            itemClassName = "d-flex justify-content-end";
-                                        }
-                                        const style = {
-                                            border: color,
-                                            color: fontcolor,
-                                            backgroundColor: color,
-                                            marginBottom: '6px',
-                                            textAlign: textAlign,
-                                            borderTopLeftRadius: "15px",
-                                            borderBottomLeftRadius: "15px",
-                                            borderTopRightRadius: "15px",
-                                            borderBottomRightRadius: "15px",
-                                        };
-                                        return (
-                                            <Row>
-                                                <Col className={itemClassName}>
-                                                    <ListGroupItem style={style}>
-                                                        <strong>{_chatMessage.member.memberNickName}</strong>
-                                                        <br></br>
-                                                        <hr/>
-                                                        {_chatMessage.message}
-                                                    </ListGroupItem>
-                                                </Col>
-                                            </Row>
-                                        );
-                                    })}
-                                </ListGroup>
-                                )}
-                            </Col>
-                            
-                        </Row>
-                        <br></br>
-                        <Row>
-                            <Col>
-                                <FormGroup 
-                                    className="d-flex align-items-center justify-content-center"
-                                    onSubmit={(event)=>handleSubmit(event)}>
-                                    <InputGroup style={{width:"600px", height:"45px"}}>
-                                        <Form.Control type="text" 
-                                            value={chat} 
-                                            placeholder='채팅 내용을 입력해 주세요.' 
-                                            onChange={handleChange}
-                                            onKeyDown={handleKeyDown}
-                                            style={{borderTopLeftRadius: "25px",
-                                                    borderBottomLeftRadius: "25px",
-                                                    borderTopRightRadius: "25px",
-                                                    borderBottomRightRadius: "25px"}} />            
-                                    </InputGroup>
-                                </FormGroup>
-                                <br></br>
-                                <div className="d-grid justify-content-center">
-                                    <Button 
-                                        variant='#C3C3C3' 
-                                        style={{backgroundColor:"#C3C3C3", 
-                                                borderTopLeftRadius: "25px",
+                                    } else{
+                                        color = '#FFFFFF';
+                                        textAlign = "right";
+                                        itemClassName = "d-flex justify-content-end";
+                                    }
+                                    const style = {
+                                        border: color,
+                                        color: fontcolor,
+                                        backgroundColor: color,
+                                        marginBottom: '6px',
+                                        textAlign: textAlign,
+                                        borderTopLeftRadius: "15px",
+                                        borderBottomLeftRadius: "15px",
+                                        borderTopRightRadius: "15px",
+                                        borderBottomRightRadius: "15px",
+                                    };
+                                    return (
+                                        <Row>
+                                            <Col className={itemClassName}>
+                                                <ListGroupItem style={style}>
+                                                    <strong>{_chatMessage.member.memberNickName}</strong>
+                                                    <br></br>
+                                                    <hr/>
+                                                    {_chatMessage.message}
+                                                </ListGroupItem>
+                                            </Col>
+                                        </Row>
+                                    );
+                                })}
+                            </ListGroup>
+                            )}
+                        </Col>
+                        
+                    </Row>
+                    <br></br>
+                    <Row>
+                        <Col>
+                            <FormGroup 
+                                className="d-flex align-items-center justify-content-center"
+                                onSubmit={(event)=>handleSubmit(event)}>
+                                <InputGroup style={{width:"500px", height:"45px"}}>
+                                    <Form.Control type="text" 
+                                        value={chat} 
+                                        placeholder='채팅 내용을 입력해 주세요.' 
+                                        onChange={handleChange}
+                                        onKeyDown={handleKeyDown}
+                                        style={{borderTopLeftRadius: "25px",
                                                 borderBottomLeftRadius: "25px",
                                                 borderTopRightRadius: "25px",
-                                                borderBottomRightRadius: "25px",
-                                                width:"200px"
-                                            }} 
-                                        onClick={() => publishChat(chat)}><strong>전송</strong></Button>
-                                </div>
-                            </Col>
-                        </Row>
-                    </Container>
-                    <br></br>
-                    <FormGroup className="d-flex align-items-center justify-content-center gap-3">
-                        <div className="d-grid gap-2">
-                            <Button
-                            variant="dark" 
-                            style={{ borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px",
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px",
-                                    width: "300px"}} onClick={ExitRoom}>나가기</Button>
-                            <hr/>
-                            <ChangRoomComponent room_Id={room_Id} role={role} stompClient={client.current} curParticipates={curParticipates}/>
-                            <InviteMemberComponent roomInfo = {roomInformation} role={role}/>
-                        </div>
-                        
-                    </FormGroup>
+                                                borderBottomRightRadius: "25px"}} />            
+                                </InputGroup>
+                            </FormGroup>
+                            <br></br>
+                            <div className="d-grid justify-content-center">
+                                <Button 
+                                    variant='#C3C3C3' 
+                                    style={{backgroundColor:"#C3C3C3", 
+                                            borderTopLeftRadius: "25px",
+                                            borderBottomLeftRadius: "25px",
+                                            borderTopRightRadius: "25px",
+                                            borderBottomRightRadius: "25px",
+                                            width:"300px"
+                                        }} 
+                                    onClick={() => publishChat(chat)}><strong>전송</strong></Button>
+                            </div>
+                        </Col>
+                    </Row>
                 </Container>
+                <br></br>
+                <FormGroup className="d-flex align-items-center justify-content-center gap-3">
+                    <div className="d-grid gap-2">
+                        <Button
+                        variant="dark" 
+                        style={{ borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px",
+                                width: "300px"}} onClick={ExitRoom}>나가기</Button>
+                        <hr/>
+                        <ChangRoomComponent room_Id={room_Id} role={role} stompClient={client.current} curParticipates={curParticipates}/>
+                        <InviteMemberComponent roomInfo = {roomInformation} role={role}/>
+                    </div>
+                    
+                </FormGroup>
             </Mobile>
         </div>
-        
     );
 }
 
