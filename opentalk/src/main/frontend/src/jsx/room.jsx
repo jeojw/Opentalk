@@ -37,6 +37,7 @@ const RoomComponent = () => {
     const [prevScroll, setPrevScroll] = useState(0);
 
     const chatContainerRef = useRef(null);
+    const chatContainerRefM = useRef(null);
 
     const scrollToIndex = () => {
         if (chatContainerRef.current) {
@@ -46,30 +47,36 @@ const RoomComponent = () => {
 
     useEffect(() => {
         scrollToIndex();
-    }, [startIndex]);
+    }, [startIndex, prevScroll]);
 
-
-    const handleScroll_Mobile = () =>{
-        const scrollTop = window.scrollY;
-        const scrollHeight = document.documentElement.scrollHeight;
-        const clientHeight = document.documentElement.clientHeight;
-
-        const threshold = (scrollHeight - clientHeight) * -1;
-
-        if (scrollTop <= threshold) {
-            if (startIndex >= 10)
+    useEffect(() => {
+        const observer = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && preChatList.length > 0){
+                chatContainerRefM.current.scrollTop = prevScroll;
                 setStartIndex(prevStartIndex => prevStartIndex - 10);
-            else
-                setStartIndex(0);
-            setPrevScroll(scrollTop);
+            }
+        }, {
+            root:null,
+            rootMargin: '0px',
+            threshold: 1
+        });
+
+        if (chatContainerRefM.current){
+            observer.observe(chatContainerRefM.current);
         }
-    }
+
+        return () =>{
+            if (chatContainerRefM.current){
+                observer.unobserve(chatContainerRefM.current);
+            }
+        }
+    }, [preChatList, prevScroll]);
 
     const handleScroll = (e) => {
         const { scrollTop, scrollHeight, clientHeight } = e.target;
         const threshold = (scrollHeight - clientHeight) * -1;
         
-        if (scrollTop <= threshold) {
+        if (e.target === chatContainerRefM.current && scrollTop <= threshold) {
             if (startIndex >= 10)
                 setStartIndex(prevStartIndex => prevStartIndex - 10);
             else
@@ -764,8 +771,8 @@ const RoomComponent = () => {
                             md={3}
                             xl={3}
                             lg={3} 
-                            ref={chatContainerRef}
-                            onScroll={handleScroll_Mobile}
+                            ref={chatContainerRefM}
+                            onScroll={handleScroll}
                             style={{ 
                                 width:'100%', 
                                 height:'400px', 
