@@ -558,22 +558,26 @@ const ProfileComponent = () => {
                             }}>
                                 <img src={uploadPreview} />
                                 <hr/>
-                                <FormControl type='file' accept='image/*' onChange={onChangeImageUpload} 
-                                                        style={{borderTopLeftRadius: "50px",
-                                                                borderBottomLeftRadius: "50px",
-                                                                borderTopRightRadius: "50px",
-                                                                borderBottomRightRadius: "50px"}}></FormControl>
+                                <FormControl type='file' accept='image/*' 
+                                onChange={onChangeImageUpload} 
+                                                        
+                                style={{borderTopLeftRadius: "50px",
+                                        borderBottomLeftRadius: "50px",
+                                        borderTopRightRadius: "50px",
+                                        borderBottomRightRadius: "50px"}}></FormControl>
                                 <br/>
-                                <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
-                                                                borderTopLeftRadius: "50px",
-                                                                borderBottomLeftRadius: "50px",
-                                                                borderTopRightRadius: "50px",
-                                                                borderBottomRightRadius: "50px"}} onClick={ChangeImg}>변경하기</Button>
+                                <Button variant='#CDCDCD' 
+                                style={{backgroundColor:"#CDCDCD", 
+                                        borderTopLeftRadius: "50px",
+                                        borderBottomLeftRadius: "50px",
+                                        borderTopRightRadius: "50px",
+                                        borderBottomRightRadius: "50px"}} onClick={ChangeImg}>변경하기</Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
-                                <Button variant='dark' style={{borderTopLeftRadius: "50px",
-                                                                borderBottomLeftRadius: "50px",
-                                                                borderTopRightRadius: "50px",
-                                                                borderBottomRightRadius: "50px"}}  onClick={ChangeImgCancle}>변경취소</Button>
+                                <Button variant='dark' 
+                                style={{borderTopLeftRadius: "50px",
+                                        borderBottomLeftRadius: "50px",
+                                        borderTopRightRadius: "50px",
+                                        borderBottomRightRadius: "50px"}}  onClick={ChangeImgCancle}>변경취소</Button>
                             </Modal>
                             <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}
                             style={{

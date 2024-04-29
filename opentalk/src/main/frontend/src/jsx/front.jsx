@@ -76,22 +76,24 @@ const FrontComponent = (props) => {
                         <br></br>
                         <div className="d-grid gap-1">
                             <Button variant='#CDCDCD' type="button" onClick={LinkToLogin} 
-                            style={{fontSize: '20px', 
+                            style={{fontSize: '15px', 
                             padding: '10px 100px', 
                             backgroundColor:"#CDCDCD",
                             borderTopLeftRadius: "25px",
                             borderBottomLeftRadius: "25px",
                             borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px"}}><strong>로그인</strong></Button>
+                            borderBottomRightRadius: "25px",
+                            width: "100%"}}><strong>로그인</strong></Button>
                             <br></br>
                             <Button variant='#CDCDCD' type="button" onClick={LinkToEnroll} 
-                            style={{fontSize: '20px', 
+                            style={{fontSize: '15px', 
                             padding: '10px 100px', 
                             backgroundColor:"#CDCDCD",
                             borderTopLeftRadius: "25px",
                             borderBottomLeftRadius: "25px",
                             borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px"}}><strong>회원가입</strong></Button>
+                            borderBottomRightRadius: "25px",
+                            width: "100%"}}><strong>회원가입</strong></Button>
                         </div> 
                     </Col>
                 </Row>

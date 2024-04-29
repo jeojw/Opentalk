@@ -324,13 +324,14 @@ const ChangRoomComponent = ({room_Id, role, stompClient, curParticipates}) => {
                 <div className="d-grid gap-4">
                     {role === "ROLE_MANAGER" && (
                     <Button 
+                    className='btn-sm'
                     variant='#B9B9B9' 
                     style={{  backgroundColor:"#B9B9B9", 
                             borderTopLeftRadius: "25px",
                             borderBottomLeftRadius: "25px",
                             borderTopRightRadius: "25px",
                             borderBottomRightRadius: "25px",
-                            width: "380px"
+                            width: "100%"
                             }} onClick={openModal}>설정 변경</Button>
                     )} 
                 </div>

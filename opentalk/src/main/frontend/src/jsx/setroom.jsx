@@ -317,9 +317,8 @@ export const SetRoomComponent = ({stompClient, onDataUpdate}) =>{
                 </Modal>
             </Desktop>
             <Mobile>
-            <div className="d-grid gap-2 btn-lg">
+                <div className='d-grid btn-sm'>
                     <Button 
-                    className='btn-lg'
                     variant="#8F8F8F" 
                     style={{
                             backgroundColor:'#8F8F8F', 

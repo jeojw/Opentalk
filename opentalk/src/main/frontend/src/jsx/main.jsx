@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SetRoomComponent from './setroom';
 import ProfileComponent from './profile';
-import { Container, Row, Col, Button, Form, FormControl, InputGroup, ListGroup, ListGroupItem, FormGroup} from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, FormControl, InputGroup, ListGroup, ListGroupItem, FormGroup,
+     Offcanvas, OffcanvasBody } from 'react-bootstrap';
 import Modal from 'react-modal';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import Pagination from "react-bootstrap/Pagination";
@@ -101,6 +102,16 @@ const MainComponent = () => {
 
     const [isMessageBoxOpen, setIsMessageBoxOpen] = useState(false);
     const [messageList, setMessageList] = useState([]);
+
+    const [show, setShow] = useState(false);
+
+    const handleShow = (e) => {
+        setShow(true);
+    }
+
+    const handleClose = (e) => {
+        setShow(false);
+    }
 
     const handlePageChange = (page)=>{
         if (page >= 1 && page <= Math.ceil(pageLength / 3))
@@ -769,11 +780,12 @@ const MainComponent = () => {
                         }}>
                     <ListGroup>
                     {messageList.map((_message) => (
-                        <ListGroupItem style={{ borderTopLeftRadius: "25px",
-                                                borderBottomLeftRadius: "25px",
-                                                borderTopRightRadius: "25px",
-                                                borderBottomRightRadius: "25px"
-                                                }}><strong>{_message.roomName}</strong>
+                        <ListGroupItem 
+                        style={{ borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"
+                                }}><strong>{_message.roomName}</strong>
                         <hr/><img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img> <strong>{_message.inviter}</strong>
                         <hr/>{_message.message}
                         <hr/>
@@ -807,64 +819,86 @@ const MainComponent = () => {
                                     }}>닫기</Button>
                 </Modal>
                 <Row className="justify-content-end">
-                    <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-#7B7B7B border-3 rounded-2 p-5"
-                    style={{
-                        backgroundColor: "#7B7B7B",
-                        width:"100%", height: "600px"
-                        }}>
-                        <div style={{ textAlign: 'center' }}>
-                            <img alt="프로필 이미지" 
-                                src={curImgUrl} 
-                                style={{width:'70%', 
-                                height:'70%',
-                                backgroundPosition:"center",
-                                borderRadius: "50%"}}></img>
-                            <p style={{color:"white"}}>환영합니다</p>
-                            <h4 style={{color:"white"}}>
-                                <strong>    
-                                    {member?.memberNickName}님
-                                </strong>
-                            </h4>
-                            <hr/>
-                        </div>
-                        <div className="d-grid gap-4">
-                            <Button 
-                                className="btn-lg" 
-                                variant='#CDCDCD'
-                                onClick={GoProfile}
-                                style={{
-                                    backgroundColor:"#CDCDCD",
-                                    borderTopLeftRadius: "50px",
-                                    borderBottomLeftRadius: "50px",
-                                    borderTopRightRadius: "50px",
-                                    borderBottomRightRadius: "50px"
-                                }}
-                            >프로필 설정</Button>
-                            <Button 
-                                className="btn-lg" 
-                                variant='#CDCDCD'
-                                onClick={openMessageBox}
-                                style={{
-                                    backgroundColor:"#CDCDCD",
-                                    borderTopLeftRadius: "50px",
-                                    borderBottomLeftRadius: "50px",
-                                    borderTopRightRadius: "50px",
-                                    borderBottomRightRadius: "50px"
-                                }}
-                            >메세지함</Button>
-                            <Button 
-                                className="btn-lg" 
-                                variant="dark" 
-                                onClick={LogOut}
-                                style={{
-                                    borderTopLeftRadius: "50px",
-                                    borderBottomLeftRadius: "50px",
-                                    borderTopRightRadius: "50px",
-                                    borderBottomRightRadius: "50px"
-                                }}
-                            >로그아웃</Button>
-                        </div>
-                    </Col>
+                    <Button
+                    variant="#8F8F8F"
+                    style={{borderTopLeftRadius: "25px",
+                            borderBottomLeftRadius: "25px",
+                            borderTopRightRadius: "25px",
+                            borderBottomRightRadius: "25px",
+                            backgroundColor: "#8F8F8F"
+                            }}
+                    onClick={handleShow}>
+                        프로필 보기
+                    </Button>
+                    <Offcanvas show={show} onHide={handleClose}>
+                        <OffcanvasBody>
+                            <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-#7B7B7B border-3 rounded-2 p-5"
+                            style={{
+                                backgroundColor: "#7B7B7B",
+                                width:"100%", height: "600px"
+                                }}>
+                                <div style={{ textAlign: 'center' }}>
+                                    <img alt="프로필 이미지" 
+                                        src={curImgUrl} 
+                                        style={{width:'70%', 
+                                        height:'70%',
+                                        backgroundPosition:"center",
+                                        borderRadius: "50%"}}></img>
+                                    <p style={{color:"white"}}>환영합니다</p>
+                                    <h4 style={{color:"white"}}>
+                                        <strong>    
+                                            {member?.memberNickName}님
+                                        </strong>
+                                    </h4>
+                                    <hr/>
+                                </div>
+                                <div className="d-grid gap-4">
+                                    <Button 
+                                        variant='#CDCDCD'
+                                        onClick={GoProfile}
+                                        style={{
+                                            backgroundColor:"#CDCDCD",
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }}
+                                    >프로필 설정</Button>
+                                    <Button 
+                                        variant='#CDCDCD'
+                                        onClick={openMessageBox}
+                                        style={{
+                                            backgroundColor:"#CDCDCD",
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }}
+                                    >메세지함</Button>
+                                    <Button 
+                                        variant="dark" 
+                                        onClick={LogOut}
+                                        style={{
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }}
+                                    >로그아웃</Button>
+                                    <Button 
+                                        variant="dark" 
+                                        onClick={handleClose}
+                                        style={{
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }}
+                                    >닫기</Button>
+                                </div>
+                            </Col>
+                        </OffcanvasBody>
+                    </Offcanvas>
                     <Col className="border border-#C3C3C3 border-3 rounded-2 p-5" style={{backgroundColor:"#C3C3C3", height: "975px"}}>
                         <SetRoomComponent
                             stompClient={client.current}
@@ -895,13 +929,19 @@ const MainComponent = () => {
                                     <div>
                                         <ListGroup className="list-group-horizontal list-group-flush gap-2">        
                                         {room.roomTags.map(tag=>(
-                                            <ListGroupItem style={{border:"#8F8F8F", backgroundColor:'#8F8F8F', color:"#4B4B4B"}}># {tag.tagName}</ListGroupItem>
+                                            <ListGroupItem 
+                                            style={{border:"#8F8F8F", 
+                                                    backgroundColor:'#8F8F8F', 
+                                                    color:"#4B4B4B",
+                                                    fontSize:"12px"}}># {tag.tagName}</ListGroupItem>
                                         ))}
                                         </ListGroup>
                                     </div>
                                 )}
                                 <div className="d-flex flex-row gap-2">
-                                    <Button variant="#CDCDCD" 
+                                    <Button
+                                    className='btn-sm' 
+                                    variant="#CDCDCD" 
                                     style={{ backgroundColor:'#CDCDCD', 
                                             borderTopLeftRadius: "25px",
                                             borderBottomLeftRadius: "25px",
@@ -909,7 +949,9 @@ const MainComponent = () => {
                                             borderBottomRightRadius: "25px"
                                             }} onClick={() => EnterRoom({roomInfo: room})}><strong>입장하기</strong></Button>
                                     {room.roomManager === member?.memberNickName && (
-                                    <Button variant="dark" 
+                                    <Button
+                                    className='btn-sm'  
+                                    variant="dark" 
                                     style={{ borderTopLeftRadius: "25px",
                                             borderBottomLeftRadius: "25px",
                                             borderTopRightRadius: "25px",
