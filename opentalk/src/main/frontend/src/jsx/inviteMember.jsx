@@ -155,15 +155,17 @@ const InviteMemberComponent = ({roomInfo, role}) => {
             </Desktop>
                 <Mobile>
                 {role === "ROLE_MANAGER" && (
-                    <Button className='btn-sm'
-                    variant='#B9B9B9'
-                    style={{backgroundColor:"#B9B9B9", 
-                            borderTopLeftRadius: "25px",
-                            borderBottomLeftRadius: "25px",
-                            borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px"
-                            }} 
-                    onClick={OpenInviteModal}>초대하기</Button>
+                    <div className="d-grid">
+                        <Button className='btn-sm'
+                        variant='#B9B9B9'
+                        style={{backgroundColor:"#B9B9B9", 
+                                borderTopLeftRadius: "25px",
+                                borderBottomLeftRadius: "25px",
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px"
+                                }} 
+                        onClick={OpenInviteModal}>초대하기</Button>
+                    </div>
                 )}
                 <Modal isOpen={isOpen} onRequestClose={CloseInviteModal}
                 style={{
