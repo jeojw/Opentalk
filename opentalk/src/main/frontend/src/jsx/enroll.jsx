@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Container, Row, Col, Button, Form, FormControl, InputGroup,} from 'react-bootstrap';
 
-const EnrollComponent = (props) =>{
+const EnrollComponent = () =>{
     const [memberId, setMemberId] = useState('');
     const [memberPw, setMemberPw] = useState('');
     const [memberName, setMemberName] = useState('');

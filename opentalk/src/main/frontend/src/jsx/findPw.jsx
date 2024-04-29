@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, InputGroup, FormControl } from 'react-bootstrap';
 
-const FindMemberPassword = (props) =>{
+const FindMemberPassword = () =>{
     const [memberEmail, setMemberEmail] = useState('');
     const [authNum, setAuthNum] = useState();
     const [inputNum, setInputNum] = useState();

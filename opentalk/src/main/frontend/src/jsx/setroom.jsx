@@ -9,10 +9,6 @@ const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 1224 })
     return isDesktop ? children : null
 }
-const Tablet = ({ children }) => {
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
-    return isTablet ? children : null
-}
 const Mobile = ({ children }) => {
     const isMobile = useMediaQuery({ maxWidth: 767 })
     return isMobile ? children : null
@@ -21,7 +17,6 @@ const Mobile = ({ children }) => {
 export const SetRoomComponent = ({stompClient, onDataUpdate}) =>{
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
-    const [roomId, setRoomId] = useState("");
     const [participants, setParticipants] = useState(3);
     const [existLock, setExistLock] = useState(false);
     const [password, setPassword] = useState("");
@@ -146,7 +141,6 @@ export const SetRoomComponent = ({stompClient, onDataUpdate}) =>{
             })
             if (res.status === 200){
                 window.alert("방이 생성되었습니다.");
-                setRoomId(res.data);
                 closeModal();
                 onDataUpdate(prevState => !prevState);
 
