@@ -17,7 +17,12 @@ const ChangePasswordComponent = () =>{
     }, []);
 
     const GetInputPassword = (e) => {
-        setNewPassword(e.target.value);
+        if (e.target.length <= 0){
+            window.alert("한 글자 이상의 비밀번호를 입력해 주십시오.");
+        }
+        else{
+            setNewPassword(e.target.value);
+        }
     }
 
     const GetInputCheckPassword = (e) => {

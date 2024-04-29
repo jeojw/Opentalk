@@ -9,7 +9,7 @@ import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, Li
 import { format } from 'date-fns'
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import "../css/CustomPagination.css"
-import { useMediaQuery, MediaQuery } from 'react-responsive';
+import { useMediaQuery } from 'react-responsive';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 1224 })

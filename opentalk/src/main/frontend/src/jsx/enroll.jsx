@@ -12,6 +12,8 @@ const EnrollComponent = (props) =>{
     const [authNum, setAuthNum] = useState();
     const [inputNum, setInputNum] = useState();
 
+    const [checkPw, setCheckPw] = useState(false);
+    const [checkName, setCheckName] = useState(false);
     const [checkId, setCheckId] = useState(false);
     const [checkNickName, setCheckNickName] = useState(false);
     const [checkEmail, setCheckEmail] = useState(false);
@@ -24,11 +26,23 @@ const EnrollComponent = (props) =>{
     }
 
     const GetInputPw = (event) =>{
-        setMemberPw(event.target.value);
+        if (event.target.length <= 0){
+            setCheckPw(false);
+        }
+        else{
+            setMemberPw(event.target.value);
+            setCheckPw(true);
+        }   
     }
 
     const GetInputName = (event) =>{
-        setMemberName(event.target.value);
+        if (event.target.length <= 0){
+            setCheckName(false);
+        }
+        else{
+            setCheckName(true);
+            setMemberName(event.target.value);
+        }
     }
 
     const GetInputNickName = (event) =>{
@@ -44,35 +58,46 @@ const EnrollComponent = (props) =>{
     }
 
     const CheckIdDuplicate = () => {
-        const data = new FormData();
-        data.append("memberId", memberId);
-        const checkUrl = `/api/opentalk/auth/signup/checkId`;
-        axios.post(checkUrl, data).then((res)=>{
-            if (res.data === true){
-                window.alert("중복된 아이디입니다.");
-                setCheckId(false);
-            }
-            else{
-                window.alert("사용 가능한 아이디입니다.");
-                setCheckId(true);
-            }
-        }).catch((error)=>console.log(error))
+        if (memberId.length <= 0){
+            window.alert("한 글자 이상의 아이디를 입력해 주십시오.");
+        }
+        else{
+            const data = new FormData();
+            data.append("memberId", memberId);
+            const checkUrl = `/api/opentalk/auth/signup/checkId`;
+            axios.post(checkUrl, data).then((res)=>{
+                if (res.data === true){
+                    window.alert("중복된 아이디입니다.");
+                    setCheckId(false);
+                }
+                else{
+                    window.alert("사용 가능한 아이디입니다.");
+                    setCheckId(true);
+                }
+            }).catch((error)=>console.log(error))
+        }
     }
 
     const CheckNickNameDuplicate = () =>{
-        const data = new FormData();
-        data.append("memberNickName", memberNickName);
-        const checkUrl = `/api/opentalk/auth/signup/checkNickName`;
-        axios.post(checkUrl, data).then((res)=>{
-            if (res.data === true){
-                window.alert("중복된 닉네임입니다.");
-                setCheckNickName(false);
-            }
-            else{
-                window.alert("사용 가능한 닉네임입니다.");
-                setCheckNickName(true);
-            }
-        }).catch((error)=>console.log(error))
+        if (memberNickName <= 0){
+            window.alert("한 글자 이상의 닉네임을 입력해 주십시오.");
+        }
+        else{
+            const data = new FormData();
+            data.append("memberNickName", memberNickName);
+            const checkUrl = `/api/opentalk/auth/signup/checkNickName`;
+            axios.post(checkUrl, data).then((res)=>{
+                if (res.data === true){
+                    window.alert("중복된 닉네임입니다.");
+                    setCheckNickName(false);
+                }
+                else{
+                    window.alert("사용 가능한 닉네임입니다.");
+                    setCheckNickName(true);
+                }
+            }).catch((error)=>console.log(error))
+        }
+        
     }
 
     const CheckMail = () =>{
@@ -127,13 +152,19 @@ const EnrollComponent = (props) =>{
 
     const CheckAll = () =>{
         if (!checkId){
-            alert("아이디 중복 체크를 진행해 주십시오.");
+            window.alert("아이디 중복 체크를 진행해 주십시오.");
+        }
+        else if (!checkPw){
+            window.alert("한 글자 이상의 비밀번호를 입력해 주십시오.");
+        }
+        else if (!checkName){
+            window.alert("한 글자 이상의 이름을 입력해 주십시오.");
         }
         else if (!checkNickName){
-            alert("닉네임 중복 체크를 진행해 주십시오.");
+            window.alert("닉네임 중복 체크를 진행해 주십시오.");
         }
         else if (!checkEmail){
-            alert("이메일 인증을 진행해 주십시오.");
+            window.alert("이메일 인증을 진행해 주십시오.");
         }
         else{
             const url = `/api/opentalk/auth/signup`;

@@ -6,6 +6,20 @@ import { Container, Row, Col, Button, Form, FormControl, InputGroup, ListGroup, 
 import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
 import { useQuery, useQueryClient, useMutation } from 'react-query';
+import { useMediaQuery } from 'react-responsive';
+
+const Desktop = ({ children }) => {
+    const isDesktop = useMediaQuery({ minWidth: 1224 })
+    return isDesktop ? children : null
+}
+const Tablet = ({ children }) => {
+    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
+    return isTablet ? children : null
+}
+const Mobile = ({ children }) => {
+    const isMobile = useMediaQuery({ maxWidth: 767 })
+    return isMobile ? children : null
+}
 
 const ProfileComponent = () => {
     const client = useRef({});
@@ -218,8 +232,11 @@ const ProfileComponent = () => {
     }
 
     const ChangePassword = () =>{
-        if (newPassword !== checkPassword){
-            alert("비밀번호가 일치하지 않습니다.");
+        if (newPassword.length <= 0){
+            window.alert("한 글자 이상의 비밀번호를 입력해 주십시오.");
+        }
+        else if (newPassword !== checkPassword){
+            window.alert("비밀번호가 일치하지 않습니다.");
         }
         else{
             const checkUrl = `/api/opentalk/member/changePassword`
@@ -232,11 +249,11 @@ const ProfileComponent = () => {
             })
             .then((res)=>{
                 if (res.data === true){
-                    alert("비밀번호가 변경되었습니다.");
+                    window.alert("비밀번호가 변경되었습니다.");
                     ChangePasswordCancle();
                 }
                 else{
-                    alert("현재 비밀번호가 맞지 않습니다.")
+                    window.alert("현재 비밀번호가 맞지 않습니다.")
                 }
             })
             .catch((error)=>console.log(error));
@@ -244,37 +261,43 @@ const ProfileComponent = () => {
     }
 
     const { mutate :mutateChangeNickName } = useMutation(async () =>{
-        const data = new FormData();
-        data.append("memberNickName", newNickName);
-        const duplicateUrl = "/api/opentalk/member/checkNickName";
-        try{
-            const res = await axios.post(duplicateUrl, data);
-            if (!res.data){
-                try{
-                    const checkUrl = "/api/opentalk/member/changeNickname";
-                    const res2 = await axios.post(checkUrl, {
-                    memberId: member.memberId,
-                    memberNickName: newNickName
-                    })
-                    if (res2.status === 200){
-                        window.alert("닉네임이 변경되었습니다.")
-                        setIsChangeData(prevState => !prevState);
-                        ChangeNickNameCancle();
+        if (newNickName.length <= 0){
+            window.alert("한 글자 이상의 닉네임을 입력해 주십시오.");
+        }
+        else{
+            const data = new FormData();
+            data.append("memberNickName", newNickName);
+            const duplicateUrl = "/api/opentalk/member/checkNickName";
+            try{
+                const res = await axios.post(duplicateUrl, data);
+                if (!res.data){
+                    try{
+                        const checkUrl = "/api/opentalk/member/changeNickname";
+                        const res2 = await axios.post(checkUrl, {
+                        memberId: member.memberId,
+                        memberNickName: newNickName
+                        })
+                        if (res2.status === 200){
+                            window.alert("닉네임이 변경되었습니다.")
+                            setIsChangeData(prevState => !prevState);
+                            ChangeNickNameCancle();
 
-                        client.current.publish({destination: "/pub/chat/changeNickName", body: JSON.stringify({
-                            nickName: "system",
-                            message: `닉네임이 변경되었습니다.`,
-                        })});
-                    } else{
-                        alert("이미 존재하는 닉네임입니다.")
+                            client.current.publish({destination: "/pub/chat/changeNickName", body: JSON.stringify({
+                                nickName: "system",
+                                message: `닉네임이 변경되었습니다.`,
+                            })});
+                        } else{
+                            alert("이미 존재하는 닉네임입니다.")
+                        }
+                    } catch(error){
+                        console.log(error);
                     }
-                } catch(error){
-                    console.log(error);
-                }
-            } 
-        } catch(error){
-            console.log(error);
-        }}, {
+                } 
+            } catch(error){
+                console.log(error);
+            }
+        }
+        }, {
             onSuccess:() =>{
                 queryClient.invalidateQueries("myInfo");
         }});
@@ -284,207 +307,415 @@ const ProfileComponent = () => {
     }
     
     return(
-        <Container>
-            <Row style={{ textAlign: 'center' }}>
-                <Col md={{ span: 3, offset: 4}} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
-                    <img 
-                        alt="프로필 이미지" 
-                        src={curImgUrl}
-                        style={{width:'80%',
-                                backgroundPosition:"center",
-                                borderRadius: "50%"}}    
-                    ></img>
-                    <br></br>
-                    <br></br>
-                    <ListGroup>
-                        <ListGroupItem style={{
-                                border:'#CDCDCD', 
-                                backgroundColor:"#CDCDCD",  
-                                marginBottom: '5px',
-                                borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px",
-                                borderTopRightRadius: "25px",
-                                borderBottomRightRadius: "25px"
-                            }}>이름 <hr/><strong>{member.memberName}</strong></ListGroupItem>
-                        <ListGroupItem style={{
-                                border:'#CDCDCD', 
-                                backgroundColor:"#CDCDCD",  
-                                marginBottom: '5px',
-                                borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px",
-                                borderTopRightRadius: "25px",
-                                borderBottomRightRadius: "25px"
-                            }}>닉네임 <hr/><strong>{member.memberNickName}</strong></ListGroupItem>
-                        <ListGroupItem style={{
-                                border:'#CDCDCD', 
-                                backgroundColor:"#CDCDCD",
-                                borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px",
-                                borderTopRightRadius: "25px",
-                                borderBottomRightRadius: "25px"
-                            }}>이메일 <hr/><strong>{member.memberEmail}</strong></ListGroupItem>
-                    </ListGroup>
-                    <hr/>
-                    <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}
-                    style={{
-                        content: {
-                            width: '800px', // 원하는 너비로 설정
-                            height: '400px', // 원하는 높이로 설정
-                        }
-                    }}>
-                        <img src={uploadPreview} />
-                        <hr/>
-                        <FormControl type='file' accept='image/*' onChange={onChangeImageUpload} 
-                                                style={{borderTopLeftRadius: "50px",
-                                                        borderBottomLeftRadius: "50px",
-                                                        borderTopRightRadius: "50px",
-                                                        borderBottomRightRadius: "50px"}}></FormControl>
-                        <br/>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
-                                                        borderTopLeftRadius: "50px",
-                                                        borderBottomLeftRadius: "50px",
-                                                        borderTopRightRadius: "50px",
-                                                        borderBottomRightRadius: "50px"}} onClick={ChangeImg}>변경하기</Button>
-                        <div style={{width:"4px", display:"inline-block"}}/>
-                        <Button variant='dark' style={{borderTopLeftRadius: "50px",
-                                                        borderBottomLeftRadius: "50px",
-                                                        borderTopRightRadius: "50px",
-                                                        borderBottomRightRadius: "50px"}}  onClick={ChangeImgCancle}>변경취소</Button>
-                    </Modal>
-                    <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}
-                    style={{
-                        content: {
-                            width: '800px', // 원하는 너비로 설정
-                            height: '400px', // 원하는 높이로 설정
-                        }
-                    }}>
-                        <InputGroup>
-                            <InputGroup.Text style={{backgroundColor:"#CDCDCD",
-                                                    borderTopLeftRadius: "50px",
-                                                    borderBottomLeftRadius: "50px",
-                                                    }}><strong>새 닉네임</strong></InputGroup.Text>
-                            <Form.Control 
-                                type="text" 
-                                value={newNickName} 
-                                onChange={GetInputNewNickName}
-                                style={{borderTopRightRadius: "50px",
-                                        borderBottomRightRadius: "50px",}}></Form.Control>
-                        </InputGroup>
-                        <br></br>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
-                                                        borderTopLeftRadius: "50px",
-                                                        borderBottomLeftRadius: "50px",
-                                                        borderTopRightRadius: "50px",
-                                                        borderBottomRightRadius: "50px"}} onClick={ChangeNickName}><strong>변경하기</strong></Button>
-                        <div style={{width:"4px", display:"inline-block"}}/>
-                        <Button variant='dark' style={{borderTopLeftRadius: "50px",
-                                                        borderBottomLeftRadius: "50px",
-                                                        borderTopRightRadius: "50px",
-                                                        borderBottomRightRadius: "50px"}}onClick={ChangeNickNameCancle}>변경 취소</Button>
-                    </Modal>
-                    <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}
-                    style={{
-                        content: {
-                            width: '800px', // 원하는 너비로 설정
-                            height: '400px', // 원하는 높이로 설정
-                        }
-                    }}>
-                        <InputGroup>
-                            <InputGroup.Text style={{
-                                    backgroundColor:"#CDCDCD", 
-                                    borderTopLeftRadius: "50px",
-                                    borderBottomLeftRadius: "50px",
-                                }}>현재 비밀번호</InputGroup.Text>
-                            <Form.Control 
-                                type="password"
-                                value={exPassword}
-                                onChange={GetExPassword}
-                                style={{ 
-                                    borderTopRightRadius: "50px",
-                                    borderBottomRightRadius: "50px",
-                                }}></Form.Control>
-                        </InputGroup>
-                        <br></br>
-                        <InputGroup>
-                            <InputGroup.Text style={{
-                                    backgroundColor:"#CDCDCD", 
-                                    borderTopLeftRadius: "50px",
-                                    borderBottomLeftRadius: "50px",
-                                }}><strong>새 비밀번호</strong></InputGroup.Text>
-                            <Form.Control type="password" 
-                                value={newPassword} 
-                                onChange={GetInputNewPassword}
-                                style={{ 
-                                    borderTopRightRadius: "50px",
-                                    borderBottomRightRadius: "50px",
-                                }}></Form.Control>
-                        </InputGroup>
-                        <br></br>
-                        <InputGroup>
-                        <InputGroup.Text style={{
-                                    backgroundColor:"#CDCDCD", 
-                                    borderTopLeftRadius: "50px",
-                                    borderBottomLeftRadius: "50px",
-                                }}><strong>비밀번호 확인</strong></InputGroup.Text>
-                            <Form.Control type="password" 
-                                value={checkPassword} 
-                                onChange={GetInputCheckPassword}
-                                style={{ 
-                                    borderTopRightRadius: "50px",
-                                    borderBottomRightRadius: "50px",
-                                }}></Form.Control>
-                        </InputGroup>
-                        <br></br>
-                        <Button variant='#CDCDCD' style={{
-                                    backgroundColor:"#CDCDCD", 
-                                    borderTopLeftRadius: "50px",
-                                    borderBottomLeftRadius: "50px",
-                                    borderTopRightRadius: "50px",
-                                    borderBottomRightRadius: "50px"
-                                }} onClick={ChangePassword}><strong>변경하기</strong></Button>
-                        <div style={{width:"4px", display:"inline-block"}}/>
-                        <Button variant='dark' style={{
-                                    borderTopLeftRadius: "50px",
-                                    borderBottomLeftRadius: "50px",
-                                    borderTopRightRadius: "50px",
-                                    borderBottomRightRadius: "50px"
-                                }} onClick={ChangePasswordCancle}>변경 취소</Button>
-                    </Modal>
-                    <div className="d-grid gap-2">
-                        <Button variant='#CDCDCD' style={{
-                                    backgroundColor:"#CDCDCD", 
-                                    borderTopLeftRadius: "50px",
-                                    borderBottomLeftRadius: "50px",
-                                    borderTopRightRadius: "50px",
-                                    borderBottomRightRadius: "50px"
-                                }} onClick={ChangeImgPopup}>프로필 이미지 변경</Button>
-                        <Button variant='#CDCDCD' style={{
-                                    backgroundColor:"#CDCDCD", 
-                                    borderTopLeftRadius: "50px",
-                                    borderBottomLeftRadius: "50px",
-                                    borderTopRightRadius: "50px",
-                                    borderBottomRightRadius: "50px"
-                                }} onClick={ChangeNickNamePopup}>닉네임 변경</Button>
-                        <Button variant='#CDCDCD' style={{
-                                    backgroundColor:"#CDCDCD", 
-                                    borderTopLeftRadius: "50px",
-                                    borderBottomLeftRadius: "50px",
-                                    borderTopRightRadius: "50px",
-                                    borderBottomRightRadius: "50px"
-                                }} onClick={ChangePasswordPopup}>비밀번호 변경</Button>
-                        <Button variant='dark' style={{
-                                    borderTopLeftRadius: "50px",
-                                    borderBottomLeftRadius: "50px",
-                                    borderTopRightRadius: "50px",
-                                    borderBottomRightRadius: "50px"
-                                }} onClick={() => {
-                            navigate("/opentalk/main")
-                            window.URL.revokeObjectURL(curImgUrl);
-                        }}>이전 페이지</Button>
-                    </div>
-                </Col>
-            </Row>
-        </Container>
+        <div>
+            <Desktop>
+                <Container>
+                    <Row style={{ textAlign: 'center' }}>
+                        <Col md={{ span: 3, offset: 4}} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
+                            <img 
+                                alt="프로필 이미지" 
+                                src={curImgUrl}
+                                style={{width:'80%',
+                                        backgroundPosition:"center",
+                                        borderRadius: "50%"}}    
+                            ></img>
+                            <br></br>
+                            <br></br>
+                            <ListGroup>
+                                <ListGroupItem style={{
+                                        border:'#CDCDCD', 
+                                        backgroundColor:"#CDCDCD",  
+                                        marginBottom: '5px',
+                                        borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"
+                                    }}>이름 <hr/><strong>{member.memberName}</strong></ListGroupItem>
+                                <ListGroupItem style={{
+                                        border:'#CDCDCD', 
+                                        backgroundColor:"#CDCDCD",  
+                                        marginBottom: '5px',
+                                        borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"
+                                    }}>닉네임 <hr/><strong>{member.memberNickName}</strong></ListGroupItem>
+                                <ListGroupItem style={{
+                                        border:'#CDCDCD', 
+                                        backgroundColor:"#CDCDCD",
+                                        borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"
+                                    }}>이메일 <hr/><strong>{member.memberEmail}</strong></ListGroupItem>
+                            </ListGroup>
+                            <hr/>
+                            <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}
+                            style={{
+                                content: {
+                                    width: '800px', // 원하는 너비로 설정
+                                    height: '400px', // 원하는 높이로 설정
+                                }
+                            }}>
+                                <img src={uploadPreview} />
+                                <hr/>
+                                <FormControl type='file' accept='image/*' onChange={onChangeImageUpload} 
+                                                        style={{borderTopLeftRadius: "50px",
+                                                                borderBottomLeftRadius: "50px",
+                                                                borderTopRightRadius: "50px",
+                                                                borderBottomRightRadius: "50px"}}></FormControl>
+                                <br/>
+                                <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
+                                                                borderTopLeftRadius: "50px",
+                                                                borderBottomLeftRadius: "50px",
+                                                                borderTopRightRadius: "50px",
+                                                                borderBottomRightRadius: "50px"}} onClick={ChangeImg}>변경하기</Button>
+                                <div style={{width:"4px", display:"inline-block"}}/>
+                                <Button variant='dark' style={{borderTopLeftRadius: "50px",
+                                                                borderBottomLeftRadius: "50px",
+                                                                borderTopRightRadius: "50px",
+                                                                borderBottomRightRadius: "50px"}}  onClick={ChangeImgCancle}>변경취소</Button>
+                            </Modal>
+                            <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}
+                            style={{
+                                content: {
+                                    width: '800px', // 원하는 너비로 설정
+                                    height: '400px', // 원하는 높이로 설정
+                                }
+                            }}>
+                                <InputGroup>
+                                    <InputGroup.Text style={{backgroundColor:"#CDCDCD",
+                                                            borderTopLeftRadius: "50px",
+                                                            borderBottomLeftRadius: "50px",
+                                                            }}><strong>새 닉네임</strong></InputGroup.Text>
+                                    <Form.Control 
+                                        type="text" 
+                                        value={newNickName} 
+                                        onChange={GetInputNewNickName}
+                                        style={{borderTopRightRadius: "50px",
+                                                borderBottomRightRadius: "50px",}}></Form.Control>
+                                </InputGroup>
+                                <br></br>
+                                <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
+                                                                borderTopLeftRadius: "50px",
+                                                                borderBottomLeftRadius: "50px",
+                                                                borderTopRightRadius: "50px",
+                                                                borderBottomRightRadius: "50px"}} onClick={ChangeNickName}><strong>변경하기</strong></Button>
+                                <div style={{width:"4px", display:"inline-block"}}/>
+                                <Button variant='dark' style={{borderTopLeftRadius: "50px",
+                                                                borderBottomLeftRadius: "50px",
+                                                                borderTopRightRadius: "50px",
+                                                                borderBottomRightRadius: "50px"}}onClick={ChangeNickNameCancle}>변경 취소</Button>
+                            </Modal>
+                            <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}
+                            style={{
+                                content: {
+                                    width: '800px', // 원하는 너비로 설정
+                                    height: '400px', // 원하는 높이로 설정
+                                }
+                            }}>
+                                <InputGroup>
+                                    <InputGroup.Text style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                        }}>현재 비밀번호</InputGroup.Text>
+                                    <Form.Control 
+                                        type="password"
+                                        value={exPassword}
+                                        onChange={GetExPassword}
+                                        style={{ 
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px",
+                                        }}></Form.Control>
+                                </InputGroup>
+                                <br></br>
+                                <InputGroup>
+                                    <InputGroup.Text style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                        }}><strong>새 비밀번호</strong></InputGroup.Text>
+                                    <Form.Control type="password" 
+                                        value={newPassword} 
+                                        onChange={GetInputNewPassword}
+                                        style={{ 
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px",
+                                        }}></Form.Control>
+                                </InputGroup>
+                                <br></br>
+                                <InputGroup>
+                                <InputGroup.Text style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                        }}><strong>비밀번호 확인</strong></InputGroup.Text>
+                                    <Form.Control type="password" 
+                                        value={checkPassword} 
+                                        onChange={GetInputCheckPassword}
+                                        style={{ 
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px",
+                                        }}></Form.Control>
+                                </InputGroup>
+                                <br></br>
+                                <Button variant='#CDCDCD' style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }} onClick={ChangePassword}><strong>변경하기</strong></Button>
+                                <div style={{width:"4px", display:"inline-block"}}/>
+                                <Button variant='dark' style={{
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }} onClick={ChangePasswordCancle}>변경 취소</Button>
+                            </Modal>
+                            <div className="d-grid gap-2">
+                                <Button variant='#CDCDCD' style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }} onClick={ChangeImgPopup}>프로필 이미지 변경</Button>
+                                <Button variant='#CDCDCD' style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }} onClick={ChangeNickNamePopup}>닉네임 변경</Button>
+                                <Button variant='#CDCDCD' style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }} onClick={ChangePasswordPopup}>비밀번호 변경</Button>
+                                <Button variant='dark' style={{
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }} onClick={() => {
+                                    navigate("/opentalk/main")
+                                    window.URL.revokeObjectURL(curImgUrl);
+                                }}>이전 페이지</Button>
+                            </div>
+                        </Col>
+                    </Row>
+                </Container>
+            </Desktop>
+            <Mobile>
+                <Container>
+                    <Row style={{ textAlign: 'center' }}>
+                        <Col md={{ span: 3, offset: 4}} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
+                            <img 
+                                alt="프로필 이미지" 
+                                src={curImgUrl}
+                                style={{width:'80%',
+                                        backgroundPosition:"center",
+                                        borderRadius: "50%"}}    
+                            ></img>
+                            <br></br>
+                            <br></br>
+                            <ListGroup>
+                                <ListGroupItem style={{
+                                        border:'#CDCDCD', 
+                                        backgroundColor:"#CDCDCD",  
+                                        marginBottom: '5px',
+                                        borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"
+                                    }}>이름 <hr/><strong>{member.memberName}</strong></ListGroupItem>
+                                <ListGroupItem style={{
+                                        border:'#CDCDCD', 
+                                        backgroundColor:"#CDCDCD",  
+                                        marginBottom: '5px',
+                                        borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"
+                                    }}>닉네임 <hr/><strong>{member.memberNickName}</strong></ListGroupItem>
+                                <ListGroupItem style={{
+                                        border:'#CDCDCD', 
+                                        backgroundColor:"#CDCDCD",
+                                        borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"
+                                    }}>이메일 <hr/><strong>{member.memberEmail}</strong></ListGroupItem>
+                            </ListGroup>
+                            <hr/>
+                            <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}
+                            style={{
+                                content: {
+                                    width: '350px', // 원하는 너비로 설정
+                                    height: '400px', // 원하는 높이로 설정
+                                }
+                            }}>
+                                <img src={uploadPreview} />
+                                <hr/>
+                                <FormControl type='file' accept='image/*' onChange={onChangeImageUpload} 
+                                                        style={{borderTopLeftRadius: "50px",
+                                                                borderBottomLeftRadius: "50px",
+                                                                borderTopRightRadius: "50px",
+                                                                borderBottomRightRadius: "50px"}}></FormControl>
+                                <br/>
+                                <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
+                                                                borderTopLeftRadius: "50px",
+                                                                borderBottomLeftRadius: "50px",
+                                                                borderTopRightRadius: "50px",
+                                                                borderBottomRightRadius: "50px"}} onClick={ChangeImg}>변경하기</Button>
+                                <div style={{width:"4px", display:"inline-block"}}/>
+                                <Button variant='dark' style={{borderTopLeftRadius: "50px",
+                                                                borderBottomLeftRadius: "50px",
+                                                                borderTopRightRadius: "50px",
+                                                                borderBottomRightRadius: "50px"}}  onClick={ChangeImgCancle}>변경취소</Button>
+                            </Modal>
+                            <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}
+                            style={{
+                                content: {
+                                    width: '350px', // 원하는 너비로 설정
+                                    height: '400px', // 원하는 높이로 설정
+                                }
+                            }}>
+                                <InputGroup>
+                                    <InputGroup.Text style={{backgroundColor:"#CDCDCD",
+                                                            borderTopLeftRadius: "50px",
+                                                            borderBottomLeftRadius: "50px",
+                                                            }}><strong>새 닉네임</strong></InputGroup.Text>
+                                    <Form.Control 
+                                        type="text" 
+                                        value={newNickName} 
+                                        onChange={GetInputNewNickName}
+                                        style={{borderTopRightRadius: "50px",
+                                                borderBottomRightRadius: "50px",}}></Form.Control>
+                                </InputGroup>
+                                <br></br>
+                                <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
+                                                                borderTopLeftRadius: "50px",
+                                                                borderBottomLeftRadius: "50px",
+                                                                borderTopRightRadius: "50px",
+                                                                borderBottomRightRadius: "50px"}} onClick={ChangeNickName}><strong>변경하기</strong></Button>
+                                <div style={{width:"4px", display:"inline-block"}}/>
+                                <Button variant='dark' style={{borderTopLeftRadius: "50px",
+                                                                borderBottomLeftRadius: "50px",
+                                                                borderTopRightRadius: "50px",
+                                                                borderBottomRightRadius: "50px"}}onClick={ChangeNickNameCancle}>변경 취소</Button>
+                            </Modal>
+                            <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}
+                            style={{
+                                content: {
+                                    width: '350px', // 원하는 너비로 설정
+                                    height: '400px', // 원하는 높이로 설정
+                                }
+                            }}>
+                                <InputGroup>
+                                    <InputGroup.Text style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                        }}>현재 비밀번호</InputGroup.Text>
+                                    <Form.Control 
+                                        type="password"
+                                        value={exPassword}
+                                        onChange={GetExPassword}
+                                        style={{ 
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px",
+                                        }}></Form.Control>
+                                </InputGroup>
+                                <br></br>
+                                <InputGroup>
+                                    <InputGroup.Text style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                        }}><strong>새 비밀번호</strong></InputGroup.Text>
+                                    <Form.Control type="password" 
+                                        value={newPassword} 
+                                        onChange={GetInputNewPassword}
+                                        style={{ 
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px",
+                                        }}></Form.Control>
+                                </InputGroup>
+                                <br></br>
+                                <InputGroup>
+                                <InputGroup.Text style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                        }}><strong>비밀번호 확인</strong></InputGroup.Text>
+                                    <Form.Control type="password" 
+                                        value={checkPassword} 
+                                        onChange={GetInputCheckPassword}
+                                        style={{ 
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px",
+                                        }}></Form.Control>
+                                </InputGroup>
+                                <br></br>
+                                <Button variant='#CDCDCD' style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }} onClick={ChangePassword}><strong>변경하기</strong></Button>
+                                <div style={{width:"4px", display:"inline-block"}}/>
+                                <Button variant='dark' style={{
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }} onClick={ChangePasswordCancle}>변경 취소</Button>
+                            </Modal>
+                            <div className="d-grid gap-2">
+                                <Button variant='#CDCDCD' style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }} onClick={ChangeImgPopup}>프로필 이미지 변경</Button>
+                                <Button variant='#CDCDCD' style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }} onClick={ChangeNickNamePopup}>닉네임 변경</Button>
+                                <Button variant='#CDCDCD' style={{
+                                            backgroundColor:"#CDCDCD", 
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }} onClick={ChangePasswordPopup}>비밀번호 변경</Button>
+                                <Button variant='dark' style={{
+                                            borderTopLeftRadius: "50px",
+                                            borderBottomLeftRadius: "50px",
+                                            borderTopRightRadius: "50px",
+                                            borderBottomRightRadius: "50px"
+                                        }} onClick={() => {
+                                    navigate("/opentalk/main")
+                                    window.URL.revokeObjectURL(curImgUrl);
+                                }}>이전 페이지</Button>
+                            </div>
+                        </Col>
+                    </Row>
+                </Container>
+            </Mobile>
+        </div>
+        
     );
 
 }
