@@ -624,7 +624,6 @@ const RoomComponent = () => {
                                             <ListGroupItem>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
                                                 <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                                 {_member?.memberNickName}
-                                                <br></br>
                                                 <div style={{width:"4px", display:"inline-block"}}/>
                                                 {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
                                                 <Button className="btn-sm"
