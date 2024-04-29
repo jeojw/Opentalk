@@ -826,7 +826,7 @@ const RoomComponent = () => {
                             onScroll={handleScroll}
                             style={{ 
                                 width:'100%',
-                                height: "calc(var(--vh, 1vh) * 60)",
+                                height: "calc(var(--vh, 1vh) * 65)",
                                 overflowY: 'scroll', 
                                 display: "flex",
                                 flexDirection: "column-reverse" }}>
