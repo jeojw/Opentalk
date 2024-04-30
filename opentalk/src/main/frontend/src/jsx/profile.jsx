@@ -68,7 +68,51 @@ const ProfileComponent = () => {
     const [uploadImgUrl, setUploadImgUrl] = useState(null);
     const [curImgUrl, setCurImgUrl] = useState(null);
 
-    const [isChangeData, setIsChangeData] = useState(false);
+    const [isReissue, setIsReissue] = useState(false);
+
+    useEffect(() => {
+        if (isReissue){
+            const reissueToken = async () =>{
+                const reissueUrl = "/api/opentalk/auth/reissue";
+                try{
+                    const reissueRes = await axios.post(reissueUrl, null, {
+                        headers:{
+                            'Authorization': localStorage.getItem("token"),
+                        },
+                    })
+                    if (reissueRes.status === 200){
+                        localStorage.setItem("token", reissueRes.headers['authorization']);
+                    }
+                } catch(error) {
+                    console.log(error);
+                    setIsReissue(false); 
+                }
+            }
+            reissueToken();
+        }
+    }, [isReissue])
+
+    useEffect(() => {
+        const validateToken = async () =>{
+            try{
+                const url = "/api/opentalk/auth/validate";
+                const response = await axios.post(url, null, {
+                    headers: {
+                        Authorization: localStorage.getItem("token")
+                    }
+                });
+                if (response.data === true){
+                    setIsReissue(true);
+                }
+                else{
+                    setIsReissue(false);
+                }
+            } catch(error){
+                setIsReissue(true);
+            }
+        }
+        validateToken();
+    }, []);
 
     const navigate = useNavigate();
     
@@ -210,7 +254,6 @@ const ProfileComponent = () => {
                 if (res.data === true){
                     window.alert("변경되었습니다!")
                     setImgPopupOpen(false);
-                    setIsChangeData(prevState => !prevState);
                     setUploadPreview("");
                 }
             } catch (error){
@@ -275,7 +318,6 @@ const ProfileComponent = () => {
                         })
                         if (res2.status === 200){
                             window.alert("닉네임이 변경되었습니다.")
-                            setIsChangeData(prevState => !prevState);
                             ChangeNickNameCancle();
 
                             client.current.publish({destination: "/pub/chat/changeNickName", body: JSON.stringify({

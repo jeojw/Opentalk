@@ -20,7 +20,6 @@ const Mobile = ({ children }) => {
     return isMobile ? children : null
 }
 const RoomComponent = () => {
-
     const [roomInformation, setRoomInformation] = useState();
     const [myInfo, setMyInfo] = useState();
     const [chatList, setChatList] = useState([]);
@@ -35,6 +34,52 @@ const RoomComponent = () => {
     const [showOffcanvas, setShowOffcanvas] = useState(false);
     const [showInviteModal, setShowInviteModal] = useState(false);
     const [showChangeModal, setShowChangeModal] = useState(false);
+
+    const [isReissue, setIsReissue] = useState(false);
+
+    useEffect(() => {
+        if (isReissue){
+            const reissueToken = async () =>{
+                const reissueUrl = "/api/opentalk/auth/reissue";
+                try{
+                    const reissueRes = await axios.post(reissueUrl, null, {
+                        headers:{
+                            'Authorization': localStorage.getItem("token"),
+                        },
+                    })
+                    if (reissueRes.status === 200){
+                        localStorage.setItem("token", reissueRes.headers['authorization']);
+                    }
+                } catch(error) {
+                    console.log(error);
+                    setIsReissue(false); 
+                }
+            }
+            reissueToken();
+        }
+    }, [isReissue])
+
+    useEffect(() => {
+        const validateToken = async () =>{
+            try{
+                const url = "/api/opentalk/auth/validate";
+                const response = await axios.post(url, null, {
+                    headers: {
+                        Authorization: localStorage.getItem("token")
+                    }
+                });
+                if (response.data === true){
+                    setIsReissue(true);
+                }
+                else{
+                    setIsReissue(false);
+                }
+            } catch(error){
+                setIsReissue(true);
+            }
+        }
+        validateToken();
+    }, []);
 
 
     const handleShowOffcanvas = () => {

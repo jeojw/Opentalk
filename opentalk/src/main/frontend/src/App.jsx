@@ -22,6 +22,7 @@ const App = () => {
   useEffect(() => {
       setMobileHeight();
   });
+
   return (
     <Router>
       <div>

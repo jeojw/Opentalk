@@ -41,7 +41,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
 
     const InviteMember = (member) => {
         if (window.confirm("초대하시겠습니까?")){
-            let message = prompt("초대 메세지를 입력해 주십시오.");
+            let message = window.prompt("초대 메세지를 입력해 주십시오.");
             const inviteUrl = "/api/opentalk/invite"
             if (message === ""){
                 message = "우리 같이 이야기해 보아요."
@@ -100,7 +100,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                         <Col style={{ overflowY: 'auto', maxHeight: '400px'}}>
                             {searchList && searchList.length > 0 && (
                                 <ListGroup>
-                                    {searchList.map((_member, index) => (
+                                    {searchList.map((_member) => (
                                         <ListGroupItem 
                                         style={{ backgroundColor:"#CDCDCD", marginBottom: '7px',
                                                 borderTopLeftRadius: "25px",
