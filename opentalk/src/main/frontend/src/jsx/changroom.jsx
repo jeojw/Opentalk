@@ -49,11 +49,11 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
         if (participants > curParticipates || participants > 3) {
             setParticipants(participants - 1);
         }
+        else if (participants <= 3){
+            window.alert("방의 인원수는 최소 3명부터 가능합니다.");
+        }
         else if (participants <= curParticipates){
             window.alert("현재 인원수보다 적게 인원을 설정할 수 없습니다.");
-        }
-        else if (participants < 3){
-            window.alert("방의 인원수는 최소 3명부터 가능합니다.");
         }
     };
 
