@@ -61,10 +61,6 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
         fetchCurRoomInfo();
     }, []);
 
-    const openModal = () => {
-        setShowModal(true);
-    }
-
     const cancleSetModal = () => {
         setShowModal(false);
         setRoomName(preRoomName);

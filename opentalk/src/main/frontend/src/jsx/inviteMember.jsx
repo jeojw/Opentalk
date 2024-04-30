@@ -14,7 +14,6 @@ const Mobile = ({ children }) => {
 }
 
 const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
-    const [isOpen, setIsOpen] = useState(false);
     const [nickName, setNickName] = useState("");
     const [searchList, setSearchList] = useState([]);
 
@@ -51,7 +50,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
             })
             .then((res)=>{
                 if (res.data === true){
-                    setIsOpen(false);
+                    setShowModal(false);
                     setNickName("");
                     setSearchList([]);
                 }
@@ -74,7 +73,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                             <InputGroup>
                                 <FormControl 
                                 type="text" 
-                                value={showModal} 
+                                value={nickName} 
                                 onChange={GetInputNickName}
                                 placeholder='검색할 닉네임을 입력하세요.'
                                 style={{borderTopLeftRadius: "25px",
@@ -135,12 +134,11 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                 </Modal>
             </Desktop>
                 <Mobile>
-                <Modal isOpen={isOpen} onRequestClose={CloseInviteModal}
+                <Modal isOpen={showModal} onRequestClose={CloseInviteModal}
                 style={{
                     content: {
                         width: '340px', // 원하는 너비로 설정
                         height: '400px', // 원하는 높이로 설정
-                        zIndex: 1000
                     }
                 }}>
                     <Row>
