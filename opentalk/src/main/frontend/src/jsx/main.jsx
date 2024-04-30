@@ -341,15 +341,14 @@ const MainComponent = () => {
     });
 
     useEffect(() => {
-        const reissueToken = async () =>{
-            if (isReissue){
+        if (isReissue){
+            const reissueToken = async () =>{
                 const reissueUrl = "/api/opentalk/auth/reissue";
                 try{
                     const reissueRes = await axios.post(reissueUrl, null, {
                         headers:{
-                            Authorization: localStorage.getItem("token")
+                            'Authorization': localStorage.getItem("token"),
                         },
-                        withCredentials: true
                     })
                     if (reissueRes.status === 200){
                         localStorage.setItem("token", reissueRes.headers['authorization']);
@@ -359,8 +358,8 @@ const MainComponent = () => {
                     setIsReissue(false); 
                 }
             }
+            reissueToken();
         }
-        reissueToken();
     }, [isReissue])
 
     useEffect(() => {

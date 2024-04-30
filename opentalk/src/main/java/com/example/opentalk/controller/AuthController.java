@@ -58,23 +58,23 @@ public class AuthController {
 
     // 토큰 재발급
     @PostMapping("/api/opentalk/auth/reissue")
-    public ResponseEntity<?> reissue(@CookieValue(name = "refresh-token") String requestRefreshToken,
+    public ResponseEntity<?> reissue(@RequestHeader("Cookie") String requestRefreshToken,
                                      @RequestHeader("Authorization") String requestAccessToken) {
-        AuthDto.TokenDto reissuedTokenDto = authService.reissue(requestAccessToken, requestRefreshToken);
-
+        AuthDto.TokenDto reissuedTokenDto = authService.reissue(requestAccessToken, requestRefreshToken.split("=")[1]);
+        System.out.print("쿠키 토큰" + requestRefreshToken.split("=")[1]);
         if (reissuedTokenDto != null) { // 토큰 재발급 성공
             // RT 저장
-            ResponseCookie responseCookie = ResponseCookie.from("refresh-token", reissuedTokenDto.getRefreshToken())
-                    .maxAge(COOKIE_EXPIRATION)
-                    .httpOnly(true)
-                    .secure(true)
-                    .build();
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                    // AT 저장
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + reissuedTokenDto.getAccessToken())
-                    .build();
+                ResponseCookie responseCookie = ResponseCookie.from("refresh-token", reissuedTokenDto.getRefreshToken())
+                        .maxAge(COOKIE_EXPIRATION)
+                        .httpOnly(true)
+                        .secure(true)
+                        .build();
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                        // AT 저장
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + reissuedTokenDto.getAccessToken())
+                        .build();
 
         } else { // Refresh Token 탈취 가능성
             // Cookie 삭제 후 재로그인 유도

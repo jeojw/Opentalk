@@ -22,7 +22,6 @@ public class MemberController {
 
     @GetMapping("/api/opentalk/member/me")
     public ResponseEntity<AuthDto.ResponseDto> getMyMemberInfo(@RequestHeader("Authorization") String authorizationHeader) throws RuntimeException {
-        System.out.print("NewToken:" + authorizationHeader);
         String token = authorizationHeader.substring("Bearer ".length());
         AuthDto.ResponseDto myInfoBySecurity = authService.getMyInfo(token);
         return ResponseEntity.ok(myInfoBySecurity);
