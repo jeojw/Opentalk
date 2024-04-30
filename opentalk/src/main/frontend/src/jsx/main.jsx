@@ -303,7 +303,10 @@ const MainComponent = () => {
                                 message: `${member?.memberNickName}님이 채팅방에 입장했습니다.`,
                                 timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                             })});
-                            queryClient.invalidateQueries("allChatRooms");
+                            client.current.publish({destination: "/pub/chat/enterRoomResponse", body: JSON.stringify({
+                                nickName: "system",
+                                message: ""
+                            })});
     
                             navigate(`/opentalk/room/${roomInfo.roomId}`);
                         }
@@ -334,25 +337,62 @@ const MainComponent = () => {
             }
             else{
                 try{
-                    let currentRole;
-                    const enterUrl = '/api/opentalk/enterInvitedRoom';
-                    currentRole = ChatRoomRole.PARTICIPATE;
-                    setRole(currentRole);
+                    const findRoom = '/api/opentalk/oneRoom';
                     const data = new FormData();
                     data.append("roomId", roomId);
-                    data.append("memberId", member.memberId);
-                    data.append("inviter", Inviter);
-                    
-                    const res = axios.post(enterUrl, data);
-                    if (res.data === "Success"){
-                        navigate(`/opentalk/room/${roomId}`);
-                    }
-                    else{
-                        window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
+                    const roomRes = await axios.post(findRoom, data);
+                    console.log(roomRes);
+                    if (roomRes.status === 200){
+                        try{
+                            let currentRole;
+                            const enterUrl = '/api/opentalk/enterInvitedRoom';
+                            currentRole = ChatRoomRole.PARTICIPATE;
+                            setRole(currentRole);
+                            const data = new FormData();
+                            data.append("roomId", roomId);
+                            data.append("memberId", member.memberId);
+                            data.append("inviter", Inviter);
+                            
+                            const res = await axios.post(enterUrl, data);
+                            
+                            if (res.data === "Success"){
+                                client.current.subscribe(`/sub/chat/${roomId}`, ({body}) => {
+                                    if (JSON.parse(body).member.memberNickName === "system"){
+                                        queryClient.invalidateQueries("allChatRooms");
+                                    }
+                                });
+                                const curTime = new Date();
+                                const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
+                                const kr_Time = new Date(utc + (KR_TIME_DIFF));
+        
+                                client.current.publish({destination: "/pub/chat/enter", body: JSON.stringify({
+                                    chatRoom: roomRes.data,
+                                    member: {
+                                        memberId:"system",
+                                        memberNickName:"system"
+                                    },
+                                    message: `${member?.memberNickName}님이 채팅방에 입장했습니다.`,
+                                    timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
+                                })});
+        
+                                client.current.publish({destination: "/pub/chat/enterRoomResponse", body: JSON.stringify({
+                                    nickName: "system",
+                                    message: ""
+                                })})
+        
+                                navigate(`/opentalk/room/${roomId}`);
+                            }
+                            else{
+                                window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
+                            }
+                        } catch(error){
+                            console.log(error);
+                        }
                     }
                 } catch(error){
                     console.log(error);
                 }
+                
             }
         }
     }, {

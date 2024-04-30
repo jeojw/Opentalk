@@ -25,8 +25,12 @@ public class RoomController {
         return ResponseEntity.ok(rooms);
     }
 
+    @PostMapping("/api/opentalk/oneRoom")
+    public ResponseEntity<ChatRoomDTO> getOneRoom(@RequestParam("roomId") String roomId){
+        return ResponseEntity.ok(chatRoomService.getRoomByRoom(roomId));
+    }
+
     @PostMapping("/api/opentalk/roomParticipates")
-    @CachePut(value = "roomParticipatesCache", key = "#roomId")
     public ResponseEntity<Integer> getParticipates(@RequestParam("roomId") String roomId){
         return ResponseEntity.ok(chatRoomService.getParticipates(roomId));
     }
@@ -37,7 +41,6 @@ public class RoomController {
     }
 
     @PostMapping("/api/opentalk/makeRoom")
-    @CachePut(value = "roomCache", key = "#result")
     public ResponseEntity<String> create(@RequestBody @Valid ChatRoomDTO chatRoomDTO){
         if (chatRoomDTO.isExistLock()){
             String encodePassword = encoder.encode(chatRoomDTO.getRoomPassword());
@@ -48,7 +51,7 @@ public class RoomController {
     }
 
     @PostMapping("/api/opentalk/invite")
-    public ResponseEntity<Boolean> inviteMember(@RequestBody @Valid InviteDto inviteDto){
+    public ResponseEntity<String> inviteMember(@RequestBody @Valid InviteDto inviteDto){
         return ResponseEntity.ok(chatRoomService.InviteMember(inviteDto));
     }
 

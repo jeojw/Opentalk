@@ -204,7 +204,8 @@ public class ChatRoomService {
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(roomId);
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(memberId);
         if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
-            if (getParticipates(chatRoomEntity.get().getRoomId()) != chatRoomEntity.get().getLimitParticipates()){
+            if (getParticipates(chatRoomEntity.get().getRoomId()) < chatRoomEntity.get().getLimitParticipates()){
+                System.out.print("입장성공");
                 ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
                         .chatroom(chatRoomEntity.get())
                         .member(memberEntity.get())
@@ -217,8 +218,8 @@ public class ChatRoomService {
                 if (inviteEntity.isPresent()){
                     memberInviteRepository.deleteEntity(inviteEntity.get().getId(), memberEntity.get().getId());
                     inviteMessageRepository.deleteMessage(memberEntity.get().getMemberNickName(), inviter);
-                    return "Success";
                 }
+                return "Success";
             }
         }
         return "Fail";
@@ -351,21 +352,23 @@ public class ChatRoomService {
         return false;
     }
 
-    public boolean InviteMember(InviteDto inviteDto){
+    public String InviteMember(InviteDto inviteDto){
         Optional<MemberEntity> member = memberRepository.findByMemberNickName(inviteDto.getInvitedMember());
-        if (member.isPresent()){
-            InviteEntity inviteEntity = InviteEntity.toInviteEntity(inviteDto);
-            inviteMessageRepository.save(inviteEntity);
-            memberInviteRepository.save(MemberInviteEntity.builder()
-                            .member(member.get())
-                            .message(inviteEntity)
-                            .build());
-            return true;
+        Optional<ChatRoomEntity> chatRoom = chatRoomRepository.findByRoomId(inviteDto.getRoomId());
+        if (member.isPresent() && chatRoom.isPresent()) {
+            if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoom.get().getId(), member.get().getId()), BigInteger.ONE)){
+                return "Fail";
+            }
+            else {
+                InviteEntity inviteEntity = InviteEntity.toInviteEntity(inviteDto);
+                inviteMessageRepository.save(inviteEntity);
+                memberInviteRepository.save(MemberInviteEntity.builder()
+                        .member(member.get())
+                        .message(inviteEntity)
+                        .build());
+                return "Success";
+            }
         }
-        return false;
-    }
-
-    public void deleteInviteMessage(InviteDto inviteDto){
-
+        return "Fail";
     }
 }

@@ -40,19 +40,21 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
 
     const InviteMember = (member) => {
         if (window.confirm("초대하시겠습니까?")){
+            let message = prompt("초대 메세지를 입력해 주십시오.");
             const inviteUrl = "/api/opentalk/invite"
+            if (message === ""){
+                message = "우리 같이 이야기해 보아요."
+            }
             axios.post(inviteUrl, {
                 roomId: roomInfo.roomId,
                 roomName: roomInfo.roomName,
                 inviter: roomInfo.roomManager,
-                message: "null",
+                message: message,
                 invitedMember: member
             })
             .then((res)=>{
-                if (res.data === true){
-                    setShowModal(false);
-                    setNickName("");
-                    setSearchList([]);
+                if (res.data !== "Success"){
+                    window.alert("이미 초대한 유저입니다.");
                 }
             }).catch((error) => console.log(error));
         }

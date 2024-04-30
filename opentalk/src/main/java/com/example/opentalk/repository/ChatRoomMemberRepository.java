@@ -61,7 +61,7 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMemberEn
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM Opentalk.chatroom_member WHERE opentalk_room_list_id = :room_id AND open_talk_member_id = :member_id", nativeQuery = true)
-    int exitRoom(@Param("room_id") String room_id , @Param("member_id") String member_id);
+    void exitRoom(@Param("room_id") String room_id , @Param("member_id") String member_id);
 
     @Modifying
     @Transactional
