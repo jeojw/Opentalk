@@ -168,6 +168,14 @@ const RoomComponent = () => {
                         timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                     })
                 });
+
+                client.current.publish({
+                    destination: '/pub/chat/exitRoomResponse',
+                    body: JSON.stringify({
+                        nickName: "system",
+                        message: ``,
+                    })
+                });
             }
         } catch(error){
             console.log(error);
@@ -204,6 +212,13 @@ const RoomComponent = () => {
                         },
                         message: `${roomMember.memberNickName}님이 강퇴되었습니다.`,
                         timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
+                    })
+                });
+                client.current.publish({
+                    destination: '/pub/chat/exitRoomResponse',
+                    body: JSON.stringify({
+                        nickName: "system",
+                        message: ``,
                     })
                 });
             }
@@ -388,6 +403,22 @@ const RoomComponent = () => {
                 queryClient.invalidateQueries("roomData");
             }
             setChatList((prevChatList)=>[... prevChatList , JSON.parse(body)])
+        });
+
+        client.current.subscribe('/sub/chat/enterRoomResponse', ({body}) =>{
+            if (JSON.parse(body).nickName === "system"){
+                queryClient.invalidateQueries("allChatRooms");
+            }
+        })
+        client.current.subscribe('/sub/chat/exitRoomResponse', ({body}) =>{
+            if (JSON.parse(body).nickName === "system"){
+                queryClient.invalidateQueries("allChatRooms");
+            }
+        })
+        client.current.subscribe(`/sub/chat/changeRoom`, ({body}) => {
+            if (JSON.parse(body).nickName === "system"){
+                queryClient.invalidateQueries("allChatRooms");
+            }
         });
     };
     useEffect(() =>{ 

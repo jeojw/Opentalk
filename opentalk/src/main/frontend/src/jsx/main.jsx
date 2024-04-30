@@ -41,6 +41,16 @@ const MainComponent = () => {
                 heartbeatIncoming: 4000,
                 heartbeatOutgoing: 4000,
                 onConnect: () => {
+                    client.current.subscribe('/sub/chat/enterRoomResponse', ({body}) =>{
+                        if (JSON.parse(body).nickName === "system"){
+                            queryClient.invalidateQueries("allChatRooms");
+                        }
+                    })
+                    client.current.subscribe('/sub/chat/exitRoomResponse', ({body}) =>{
+                        if (JSON.parse(body).nickName === "system"){
+                            queryClient.invalidateQueries("allChatRooms");
+                        }
+                    })
                     client.current.subscribe(`/sub/chat/changeRoom`, ({body}) => {
                         if (JSON.parse(body).nickName === "system"){
                             queryClient.invalidateQueries("allChatRooms");
@@ -241,6 +251,11 @@ const MainComponent = () => {
                             timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                         })});
 
+                        client.current.publish({destination: "/pub/chat/enterRoomResponse", body: JSON.stringify({
+                            nickName: "system",
+                            message: ""
+                        })});
+
                         navigate(`/opentalk/room/${roomInfo.roomId}`);
                     }
                     else{
@@ -283,6 +298,7 @@ const MainComponent = () => {
                                 message: `${member?.memberNickName}님이 채팅방에 입장했습니다.`,
                                 timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                             })});
+                            queryClient.invalidateQueries("allChatRooms");
     
                             navigate(`/opentalk/room/${roomInfo.roomId}`);
                         }
