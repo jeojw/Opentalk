@@ -13,17 +13,13 @@ const Mobile = ({ children }) => {
     return isMobile ? children : null
 }
 
-const InviteMemberComponent = ({roomInfo, role}) => {
+const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [nickName, setNickName] = useState("");
     const [searchList, setSearchList] = useState([]);
 
-    const OpenInviteModal = () => {
-        setIsOpen(true);
-    }
-
     const CloseInviteModal = () => {
-        setIsOpen(false);
+        setShowModal(false);
         setNickName("");
         setSearchList([]);
     }
@@ -66,18 +62,7 @@ const InviteMemberComponent = ({roomInfo, role}) => {
     return (
         <div>
             <Desktop>
-                {role === "ROLE_MANAGER" && (
-                    <Button className='btn-lg' 
-                    variant='#B9B9B9'
-                    style={{  backgroundColor:"#B9B9B9", 
-                            borderTopLeftRadius: "25px",
-                            borderBottomLeftRadius: "25px",
-                            borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px"
-                        }} 
-                    onClick={OpenInviteModal}>초대하기</Button>
-                )}
-                <Modal isOpen={isOpen} onRequestClose={CloseInviteModal}
+                <Modal isOpen={showModal} onRequestClose={CloseInviteModal}
                 style={{
                     content: {
                         width: '450px', // 원하는 너비로 설정
@@ -89,7 +74,7 @@ const InviteMemberComponent = ({roomInfo, role}) => {
                             <InputGroup>
                                 <FormControl 
                                 type="text" 
-                                value={nickName} 
+                                value={showModal} 
                                 onChange={GetInputNickName}
                                 placeholder='검색할 닉네임을 입력하세요.'
                                 style={{borderTopLeftRadius: "25px",
@@ -150,24 +135,12 @@ const InviteMemberComponent = ({roomInfo, role}) => {
                 </Modal>
             </Desktop>
                 <Mobile>
-                {role === "ROLE_MANAGER" && (
-                    <div className="d-grid">
-                        <Button className='btn-sm'
-                        variant='#B9B9B9'
-                        style={{backgroundColor:"#B9B9B9", 
-                                borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px",
-                                borderTopRightRadius: "25px",
-                                borderBottomRightRadius: "25px"
-                                }} 
-                        onClick={OpenInviteModal}>초대하기</Button>
-                    </div>
-                )}
                 <Modal isOpen={isOpen} onRequestClose={CloseInviteModal}
                 style={{
                     content: {
                         width: '340px', // 원하는 너비로 설정
                         height: '400px', // 원하는 높이로 설정
+                        zIndex: 1000
                     }
                 }}>
                     <Row>

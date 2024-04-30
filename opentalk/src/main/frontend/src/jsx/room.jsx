@@ -32,15 +32,18 @@ const RoomComponent = () => {
 
     const [otherMember, setOtherMember] = useState([]);
 
-    const [show, setShow] = useState(false);
+    const [showOffcanvas, setShowOffcanvas] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
-    const handleShow = (e) => {
-        setShow(true);
-    }
 
-    const handleClose = (e) => {
-        setShow(false);
-    }
+    const handleShowOffcanvas = () => {
+        setShowOffcanvas(true);
+    };
+
+    const handleCloseOffcanvas = () => {
+        setShowOffcanvas(false);
+        setShowModal(true)
+    };
 
     const [startIndex, setStartIndex] = useState(0);
     const [endIndex, setEndIndex] = useState(30);
@@ -717,13 +720,35 @@ const RoomComponent = () => {
                                 borderBottomLeftRadius: "25px",
                                 borderTopRightRadius: "25px",
                                 borderBottomRightRadius: "25px"}} onClick={ExitRoom}>나가기</Button>
-                        <ChangRoomComponent room_Id={room_Id} role={role} stompClient={client.current} curParticipates={curParticipates}/>
-                        <InviteMemberComponent roomInfo = {roomInformation} role={role}/>
+                            {role === "ROLE_MANAGER" && (
+                            <Button className='btn-lg'
+                            variant='#B9B9B9' 
+                            style={{  backgroundColor:"#B9B9B9", 
+                                    borderTopLeftRadius: "25px",
+                                    borderBottomLeftRadius: "25px",
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px"
+                                    }} onClick={()=>setShowModal(true)}>설정 변경</Button>
+                            )} 
+                            {role === "ROLE_MANAGER" && (
+                                <Button className='btn-lg' 
+                                variant='#B9B9B9'
+                                style={{  backgroundColor:"#B9B9B9", 
+                                        borderTopLeftRadius: "25px",
+                                        borderBottomLeftRadius: "25px",
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"
+                                    }} 
+                                onClick={()=>setShowModal(true)}>초대하기</Button>
+                            )}
+                        <ChangRoomComponent room_Id={room_Id} stompClient={client.current} curParticipates={curParticipates}
+                        showModal={showModal} setShowModal={setShowModal}/>
+                        <InviteMemberComponent roomInfo = {roomInformation} showModal={showModal} setShowModal={setShowModal}/>
                     </FormGroup>
                 </Container>
             </Desktop>
             <Mobile>
-            <Offcanvas show={show} onHide={handleClose}>
+            <Offcanvas show={showOffcanvas} onHide={handleCloseOffcanvas}>
                 <OffcanvasBody>
                     <Accordion defaultActiveKey="0">
                         <Accordion.Header>참여명단</Accordion.Header>
@@ -757,7 +782,6 @@ const RoomComponent = () => {
                                                 <ListGroupItem>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
                                                     <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                                     {_member?.memberNickName}
-                                                    <br></br>
                                                     <div style={{width:"4px", display:"inline-block"}}/>
                                                     {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
                                                     <Button className="btn-sm"
@@ -800,8 +824,34 @@ const RoomComponent = () => {
                                         borderBottomRightRadius: "25px",
                                         width:"300px"}} onClick={ExitRoom}>나가기</Button>
                                 <hr/>
-                                <ChangRoomComponent room_Id={room_Id} role={role} stompClient={client.current} curParticipates={curParticipates}/>
-                                <InviteMemberComponent roomInfo = {roomInformation} role={role}/>
+                                {role === "ROLE_MANAGER" && (
+                                    <div className="d-grid">
+                                        <Button 
+                                        className='btn-sm'
+                                        variant='#B9B9B9' 
+                                        style={{  backgroundColor:"#B9B9B9", 
+                                                borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px",
+                                                borderTopRightRadius: "25px",
+                                                borderBottomRightRadius: "25px",
+                                                width: "100%"
+                                                }} onClick={handleCloseOffcanvas}>설정 변경</Button>
+                                    </div>
+                                )} 
+                                {role === "ROLE_MANAGER" && (
+                                    <div className="d-grid">
+                                        <Button className='btn-sm'
+                                        variant='#B9B9B9'
+                                        style={{backgroundColor:"#B9B9B9", 
+                                                borderTopLeftRadius: "25px",
+                                                borderBottomLeftRadius: "25px",
+                                                borderTopRightRadius: "25px",
+                                                borderBottomRightRadius: "25px"
+                                                }} 
+                                        onClick={handleCloseOffcanvas}>초대하기</Button>
+                                    </div>
+                                )}
+                                
                             </div>
                         </FormGroup>
                         <hr/>
@@ -813,11 +863,18 @@ const RoomComponent = () => {
                                 borderBottomLeftRadius: "25px",
                                 borderTopRightRadius: "25px",
                                 borderBottomRightRadius: "25px"}}
-                        onClick={handleClose}>
+                        onClick={handleCloseOffcanvas}>
                             닫기
                         </Button>
                     </OffcanvasBody>
                 </Offcanvas>
+                {showModal && (
+                        <>
+                            <ChangRoomComponent room_Id={room_Id} stompClient={client.current} curParticipates={curParticipates}
+                                    showModal={showModal} setShowModal={setShowModal}/>
+                            <InviteMemberComponent roomInfo = {roomInformation} showModal={showModal} setShowModal={setShowModal}/>
+                        </>
+                )}
                 <Container style={{maxWidth:'767px'}}>
                     <Row>
                         <Col 
@@ -832,7 +889,7 @@ const RoomComponent = () => {
                                     borderBottomLeftRadius: "25px",
                                     borderTopRightRadius: "25px",
                                     borderBottomRightRadius: "25px"}}
-                            onClick={handleShow}>
+                            onClick={handleShowOffcanvas}>
                             설정
                             </Button>
                         </Col>

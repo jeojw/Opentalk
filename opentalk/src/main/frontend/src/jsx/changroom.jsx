@@ -14,11 +14,10 @@ const Mobile = ({ children }) => {
     return isMobile ? children : null
 }
 
-const ChangRoomComponent = ({room_Id, role, stompClient, curParticipates}) => {
+const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, setShowModal}) => {
     const queryClient = useQueryClient();
 
     const [roomData, setRoomData] = useState();
-    const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [preRoomName, setPreRoomName] = useState("");
 
@@ -63,11 +62,11 @@ const ChangRoomComponent = ({room_Id, role, stompClient, curParticipates}) => {
     }, []);
 
     const openModal = () => {
-        setIsOpen(true);
+        setShowModal(true);
     }
 
     const cancleSetModal = () => {
-        setIsOpen(false);
+        setShowModal(false);
         setRoomName(preRoomName);
         setExistLock(preExistLock);
         setInfo(preInfo);
@@ -97,7 +96,7 @@ const ChangRoomComponent = ({room_Id, role, stompClient, curParticipates}) => {
                     })
                 });
                 queryClient.invalidateQueries("allChatRooms");
-                setIsOpen(false);
+                setShowModal(false);
             }
         } catch(error){
             console.log(error);
@@ -178,17 +177,7 @@ const ChangRoomComponent = ({room_Id, role, stompClient, curParticipates}) => {
     return(
         <div>
             <Desktop>
-                {role === "ROLE_MANAGER" && (
-                <Button className='btn-lg'
-                variant='#B9B9B9' 
-                style={{  backgroundColor:"#B9B9B9", 
-                        borderTopLeftRadius: "25px",
-                        borderBottomLeftRadius: "25px",
-                        borderTopRightRadius: "25px",
-                        borderBottomRightRadius: "25px"
-                        }} onClick={openModal}>설정 변경</Button>
-                )} 
-                <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}
+                <Modal isOpen={showModal} onRequestClose ={cancleSetModal}
                 style={{
                     content: {
                         width: '800px', // 원하는 너비로 설정
@@ -317,25 +306,13 @@ const ChangRoomComponent = ({room_Id, role, stompClient, curParticipates}) => {
                 </Modal>
             </Desktop>
             <Mobile>
-                <div className="d-grid gap-4">
-                    {role === "ROLE_MANAGER" && (
-                    <Button 
-                    className='btn-sm'
-                    variant='#B9B9B9' 
-                    style={{  backgroundColor:"#B9B9B9", 
-                            borderTopLeftRadius: "25px",
-                            borderBottomLeftRadius: "25px",
-                            borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px",
-                            width: "100%"
-                            }} onClick={openModal}>설정 변경</Button>
-                    )} 
-                </div>
-                <Modal isOpen={isOpen} onRequestClose ={cancleSetModal}
+                <Modal isOpen={showModal} onRequestClose ={cancleSetModal}
+                onHide
                 style={{
                     content: {
                         width: '350px', // 원하는 너비로 설정
                         height: '400px', // 원하는 높이로 설정
+                        zIndex: 1000
                     }
                 }}>
                     <Row>
