@@ -41,22 +41,19 @@ const App = () => {
           </Routes>
         </BrowserView>
         <MobileView>
+          <Routes>
             <Route path="/" element={<Navigate to="/opentalk" />} />
-            <Route path='/opentalk'>
-            <Routes>
-              <Route path="/" element={<Navigate to="/opentalk" />} />
-              <Route path="/opentalk/profile" element={<ProfileMobile/>}></Route>
-              <Route path="/opentalk/room/:room_Id" element={<RoomMobile/>}></Route>
-              <Route path ="/opentalk/authId" element={<AuthIdMobile/>}></Route>
-              <Route path = "/opentalk/changePw" element={<ChangePwMobile/>}></Route>
-              <Route path = "/opentalk/findId" element={<FindIdMobile/>}></Route>
-              <Route path = "/opentalk/findPw" element={<FindPwMobile/>}></Route>
-              <Route path = "/opentalk/login" element={<LoginMobile/>}></Route>
-              <Route path = "/opentalk" element={<FrontMobile/>}></Route>
-              <Route path = "/opentalk/enroll" element={<EnrollMobile/>}></Route>
-              <Route path = "/opentalk/main" element={<MainMobile/>}></Route>
-            </Routes>
-          </Route>
+            <Route path="/opentalk/profile" element={<ProfileMobile/>}></Route>
+            <Route path="/opentalk/room/:room_Id" element={<RoomMobile/>}></Route>
+            <Route path ="/opentalk/authId" element={<AuthIdMobile/>}></Route>
+            <Route path = "/opentalk/changePw" element={<ChangePwMobile/>}></Route>
+            <Route path = "/opentalk/findId" element={<FindIdMobile/>}></Route>
+            <Route path = "/opentalk/findPw" element={<FindPwMobile/>}></Route>
+            <Route path = "/opentalk/login" element={<LoginMobile/>}></Route>
+            <Route path = "/opentalk" element={<FrontMobile/>}></Route>
+            <Route path = "/opentalk/enroll" element={<EnrollMobile/>}></Route>
+            <Route path = "/opentalk/main" element={<MainMobile/>}></Route>
+          </Routes>
         </MobileView>
       </div>
     </Router>

@@ -96,6 +96,19 @@ const RoomComponent = () => {
         }
     };
 
+    const handleScrollM = (e) => {
+        const { scrollTop, scrollHeight, clientHeight } = e.target;
+        const threshold = (scrollHeight - clientHeight) * -1;
+        
+        if (e.target === chatContainerRefM.current && scrollTop <= threshold) {
+            if (startIndex >= 10)
+                setStartIndex(prevStartIndex => prevStartIndex - 10);
+            else
+                setStartIndex(0);
+            setPrevScroll(scrollTop);
+        }
+    };
+
     const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
 
     let {room_Id} = useParams();  
@@ -832,7 +845,7 @@ const RoomComponent = () => {
                             xl={6}
                             lg={6} 
                             ref={chatContainerRefM}
-                            onScroll={handleScroll}
+                            onScroll={handleScrollM}
                             style={{ 
                                 width:'100%',
                                 height: "calc(var(--vh, 1vh) * 65)",
