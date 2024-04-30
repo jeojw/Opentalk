@@ -6,7 +6,7 @@ import { useQueryClient, useMutation } from 'react-query';
 import { useMediaQuery } from 'react-responsive';
 
 const Desktop = ({ children }) => {
-    const isDesktop = useMediaQuery({ minWidth: 1224 })
+    const isDesktop = useMediaQuery({ minWidth: 768 })
     return isDesktop ? children : null
 }
 const Mobile = ({ children }) => {

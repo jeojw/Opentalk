@@ -4,6 +4,7 @@ import com.example.opentalk.Jwt.JwtAccessDeniedHandler;
 import com.example.opentalk.Jwt.JwtAuthenticationEntryPoint;
 import com.example.opentalk.Jwt.JwtAuthenticationFilter;
 import com.example.opentalk.Jwt.JwtTokenProvider;
+import com.example.opentalk.entity.UserRole;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import lombok.RequiredArgsConstructor;
@@ -64,8 +65,11 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeRequests() // '인증'이 필요하다
-                .antMatchers("/**").permitAll()// 마이페이지 인증 필요
-                .antMatchers("/api/admin/**").hasRole("ADMIN") // 관리자 페이지
+                .antMatchers("/opentalk/**").permitAll()
+                .antMatchers("/opentalk/main",
+                        "/opentalk/profile",
+                        "/opentalk/room/**").authenticated()
+                .antMatchers("/api/admin/**").hasRole(UserRole.ADMIN.getKey()) // 관리자 페이지
                 .anyRequest().permitAll()
 
                 .and()

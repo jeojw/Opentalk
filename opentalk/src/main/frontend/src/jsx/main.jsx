@@ -14,7 +14,7 @@ import { format } from 'date-fns'
 import { useMediaQuery } from 'react-responsive';
 
 const Desktop = ({ children }) => {
-    const isDesktop = useMediaQuery({ minWidth: 767, maxWidth:1920 })
+    const isDesktop = useMediaQuery({ minWidth: 768, maxWidth:1920 })
     return isDesktop ? children : null
 }
 const Mobile = ({ children }) => {
@@ -493,14 +493,14 @@ const MainComponent = () => {
             .then((res) => {
                 if (res.status === 200){
                     localStorage.removeItem("token");
-                    navigate("/");
+                    navigate("/opentalk");
                 }
             })
             .catch((error) => console.log(error));
         }
         else{
             alert("이미 로그아웃되었습니다.");
-            navigate("/");
+            navigate("/opentalk");
         }
         
     };

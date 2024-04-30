@@ -119,7 +119,7 @@ const LoginComponent = () => {
                             style={{borderTopLeftRadius: "25px",
                                     borderBottomLeftRadius: "25px",
                                     borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}} onClick={() => navigate("/")}>시작화면으로</Button>
+                                    borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk")}>시작화면으로</Button>
                         </div>
                     </Form>
                 </Col>

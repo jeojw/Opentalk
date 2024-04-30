@@ -1,6 +1,6 @@
 import { BrowserView, MobileView } from 'react-device-detect';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import Login from './jsx/login'
 import Front from './jsx/front'
 import Enroll from './jsx/enroll'
@@ -27,6 +27,7 @@ const App = () => {
       <div>
         <BrowserView>
           <Routes>
+            <Route path="/" element={<Navigate to="/opentalk" />} />
             <Route path="/opentalk/profile" element={<Profile/>}></Route>
             <Route path="/opentalk/room/:room_Id" element={<Room/>}></Route>
             <Route path ="/opentalk/authId" element={<AuthId/>}></Route>
@@ -34,24 +35,28 @@ const App = () => {
             <Route path = "/opentalk/findId" element={<FindId/>}></Route>
             <Route path = "/opentalk/findPw" element={<FindPw/>}></Route>
             <Route path = "/opentalk/login" element={<Login/>}></Route>
-            <Route path = "/" element={<Front/>}></Route>
+            <Route path = "/opentalk" element={<Front/>}></Route>
             <Route path = "/opentalk/enroll" element={<Enroll/>}></Route>
             <Route path = "/opentalk/main" element={<Main/>}></Route>
           </Routes>
         </BrowserView>
         <MobileView>
-          <Routes>
-            <Route path="/opentalk/profile" element={<ProfileMobile/>}></Route>
-            <Route path="/opentalk/room/:room_Id" element={<RoomMobile/>}></Route>
-            <Route path ="/opentalk/authId" element={<AuthIdMobile/>}></Route>
-            <Route path = "/opentalk/changePw" element={<ChangePwMobile/>}></Route>
-            <Route path = "/opentalk/findId" element={<FindIdMobile/>}></Route>
-            <Route path = "/opentalk/findPw" element={<FindPwMobile/>}></Route>
-            <Route path = "/opentalk/login" element={<LoginMobile/>}></Route>
-            <Route path = "/" element={<FrontMobile/>}></Route>
-            <Route path = "/opentalk/enroll" element={<EnrollMobile/>}></Route>
-            <Route path = "/opentalk/main" element={<MainMobile/>}></Route>
-          </Routes>
+            <Route path="/" element={<Navigate to="/opentalk" />} />
+            <Route path='/opentalk'>
+            <Routes>
+              <Route path="/" element={<Navigate to="/opentalk" />} />
+              <Route path="/opentalk/profile" element={<ProfileMobile/>}></Route>
+              <Route path="/opentalk/room/:room_Id" element={<RoomMobile/>}></Route>
+              <Route path ="/opentalk/authId" element={<AuthIdMobile/>}></Route>
+              <Route path = "/opentalk/changePw" element={<ChangePwMobile/>}></Route>
+              <Route path = "/opentalk/findId" element={<FindIdMobile/>}></Route>
+              <Route path = "/opentalk/findPw" element={<FindPwMobile/>}></Route>
+              <Route path = "/opentalk/login" element={<LoginMobile/>}></Route>
+              <Route path = "/opentalk" element={<FrontMobile/>}></Route>
+              <Route path = "/opentalk/enroll" element={<EnrollMobile/>}></Route>
+              <Route path = "/opentalk/main" element={<MainMobile/>}></Route>
+            </Routes>
+          </Route>
         </MobileView>
       </div>
     </Router>

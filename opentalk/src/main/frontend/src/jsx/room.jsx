@@ -12,7 +12,7 @@ import "../css/CustomPagination.css"
 import { useMediaQuery } from 'react-responsive';
 
 const Desktop = ({ children }) => {
-    const isDesktop = useMediaQuery({ minWidth: 767, maxWidth:1920 })
+    const isDesktop = useMediaQuery({ minWidth: 768, maxWidth:1920 })
     return isDesktop ? children : null
 }
 const Mobile = ({ children }) => {
@@ -290,7 +290,7 @@ const RoomComponent = () => {
                 }
             }
             else{
-                navigate("/");
+                navigate("/opentalk");
             }
         }
         fetchInfo();

@@ -5,12 +5,8 @@ import { Button, Container, Row, Col } from 'react-bootstrap';
 import { useMediaQuery } from 'react-responsive';
 
 const Desktop = ({ children }) => {
-    const isDesktop = useMediaQuery({ minWidth: 1224 })
+    const isDesktop = useMediaQuery({ minWidth: 768 })
     return isDesktop ? children : null
-}
-const Tablet = ({ children }) => {
-    const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 })
-    return isTablet ? children : null
 }
 const Mobile = ({ children }) => {
     const isMobile = useMediaQuery({ maxWidth: 767 })
