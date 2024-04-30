@@ -46,7 +46,7 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
     };
 
     const decrementParticipants = () => {
-        if (participants > curParticipates || participants > 3) {
+        if (participants > curParticipates && participants > 3) {
             setParticipants(participants - 1);
         }
         else if (participants <= 3){
