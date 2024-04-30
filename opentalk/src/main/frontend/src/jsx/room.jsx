@@ -61,24 +61,26 @@ const RoomComponent = () => {
     }, [startIndex, prevScroll]);
 
     useEffect(() => {
-        const observer = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting && preChatList.length > 0){
-                chatContainerRefM.current.scrollTop = prevScroll;
-                setStartIndex(prevStartIndex => prevStartIndex - 10);
-            }
-        }, {
-            root:null,
-            rootMargin: '0px',
-            threshold: 1
-        });
-
         if (chatContainerRefM.current){
-            observer.observe(chatContainerRefM.current);
-        }
-
-        return () =>{
+            const observer = new IntersectionObserver(entries => {
+                if (entries[0].isIntersecting && preChatList.length > 0){
+                    chatContainerRefM.current.scrollTop = prevScroll;
+                    setStartIndex(prevStartIndex => prevStartIndex - 10);
+                }
+            }, {
+                root:null,
+                rootMargin: '0px',
+                threshold: 1
+            });
+    
             if (chatContainerRefM.current){
-                observer.unobserve(chatContainerRefM.current);
+                observer.observe(chatContainerRefM.current);
+            }
+    
+            return () =>{
+                if (chatContainerRefM.current){
+                    observer.unobserve(chatContainerRefM.current);
+                }
             }
         }
     }, [preChatList, prevScroll]);
@@ -86,8 +88,9 @@ const RoomComponent = () => {
     const handleScroll = (e) => {
         const { scrollTop, scrollHeight, clientHeight } = e.target;
         const threshold = (scrollHeight - clientHeight) * -1;
+        console.log(scrollHeight - clientHeight);
         
-        if (e.target === chatContainerRefM.current && scrollTop <= threshold) {
+        if (scrollTop <= threshold) {
             if (startIndex >= 10)
                 setStartIndex(prevStartIndex => prevStartIndex - 10);
             else
