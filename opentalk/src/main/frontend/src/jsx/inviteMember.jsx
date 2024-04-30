@@ -30,6 +30,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
     const SearchByNickName = (keyword) => {
         const searchUrl = "/api/opentalk/member/searchNickName"
         const data = new FormData();
+        data.append("roomId", roomInfo.roomId);
         data.append("nickName", keyword);
         axios.post(searchUrl, data)
         .then((res) => {

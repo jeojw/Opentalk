@@ -34,8 +34,8 @@ public class MemberController {
     }
 
     @PostMapping("/api/opentalk/member/searchNickName")
-    public ResponseEntity<List<AuthDto.ResponseDto>> searchMember(@RequestParam("nickName") String nickName){
-        return ResponseEntity.ok(memberService.searchMember(nickName));
+    public ResponseEntity<List<AuthDto.ResponseDto>> searchMember(@RequestParam("roomId") String roomId, @RequestParam("nickName") String nickName){
+        return ResponseEntity.ok(memberService.searchMember(roomId, nickName));
     }
 
     @PostMapping("/api/opentalk/member/findId")

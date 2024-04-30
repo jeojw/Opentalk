@@ -5,10 +5,7 @@ import com.example.opentalk.dto.InviteDto;
 import com.example.opentalk.entity.ChatRoomEntity;
 import com.example.opentalk.entity.InviteEntity;
 import com.example.opentalk.entity.MemberEntity;
-import com.example.opentalk.repository.ChatRoomRepository;
-import com.example.opentalk.repository.InviteMessageRepository;
-import com.example.opentalk.repository.MemberInviteRepository;
-import com.example.opentalk.repository.MemberRepository;
+import com.example.opentalk.repository.*;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.WriteChannel;
 import com.google.cloud.storage.*;
@@ -22,11 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +31,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final BCryptPasswordEncoder encoder;
     private final InviteMessageRepository inviteMessageRepository;
     private final MemberInviteRepository memberInviteRepository;
@@ -151,18 +147,24 @@ public class MemberService {
     }
 
     @Transactional
-    public List<AuthDto.ResponseDto> searchMember(String nickName){
+    public List<AuthDto.ResponseDto> searchMember(String roomId, String nickName){
+        Optional<ChatRoomEntity> chatRoom = chatRoomRepository.findByRoomId(roomId);
         List<Optional<MemberEntity>> list = memberRepository.searchByMemberNickName(nickName);
         List<AuthDto.ResponseDto> returnList = new ArrayList<>();
-        for (Optional<MemberEntity> member : list){
-            member.ifPresent(memberEntity -> returnList.add(AuthDto.ResponseDto.builder()
-                    .memberId(memberEntity.getMemberId())
-                    .memberName(memberEntity.getMemberName())
-                    .memberNickName(memberEntity.getMemberNickName())
-                    .imgUrl(memberEntity.getImgUrl())
-                    .build()));
+        if (chatRoom.isPresent()) {
+            for (Optional<MemberEntity> member : list) {
+                if (member.isPresent()){
+                    if (!Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoom.get().getId(), member.get().getId()), BigInteger.ONE)){
+                        returnList.add(AuthDto.ResponseDto.builder()
+                                .memberId(member.get().getMemberId())
+                                .memberName(member.get().getMemberName())
+                                .memberNickName(member.get().getMemberNickName())
+                                .imgUrl(member.get().getImgUrl())
+                                .build());
+                    }
+                }
+            }
         }
-
         return returnList;
     }
 
