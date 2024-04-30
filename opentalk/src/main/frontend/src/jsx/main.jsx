@@ -71,6 +71,11 @@ const MainComponent = () => {
                             queryClient.invalidateQueries("allChatRooms");
                         }
                     });
+                    client.current.subscribe(`/sub/chat/authMandateResponse`, ({body}) => {
+                        if (JSON.parse(body).nickName === "system"){
+                            queryClient.invalidateQueries("allChatRooms");
+                        }
+                    });
                 },
                 onStompError: (frame) => {
                     console.error(frame);

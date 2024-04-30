@@ -40,10 +40,16 @@ public class StompChatController {
         template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
     }
 
+    @MessageMapping("/chat/authMandateResponse")
+    public void authMandateResponse(SystemMessageDto message){
+        message.setMessage(message.getMessage());
+        template.convertAndSend("/sub/chat/authMandateResponse", message);
+    }
+
     @MessageMapping("/chat/enterRoomResponse")
     public void enterRoomResponse(SystemMessageDto message){
         message.setMessage(message.getMessage());
-        template.convertAndSend("/pub/chat/enterRoomResponse", message);
+        template.convertAndSend("/sub/chat/enterRoomResponse", message);
     }
 
     @MessageMapping("/chat/exitRoomResponse")

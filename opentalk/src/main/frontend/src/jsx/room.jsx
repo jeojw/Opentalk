@@ -170,7 +170,7 @@ const RoomComponent = () => {
                 });
 
                 client.current.publish({
-                    destination: '/pub/chat/exitRoomResponse',
+                    destination: '/pub/chat/authMandateResponse',
                     body: JSON.stringify({
                         nickName: "system",
                         message: ``,
@@ -228,6 +228,7 @@ const RoomComponent = () => {
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries('roomData');
+            queryClient.invalidateQueries('allChatRooms');
         }
     });
 
@@ -256,6 +257,13 @@ const RoomComponent = () => {
                         timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                     })
                 });
+                client.current.publish({
+                    destination: '/pub/chat/exitRoomResponse',
+                    body: JSON.stringify({
+                        nickName: "system",
+                        message: ``,
+                    })
+                });
             }
         } catch(error){
             console.log(error);
@@ -263,6 +271,7 @@ const RoomComponent = () => {
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries('roomData');
+            queryClient.invalidateQueries('allChatRooms');
         }
     });
 
@@ -291,6 +300,15 @@ const RoomComponent = () => {
                         timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                     })
                 });
+                
+                client.current.publish({
+                    destination: '/pub/chat/exitRoomResponse',
+                    body: JSON.stringify({
+                        nickName: "system",
+                        message: ``,
+                    })
+                });
+
                 navigate("/opentalk/main");
             }
         } catch(error){
@@ -299,6 +317,7 @@ const RoomComponent = () => {
     }, {
         onSuccess: () =>{
             queryClient.invalidateQueries('roomData');
+            queryClient.invalidateQueries('allChatRooms');
         }
     });
 
@@ -416,6 +435,11 @@ const RoomComponent = () => {
             }
         })
         client.current.subscribe(`/sub/chat/changeRoom`, ({body}) => {
+            if (JSON.parse(body).nickName === "system"){
+                queryClient.invalidateQueries("allChatRooms");
+            }
+        });
+        client.current.subscribe(`/sub/chat/authMandateResponse`, ({body}) => {
             if (JSON.parse(body).nickName === "system"){
                 queryClient.invalidateQueries("allChatRooms");
             }
