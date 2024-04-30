@@ -36,7 +36,26 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
     const [participants, setParticipants] = useState(0);
     const [preParticipates, setPreParticipants] = useState(0);
 
-    const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+    const incrementParticipants = () => {
+        if (participants < 20) {
+          setParticipants(participants + 1);
+        }
+        else{
+            window.alert("방의 인원수는 최대 20명까지 가능합니다.");
+        }
+    };
+
+    const decrementParticipants = () => {
+        if (participants > curParticipates || participants > 3) {
+            setParticipants(participants - 1);
+        }
+        else if (participants <= curParticipates){
+            window.alert("현재 인원수보다 적게 인원을 설정할 수 없습니다.");
+        }
+        else{
+            window.alert("방의 인원수는 최소 3명부터 가능합니다.");
+        }
+    };
 
     useEffect(() =>{
         const fetchCurRoomInfo = async () => {
@@ -335,10 +354,20 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                                 type='number'
                                 min={3}
                                 max={20}
-                                value={participants} 
-                                onChange={GetInputParticipates}
-                                style={{borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"}}></FormControl>
+                                value={participants}/>
+                            <Button
+                                variant='#B9B9B9' 
+                                onClick={incrementParticipants} style={{
+                                backgroundColor:"#B9B9B9"
+                            }}>+</Button>
+                            <Button
+                                variant="dark" 
+                                onClick={decrementParticipants} style={{
+                                borderTopRightRadius: "25px",
+                                borderBottomRightRadius: "25px",
+                                width:"40px"
+                            }}>-</Button>
+
                         </InputGroup>
                         <br></br>
                         <InputGroup className='d-flex flex-row gap-1'>

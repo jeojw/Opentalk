@@ -27,6 +27,24 @@ export const SetRoomComponent = ({stompClient, onDataUpdate}) =>{
 
     const queryClient = useQueryClient();
 
+    const incrementParticipants = () => {
+        if (participants < 20) {
+          setParticipants(participants + 1);
+        }
+        else{
+            window.alert("방의 인원수는 최대 20명까지 가능합니다.");
+        }
+    };
+
+    const decrementParticipants = () => {
+        if (participants > 3) {
+            setParticipants(participants - 1);
+        }
+        else{
+            window.alert("방의 인원수는 최소 3명부터 가능합니다.");
+        }
+    };
+
     useEffect(() => {
         const fetchManager = async () =>{
             if (localStorage.getItem("token")){
@@ -361,10 +379,21 @@ export const SetRoomComponent = ({stompClient, onDataUpdate}) =>{
                                     min={3} 
                                     max={20} 
                                     value={participants} 
-                                    onChange={GetInputParticipates}
                                     style={{borderTopRightRadius: "25px",
                                             borderBottomRightRadius: "25px"}}
                                 ></FormControl>
+                                <Button
+                                    variant='#B9B9B9' 
+                                    onClick={incrementParticipants} style={{
+                                    backgroundColor:"#B9B9B9"
+                                }}>+</Button>
+                                <Button
+                                    variant="dark" 
+                                    onClick={decrementParticipants} style={{
+                                    borderTopRightRadius: "25px",
+                                    borderBottomRightRadius: "25px",
+                                    width:"40px"
+                                }}>-</Button>
                             </InputGroup>
                             <br></br>
                             <InputGroup className='d-flex flex-row gap-1'>
@@ -411,10 +440,11 @@ export const SetRoomComponent = ({stompClient, onDataUpdate}) =>{
                                     style={{borderTopLeftRadius: "25px",
                                             borderBottomLeftRadius: "25px",}}
                                 ></FormControl>
-                                <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F', 
-                                                                borderTopRightRadius: "25px",
-                                                                borderBottomRightRadius: "25px"
-                                                                }} onClick={()=>AppendTag(tag)}><strong>태그 추가</strong></Button>
+                                <Button variant="#8F8F8F" 
+                                    style={{backgroundColor:'#8F8F8F', 
+                                        borderTopRightRadius: "25px",
+                                        borderBottomRightRadius: "25px"
+                                    }} onClick={()=>AppendTag(tag)}><strong>태그 추가</strong></Button>
                             </InputGroup>
 
                             <ListGroup className="list-group list-group-horizontal">
