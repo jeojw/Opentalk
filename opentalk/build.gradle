@@ -36,9 +36,7 @@ dependencies {
 	implementation 'mysql:mysql-connector-java'
 
 	runtimeOnly 'mysql:mysql-connector-java'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 	implementation group: 'org.javassist', name: 'javassist', version: '3.15.0-GA'
 
 	implementation 'javax.mail:mail:1.4.7'
