@@ -91,7 +91,6 @@ const RoomComponent = () => {
     const handleScroll = (e) => {
         const { scrollTop, scrollHeight, clientHeight } = e.target;
         const threshold = (scrollHeight - clientHeight) * -1;
-        console.log(scrollHeight - clientHeight);
         
         if (scrollTop <= threshold) {
             if (startIndex >= 10)
@@ -300,7 +299,7 @@ const RoomComponent = () => {
                         timeStamp: format(kr_Time, "yyyy-MM-dd-HH:mm")
                     })
                 });
-                
+
                 client.current.publish({
                     destination: '/pub/chat/exitRoomResponse',
                     body: JSON.stringify({
@@ -392,7 +391,6 @@ const RoomComponent = () => {
             const curTime = new Date();
             const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
             const kr_Time = new Date(utc + (KR_TIME_DIFF));
-            console.log(format(kr_Time, "yyyy-MM-dd-HH:mm"));
             axios.post('/api/opentalk/saveChat', {
                 chatRoom: roomInformation,
                 member: myInfo,

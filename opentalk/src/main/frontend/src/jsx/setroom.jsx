@@ -14,7 +14,7 @@ const Mobile = ({ children }) => {
     return isMobile ? children : null
 }
 
-export const SetRoomComponent = ({stompClient, onDataUpdate}) =>{
+export const SetRoomComponent = ({stompClient}) =>{
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [participants, setParticipants] = useState(3);
@@ -160,7 +160,6 @@ export const SetRoomComponent = ({stompClient, onDataUpdate}) =>{
             if (res.status === 200){
                 window.alert("방이 생성되었습니다.");
                 closeModal();
-                onDataUpdate(prevState => !prevState);
 
                 stompClient.publish({destination: "/pub/chat/createRoom", body: JSON.stringify({
                     nickName: "system",

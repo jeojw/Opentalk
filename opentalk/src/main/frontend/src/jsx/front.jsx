@@ -13,7 +13,7 @@ const Mobile = ({ children }) => {
     return isMobile ? children : null
 }
 
-const FrontComponent = (props) => {
+const FrontComponent = () => {
     const navigate = useNavigate();
 
     useEffect(()=>{

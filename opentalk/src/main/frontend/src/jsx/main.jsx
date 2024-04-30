@@ -167,15 +167,8 @@ const MainComponent = () => {
         if (allChatRooms && !isLoading && !isError && !isFetching && isFetched) {
             setAllChatRoomList(allChatRooms);
             setPageLength(allChatRooms.length);
-            console.log(allChatRooms);
         }
     }, [allChatRooms, isLoading, isError, isFetching, isFetched]);
-
-    const { mutate: updateRooms } = useMutation(async () => {}, {
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey:["allChatRooms"]});
-        }
-    });
 
     const { mutate: mutateDeleteRoom } = useMutation(async ({roomInfo}) => {
         if (window.confirm("방을 삭제하시겠습니까?")){
@@ -192,7 +185,6 @@ const MainComponent = () => {
                         nickName: "system",
                         message: `방이 삭제되었습니다.`,
                     })});
-                    queryClient.invalidateQueries("allChatRooms");
                 } else {
                     window.alert("아직 방에 인원이 남아있습니다.");
                 }
@@ -341,7 +333,6 @@ const MainComponent = () => {
                     const data = new FormData();
                     data.append("roomId", roomId);
                     const roomRes = await axios.post(findRoom, data);
-                    console.log(roomRes);
                     if (roomRes.status === 200){
                         try{
                             let currentRole;
@@ -719,7 +710,6 @@ const MainComponent = () => {
                         <SetRoomComponent
                             stompClient={client.current}
                             onDataUpdate={setIsUpdateTrigger}
-                            updateFunction={updateRooms}
                         />
                         <br></br>
                         <ListGroup>
@@ -963,7 +953,6 @@ const MainComponent = () => {
                         <SetRoomComponent
                             stompClient={client.current}
                             onDataUpdate={setIsUpdateTrigger}
-                            updateFunction={updateRooms}
                         />
                         <br></br>
                         <ListGroup>

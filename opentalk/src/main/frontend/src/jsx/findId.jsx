@@ -41,7 +41,6 @@ const FindMemberComponent = () => {
             }).then((res)=>{
                 const emailData = new FormData();
                 emailData.append("memberEmail", memberEmail)
-                console.log(emailData);
                 if (res.data === "ok"){
                     axios.post(`/api/opentalk/findId`, emailData)
                     .then((res) => {
