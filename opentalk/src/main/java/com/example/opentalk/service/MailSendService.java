@@ -20,45 +20,37 @@ public class MailSendService {
     public boolean CheckAuthNum(String email, String authNum){
         if (redisService.getValues(authNum) == null)
             return false;
-        else if (redisService.getValues(authNum).equals(email))
-            return true;
-        else
-            return false;
+        else return redisService.getValues(authNum).equals(email);
     }
 
     public void makeRandomNumber(){
         Random r = new Random();
-        String randomNumber = "";
+        StringBuilder randomNumber = new StringBuilder();
         for (int i = 0; i < 6; i++){
-            randomNumber += Integer.toString(r.nextInt(10));
+            randomNumber.append(Integer.toString(r.nextInt(10)));
         }
 
-        authNumber = Integer.parseInt(randomNumber);
+        authNumber = Integer.parseInt(randomNumber.toString());
     }
 
     public String joinTitle(String type){
-        if (type.equals("enroll")){
-            return "회원 가입 인증 이메일 입니다.";
-        }
-        if (type.equals("findId")){
-            return "아이디 찾기 인증 이메일 입니다.";
-        }
-        if (type.equals("findPw")){
-            return "비밀번호 찾기 인증 이메일 입니다.";
-        }
+        return switch (type) {
+            case "enroll" -> "회원 가입 인증 이메일 입니다.";
+            case "findId" -> "아이디 찾기 인증 이메일 입니다.";
+            case "findPw" -> "비밀번호 찾기 인증 이메일 입니다.";
+            default -> null;
+        };
 
-        return null;
     }
     public String joinEmail(String email, String sendType){
         makeRandomNumber();
         String setFrom = "jeawookjeong@gmail.com";
-        String toMail = email;
         String title = joinTitle(sendType);
         String content =
                 "인증 번호는 " + authNumber + "입니다." +
                         "<br>" +
                         "인증번호를 제대로 입력해주세요.";
-        mailSend(setFrom, toMail, title, content);
+        mailSend(setFrom, email, title, content);
         return Integer.toString(authNumber);
     }
 
