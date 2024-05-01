@@ -601,7 +601,7 @@ const MainComponent = () => {
    return (
     <div>
         <Desktop>
-            <Container>
+            <Container style={{ minHeight: '100vh'}}>
                 <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
                             content: {
                                 backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
@@ -792,7 +792,7 @@ const MainComponent = () => {
             </Container>
         </Desktop>
         <Mobile>
-            <Container>
+            <Container style={{ minHeight: '100vh'}}>
             <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
                             content: {
                                 backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',

@@ -598,244 +598,246 @@ const RoomComponent = () => {
     return(
         <div>
             <Desktop>
-                <Container className={`border border-3 rounded-4 p-5`} style={{maxWidth:'850px'}}>
-                    <Container style={{maxWidth:'750px'}}>
-                        <Row>
-                            <Col className={`border-3 rounded-4 p-5 d-flex justify-content-left align-items-center`}
-                            style={{
-                                backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999", 
-                                height:"110px"}}>
-                                {/* Option Chaining!!! */}
-                                <h3 style={{color: theme === 'light' ? "#000000" : "#FFFFFF"}}>{roomInformation?.roomName}</h3> 
-                            </Col>
-                        </Row>
-                    </Container>
-                    <Container className={`border-3 rounded-4 p-5`}
-                    style={{backgroundColor: theme === 'light' ? "#898989" : '#666666', maxWidth:'750px'}}>
-                        <Row>
-                            <Col 
-                                className={`border-${theme === 'light' ? '#898989' : '#666666'} border-1 rounded-1 p-4`}  
-                                sm={3}
-                                md={3}
-                                xl={3}
-                                lg={3} 
-                                ref={chatContainerRef}
-                                onScroll={handleScroll}
-                                style={{ 
-                                    width:'60%', 
-                                    height:'400px', 
-                                    overflowY: 'scroll', 
-                                    maxHeight: '400px',
-                                    display: "flex",
-                                    flexDirection: "column-reverse" }}>
-                                {chatList && chatList.length > 0 && (
-                                <ListGroup style={{marginBottom: '10px'}}>
-                                    {chatList.map((_chatMessage) => {
-                                        let fontcolor = "#000000";
-                                        let color = "";
-                                        let textAlign = "left";
-                                        let itemClassName = "d-flex justify-content-start";
-                                        if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
-                                            color = theme === "light" ? "#C3C3C3" : "#999999";
-                                            fontcolor = theme === "light" ? "#000000" : "#FFFFFF";
-                                            itemClassName = "d-flex justify-content-start";
-                                        } else if (_chatMessage.member.memberNickName === 'system') {
-                                            color  = theme === 'light' ? '#000000' : "#333333";
-                                            fontcolor = "#FFFFFF";
-                                            itemClassName = "d-flex justify-content-center";
+                <Container style={{minHeight: '100vh'}} >
+                    <Container className={`border border-3 rounded-4 p-5`} style={{maxWidth:'850px'}}>
+                        <Container style={{maxWidth:'750px' }}>
+                            <Row>
+                                <Col className={`border-3 rounded-4 p-5 d-flex justify-content-left align-items-center`}
+                                style={{
+                                    backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999", 
+                                    height:"110px"}}>
+                                    {/* Option Chaining!!! */}
+                                    <h3 style={{color: theme === 'light' ? "#000000" : "#FFFFFF"}}>{roomInformation?.roomName}</h3> 
+                                </Col>
+                            </Row>
+                        </Container>
+                        <Container className={`border-3 rounded-4 p-5`}
+                        style={{backgroundColor: theme === 'light' ? "#898989" : '#666666', maxWidth:'750px'}}>
+                            <Row>
+                                <Col 
+                                    className={`border-${theme === 'light' ? '#898989' : '#666666'} border-1 rounded-1 p-4`}  
+                                    sm={3}
+                                    md={3}
+                                    xl={3}
+                                    lg={3} 
+                                    ref={chatContainerRef}
+                                    onScroll={handleScroll}
+                                    style={{ 
+                                        width:'60%', 
+                                        height:'400px', 
+                                        overflowY: 'scroll', 
+                                        maxHeight: '400px',
+                                        display: "flex",
+                                        flexDirection: "column-reverse" }}>
+                                    {chatList && chatList.length > 0 && (
+                                    <ListGroup style={{marginBottom: '10px'}}>
+                                        {chatList.map((_chatMessage) => {
+                                            let fontcolor = "#000000";
+                                            let color = "";
+                                            let textAlign = "left";
+                                            let itemClassName = "d-flex justify-content-start";
+                                            if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
+                                                color = theme === "light" ? "#C3C3C3" : "#999999";
+                                                fontcolor = theme === "light" ? "#000000" : "#FFFFFF";
+                                                itemClassName = "d-flex justify-content-start";
+                                            } else if (_chatMessage.member.memberNickName === 'system') {
+                                                color  = theme === 'light' ? '#000000' : "#333333";
+                                                fontcolor = "#FFFFFF";
+                                                itemClassName = "d-flex justify-content-center";
 
-                                        } else{
-                                            color = theme === 'light' ? '#FFFFFF' : '#121212';
-                                            fontcolor = theme === 'light' ? "#000000" : "#FFFFFF";
-                                            textAlign = "right";
-                                            itemClassName = "d-flex justify-content-end";
-                                        }
-                                        const style = {
-                                            border: color,
-                                            color: fontcolor,
-                                            backgroundColor: color,
-                                            marginBottom: '6px',
-                                            textAlign: textAlign,
-                                            borderTopLeftRadius: "15px",
-                                            borderBottomLeftRadius: "15px",
-                                            borderTopRightRadius: "15px",
-                                            borderBottomRightRadius: "15px",
-                                        };
-                                        return (
-                                            <Row>
-                                                <Col className={itemClassName}>
-                                                    <ListGroupItem style={style}>
-                                                        <strong>{_chatMessage.member.memberNickName}</strong>
-                                                        <br></br>
-                                                        <hr/>
-                                                        {_chatMessage.message}
-                                                    </ListGroupItem>
-                                                </Col>
-                                            </Row>
-                                        );
-                                    })}
-                                </ListGroup>
-                                )}
-                                <br></br>
-                                {preChatList && preChatList.length > 0 && (
-                                <ListGroup style={{marginBottom: '10px' }}>
-                                    {preChatList.slice(startIndex, endIndex).map((_chatMessage) => {
-                                        let fontcolor = "#000000";
-                                        let color = "";
-                                        let textAlign = "left";
-                                        let itemClassName = "d-flex justify-content-start";
-                                        if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
-                                            color = theme === "light" ? "#C3C3C3" : "#999999";
-                                            fontcolor = theme === "light" ? "#000000" : "#FFFFFF";
-                                            itemClassName = "d-flex justify-content-start";
-                                        } else if (_chatMessage.member.memberNickName === 'system') {
-                                            color  = theme === 'light' ? '#000000' : "#333333";
-                                            fontcolor = "#FFFFFF";
-                                            itemClassName = "d-flex justify-content-center";
-
-                                        } else{
-                                            color = theme === 'light' ? '#FFFFFF' : '#121212';
-                                            fontcolor = theme === 'light' ? "#000000" : "#FFFFFF";
-                                            textAlign = "right";
-                                            itemClassName = "d-flex justify-content-end";
-                                        }
-                                        const style = {
-                                            border: color,
-                                            color: fontcolor,
-                                            backgroundColor: color,
-                                            marginBottom: '6px',
-                                            textAlign: textAlign,
-                                            borderTopLeftRadius: "15px",
-                                            borderBottomLeftRadius: "15px",
-                                            borderTopRightRadius: "15px",
-                                            borderBottomRightRadius: "15px",
-                                        };
-                                        return (
-                                            <Row>
-                                                <Col className={itemClassName}>
-                                                    <ListGroupItem style={style}>
-                                                        <strong>{_chatMessage.member.memberNickName}</strong>
-                                                        <br></br>
-                                                        <hr/>
-                                                        {_chatMessage.message}
-                                                    </ListGroupItem>
-                                                </Col>
-                                            </Row>
-                                        );
-                                    })}
-                                </ListGroup>
-                                )}
-                            </Col>
-                            <Col 
-                                className="border-1 rounded-4 p-4" 
-                                sm={1}
-                                md={1}
-                                xl={1}
-                                lg={1} 
-                                style={{ width:'40%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999" }}>
-                                <h5 style={{color: theme === 'light' ? '#000000' : '#FFFFFF'}}>참여명단</h5>
-                                <span 
-                                    className='border rounded-pill d-flex align-items-center custom-ui' 
-                                    style={{backgroundColor: theme === "light" ? "white": '#121212',
-                                            color: theme === 'light' ? "#000000" : "#FFFFFF",
-                                            marginBottom: '6px',
-                                            display: 'inline-block',
-                                            padding: '0.5rem 1rem'}}>
-                                {roomInformation?.roomManager === myInfo?.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
-                                {myInfo?.memberNickName}</span>
-                                <hr/>
-                                {otherMember.map((_member) => (
-                                    <ListGroup className='custom-ui' style={{ marginBottom: '6px'}}>
-                                        {_member?.memberNickName !== myInfo?.memberNickName && (
-                                            <ListGroupItem style={{ backgroundColor: theme === "light" ? '#FFFFFF' : '#121212',
-                                                                    color: theme === "light" ? '#000000' : "#FFFFFF"}}>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
-                                                <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
-                                                {_member?.memberNickName}
-                                                <div style={{width:"4px", display:"inline-block"}}/>
-                                                {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                                                <Button className="btn-sm custom-button"
-                                                    variant={theme === 'light' ? 'dark' : '#333333'} 
-                                                    onClick={() => ForcedExit(_member)} 
-                                                    style={{
-                                                        backgroundColor: theme === 'light' ? 'dark' : '#333333',
-                                                        color: theme === 'light' ? '#000000' : '#FFFFFF',
-                                                        width:"75px",
-                                                    }}>강퇴하기</Button>
-                                                )}
-                                                <div style={{width:"4px", display:"inline-block"}}/>
-                                                {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                                                    <Button 
-                                                        className="btn-sm custom-button" 
-                                                        variant={theme === 'light' ? "#C3C3C3" : "#999999"} 
-                                                        onClick={() => AuthMandate(_member)} style={{
-                                                            backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
-                                                            color: theme === 'light' ? "#000000" : "#FFFFFF"
-                                                        }}>방장위임</Button>
-                                                )}
-                                            </ListGroupItem>
-                                        )}
+                                            } else{
+                                                color = theme === 'light' ? '#FFFFFF' : '#121212';
+                                                fontcolor = theme === 'light' ? "#000000" : "#FFFFFF";
+                                                textAlign = "right";
+                                                itemClassName = "d-flex justify-content-end";
+                                            }
+                                            const style = {
+                                                border: color,
+                                                color: fontcolor,
+                                                backgroundColor: color,
+                                                marginBottom: '6px',
+                                                textAlign: textAlign,
+                                                borderTopLeftRadius: "15px",
+                                                borderBottomLeftRadius: "15px",
+                                                borderTopRightRadius: "15px",
+                                                borderBottomRightRadius: "15px",
+                                            };
+                                            return (
+                                                <Row>
+                                                    <Col className={itemClassName}>
+                                                        <ListGroupItem style={style}>
+                                                            <strong>{_chatMessage.member.memberNickName}</strong>
+                                                            <br></br>
+                                                            <hr/>
+                                                            {_chatMessage.message}
+                                                        </ListGroupItem>
+                                                    </Col>
+                                                </Row>
+                                            );
+                                        })}
                                     </ListGroup>
-                                ))}
-                            </Col>
-                        </Row>
+                                    )}
+                                    <br></br>
+                                    {preChatList && preChatList.length > 0 && (
+                                    <ListGroup style={{marginBottom: '10px' }}>
+                                        {preChatList.slice(startIndex, endIndex).map((_chatMessage) => {
+                                            let fontcolor = "#000000";
+                                            let color = "";
+                                            let textAlign = "left";
+                                            let itemClassName = "d-flex justify-content-start";
+                                            if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
+                                                color = theme === "light" ? "#C3C3C3" : "#999999";
+                                                fontcolor = theme === "light" ? "#000000" : "#FFFFFF";
+                                                itemClassName = "d-flex justify-content-start";
+                                            } else if (_chatMessage.member.memberNickName === 'system') {
+                                                color  = theme === 'light' ? '#000000' : "#333333";
+                                                fontcolor = "#FFFFFF";
+                                                itemClassName = "d-flex justify-content-center";
+
+                                            } else{
+                                                color = theme === 'light' ? '#FFFFFF' : '#121212';
+                                                fontcolor = theme === 'light' ? "#000000" : "#FFFFFF";
+                                                textAlign = "right";
+                                                itemClassName = "d-flex justify-content-end";
+                                            }
+                                            const style = {
+                                                border: color,
+                                                color: fontcolor,
+                                                backgroundColor: color,
+                                                marginBottom: '6px',
+                                                textAlign: textAlign,
+                                                borderTopLeftRadius: "15px",
+                                                borderBottomLeftRadius: "15px",
+                                                borderTopRightRadius: "15px",
+                                                borderBottomRightRadius: "15px",
+                                            };
+                                            return (
+                                                <Row>
+                                                    <Col className={itemClassName}>
+                                                        <ListGroupItem style={style}>
+                                                            <strong>{_chatMessage.member.memberNickName}</strong>
+                                                            <br></br>
+                                                            <hr/>
+                                                            {_chatMessage.message}
+                                                        </ListGroupItem>
+                                                    </Col>
+                                                </Row>
+                                            );
+                                        })}
+                                    </ListGroup>
+                                    )}
+                                </Col>
+                                <Col 
+                                    className="border-1 rounded-4 p-4" 
+                                    sm={1}
+                                    md={1}
+                                    xl={1}
+                                    lg={1} 
+                                    style={{ width:'40%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999" }}>
+                                    <h5 style={{color: theme === 'light' ? '#000000' : '#FFFFFF'}}>참여명단</h5>
+                                    <span 
+                                        className='border rounded-pill d-flex align-items-center custom-ui' 
+                                        style={{backgroundColor: theme === "light" ? "white": '#121212',
+                                                color: theme === 'light' ? "#000000" : "#FFFFFF",
+                                                marginBottom: '6px',
+                                                display: 'inline-block',
+                                                padding: '0.5rem 1rem'}}>
+                                    {roomInformation?.roomManager === myInfo?.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
+                                    {myInfo?.memberNickName}</span>
+                                    <hr/>
+                                    {otherMember.map((_member) => (
+                                        <ListGroup className='custom-ui' style={{ marginBottom: '6px'}}>
+                                            {_member?.memberNickName !== myInfo?.memberNickName && (
+                                                <ListGroupItem style={{ backgroundColor: theme === "light" ? '#FFFFFF' : '#121212',
+                                                                        color: theme === "light" ? '#000000' : "#FFFFFF"}}>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
+                                                    <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
+                                                    {_member?.memberNickName}
+                                                    <div style={{width:"4px", display:"inline-block"}}/>
+                                                    {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
+                                                    <Button className="btn-sm custom-button"
+                                                        variant={theme === 'light' ? 'dark' : '#333333'} 
+                                                        onClick={() => ForcedExit(_member)} 
+                                                        style={{
+                                                            backgroundColor: theme === 'light' ? 'dark' : '#333333',
+                                                            color: theme === 'light' ? '#000000' : '#FFFFFF',
+                                                            width:"75px",
+                                                        }}>강퇴하기</Button>
+                                                    )}
+                                                    <div style={{width:"4px", display:"inline-block"}}/>
+                                                    {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
+                                                        <Button 
+                                                            className="btn-sm custom-button" 
+                                                            variant={theme === 'light' ? "#C3C3C3" : "#999999"} 
+                                                            onClick={() => AuthMandate(_member)} style={{
+                                                                backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                                                color: theme === 'light' ? "#000000" : "#FFFFFF"
+                                                            }}>방장위임</Button>
+                                                    )}
+                                                </ListGroupItem>
+                                            )}
+                                        </ListGroup>
+                                    ))}
+                                </Col>
+                            </Row>
+                            <br></br>
+                            <Row>
+                                <Col>
+                                    <FormGroup 
+                                        className="d-flex align-items-center justify-content-center"
+                                        onSubmit={(event)=>handleSubmit(event)}>
+                                        <InputGroup style={{width:"500px", height:"45px"}}>
+                                            <Form.Control 
+                                                className={`${theme === 'light' ? 'light-theme' : 'dark-theme'} custom-ui`}
+                                                type="text" 
+                                                value={chat} 
+                                                placeholder='채팅 내용을 입력해 주세요.' 
+                                                onChange={handleChange}
+                                                onKeyDown={handleKeyDown}
+                                                style={{backgroundColor: theme === 'light' ? "#FFFFFF" : '#121212',
+                                                    color: theme === 'light' ? "#000000" : '#FFFFFF'}}/>            
+                                        </InputGroup>
+                                        <div style={{width:"7px", display:"inline-block"}}/>
+                                        <Button className='btn-lg custom-button' 
+                                        variant={theme === 'light' ? "#C3C3C3" : "#999999"}
+                                        style={{  
+                                            backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                            color: theme === 'light' ? '#000000' : '#FFFFFF'
+                                        }} 
+                                        onClick={() => publishChat(chat)}><strong>전송</strong></Button>          
+                                    </FormGroup>
+                                </Col>
+                            </Row>
+                        </Container>
                         <br></br>
-                        <Row>
-                            <Col>
-                                <FormGroup 
-                                    className="d-flex align-items-center justify-content-center"
-                                    onSubmit={(event)=>handleSubmit(event)}>
-                                    <InputGroup style={{width:"500px", height:"45px"}}>
-                                        <Form.Control 
-                                            className={`${theme === 'light' ? 'light-theme' : 'dark-theme'} custom-ui`}
-                                            type="text" 
-                                            value={chat} 
-                                            placeholder='채팅 내용을 입력해 주세요.' 
-                                            onChange={handleChange}
-                                            onKeyDown={handleKeyDown}
-                                            style={{backgroundColor: theme === 'light' ? "#FFFFFF" : '#121212',
-                                                color: theme === 'light' ? "#000000" : '#FFFFFF'}}/>            
-                                    </InputGroup>
-                                    <div style={{width:"7px", display:"inline-block"}}/>
-                                    <Button className='btn-lg custom-button' 
-                                    variant={theme === 'light' ? "#C3C3C3" : "#999999"}
+                        <FormGroup className="d-flex align-items-center justify-content-center gap-3">
+                            <Button className='btn-lg custom-button' 
+                                variant={theme === 'light' ? 'dark' : '#333333'}
+                                style={{backgroundColor:theme === 'light' ? 'dark' : '#333333',
+                                        color: "#FFFFFF"}}
+                                onClick={ExitRoom}>나가기</Button>
+                                {role === "ROLE_MANAGER" && (
+                                    <Button className='btn-lg custom-button'
+                                    variant={theme === 'light' ? "#B9B9B9" : "#8C8C8C"}
                                     style={{  
-                                        backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                        backgroundColor: theme === 'light' ? "#B9B9B9" : "#8C8C8C", 
                                         color: theme === 'light' ? '#000000' : '#FFFFFF'
                                     }} 
-                                    onClick={() => publishChat(chat)}><strong>전송</strong></Button>          
-                                </FormGroup>
-                            </Col>
-                        </Row>
+                                    onClick={()=>setShowChangeModal(true)}>설정 변경</Button>
+                                )} 
+                                {role === "ROLE_MANAGER" && (
+                                    <Button className='btn-lg custom-button' 
+                                    variant={theme === 'light' ? "#B9B9B9" : "#8C8C8C"}
+                                    style={{  
+                                        backgroundColor: theme === 'light' ? "#B9B9B9" : "#8C8C8C", 
+                                        color: theme === 'light' ? '#000000' : '#FFFFFF'
+                                    }} 
+                                    onClick={()=>setShowInviteModal(true)}>초대하기</Button>
+                                )}
+                            <ChangRoomComponent room_Id={room_Id} stompClient={client.current} curParticipates={curParticipates}
+                            showModal={showChangeModal} setShowModal={setShowChangeModal}/>
+                            <InviteMemberComponent roomInfo = {roomInformation} showModal={showInviteModal} setShowModal={setShowInviteModal}/>
+                        </FormGroup>
                     </Container>
-                    <br></br>
-                    <FormGroup className="d-flex align-items-center justify-content-center gap-3">
-                        <Button className='btn-lg custom-button' 
-                            variant={theme === 'light' ? 'dark' : '#333333'}
-                            style={{backgroundColor:theme === 'light' ? 'dark' : '#333333',
-                                    color: "#FFFFFF"}}
-                            onClick={ExitRoom}>나가기</Button>
-                            {role === "ROLE_MANAGER" && (
-                                <Button className='btn-lg custom-button'
-                                variant={theme === 'light' ? "#B9B9B9" : "#8C8C8C"}
-                                style={{  
-                                    backgroundColor: theme === 'light' ? "#B9B9B9" : "#8C8C8C", 
-                                    color: theme === 'light' ? '#000000' : '#FFFFFF'
-                                }} 
-                                onClick={()=>setShowChangeModal(true)}>설정 변경</Button>
-                            )} 
-                            {role === "ROLE_MANAGER" && (
-                                <Button className='btn-lg custom-button' 
-                                variant={theme === 'light' ? "#B9B9B9" : "#8C8C8C"}
-                                style={{  
-                                    backgroundColor: theme === 'light' ? "#B9B9B9" : "#8C8C8C", 
-                                    color: theme === 'light' ? '#000000' : '#FFFFFF'
-                                }} 
-                                onClick={()=>setShowInviteModal(true)}>초대하기</Button>
-                            )}
-                        <ChangRoomComponent room_Id={room_Id} stompClient={client.current} curParticipates={curParticipates}
-                        showModal={showChangeModal} setShowModal={setShowChangeModal}/>
-                        <InviteMemberComponent roomInfo = {roomInformation} showModal={showInviteModal} setShowModal={setShowInviteModal}/>
-                    </FormGroup>
                 </Container>
             </Desktop>
             <Mobile>
