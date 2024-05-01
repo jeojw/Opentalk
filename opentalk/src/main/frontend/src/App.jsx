@@ -29,40 +29,50 @@ const App = () => {
   const {theme} = useContext(themeContext);
 
   return (
-    <Router>
-      <div>
-        <BrowserView style={{backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212'}}>
-          <Routes>
-            <Route path="/" element={<Navigate to="/opentalk" />} />
-            <Route path="/opentalk/profile" element={<Profile/>}></Route>
-            <Route path="/opentalk/room/:room_Id" element={<Room/>}></Route>
-            <Route path ="/opentalk/authId" element={<AuthId/>}></Route>
-            <Route path = "/opentalk/changePw" element={<ChangePw/>}></Route>
-            <Route path = "/opentalk/findId" element={<FindId/>}></Route>
-            <Route path = "/opentalk/findPw" element={<FindPw/>}></Route>
-            <Route path = "/opentalk/login" element={<Login/>}></Route>
-            <Route path = "/opentalk" element={<Front/>}></Route>
-            <Route path = "/opentalk/enroll" element={<Enroll/>}></Route>
-            <Route path = "/opentalk/main" element={<Main/>}></Route>
-          </Routes>
-        </BrowserView>
-        <MobileView style={{backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212'}}>
-          <Routes>
-            <Route path="/" element={<Navigate to="/opentalk" />} />
-            <Route path="/opentalk/profile" element={<ProfileMobile/>}></Route>
-            <Route path="/opentalk/room/:room_Id" element={<RoomMobile/>}></Route>
-            <Route path ="/opentalk/authId" element={<AuthIdMobile/>}></Route>
-            <Route path = "/opentalk/changePw" element={<ChangePwMobile/>}></Route>
-            <Route path = "/opentalk/findId" element={<FindIdMobile/>}></Route>
-            <Route path = "/opentalk/findPw" element={<FindPwMobile/>}></Route>
-            <Route path = "/opentalk/login" element={<LoginMobile/>}></Route>
-            <Route path = "/opentalk" element={<FrontMobile/>}></Route>
-            <Route path = "/opentalk/enroll" element={<EnrollMobile/>}></Route>
-            <Route path = "/opentalk/main" element={<MainMobile/>}></Route>
-          </Routes>
-        </MobileView>
-      </div>
-    </Router>
+    <div>
+      <h1>
+      <strong>
+        <div id="opentalkTitle">
+          OpenTalk
+        </div>
+      </strong>
+      </h1>
+      <Router>
+        <div>
+          <BrowserView style={{backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212'}}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/opentalk" />} />
+              <Route path="/opentalk/profile" element={<Profile/>}></Route>
+              <Route path="/opentalk/room/:room_Id" element={<Room/>}></Route>
+              <Route path ="/opentalk/authId" element={<AuthId/>}></Route>
+              <Route path = "/opentalk/changePw" element={<ChangePw/>}></Route>
+              <Route path = "/opentalk/findId" element={<FindId/>}></Route>
+              <Route path = "/opentalk/findPw" element={<FindPw/>}></Route>
+              <Route path = "/opentalk/login" element={<Login/>}></Route>
+              <Route path = "/opentalk" element={<Front/>}></Route>
+              <Route path = "/opentalk/enroll" element={<Enroll/>}></Route>
+              <Route path = "/opentalk/main" element={<Main/>}></Route>
+            </Routes>
+          </BrowserView>
+          <MobileView style={{backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212'}}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/opentalk" />} />
+              <Route path="/opentalk/profile" element={<ProfileMobile/>}></Route>
+              <Route path="/opentalk/room/:room_Id" element={<RoomMobile/>}></Route>
+              <Route path ="/opentalk/authId" element={<AuthIdMobile/>}></Route>
+              <Route path = "/opentalk/changePw" element={<ChangePwMobile/>}></Route>
+              <Route path = "/opentalk/findId" element={<FindIdMobile/>}></Route>
+              <Route path = "/opentalk/findPw" element={<FindPwMobile/>}></Route>
+              <Route path = "/opentalk/login" element={<LoginMobile/>}></Route>
+              <Route path = "/opentalk" element={<FrontMobile/>}></Route>
+              <Route path = "/opentalk/enroll" element={<EnrollMobile/>}></Route>
+              <Route path = "/opentalk/main" element={<MainMobile/>}></Route>
+            </Routes>
+          </MobileView>
+        </div>
+      </Router>
+    </div>
+    
   );
 }
 

@@ -36,7 +36,7 @@ const FrontComponent = () => {
    return (
     <div>
         <Desktop>
-            <Container>
+            <Container style={{minHeight: '100vh'}} >
                 <Row>
                     <Col md={{ span: 10, offset: 1 }} className="border-3 rounded-4 p-5" style={{backgroundColor: theme === 'light' ? "#7B7B7B" : "#595959"}}>
                         <div className='text-center'>
@@ -70,7 +70,7 @@ const FrontComponent = () => {
             </Container>
         </Desktop>
         <Mobile>
-            <Container>
+            <Container style={{minHeight: '100vh'}} >
                 <Row>
                     <Col md={{ span: 10, offset: 1 }} className="border-#7B7B7B border-3 rounded-3 p-5" style={{backgroundColor:"#7B7B7B"}}>
                         <div className='text-center'>
