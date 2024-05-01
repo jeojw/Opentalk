@@ -31,36 +31,42 @@ const App = () => {
 
   return (
     <div>
-      <h1 style={{position:'relative', 
-                  marginBottom:'0px',
-                  color: theme === 'light' ? '#000000' : "#FFFFFF", 
-                  backgroundColor:  theme === 'light' ? '#7B7B7B' : '#595959', 
-                  width:'100%', 
-                  height:'60px'}}>
+      <h1 
+        className='border border-2'
+        style={{position:'relative', 
+                marginBottom:'0px',
+                color: theme === 'light' ? '#000000' : "#FFFFFF", 
+                backgroundColor:  theme === 'light' ? '#7B7B7B' : '#595959', 
+                width:'100%', 
+                height:'60px'}}>
       <strong>
         <div id="opentalkTitle">
           OpenTalk
         </div>
       </strong>
+      <Button
+        className='custom-button'
+        variant={theme === 'light' ? "#121212" : "#FFFFFF"}
+        onClick={() => {
+          if (theme === 'light'){
+            changeTheme('dark');
+          }
+          else{
+            changeTheme('light');
+          }
+        }}
+        style={{
+          backgroundColor:theme === 'light' ? "#121212" : "#FFFFFF",
+          color:theme === 'light' ? '#FFFFFF' : "#000000",
+          position:'absolute',
+          bottom: '10px',
+          right: '0px'
+        }}>테마 변경</Button>
       </h1>
       <Router>
         <div>
           <BrowserView style={{backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212'}}>
-            <Button
-              className='custom-button'
-              variant={theme === 'light' ? "#121212" : "#FFFFFF"}
-              onClick={() => {
-              if (theme === 'light'){
-                changeTheme('dark');
-              }
-              else{
-                changeTheme('light');
-              }
-            }}
-            style={{
-              backgroundColor:theme === 'light' ? "#121212" : "#FFFFFF",
-              color:theme === 'light' ? '#FFFFFF' : "#000000",
-            }}>테마 변경</Button>
+            
             <Routes>
               <Route path="/" element={<Navigate to="/opentalk" />} />
               <Route path="/opentalk/profile" element={<Profile/>}></Route>
