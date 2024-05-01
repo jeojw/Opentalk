@@ -1,9 +1,12 @@
-import React, {useState} from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Container, Row, Col, Button, Form, FormControl, InputGroup,} from 'react-bootstrap';
+import { themeContext } from './themeContext';
 
 const EnrollComponent = () =>{
+    const { theme } = useContext(themeContext);
+
     const [memberId, setMemberId] = useState('');
     const [memberPw, setMemberPw] = useState('');
     const [memberName, setMemberName] = useState('');
@@ -194,7 +197,7 @@ const EnrollComponent = () =>{
     return(
         <Container>
             <Row>
-                <Col md={{ span: 6, offset: 3 }} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
+                <Col md={{ span: 6, offset: 3 }} className="border-3 rounded-4 p-5" style={{backgroundColor:theme === 'light' ? "#7B7B7B" : "#595959"}}>
                     <h2 style={{color:"white"}}>회원가입</h2>
                     <Form.Label style={{color:"white"}}>아이디</Form.Label>
                     <InputGroup>
@@ -206,8 +209,9 @@ const EnrollComponent = () =>{
                         ></FormControl>
                         <Button
                             className='custom-button'
-                            variant='#CDCDCD' 
-                            style={{backgroundColor:"#CDCDCD"}} 
+                            variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                            style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                     color:theme === 'light' ? "#000000" : "#FFFFFF"}} 
                             onClick={CheckIdDuplicate}>중복 확인</Button>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>비밀번호</Form.Label>
@@ -238,8 +242,9 @@ const EnrollComponent = () =>{
                         ></FormControl>
                         <Button 
                             className='custom-button'
-                            variant='#CDCDCD' 
-                            style={{backgroundColor:"#CDCDCD"}} 
+                            variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                            style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                     color:theme === 'light' ? "#000000" : "#FFFFFF"}} 
                             onClick={CheckNickNameDuplicate}>중복 확인</Button>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>이메일</Form.Label>
@@ -252,8 +257,9 @@ const EnrollComponent = () =>{
                         ></FormControl>
                         <Button
                             className='custom-button'
-                            variant='#CDCDCD' 
-                            style={{backgroundColor:"#CDCDCD"}} 
+                            variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                            style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                     color:theme === 'light' ? "#000000" : "#FFFFFF"}} 
                             onClick={CheckMail}>인증번호 받기</Button>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>인증번호</Form.Label>
@@ -266,15 +272,17 @@ const EnrollComponent = () =>{
                         ></FormControl>
                         <Button
                             className='custom-button' 
-                            variant='#CDCDCD' 
-                            style={{ backgroundColor:"#CDCDCD" }} 
+                            variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                            style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                     color:theme === 'light' ? "#000000" : "#FFFFFF"}} 
                             onClick={CheckAuth}>인증하기</Button>
                     </InputGroup>
                     <br></br>
                     <Button
                         className='custom-button' 
-                        variant='#CDCDCD' 
-                        style={{ backgroundColor:"#CDCDCD" }} 
+                        variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                        style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                 color:theme === 'light' ? "#000000" : "#FFFFFF"}} 
                         onClick={CheckAll}><strong>회원가입</strong></Button>
                 </Col>
             </Row>

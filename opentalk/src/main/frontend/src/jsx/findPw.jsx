@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, InputGroup, FormControl } from 'react-bootstrap';
+import { themeContext } from './themeContext';
 
 const FindMemberPassword = () =>{
+    const { theme } = useContext(themeContext);
+
     const [memberEmail, setMemberEmail] = useState('');
     const [authNum, setAuthNum] = useState();
     const [inputNum, setInputNum] = useState();
@@ -56,7 +59,7 @@ const FindMemberPassword = () =>{
     return(
         <Container style={{ minHeight: '100vh'}}>
             <Row>
-                <Col xs lg="5" md={{ span: 3, offset: 3 }} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
+                <Col xs lg="5" md={{ span: 3, offset: 3 }} className="border-3 rounded-4 p-5" style={{backgroundColor: theme === 'light' ? "#7B7B7B" : "#595959"}}>
                 <h3 style={{color:"white"}}>비밀번호 찾기</h3>
                 <Form>
                     <Form.Label style={{color:"white"}}>이메일</Form.Label>
@@ -67,8 +70,9 @@ const FindMemberPassword = () =>{
                         ></FormControl>
                         <Button
                             className='custom-button'
-                            variant='#CDCDCD' 
-                            style={{ backgroundColor:"#CDCDCD" }} 
+                            variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                            style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                     color:theme === 'light' ? "#000000" : "#FFFFFF"}} 
                             onClick={CheckMail}>인증번호 받기</Button>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>인증번호</Form.Label>
@@ -80,9 +84,10 @@ const FindMemberPassword = () =>{
                             onChange={GetInputNum}
                         ></FormControl>
                         <Button 
-                            className='custom-button'
-                            variant='#CDCDCD' 
-                            style={{ backgroundColor:"#CDCDCD" }} 
+                           className='custom-button'
+                           variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                           style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                    color:theme === 'light' ? "#000000" : "#FFFFFF"}} 
                             onClick={CheckAuth}>인증하기</Button>
                     </InputGroup>
                 </Form>

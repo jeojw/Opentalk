@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, FormControl } from 'react-bootstrap';
+import { themeContext } from './themeContext';
 
 const AuthIdComponent = () =>{
+    const { theme } = useContext(themeContext);
     const [memberId, setMemberId] = useState("");
     const navigate = useNavigate();
 
@@ -32,7 +34,7 @@ const AuthIdComponent = () =>{
     return (
         <Container style={{ minHeight: '100vh'}}>
             <Row>
-                <Col xs lg="3" md={{ span: 3, offset: 4 }} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
+                <Col xs lg="3" md={{ span: 3, offset: 4 }} className="border-3 rounded-4 p-5" style={{backgroundColor: theme === 'light' ? "#7B7B7B" : "#595959"}}>
                 <h3 style={{color:"white"}}>아이디 확인하기</h3>
                 <Form>
                     <Form.Label style={{color:"white"}}>아이디</Form.Label>
@@ -45,9 +47,10 @@ const AuthIdComponent = () =>{
                     <br></br>
                     <div className="d-grid gap-2">
                         <Button
-                            className='custom-button' 
-                            variant='#CDCDCD' 
-                            style={{ backgroundColor:"#CDCDCD" }} 
+                            className='custom-button'
+                            variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                            style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                     color:theme === 'light' ? "#000000" : "#FFFFFF"}} 
                             onClick={AuthId}>확인하기</Button>
                     </div>
                 </Form>

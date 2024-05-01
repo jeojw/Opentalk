@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import { Form, Button, Container, Row, Col, FormGroup } from 'react-bootstrap';
-import { useMediaQuery } from 'react-responsive';
+import { themeContext } from './themeContext';
 
 const LoginComponent = () => {
+    const { theme } = useContext(themeContext);
+
     const [memberId, setMemberId] = useState("");
     const [memberPw, setMemberPw] = useState("");
     const [isForget, setIsForget] = useState(false);
@@ -15,15 +17,6 @@ const LoginComponent = () => {
             navigate("/opentalk/main");
         }
     },[])
-
-    const isDesktopOrLaptop = useMediaQuery({
-        query: '(min-device-width: 1224px)'
-    });
-
-    const isMobile = useMediaQuery({
-        query: '(min-device-width: 768px)'
-    });
-
     
     const CheckLogin = (e) => {
         const checkloginUrl = '/api/opentalk/auth/login'
@@ -59,7 +52,9 @@ const LoginComponent = () => {
    return (
         <Container style={{ minHeight: '100vh'}}>
             <Row>
-                <Col md={{ span: 3, offset: 4 }} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
+                <Col md={{ span: 3, offset: 4 }} 
+                className="border-3 rounded-4 p-5" 
+                style={{backgroundColor:theme === 'light' ? "#7B7B7B" : "#595959"}}>
                     <h2 style={{color:"white"}}>
                         <strong>로그인</strong>
                     </h2>
@@ -86,13 +81,15 @@ const LoginComponent = () => {
                         <div className="d-grid gap-2">
                             <Button
                                 className='custom-button' 
-                                variant='#CDCDCD' 
-                                style={{ backgroundColor:"#CDCDCD" }} 
+                                variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+                                style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                                         color:theme === 'light' ? '#000000' : '#FFFFFF'}} 
                                 onClick={CheckLogin} size='4'>로그인</Button>
                             <Button
                                 className='custom-button' 
-                                variant='#E0E0E0' 
-                                style={{ backgroundColor:"#E0E0E0" }} 
+                                variant={theme === 'light' ? '#E0E0E0' : '#373737'} 
+                                style={{ backgroundColor:theme === 'light' ? '#E0E0E0' : '#373737',
+                                         color:theme === 'light' ? '#000000' : '#FFFFFF'}} 
                                 onClick={() => navigate("/opentalk/enroll")}>회원가입</Button>
                             <Button
                                 className='custom-button' 
