@@ -31,7 +31,7 @@ const App = () => {
   return (
     <div>
       <h1 style={{position:'relative', 
-                  bottom:'-8px', 
+                  bottom:'-7.5px', 
                   color: theme === 'light' ? '#000000' : "#FFFFFF", 
                   backgroundColor:  theme === 'light' ? '#7B7B7B' : '#595959', 
                   width:'100%', 
