@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Modal from 'react-modal';
 import axios from'axios';
 import { Form, Button, Row, Col, InputGroup, FormControl, ListGroup, ListGroupItem, } from 'react-bootstrap';
 import { useQueryClient, useMutation } from 'react-query';
 import { useMediaQuery } from 'react-responsive';
+import { themeContext } from './themeContext';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 768 })
@@ -15,6 +16,8 @@ const Mobile = ({ children }) => {
 }
 
 export const SetRoomComponent = ({stompClient}) =>{
+    const { theme } = useContext(themeContext);
+
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
     const [participants, setParticipants] = useState(3);
@@ -186,8 +189,9 @@ export const SetRoomComponent = ({stompClient}) =>{
                 <div className="d-grid gap-2 btn-lg">
                     <Button 
                         className='btn-lg custom-button'
-                        variant="#8F8F8F" 
-                        style={{ backgroundColor:'#8F8F8F' }} 
+                        variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                        style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                        color: theme === 'light' ? '#000000' : "#FFFFFF" }} 
                         onClick={openModal}>
                         <strong>방 생성하기</strong>
                     </Button>
@@ -197,18 +201,23 @@ export const SetRoomComponent = ({stompClient}) =>{
                     onRequestClose={closeModal}
                     style={{
                         content: {
+                            backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                             width: '800px', // 원하는 너비로 설정
                             height: '400px', // 원하는 높이로 설정
+                            borderTopLeftRadius: '25px',
+                            borderBottomLeftRadius: '25px',
+                            borderTopRightRadius: '25px',
+                            borderBottomRightRadius: '25px',
                         }
                     }}>
                     <Row>
                         <Col>
                             <InputGroup>
                                 <InputGroup.Text
-                                    className='custom-ui' 
-                                    style={{ backgroundColor:'#8F8F8F' }}><strong>방 이름</strong>
-                                </InputGroup.Text>
-                                <FormControl 
+                                    className='custom-ui'
+                                style={{backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                        color: theme === 'light' ? '#000000' : "#FFFFFF"}}><strong>방 이름</strong></InputGroup.Text>
+                                <FormControl
                                     className='custom-ui'
                                     type='text' 
                                     value={roomName} 
@@ -217,15 +226,15 @@ export const SetRoomComponent = ({stompClient}) =>{
                             </InputGroup>
                             <br></br>
                             <InputGroup>
-                                <InputGroup.Text
-                                    className='custom-ui' 
-                                    style={{ backgroundColor:'#8F8F8F' }}><strong>인원수</strong>
-                                </InputGroup.Text>
+                                <InputGroup.Text 
+                                    className='custom-ui'
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}><strong>인원수</strong></InputGroup.Text>
                                 <FormControl
                                     className='custom-ui'
-                                    type="number"
-                                    min={3} 
-                                    max={20} 
+                                    type='number'
+                                    min={3}
+                                    max={20}
                                     value={participants} 
                                     onChange={GetInputParticipates}
                                 ></FormControl>
@@ -234,17 +243,17 @@ export const SetRoomComponent = ({stompClient}) =>{
                             <InputGroup className='d-flex flex-row gap-1'>
                                 <InputGroup.Text
                                     className='custom-ui'
-                                    style={{ backgroundColor:'#8F8F8F' }}><strong>비밀번호</strong>
-                                </InputGroup.Text>
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}><strong>비밀번호</strong></InputGroup.Text>
                                 <Form.Check 
                                     className='custom-checkbox'
+                                    size={20}
                                     type='checkbox' 
                                     checked={existLock} 
                                     onChange={GetCheckExistPw}
-                                    style={{zoom:1.6}}
-                                />
+                                    style={{zoom:1.6}}/>
                                 <FormControl
-                                    className='custom-ui' 
+                                    className='custom-ui'
                                     type='password' 
                                     value={password} 
                                     onChange={GetInputPassword} 
@@ -271,11 +280,13 @@ export const SetRoomComponent = ({stompClient}) =>{
                                     placeholder='태그 입력' 
                                     onChange={GetInputTag}
                                 ></FormControl>
-                                <Button 
+                                <Button
                                     className='custom-button'
-                                    variant="#8F8F8F" 
-                                    style={{ backgroundColor:'#8F8F8F' }} 
-                                    onClick={()=>AppendTag(tag)}><strong>태그 추가</strong></Button>
+                                    onClick={()=>AppendTag(tag)}
+                                    variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}
+                                ><strong>태그 추가</strong></Button>
                             </InputGroup>
 
                             <ListGroup className="custom-ui list-group list-group-horizontal">
@@ -294,8 +305,9 @@ export const SetRoomComponent = ({stompClient}) =>{
                             <div className='d-flex flex-row gap-2'>
                                 <Button
                                     className='custom-button'
-                                    variant="#8F8F8F" 
-                                    style={{ backgroundColor:'#8F8F8F' }} 
+                                    variant='#B9B9B9' 
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}
                                     onClick={MakeRoom}><strong>방 생성하기</strong></Button>
                                 <Button
                                     className='custom-button' 
@@ -311,8 +323,9 @@ export const SetRoomComponent = ({stompClient}) =>{
                 <div className="d-grid gap-2 btn-lg">
                     <Button 
                         className='btn-lg custom-button'
-                        variant="#8F8F8F" 
-                        style={{ backgroundColor:'#8F8F8F' }} 
+                        variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                        style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                        color: theme === 'light' ? '#000000' : "#FFFFFF" }} 
                         onClick={openModal}>
                         <strong>방 생성하기</strong>
                     </Button>
@@ -322,18 +335,23 @@ export const SetRoomComponent = ({stompClient}) =>{
                     onRequestClose={closeModal}
                     style={{
                         content: {
+                            backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                             width: '350px', // 원하는 너비로 설정
                             height: '400px', // 원하는 높이로 설정
+                            borderTopLeftRadius: '25px',
+                            borderBottomLeftRadius: '25px',
+                            borderTopRightRadius: '25px',
+                            borderBottomRightRadius: '25px',
                         }
                     }}>
                     <Row>
                         <Col>
                             <InputGroup>
                                 <InputGroup.Text
-                                    className='custom-ui' 
-                                    style={{ backgroundColor:'#8F8F8F' }}><strong>방 이름</strong>
-                                </InputGroup.Text>
-                                <FormControl 
+                                    className='custom-ui'
+                                style={{backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                        color: theme === 'light' ? '#000000' : "#FFFFFF"}}><strong>방 이름</strong></InputGroup.Text>
+                                <FormControl
                                     className='custom-ui'
                                     type='text' 
                                     value={roomName} 
@@ -342,15 +360,15 @@ export const SetRoomComponent = ({stompClient}) =>{
                             </InputGroup>
                             <br></br>
                             <InputGroup>
-                                <InputGroup.Text
-                                    className='custom-ui' 
-                                    style={{ backgroundColor:'#8F8F8F' }}><strong>인원수</strong>
-                                </InputGroup.Text>
+                                <InputGroup.Text 
+                                    className='custom-ui'
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}><strong>인원수</strong></InputGroup.Text>
                                 <FormControl
                                     className='custom-ui'
-                                    type="number"
-                                    min={3} 
-                                    max={20} 
+                                    type='number'
+                                    min={3}
+                                    max={20}
                                     value={participants} 
                                     onChange={GetInputParticipates}
                                 ></FormControl>
@@ -359,17 +377,17 @@ export const SetRoomComponent = ({stompClient}) =>{
                             <InputGroup className='d-flex flex-row gap-1'>
                                 <InputGroup.Text
                                     className='custom-ui'
-                                    style={{ backgroundColor:'#8F8F8F' }}><strong>비밀번호</strong>
-                                </InputGroup.Text>
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}><strong>비밀번호</strong></InputGroup.Text>
                                 <Form.Check 
                                     className='custom-checkbox'
+                                    size={20}
                                     type='checkbox' 
                                     checked={existLock} 
                                     onChange={GetCheckExistPw}
-                                    style={{zoom:1.6}}
-                                />
+                                    style={{zoom:1.6}}/>
                                 <FormControl
-                                    className='custom-ui' 
+                                    className='custom-ui'
                                     type='password' 
                                     value={password} 
                                     onChange={GetInputPassword} 
@@ -396,11 +414,13 @@ export const SetRoomComponent = ({stompClient}) =>{
                                     placeholder='태그 입력' 
                                     onChange={GetInputTag}
                                 ></FormControl>
-                                <Button 
+                                <Button
                                     className='custom-button'
-                                    variant="#8F8F8F" 
-                                    style={{ backgroundColor:'#8F8F8F' }} 
-                                    onClick={()=>AppendTag(tag)}><strong>태그 추가</strong></Button>
+                                    onClick={()=>AppendTag(tag)}
+                                    variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}
+                                ><strong>태그 추가</strong></Button>
                             </InputGroup>
 
                             <ListGroup className="custom-ui list-group list-group-horizontal">
@@ -419,8 +439,9 @@ export const SetRoomComponent = ({stompClient}) =>{
                             <div className='d-flex flex-row gap-2'>
                                 <Button
                                     className='custom-button'
-                                    variant="#8F8F8F" 
-                                    style={{ backgroundColor:'#8F8F8F' }} 
+                                    variant='#B9B9B9' 
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}
                                     onClick={MakeRoom}><strong>방 생성하기</strong></Button>
                                 <Button
                                     className='custom-button' 

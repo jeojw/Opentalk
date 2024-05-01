@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { CookiesProvider } from 'react-cookie';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import ThemeProvider from './jsx/themeContext';
 
 const queryClient = new QueryClient();
 
@@ -12,7 +13,9 @@ root.render(
   <React.StrictMode>
     <CookiesProvider>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
       </QueryClientProvider>
     </CookiesProvider>
   </React.StrictMode>

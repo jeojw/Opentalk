@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import Modal from 'react-modal';
 import axios from'axios';
 import { Form, Button, Row, Col, InputGroup, FormControl,ListGroup,ListGroupItem, } from 'react-bootstrap';
 import { useQueryClient } from 'react-query';
 import { useMediaQuery } from 'react-responsive';
+import { themeContext } from './themeContext';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 768 })
@@ -15,6 +16,8 @@ const Mobile = ({ children }) => {
 }
 
 const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, setShowModal}) => {
+    const { theme } = useContext(themeContext);
+
     const queryClient = useQueryClient();
 
     const [roomData, setRoomData] = useState();
@@ -195,8 +198,13 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                 <Modal isOpen={showModal} onRequestClose ={cancleSetModal}
                 style={{
                     content: {
+                        backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                         width: '800px', // 원하는 너비로 설정
                         height: '400px', // 원하는 높이로 설정
+                        borderTopLeftRadius: '25px',
+                        borderBottomLeftRadius: '25px',
+                        borderTopRightRadius: '25px',
+                        borderBottomRightRadius: '25px',
                     }
                 }}>
                     <Row>
@@ -204,7 +212,8 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                             <InputGroup>
                                 <InputGroup.Text
                                     className='custom-ui'
-                                style={{backgroundColor: "#B9B9B9"}}><strong>방 이름</strong></InputGroup.Text>
+                                style={{backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                        color: theme === 'light' ? '#000000' : "#FFFFFF"}}><strong>방 이름</strong></InputGroup.Text>
                                 <FormControl
                                     className='custom-ui'
                                     type='text' 
@@ -216,7 +225,8 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                             <InputGroup>
                                 <InputGroup.Text 
                                 className='custom-ui'
-                                style={{ backgroundColor: "#B9B9B9" }}><strong>인원수</strong></InputGroup.Text>
+                                style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                color: theme === 'light' ? '#000000' : "#FFFFFF" }}><strong>인원수</strong></InputGroup.Text>
                                 <FormControl
                                     className='custom-ui'
                                     type='number'
@@ -230,7 +240,8 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                             <InputGroup className='d-flex flex-row gap-1'>
                                 <InputGroup.Text
                                     className='custom-ui'
-                                    style={{ backgroundColor: "#B9B9B9" }}><strong>비밀번호</strong></InputGroup.Text>
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}><strong>비밀번호</strong></InputGroup.Text>
                                 <Form.Check 
                                     className='custom-checkbox'
                                     size={20}
@@ -269,8 +280,9 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                                 <Button
                                     className='custom-button'
                                     onClick={()=>AppendTag(tag)}
-                                    variant="#B9B9B9"
-                                    style={{ backgroundColor:"#B9B9B9" }}
+                                    variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}
                                 ><strong>태그 추가</strong></Button>
                             </InputGroup>
                             <br></br>
@@ -291,8 +303,9 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                             <div className='d-flex flex-row gap-2'>
                                 <Button
                                     className='custom-button'
-                                    variant='#B9B9B9' 
-                                    style={{ backgroundColor:"#B9B9B9" }} 
+                                    variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}
                                     onClick={changeRoomModal}><strong>변경하기</strong></Button>
                                 <Button
                                     className='custom-button' 
@@ -308,8 +321,13 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                 onHide
                 style={{
                     content: {
+                        backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                         width: '350px', // 원하는 너비로 설정
                         height: '400px', // 원하는 높이로 설정
+                        borderTopLeftRadius: '25px',
+                        borderBottomLeftRadius: '25px',
+                        borderTopRightRadius: '25px',
+                        borderBottomRightRadius: '25px',
                     }
                 }}>
                     <Row>
@@ -317,7 +335,8 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                         <InputGroup>
                                 <InputGroup.Text
                                     className='custom-ui'
-                                style={{backgroundColor: "#B9B9B9"}}><strong>방 이름</strong></InputGroup.Text>
+                                style={{backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                color: theme === 'light' ? '#000000' : "#FFFFFF"}}><strong>방 이름</strong></InputGroup.Text>
                                 <FormControl
                                     className='custom-ui'
                                     type='text' 
@@ -329,7 +348,8 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                             <InputGroup>
                                 <InputGroup.Text 
                                 className='custom-ui'
-                                style={{ backgroundColor: "#B9B9B9" }}><strong>인원수</strong></InputGroup.Text>
+                                style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                color: theme === 'light' ? '#000000' : "#FFFFFF" }}><strong>인원수</strong></InputGroup.Text>
                                 <FormControl
                                     className='custom-ui'
                                     type='number'
@@ -343,7 +363,8 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                             <InputGroup className='d-flex flex-row gap-1'>
                                 <InputGroup.Text
                                     className='custom-ui'
-                                    style={{ backgroundColor: "#B9B9B9" }}><strong>비밀번호</strong></InputGroup.Text>
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}><strong>비밀번호</strong></InputGroup.Text>
                                 <Form.Check 
                                     className='custom-checkbox'
                                     size={20}
@@ -382,8 +403,9 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                                 <Button
                                     className='custom-button'
                                     onClick={()=>AppendTag(tag)}
-                                    variant="#B9B9B9"
-                                    style={{ backgroundColor:"#B9B9B9" }}
+                                    variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}
                                 ><strong>태그 추가</strong></Button>
                             </InputGroup>
                             <br></br>
@@ -405,7 +427,8 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                                 <Button
                                     className='custom-button'
                                     variant='#B9B9B9' 
-                                    style={{ backgroundColor:"#B9B9B9" }} 
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}
                                     onClick={changeRoomModal}><strong>변경하기</strong></Button>
                                 <Button
                                     className='custom-button' 

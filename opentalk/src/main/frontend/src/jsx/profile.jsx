@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,7 @@ import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useMediaQuery } from 'react-responsive';
-import "../css/UI.css"
+import { themeContext } from './themeContext';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 768, maxWidth:1920 })
@@ -19,6 +19,7 @@ const Mobile = ({ children }) => {
 }
 
 const ProfileComponent = () => {
+    const {theme, changeTheme} = useContext(themeContext);
     const client = useRef({});
     useEffect(() =>{ 
         const connect = () => {
@@ -179,6 +180,15 @@ const ProfileComponent = () => {
 
     const ChangePasswordPopup = () => {
         setPwPopupOpen(true);
+    }
+
+    const ChangeTheme = () => {
+        if (theme === "light"){
+            changeTheme("dark");
+        }
+        else{
+            changeTheme("light");
+        }
     }
 
     const ChangeNickNameCancle = () => {
@@ -350,7 +360,8 @@ const ProfileComponent = () => {
             <Desktop>
                 <Container>
                     <Row style={{ textAlign: 'center' }}>
-                        <Col md={{ span: 3, offset: 4}} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
+                        <Col md={{ span: 3, offset: 4}} className={`border-${theme === 'light' ? "#7B7B7B" : "#595959"} border-3 rounded-5 p-5`} 
+                                style={{backgroundColor: theme === 'light' ? "#7B7B7B" : "#595959"}}>
                             <img 
                                 alt="프로필 이미지" 
                                 src={curImgUrl}
@@ -362,48 +373,68 @@ const ProfileComponent = () => {
                             <br></br>
                             <ListGroup className='custom-ui'>
                                 <ListGroupItem 
-                                    className='custom-ui' style={{
-                                    border:'#CDCDCD', 
-                                    backgroundColor:"#CDCDCD",  
-                                    marginBottom: '5px',
+                                    className='custom-ui' 
+                                    style={{
+                                        border: theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                        backgroundColor: theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                        color:theme === 'light' ? '#000000' : '#FFFFFF',
+                                        marginBottom: '5px',
                                 }}>이름 <hr/><strong>{member.memberName}</strong></ListGroupItem>
                                 <ListGroupItem
                                     className='custom-ui' 
                                     style={{
-                                    border:'#CDCDCD', 
-                                    backgroundColor:"#CDCDCD",  
-                                    marginBottom: '5px',
+                                        border: theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                        backgroundColor: theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                        color:theme === 'light' ? '#000000' : '#FFFFFF',
+                                        marginBottom: '5px',
                                 }}>닉네임 <hr/><strong>{member.memberNickName}</strong></ListGroupItem>
                                 <ListGroupItem 
                                     className='custom-ui' 
-                                    style={{ border:'#CDCDCD', 
-                                            backgroundColor:"#CDCDCD",}}>이메일 <hr/><strong>{member.memberEmail}</strong></ListGroupItem>
+                                    style={{ border: theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                        backgroundColor: theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                        color:theme === 'light' ? '#000000' : '#FFFFFF', 
+                                    }}>이메일 <hr/><strong>{member.memberEmail}</strong></ListGroupItem>
                             </ListGroup>
                             <hr/>
                             <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}
                             style={{
                                 content: {
+                                    backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                                     width: '800px', // 원하는 너비로 설정
                                     height: '400px', // 원하는 높이로 설정
+                                    borderTopLeftRadius: '25px',
+                                    borderBottomLeftRadius: '25px',
+                                    borderTopRightRadius: '25px',
+                                    borderBottomRightRadius: '25px',
                                 }
                             }}>
                                 <img src={uploadPreview} />
                                 <hr/>
                                 <FormControl className='custom-ui' type='file' accept='image/*' onChange={onChangeImageUpload}></FormControl>
                                 <br/>
-                                <Button className='custom-button' variant='#CDCDCD' style={{ backgroundColor:"#CDCDCD" }} onClick={ChangeImg}>변경하기</Button>
+                                <Button className='custom-button' 
+                                        variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                                        style={{ backgroundColor: theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                        color: theme === 'light' ? '#000000' : '#FFFFFF'}} 
+                                        onClick={ChangeImg}><strong>변경하기</strong></Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
                                 <Button className='custom-button' variant='dark' onClick={ChangeImgCancle}>변경취소</Button>
                             </Modal>
                             <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}
                             style={{
                                 content: {
+                                    backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                                     width: '800px', // 원하는 너비로 설정
                                     height: '400px', // 원하는 높이로 설정
+                                    borderTopLeftRadius: '25px',
+                                    borderBottomLeftRadius: '25px',
+                                    borderTopRightRadius: '25px',
+                                    borderBottomRightRadius: '25px',
                                 }
                             }}>
                                 <InputGroup>
-                                    <InputGroup.Text style={{backgroundColor:"#CDCDCD",
+                                    <InputGroup.Text style={{backgroundColor: theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                                            color:theme === 'light' ? '#000000' : '#FFFFFF',
                                                             borderTopLeftRadius: "50px",
                                                             borderBottomLeftRadius: "50px",
                                                             }}><strong>새 닉네임</strong></InputGroup.Text>
@@ -412,13 +443,15 @@ const ProfileComponent = () => {
                                         value={newNickName} 
                                         onChange={GetInputNewNickName}
                                         style={{borderTopRightRadius: "50px",
-                                                borderBottomRightRadius: "50px",}}></Form.Control>
+                                                borderBottomRightRadius: "50px",
+                                                }}></Form.Control>
                                 </InputGroup>
                                 <br></br>
                                 <Button 
                                     className='custom-button'
-                                    variant='#CDCDCD' 
-                                    style={{backgroundColor:"#CDCDCD"}} 
+                                    variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
+                                    style={{backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                    color:theme === 'light' ? '#000000' : '#FFFFFF',}} 
                                     onClick={ChangeNickName}><strong>변경하기</strong></Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
                                 <Button className='custom-button' variant='dark' onClick={ChangeNickNameCancle}>변경 취소</Button>
@@ -426,13 +459,19 @@ const ProfileComponent = () => {
                             <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}
                             style={{
                                 content: {
+                                    backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                                     width: '800px', // 원하는 너비로 설정
                                     height: '400px', // 원하는 높이로 설정
+                                    borderTopLeftRadius: '25px',
+                                    borderBottomLeftRadius: '25px',
+                                    borderTopRightRadius: '25px',
+                                    borderBottomRightRadius: '25px',
                                 }
                             }}>
                                 <InputGroup>
                                     <InputGroup.Text style={{
-                                            backgroundColor:"#CDCDCD", 
+                                            backgroundColor: theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                            color: theme === 'light' ? '#000000' : '#FFFFFF',
                                             borderTopLeftRadius: "50px",
                                             borderBottomLeftRadius: "50px",
                                         }}>현재 비밀번호</InputGroup.Text>
@@ -448,7 +487,8 @@ const ProfileComponent = () => {
                                 <br></br>
                                 <InputGroup>
                                     <InputGroup.Text style={{
-                                            backgroundColor:"#CDCDCD", 
+                                            backgroundColor: theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                            color: theme === 'light' ? '#000000' : '#FFFFFF',
                                             borderTopLeftRadius: "50px",
                                             borderBottomLeftRadius: "50px",
                                         }}><strong>새 비밀번호</strong></InputGroup.Text>
@@ -463,7 +503,8 @@ const ProfileComponent = () => {
                                 <br></br>
                                 <InputGroup>
                                 <InputGroup.Text style={{
-                                            backgroundColor:"#CDCDCD", 
+                                            backgroundColor: theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                            color: theme === 'light' ? '#000000' : '#FFFFFF',
                                             borderTopLeftRadius: "50px",
                                             borderBottomLeftRadius: "50px",
                                         }}><strong>비밀번호 확인</strong></InputGroup.Text>
@@ -478,8 +519,9 @@ const ProfileComponent = () => {
                                 <br></br>
                                 <Button 
                                     className='custom-button' 
-                                    variant='#CDCDCD' 
-                                    style={{ backgroundColor:"#CDCDCD" }} 
+                                    variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                                    style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF' }} 
                                     onClick={ChangePassword}><strong>변경하기</strong></Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
                                 <Button className='custom-button' variant='dark'onClick={ChangePasswordCancle}>변경 취소</Button>
@@ -487,17 +529,26 @@ const ProfileComponent = () => {
                             <div className="d-grid gap-2">
                                 <Button 
                                     className='custom-button' 
-                                    variant='#CDCDCD'
-                                    style={{ backgroundColor:"#CDCDCD" }} 
+                                    variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                                    color:theme === 'light' ? '#000000' : '#FFFFFF' }} 
                                     onClick={ChangeImgPopup}>프로필 이미지 변경</Button>
                                 <Button className='custom-button' 
-                                        variant='#CDCDCD'
-                                        style={{ backgroundColor:"#CDCDCD" }}  
+                                        variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+                                        style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                                        color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
                                         onClick={ChangeNickNamePopup}>닉네임 변경</Button>
                                 <Button className='custom-button' 
-                                        variant='#CDCDCD'
-                                        style={{ backgroundColor:"#CDCDCD" }}  
+                                        variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+                                        style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                                                color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
                                         onClick={ChangePasswordPopup}>비밀번호 변경</Button>
+                                <Button 
+                                    className = 'custom-button' 
+                                    variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
+                                    style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF' }} 
+                                    onClick={ChangeTheme}>테마 바꾸기</Button>
                                 <Button
                                     className='custom-button' 
                                     variant='dark' 
@@ -513,7 +564,7 @@ const ProfileComponent = () => {
             <Mobile>
                 <Container>
                     <Row style={{ textAlign: 'center' }}>
-                        <Col md={{ span: 3, offset: 4}} className="border border-#7B7B7B border-3 rounded-1 p-5" style={{backgroundColor:"#7B7B7B"}}>
+                        <Col md={{ span: 3, offset: 4}} className="border-3 rounded-5 p-5" style={{backgroundColor: theme === 'light' ? "#7B7B7B" : "#595959"}}>
                             <img 
                                 alt="프로필 이미지" 
                                 src={curImgUrl}
@@ -526,47 +577,64 @@ const ProfileComponent = () => {
                             <ListGroup className='custom-ui'>
                                 <ListGroupItem 
                                     className='custom-ui' style={{
-                                    border:'#CDCDCD', 
-                                    backgroundColor:"#CDCDCD",  
+                                    border:theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                    backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF', 
                                     marginBottom: '5px',
                                 }}>이름 <hr/><strong>{member.memberName}</strong></ListGroupItem>
                                 <ListGroupItem
                                     className='custom-ui' 
                                     style={{
-                                    border:'#CDCDCD', 
-                                    backgroundColor:"#CDCDCD",  
+                                    border:theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                    backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF',
                                     marginBottom: '5px',
                                 }}>닉네임 <hr/><strong>{member.memberNickName}</strong></ListGroupItem>
                                 <ListGroupItem 
                                     className='custom-ui' 
-                                    style={{ border:'#CDCDCD', 
-                                            backgroundColor:"#CDCDCD",}}>이메일 <hr/><strong>{member.memberEmail}</strong></ListGroupItem>
+                                    style={{ border:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF',
+                                            backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",}}>이메일 <hr/><strong>{member.memberEmail}</strong></ListGroupItem>
                             </ListGroup>
                             <hr/>
                             <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}
                             style={{
                                 content: {
+                                    backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                                     width: '350px', // 원하는 너비로 설정
                                     height: '400px', // 원하는 높이로 설정
+                                    borderTopLeftRadius: '25px',
+                                    borderBottomLeftRadius: '25px',
+                                    borderTopRightRadius: '25px',
+                                    borderBottomRightRadius: '25px',
                                 }
                             }}>
                                 <img src={uploadPreview} />
                                 <hr/>
                                 <FormControl className='custom-ui' type='file' accept='image/*' onChange={onChangeImageUpload}></FormControl>
                                 <br/>
-                                <Button className='custom-button' variant='#CDCDCD' style={{ backgroundColor:"#CDCDCD" }} onClick={ChangeImg}>변경하기</Button>
+                                <Button className='custom-button' 
+                                        variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                                        style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                        color: theme === 'light' ? '#000000' : '#FFFFFF'}} onClick={ChangeImg}><strong>변경하기</strong></Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
                                 <Button className='custom-button' variant='dark' onClick={ChangeImgCancle}>변경취소</Button>
                             </Modal>
                             <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}
                             style={{
                                 content: {
+                                    backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                                     width: '350px', // 원하는 너비로 설정
                                     height: '400px', // 원하는 높이로 설정
+                                    borderTopLeftRadius: '25px',
+                                    borderBottomLeftRadius: '25px',
+                                    borderTopRightRadius: '25px',
+                                    borderBottomRightRadius: '25px',
                                 }
                             }}>
                                 <InputGroup>
-                                    <InputGroup.Text style={{backgroundColor:"#CDCDCD",
+                                    <InputGroup.Text style={{backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                                            color: theme === 'light' ? '#000000' : '#FFFFFF',
                                                             borderTopLeftRadius: "50px",
                                                             borderBottomLeftRadius: "50px",
                                                             }}><strong>새 닉네임</strong></InputGroup.Text>
@@ -580,8 +648,9 @@ const ProfileComponent = () => {
                                 <br></br>
                                 <Button 
                                     className='custom-button'
-                                    variant='#CDCDCD' 
-                                    style={{backgroundColor:"#CDCDCD"}} 
+                                    variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
+                                    style={{backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF'}} 
                                     onClick={ChangeNickName}><strong>변경하기</strong></Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
                                 <Button className='custom-button' variant='dark' onClick={ChangeNickNameCancle}>변경 취소</Button>
@@ -589,13 +658,19 @@ const ProfileComponent = () => {
                             <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}
                             style={{
                                 content: {
+                                    backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                                     width: '350px', // 원하는 너비로 설정
                                     height: '400px', // 원하는 높이로 설정
+                                    borderTopLeftRadius: '25px',
+                                    borderBottomLeftRadius: '25px',
+                                    borderTopRightRadius: '25px',
+                                    borderBottomRightRadius: '25px',
                                 }
                             }}>
                                 <InputGroup>
                                     <InputGroup.Text style={{
-                                            backgroundColor:"#CDCDCD", 
+                                            backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                            color: theme === 'light' ? '#000000' : '#FFFFFF',
                                             borderTopLeftRadius: "50px",
                                             borderBottomLeftRadius: "50px",
                                         }}>현재 비밀번호</InputGroup.Text>
@@ -611,7 +686,8 @@ const ProfileComponent = () => {
                                 <br></br>
                                 <InputGroup>
                                     <InputGroup.Text style={{
-                                            backgroundColor:"#CDCDCD", 
+                                            backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                            color: theme === 'light' ? '#000000' : '#FFFFFF',
                                             borderTopLeftRadius: "50px",
                                             borderBottomLeftRadius: "50px",
                                         }}><strong>새 비밀번호</strong></InputGroup.Text>
@@ -626,7 +702,8 @@ const ProfileComponent = () => {
                                 <br></br>
                                 <InputGroup>
                                 <InputGroup.Text style={{
-                                            backgroundColor:"#CDCDCD", 
+                                            backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0", 
+                                            color: theme === 'light' ? '#000000' : '#FFFFFF',
                                             borderTopLeftRadius: "50px",
                                             borderBottomLeftRadius: "50px",
                                         }}><strong>비밀번호 확인</strong></InputGroup.Text>
@@ -641,8 +718,9 @@ const ProfileComponent = () => {
                                 <br></br>
                                 <Button 
                                     className='custom-button' 
-                                    variant='#CDCDCD' 
-                                    style={{ backgroundColor:"#CDCDCD" }} 
+                                    variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                                    style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF'}} 
                                     onClick={ChangePassword}><strong>변경하기</strong></Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
                                 <Button className='custom-button' variant='dark'onClick={ChangePasswordCancle}>변경 취소</Button>
@@ -650,18 +728,27 @@ const ProfileComponent = () => {
                             <div className="d-grid gap-2">
                                 <Button 
                                     className = 'custom-button' 
-                                    variant='#CDCDCD' 
-                                    style={{ backgroundColor:"#CDCDCD" }} 
+                                    variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
+                                    style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF' }} 
                                     onClick={ChangeImgPopup}>프로필 이미지 변경</Button>
                                 <Button className = 'custom-button' 
-                                    variant='#CDCDCD' 
-                                    style={{ backgroundColor:"#CDCDCD" }} 
+                                    variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
+                                    style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF' }} 
                                     onClick={ChangeNickNamePopup}>닉네임 변경</Button>
                                 <Button 
                                     className = 'custom-button' 
-                                    variant='#CDCDCD' 
-                                    style={{ backgroundColor:"#CDCDCD" }}  
+                                    variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
+                                    style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF' }} 
                                     onClick={ChangePasswordPopup}>비밀번호 변경</Button>
+                                <Button 
+                                    className = 'custom-button' 
+                                    variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
+                                    style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF' }} 
+                                    onClick={ChangeTheme}>테마 바꾸기</Button>
                                 <Button
                                     className = 'custom-button' 
                                     variant='dark' 

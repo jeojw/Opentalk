@@ -1,6 +1,6 @@
 import { BrowserView, MobileView } from 'react-device-detect';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import Login from './jsx/login'
 import Front from './jsx/front'
 import Enroll from './jsx/enroll'
@@ -14,6 +14,7 @@ import Profile from './jsx/profile'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/UI.css'
 import './css/CustomPagination.css'
+import { themeContext } from './jsx/themeContext';
 
 const App = () => {
   const setMobileHeight = () => {
@@ -25,10 +26,12 @@ const App = () => {
       setMobileHeight();
   });
 
+  const {theme} = useContext(themeContext);
+
   return (
     <Router>
       <div>
-        <BrowserView>
+        <BrowserView style={{backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212'}}>
           <Routes>
             <Route path="/" element={<Navigate to="/opentalk" />} />
             <Route path="/opentalk/profile" element={<Profile/>}></Route>

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import axios from "axios";
 import { useParams, useNavigate} from 'react-router-dom';
 import * as StompJs from "@stomp/stompjs";
@@ -9,6 +9,7 @@ import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, Li
 import { format } from 'date-fns'
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { useMediaQuery } from 'react-responsive';
+import { themeContext } from './themeContext';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 768, maxWidth:1920 })
@@ -19,6 +20,8 @@ const Mobile = ({ children }) => {
     return isMobile ? children : null
 }
 const RoomComponent = () => {
+    const {theme} = useContext(themeContext);
+
     const [roomInformation, setRoomInformation] = useState();
     const [myInfo, setMyInfo] = useState();
     const [chatList, setChatList] = useState([]);
@@ -26,8 +29,6 @@ const RoomComponent = () => {
     const [chat, setChat] = useState("");
     const [role, setRole] = useState();
     const [curParticipates, setCurParticipates] = useState(0)
-    
-
     const [otherMember, setOtherMember] = useState([]);
 
     const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -597,21 +598,23 @@ const RoomComponent = () => {
     return(
         <div>
             <Desktop>
-                <Container className="border border-#B6B6B6 border-3 rounded-1 p-5" style={{maxWidth:'850px'}}>
+                <Container className={`border border-3 rounded-4 p-5`} style={{maxWidth:'850px'}}>
                     <Container style={{maxWidth:'750px'}}>
                         <Row>
-                            <Col className="border border-#C3C3C3 border-3 rounded-1 p-5 d-flex justify-content-left align-items-center"
-                            style={{backgroundColor:"#C3C3C3", height:"110px"}}>
+                            <Col className={`border-3 rounded-4 p-5 d-flex justify-content-left align-items-center`}
+                            style={{
+                                backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999", 
+                                height:"110px"}}>
                                 {/* Option Chaining!!! */}
-                                <h2>{roomInformation?.roomName}</h2> 
+                                <h3 style={{color: theme === 'light' ? "#000000" : "#FFFFFF"}}>{roomInformation?.roomName}</h3> 
                             </Col>
                         </Row>
                     </Container>
-                    <Container className="border border-#898989 border-3 rounded-1 p-5"
-                    style={{backgroundColor:"#898989", maxWidth:'750px'}}>
+                    <Container className={`border-3 rounded-4 p-5`}
+                    style={{backgroundColor: theme === 'light' ? "#898989" : '#666666', maxWidth:'750px'}}>
                         <Row>
                             <Col 
-                                className="border-#898989 border-1 rounded-1 p-4"  
+                                className={`border-${theme === 'light' ? '#898989' : '#666666'} border-1 rounded-1 p-4`}  
                                 sm={3}
                                 md={3}
                                 xl={3}
@@ -633,15 +636,17 @@ const RoomComponent = () => {
                                         let textAlign = "left";
                                         let itemClassName = "d-flex justify-content-start";
                                         if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
-                                            color  = "#C3C3C3";
+                                            color = theme === "light" ? "#C3C3C3" : "#999999";
+                                            fontcolor = theme === "light" ? "#000000" : "#FFFFFF";
                                             itemClassName = "d-flex justify-content-start";
                                         } else if (_chatMessage.member.memberNickName === 'system') {
-                                            color  = '#000000';
+                                            color  = theme === 'light' ? '#000000' : "#333333";
                                             fontcolor = "#FFFFFF";
                                             itemClassName = "d-flex justify-content-center";
 
                                         } else{
-                                            color = '#FFFFFF';
+                                            color = theme === 'light' ? '#FFFFFF' : '#121212';
+                                            fontcolor = theme === 'light' ? "#000000" : "#FFFFFF";
                                             textAlign = "right";
                                             itemClassName = "d-flex justify-content-end";
                                         }
@@ -680,15 +685,17 @@ const RoomComponent = () => {
                                         let textAlign = "left";
                                         let itemClassName = "d-flex justify-content-start";
                                         if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
-                                            color  = "#C3C3C3";
+                                            color = theme === "light" ? "#C3C3C3" : "#999999";
+                                            fontcolor = theme === "light" ? "#000000" : "#FFFFFF";
                                             itemClassName = "d-flex justify-content-start";
                                         } else if (_chatMessage.member.memberNickName === 'system') {
-                                            color  = '#000000';
+                                            color  = theme === 'light' ? '#000000' : "#333333";
                                             fontcolor = "#FFFFFF";
                                             itemClassName = "d-flex justify-content-center";
 
                                         } else{
-                                            color = '#FFFFFF';
+                                            color = theme === 'light' ? '#FFFFFF' : '#121212';
+                                            fontcolor = theme === 'light' ? "#000000" : "#FFFFFF";
                                             textAlign = "right";
                                             itemClassName = "d-flex justify-content-end";
                                         }
@@ -720,41 +727,50 @@ const RoomComponent = () => {
                                 )}
                             </Col>
                             <Col 
-                                className="border-#9D9D9D border-1 rounded-1 p-4" 
+                                className="border-1 rounded-4 p-4" 
                                 sm={1}
                                 md={1}
                                 xl={1}
                                 lg={1} 
-                                style={{ width:'40%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
-                                <h5>참여명단</h5>
-                                <span className='border rounded-pill d-flex align-items-center custom-ui' 
-                                style={{backgroundColor: "white",
-                                        marginBottom: '6px',
-                                        display: 'inline-block',
-                                        padding: '0.5rem 1rem'}}>
+                                style={{ width:'40%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999" }}>
+                                <h5 style={{color: theme === 'light' ? '#000000' : '#FFFFFF'}}>참여명단</h5>
+                                <span 
+                                    className='border rounded-pill d-flex align-items-center custom-ui' 
+                                    style={{backgroundColor: theme === "light" ? "white": '#121212',
+                                            color: theme === 'light' ? "#000000" : "#FFFFFF",
+                                            marginBottom: '6px',
+                                            display: 'inline-block',
+                                            padding: '0.5rem 1rem'}}>
                                 {roomInformation?.roomManager === myInfo?.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                 {myInfo?.memberNickName}</span>
                                 <hr/>
-                                {otherMember.map((_member, index) => (
+                                {otherMember.map((_member) => (
                                     <ListGroup className='custom-ui' style={{ marginBottom: '6px'}}>
                                         {_member?.memberNickName !== myInfo?.memberNickName && (
-                                            <ListGroupItem>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
+                                            <ListGroupItem style={{ backgroundColor: theme === "light" ? '#FFFFFF' : '#121212',
+                                                                    color: theme === "light" ? '#000000' : "#FFFFFF"}}>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
                                                 <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                                 {_member?.memberNickName}
                                                 <div style={{width:"4px", display:"inline-block"}}/>
                                                 {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
                                                 <Button className="btn-sm custom-button"
-                                                variant='dark' 
-                                                onClick={() => ForcedExit(_member)} 
-                                                style={{
-                                                    width:"75px",
-                                                }}>강퇴하기</Button>
+                                                    variant={theme === 'light' ? 'dark' : '#333333'} 
+                                                    onClick={() => ForcedExit(_member)} 
+                                                    style={{
+                                                        backgroundColor: theme === 'light' ? 'dark' : '#333333',
+                                                        color: theme === 'light' ? '#000000' : '#FFFFFF',
+                                                        width:"75px",
+                                                    }}>강퇴하기</Button>
                                                 )}
                                                 <div style={{width:"4px", display:"inline-block"}}/>
                                                 {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                                                    <Button className="btn-sm custom-button" variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
-                                                        backgroundColor: "#C3C3C3",
-                                                    }}>방장위임</Button>
+                                                    <Button 
+                                                        className="btn-sm custom-button" 
+                                                        variant={theme === 'light' ? "#C3C3C3" : "#999999"} 
+                                                        onClick={() => AuthMandate(_member)} style={{
+                                                            backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                                            color: theme === 'light' ? "#000000" : "#FFFFFF"
+                                                        }}>방장위임</Button>
                                                 )}
                                             </ListGroupItem>
                                         )}
@@ -770,17 +786,22 @@ const RoomComponent = () => {
                                     onSubmit={(event)=>handleSubmit(event)}>
                                     <InputGroup style={{width:"500px", height:"45px"}}>
                                         <Form.Control 
-                                            className='custom-ui'
+                                            className={`${theme === 'light' ? 'light-theme' : 'dark-theme'} custom-ui`}
                                             type="text" 
                                             value={chat} 
                                             placeholder='채팅 내용을 입력해 주세요.' 
                                             onChange={handleChange}
-                                            onKeyDown={handleKeyDown}/>            
+                                            onKeyDown={handleKeyDown}
+                                            style={{backgroundColor: theme === 'light' ? "#FFFFFF" : '#121212',
+                                                color: theme === 'light' ? "#000000" : '#FFFFFF'}}/>            
                                     </InputGroup>
                                     <div style={{width:"7px", display:"inline-block"}}/>
                                     <Button className='btn-lg custom-button' 
-                                    variant='#C3C3C3' 
-                                    style={{  backgroundColor:"#C3C3C3", }} 
+                                    variant={theme === 'light' ? "#C3C3C3" : "#999999"}
+                                    style={{  
+                                        backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                        color: theme === 'light' ? '#000000' : '#FFFFFF'
+                                    }} 
                                     onClick={() => publishChat(chat)}><strong>전송</strong></Button>          
                                 </FormGroup>
                             </Col>
@@ -789,18 +810,26 @@ const RoomComponent = () => {
                     <br></br>
                     <FormGroup className="d-flex align-items-center justify-content-center gap-3">
                         <Button className='btn-lg custom-button' 
-                            variant="dark" 
+                            variant={theme === 'light' ? 'dark' : '#333333'}
+                            style={{backgroundColor:theme === 'light' ? 'dark' : '#333333',
+                                    color: "#FFFFFF"}}
                             onClick={ExitRoom}>나가기</Button>
                             {role === "ROLE_MANAGER" && (
-                            <Button className='btn-lg custom-button'
-                                variant='#B9B9B9' 
-                                style={{  backgroundColor:"#B9B9B9", }} 
+                                <Button className='btn-lg custom-button'
+                                variant={theme === 'light' ? "#B9B9B9" : "#8C8C8C"}
+                                style={{  
+                                    backgroundColor: theme === 'light' ? "#B9B9B9" : "#8C8C8C", 
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF'
+                                }} 
                                 onClick={()=>setShowChangeModal(true)}>설정 변경</Button>
                             )} 
                             {role === "ROLE_MANAGER" && (
                                 <Button className='btn-lg custom-button' 
-                                variant='#B9B9B9'
-                                style={{  backgroundColor:"#B9B9B9", }} 
+                                variant={theme === 'light' ? "#B9B9B9" : "#8C8C8C"}
+                                style={{  
+                                    backgroundColor: theme === 'light' ? "#B9B9B9" : "#8C8C8C", 
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF'
+                                }} 
                                 onClick={()=>setShowInviteModal(true)}>초대하기</Button>
                             )}
                         <ChangRoomComponent room_Id={room_Id} stompClient={client.current} curParticipates={curParticipates}
@@ -811,19 +840,24 @@ const RoomComponent = () => {
             </Desktop>
             <Mobile>
             <Offcanvas show={showOffcanvas} onHide={handleCloseOffcanvas}>
-                <OffcanvasBody>
+                <OffcanvasBody style={{backgroundColor: theme === 'light' ? "#FFFFFF" : "#121212"}}>
                     <Accordion defaultActiveKey="0">
                         <Accordion.Header>참여명단</Accordion.Header>
                             <Accordion.Body>
                                 <Col 
-                                    className="border-#9D9D9D border-1 rounded-1 p-4" 
+                                    className="border-1 rounded-4 p-4" 
                                     sm={1}
                                     md={1}
                                     xl={1}
                                     lg={1} 
-                                    style={{ width:'100%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
+                                    style={{ width:'100%', 
+                                            height:'400px',
+                                            overflowY: 'auto', 
+                                            maxHeight: '400px', 
+                                            backgroundColor:theme === 'light' ? "#C3C3C3" : '#999999' }}>
                                     <span className='border rounded-pill d-flex align-items-center custom-ui' 
-                                    style={{backgroundColor: "white",
+                                    style={{backgroundColor: theme === 'light' ? "white" : "black",
+                                            color: theme === 'light' ? 'black' : 'white',
                                             marginBottom: '6px',
                                             display: 'inline-block',
                                             padding: '0.5rem 1rem'}}>
@@ -833,13 +867,15 @@ const RoomComponent = () => {
                                     {otherMember.map((_member, index) => (
                                         <ListGroup className='custom-ui' style={{ marginBottom: '6px' }}>
                                             {_member?.memberNickName !== myInfo?.memberNickName && (
-                                                <ListGroupItem>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
+                                                <ListGroupItem style={{ backgroundColor: theme === "light" ? '#FFFFFF' : '#121212',
+                                                                         color: theme === "light" ? '#000000' : "#FFFFFF"}}>
+                                                    {_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
                                                     <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                                     {_member?.memberNickName}
                                                     <div style={{width:"4px", display:"inline-block"}}/>
                                                     {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
                                                     <Button className="btn-sm custom-button"
-                                                    variant='dark' 
+                                                    variant={theme === 'light' ? 'dark' : '#333333'}
                                                     onClick={() => ForcedExit(_member)} 
                                                     style={{
                                                         width:"75px",
@@ -847,9 +883,12 @@ const RoomComponent = () => {
                                                     )}
                                                     <div style={{width:"4px", display:"inline-block"}}/>
                                                     {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                                                        <Button className="btn-sm custom-button" variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
-                                                            backgroundColor: "#C3C3C3",
-                                                        }}>방장위임</Button>
+                                                        <Button className="btn-sm custom-button" 
+                                                                variant={theme === 'light' ? "#C3C3C3" : "#999999"} 
+                                                                onClick={() => AuthMandate(_member)} style={{
+                                                                    backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                                                    color: theme === 'light' ? '#000000' : "#FFFFFF"
+                                                                }}>방장위임</Button>
                                                     )}
                                                 </ListGroupItem>
                                             )}
@@ -863,16 +902,19 @@ const RoomComponent = () => {
                             <div className='d-grid gap-2'>
                                 <Button
                                 className='btn-sm custom-button'
-                                variant="dark" 
-                                style={{ width:"300px" }} onClick={ExitRoom}>나가기</Button>
+                                variant={theme === 'light' ? 'dark' : '#333333'}
+                                style={{ backgroundColor:theme === 'light' ? 'dark' : '#333333',
+                                        color:"#FFFFFF",
+                                        width:"300px" }} onClick={ExitRoom}>나가기</Button>
                                 <hr/>
                                 {role === "ROLE_MANAGER" && (
                                     <div className="d-grid">
                                         <Button 
                                         className='btn-sm custom-button'
-                                        variant='#B9B9B9' 
-                                        style={{  backgroundColor:"#B9B9B9", 
-                                                    width: "100%"}} 
+                                        variant={theme === 'light' ? "#B9B9B9" : "#8C8C8C"} 
+                                        style={{backgroundColor: theme === 'light' ? "#B9B9B9" : "#8C8C8C",
+                                                color: theme === 'light' ? "#000000" : "#FFFFFF",
+                                                width: "100%"}} 
                                         onClick={()=>{
                                             setShowOffcanvas(false);
                                             setShowChangeModal(true);
@@ -882,8 +924,10 @@ const RoomComponent = () => {
                                 {role === "ROLE_MANAGER" && (
                                     <div className="d-grid">
                                         <Button className='btn-sm custom-button'
-                                        variant='#B9B9B9'
-                                        style={{ backgroundColor:"#B9B9B9", }} 
+                                        variant={theme === 'light' ? "#B9B9B9" : "#8C8C8C"} 
+                                        style={{backgroundColor: theme === 'light' ? "#B9B9B9" : "#8C8C8C",
+                                                color: theme === 'light' ? "#000000" : "#FFFFFF",
+                                                width: "100%"}} 
                                         onClick={()=>{
                                             setShowOffcanvas(false);
                                             setShowInviteModal(true);
@@ -896,8 +940,9 @@ const RoomComponent = () => {
                         <hr/>
                         <Button
                         className='btn-sm custom-button' 
-                        variant='#C3C3C3'
-                        style={{ backgroundColor: "#C3C3C3" }}
+                        variant={theme === 'light' ? "#C3C3C3" : "#999999"}
+                        style={{ backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                 color: theme === 'light' ? "#000000" : '#FFFFFF'}}
                         onClick={handleCloseOffcanvas}>
                             닫기
                         </Button>
@@ -910,13 +955,13 @@ const RoomComponent = () => {
                     <Row>
                         <Col 
                             className="d-flex justify-content-between align-items-center"
-                            style={{backgroundColor:"#C3C3C3", height:"60px"}}>
+                            style={{backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999", height:"60px"}}>
                             {/* Option Chaining!!! */}
-                            <h3>{roomInformation?.roomName}</h3> 
+                            <h3 style={{color: theme === 'light' ? "#000000" : "#FFFFFF"}}>{roomInformation?.roomName}</h3> 
                             <Button
                             className='custom-button'
-                            variant='#898989'
-                            style={{ backgroundColor: "#898989" }}
+                            variant={theme === 'light' ? "#898989" : "#666666"}
+                            style={{ backgroundColor: theme === 'light' ? "#898989" : "#666666" }}
                             onClick={handleShowOffcanvas}>
                             설정
                             </Button>
@@ -924,7 +969,7 @@ const RoomComponent = () => {
                     </Row>
                 </Container>
                 <Container
-                style={{backgroundColor:"#898989", maxWidth:'767px'}}>
+                style={{backgroundColor:theme === 'light' ? "#898989" : "#666666", maxWidth:'767px'}}>
                     <Row>
                         <Col 
                             className="border-#898989 border-1 rounded-1 p-4"  
@@ -948,15 +993,17 @@ const RoomComponent = () => {
                                     let textAlign = "left";
                                     let itemClassName = "d-flex justify-content-start";
                                     if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
-                                        color  = "#C3C3C3";
+                                        color = theme === "light" ? "#C3C3C3" : "#999999";
+                                        fontcolor = theme === "light" ? "#000000" : "#FFFFFF";
                                         itemClassName = "d-flex justify-content-start";
                                     } else if (_chatMessage.member.memberNickName === 'system') {
-                                        color  = '#000000';
+                                        color  = theme === 'light' ? '#000000' : "#333333";
                                         fontcolor = "#FFFFFF";
                                         itemClassName = "d-flex justify-content-center";
 
                                     } else{
-                                        color = '#FFFFFF';
+                                        color = theme === 'light' ? '#FFFFFF' : '#121212';
+                                        fontcolor = theme === 'light' ? "#000000" : "#FFFFFF";
                                         textAlign = "right";
                                         itemClassName = "d-flex justify-content-end";
                                     }
@@ -995,15 +1042,17 @@ const RoomComponent = () => {
                                     let textAlign = "left";
                                     let itemClassName = "d-flex justify-content-start";
                                     if (_chatMessage.member.memberNickName === myInfo?.memberNickName) {
-                                        color  = "#C3C3C3";
+                                        color = theme === "light" ? "#C3C3C3" : "#999999";
+                                        fontcolor = theme === "light" ? "#000000" : "#FFFFFF";
                                         itemClassName = "d-flex justify-content-start";
                                     } else if (_chatMessage.member.memberNickName === 'system') {
-                                        color  = '#000000';
+                                        color  = theme === 'light' ? '#000000' : "#333333";
                                         fontcolor = "#FFFFFF";
                                         itemClassName = "d-flex justify-content-center";
 
                                     } else{
-                                        color = '#FFFFFF';
+                                        color = theme === 'light' ? '#FFFFFF' : '#121212';
+                                        fontcolor = theme === 'light' ? "#000000" : "#FFFFFF";
                                         textAlign = "right";
                                         itemClassName = "d-flex justify-content-end";
                                     }
@@ -1042,19 +1091,21 @@ const RoomComponent = () => {
                                 className="d-flex align-items-center justify-content-center"
                                 onSubmit={(event)=>handleSubmit(event)}>
                                 <InputGroup style={{width:"500px", height:"45px"}}>
-                                    <Form.Control type="text" 
+                                    <Form.Control
+                                        className={`${theme === 'light' ? 'light-theme' : 'dark-theme'} custom-ui`}
+                                        type="text" 
                                         value={chat} 
                                         placeholder='채팅 내용을 입력해 주세요.' 
                                         onChange={handleChange}
                                         onKeyDown={handleKeyDown}
-                                        style={{borderTopLeftRadius: "25px",
-                                                borderBottomLeftRadius: "25px"}} />      
+                                        style={{backgroundColor: theme === 'light' ? "#FFFFFF" : '#121212',
+                                                color: theme === 'light' ? "#000000" : '#FFFFFF'}} />      
                                     <Button 
-                                    variant='#C3C3C3' 
-                                    style={{backgroundColor:"#C3C3C3", 
-                                            borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px",
-                                        }} 
+                                        className='custom-button'
+                                        variant={theme === 'light' ? "#C3C3C3" : '#999999'}
+                                        style={{backgroundColor: theme === 'light' ? "#C3C3C3" : '#999999',
+                                                color: theme === 'light' ? "#000000" : "#FFFFFF",
+                                               }} 
                                     onClick={() => publishChat(chat)}><strong>전송</strong></Button>      
                                 </InputGroup>
                             </FormGroup>

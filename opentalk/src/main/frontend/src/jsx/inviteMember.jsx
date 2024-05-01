@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios'
 import Modal from 'react-modal';
 import { Row, Col, Button, FormControl, ListGroup, ListGroupItem, InputGroup} from 'react-bootstrap'
 import { useMediaQuery } from 'react-responsive';
+import { themeContext } from './themeContext';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 768 })
@@ -14,6 +15,8 @@ const Mobile = ({ children }) => {
 }
 
 const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
+    const { theme } = useContext(themeContext);
+
     const [nickName, setNickName] = useState("");
     const [searchList, setSearchList] = useState([]);
 
@@ -57,6 +60,9 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                 if (res.data !== "Success"){
                     window.alert("이미 초대한 유저입니다.");
                 }
+                else{
+                    window.alert("초대되었습니다.");
+                }
             }).catch((error) => console.log(error));
         }
     }
@@ -67,8 +73,13 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                 <Modal isOpen={showModal} onRequestClose={CloseInviteModal}
                 style={{
                     content: {
+                        backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                         width: '450px', // 원하는 너비로 설정
                         height: '600px', // 원하는 높이로 설정
+                        borderTopLeftRadius: '25px',
+                        borderBottomLeftRadius: '25px',
+                        borderTopRightRadius: '25px',
+                        borderBottomRightRadius: '25px',
                     }
                 }}>
                     <Row>
@@ -84,7 +95,8 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                                 <Button
                                     className='custom-button'
                                     variant='#8F8F8F' 
-                                    style={{ backgroundColor:'#8F8F8F' }} 
+                                    style={{ backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                             color: theme === 'light' ? '#000000' : '#FFFFFF'}} 
                                     onClick={() => SearchByNickName(nickName)}><strong>검색</strong></Button>
                             </InputGroup>
                             <hr/>
@@ -97,14 +109,18 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                                     {searchList.map((_member) => (
                                         <ListGroupItem 
                                             className='custom-ui'
-                                            style={{ backgroundColor:"#CDCDCD", 
+                                            style={{ backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
+                                                     color: theme === 'light' ? '#000000' : '#FFFFFF',
                                                     marginBottom: '7px',
                                                     }}><strong>{_member.memberNickName}</strong>
-                                        <hr style={{border: "1px solid #808080"}}/>
+                                        <hr style={{
+                                            backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
+                                            border: `1px solid ${theme == 'light' ? "#808080" : '#666666'}`}}/>
                                         <Button
                                         className='btn-sm custom-button' 
                                         variant='#8F8F8F' 
-                                        style={{ backgroundColor:'#8F8F8F' }}
+                                        style={{ backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                        color: theme === 'light' ? '#000000' : '#FFFFFF' }}
                                         onClick={() => InviteMember(_member.memberNickName)}>
                                         <strong>초대</strong></Button></ListGroupItem>
                                     ))}
@@ -124,14 +140,19 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                 <Modal isOpen={showModal} onRequestClose={CloseInviteModal}
                 style={{
                     content: {
+                        backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                         width: '340px', // 원하는 너비로 설정
                         height: '400px', // 원하는 높이로 설정
+                        borderTopLeftRadius: '25px',
+                        borderBottomLeftRadius: '25px',
+                        borderTopRightRadius: '25px',
+                        borderBottomRightRadius: '25px',
                     }
                 }}>
                     <Row>
                         <Col>
                             <InputGroup>
-                            <FormControl
+                                <FormControl
                                     className='custom-ui'
                                     type="text" 
                                     value={nickName} 
@@ -141,7 +162,8 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                                 <Button
                                     className='custom-button'
                                     variant='#8F8F8F' 
-                                    style={{ backgroundColor:'#8F8F8F' }} 
+                                    style={{ backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                            color: theme === 'light' ? '#000000' : '#FFFFFF'}} 
                                     onClick={() => SearchByNickName(nickName)}><strong>검색</strong></Button>
                             </InputGroup>
                             <hr/>
@@ -154,14 +176,18 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                                 {searchList.map((_member) => (
                                     <ListGroupItem 
                                         className='custom-ui'
-                                        style={{ backgroundColor:"#CDCDCD", 
+                                        style={{ backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
+                                                    color: theme === 'light' ? '#000000' : '#FFFFFF',
                                                 marginBottom: '7px',
                                                 }}><strong>{_member.memberNickName}</strong>
-                                    <hr style={{border: "1px solid #808080"}}/>
+                                    <hr style={{
+                                        backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
+                                        border: `1px solid ${theme == 'light' ? "#808080" : '#666666'}`}}/>
                                     <Button
                                     className='btn-sm custom-button' 
                                     variant='#8F8F8F' 
-                                    style={{ backgroundColor:'#8F8F8F' }}
+                                    style={{ backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF' }}
                                     onClick={() => InviteMember(_member.memberNickName)}>
                                     <strong>초대</strong></Button></ListGroupItem>
                                 ))}

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SetRoomComponent from './setroom';
@@ -11,6 +11,7 @@ import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
 import { format } from 'date-fns'
 import { useMediaQuery } from 'react-responsive';
+import { themeContext } from './themeContext';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 768, maxWidth:1920 })
@@ -22,6 +23,7 @@ const Mobile = ({ children }) => {
 }
 
 const MainComponent = () => {
+    const {theme} = useContext(themeContext);
     const client = useRef({});
 
     const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
@@ -602,24 +604,28 @@ const MainComponent = () => {
             <Container>
                 <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
                             content: {
+                                backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                                 width: '1000px', // 원하는 너비로 설정
                                 height: '600px', // 원하는 높이로 설정
+                                borderTopLeftRadius: '25px',
+                                borderBottomLeftRadius: '25px',
+                                borderTopRightRadius: '25px',
+                                borderBottomRightRadius: '25px',
                             }
                         }}>
-                    <ListGroup>
+                    <ListGroup className = 'custom-ui'>
                     {messageList.map((_message) => (
-                        <ListGroupItem style={{ borderTopLeftRadius: "25px",
-                                                borderBottomLeftRadius: "25px",
-                                                borderTopRightRadius: "25px",
-                                                borderBottomRightRadius: "25px"
-                                                }}><strong>{_message.roomName}</strong>
+                        <ListGroupItem
+                            style={{backgroundColor:theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                    color:theme === 'light' ? '#000000' : '#FFFFFF'}}><strong>{_message.roomName}</strong>
                         <hr/><img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img> <strong>{_message.inviter}</strong>
                         <hr/>{_message.message}
                         <hr/>
                         <Button
                             className='custom-button'
                             variant="#8F8F8F" 
-                            style={{ backgroundColor:'#8F8F8F', }} 
+                            style={{ backgroundColor:theme === 'light' ? '#B6B6B6' : '#8D8D8D', 
+                                     color:theme === 'light' ? '#000000' : '#FFFFFF'}} 
                                 onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}><strong>입장하기</strong></Button>
                         <div style={{width:"4px", display:"inline-block"}}/>
                         <Button className='custom-button' variant='dark' 
@@ -629,6 +635,7 @@ const MainComponent = () => {
                         </ListGroupItem>
                     ))}
                     </ListGroup> 
+                    <hr/>
                     <Button 
                         className='custom-button'
                         variant='dark' 
@@ -636,9 +643,9 @@ const MainComponent = () => {
                         >닫기</Button>
                 </Modal>
                 <Row className="justify-content-end">
-                    <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-#7B7B7B border-3 rounded-2 p-5"
+                    <Col xs={3} md={9} span={12} offset={12} lg="5" className="border-3 rounded-4 p-5"
                     style={{
-                        backgroundColor: "#7B7B7B",
+                        backgroundColor: theme === 'light' ? "#7B7B7B" : "#595959",
                         width:"30%", height: "975px"
                         }}>
                         <aside>
@@ -660,15 +667,17 @@ const MainComponent = () => {
                             <div className="d-grid gap-4">
                                 <Button 
                                     className="btn-lg custom-button" 
-                                    variant='#CDCDCD'
+                                    variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
                                     onClick={GoProfile}
-                                    style={{ backgroundColor:"#CDCDCD" }}
+                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                                             color:theme === 'light' ? '#000000' : '#FFFFFF'}}
                                 >프로필 설정</Button>
                                 <Button 
                                     className="btn-lg custom-button" 
-                                    variant='#CDCDCD'
+                                    variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
                                     onClick={openMessageBox}
-                                    style={{ backgroundColor:"#CDCDCD" }}
+                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                                             color:theme === 'light' ? '#000000' : '#FFFFFF'}}
                                 >메세지함</Button>
                                 <Button 
                                     className="btn-lg custom-button" 
@@ -678,7 +687,7 @@ const MainComponent = () => {
                             </div>
                         </aside>
                     </Col>
-                    <Col className="border border-#C3C3C3 border-3 rounded-2 p-5" style={{backgroundColor:"#C3C3C3", height: "975px"}}>
+                    <Col className="border-3 rounded-4 p-5" style={{backgroundColor:theme === 'light' ? "#C3C3C3" : '#999999', height: "975px"}}>
                         <SetRoomComponent
                             stompClient={client.current}
                             onDataUpdate={setIsUpdateTrigger}
@@ -688,8 +697,9 @@ const MainComponent = () => {
                             {chatRoomList.map(room=>(
                                 <ListGroupItem 
                                     className='custom-ui'
-                                    style={{border:'#8F8F8F', 
-                                        backgroundColor:'#8F8F8F',  
+                                    style={{border:theme === 'light' ? '#8F8F8F' : '#6D6D6D', 
+                                        backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D', 
+                                        color: theme === 'light' ? '#000000' : '#FFFFFF',
                                         marginBottom: '5px' }}>
                                     <strong>
                                         {room.roomName} | {room.curParticipates} / {room.limitParticipates}
@@ -704,7 +714,9 @@ const MainComponent = () => {
                                     <div>
                                         <ListGroup className="list-group-horizontal list-group-flush gap-2">        
                                         {room.roomTags.map(tag=>(
-                                            <ListGroupItem style={{border:"#8F8F8F", backgroundColor:'#8F8F8F', color:"#4B4B4B"}}># {tag.tagName}</ListGroupItem>
+                                            <ListGroupItem style={{border:theme === 'light' ? '#8F8F8F' : '#6D6D6D', 
+                                            backgroundColor:theme === 'light' ? '#8F8F8F' : '#6D6D6D', 
+                                            color:theme === 'light' ? "#4B4B4B" : "#2D2D2D"}}># {tag.tagName}</ListGroupItem>
                                         ))}
                                         </ListGroup>
                                     </div>
@@ -712,7 +724,8 @@ const MainComponent = () => {
                                 <div className="d-flex flex-row gap-2">
                                     <Button className='custom-button'
                                     variant="#CDCDCD" 
-                                    style={{ backgroundColor:'#CDCDCD' }} onClick={() => EnterRoom({roomInfo: room})}><strong>입장하기</strong></Button>
+                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                                             color: theme === 'light' ? '#000000' : '#FFFFFF'}} onClick={() => EnterRoom({roomInfo: room})}><strong>입장하기</strong></Button>
                                     {room.roomManager === member?.memberNickName && (
                                     <Button className='custom-button' 
                                     variant="dark" 
@@ -726,12 +739,13 @@ const MainComponent = () => {
                         <br></br>
                         <FormGroup className="d-flex align-items-center justify-content-center">
                             <InputGroup style={{width:"70%"}}>
-                                <Form.Select 
+                                <Form.Select
+                                    className='custom-ui'
                                     onChange={selectMenuHandle} 
                                     value={selectManu}
                                     style={{flex: '1', 
-                                            borderTopLeftRadius: "25px",
-                                            borderBottomLeftRadius: "25px",
+                                            backgroundColor:theme === 'light' ? '#FFFFFF' : "#121212",
+                                            color: theme === 'light' ? '#000000' : "#FFFFFF"
                                         }}
                                 >
                                     {menuList.map((item) => {
@@ -740,27 +754,28 @@ const MainComponent = () => {
                                         </option>;
                                     })}
                                 </Form.Select>
-                                <FormControl 
+                                <FormControl
+                                    className='custom-ui'
                                     type='text' 
                                     value={searchKeyword} 
                                     onChange={GetInputSearchKeyword}
                                     style={{flex: '5',
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}}></FormControl>
+                                    backgroundColor:theme === 'light' ? '#FFFFFF' : "#121212",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF"}}></FormControl>
                                 
                             </InputGroup>
-                            <Button className='custom-button'variant="#8F8F8F" 
-                                style={{ backgroundColor:'#8F8F8F' }} onClick={search}>
+                            <Button className='custom-button' variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                                style={{ backgroundColor:theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                         color: theme === 'light' ? "#000000" : "#FFFFFF"}} onClick={search}>
                                 <strong>
                                     검색
                                 </strong>
                             </Button>
                                 {isSearch && (
                                 <Button className='custom-button'
-                                        variant="#8F8F8F" style={{
-                                        color:"white", 
-                                        backgroundColor:'#8F8F8F', 
-                                        }} onClick={initSearch}>초기화</Button>
+                                    variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                                    style={{ backgroundColor:theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? "#000000" : "#FFFFFF"}} onClick={initSearch}>초기화</Button>
                             )}
                         </FormGroup>
                         <br></br>
@@ -777,51 +792,62 @@ const MainComponent = () => {
         </Desktop>
         <Mobile>
             <Container>
-                <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
+            <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
                             content: {
+                                backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                                 width: '300px', // 원하는 너비로 설정
                                 height: '600px', // 원하는 높이로 설정
+                                borderTopLeftRadius: '25px',
+                                borderBottomLeftRadius: '25px',
+                                borderTopRightRadius: '25px',
+                                borderBottomRightRadius: '25px',
                             }
                         }}>
-                    <ListGroup className='custom-ui'>
+                    <ListGroup className = 'custom-ui'>
                     {messageList.map((_message) => (
-                        <ListGroupItem className='custom-ui'><strong>{_message.roomName}</strong>
+                        <ListGroupItem
+                            style={{backgroundColor:theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                    color:theme === 'light' ? '#000000' : '#FFFFFF'}}><strong>{_message.roomName}</strong>
                         <hr/><img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img> <strong>{_message.inviter}</strong>
                         <hr/>{_message.message}
                         <hr/>
                         <Button
                             className='custom-button'
                             variant="#8F8F8F" 
-                            style={{ backgroundColor:'#8F8F8F' }} 
+                            style={{ backgroundColor:theme === 'light' ? '#B6B6B6' : '#8D8D8D', 
+                                     color:theme === 'light' ? '#000000' : '#FFFFFF'}} 
                                 onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}><strong>입장하기</strong></Button>
                         <div style={{width:"4px", display:"inline-block"}}/>
-                        <Button
-                            className='custom-button' 
-                            variant='dark' 
-                            onClick={()=> DeleteInviteMessage({Inviter: _message.inviter, Invited_member:_message.invitedMember})}>메세지 지우기</Button>
+                        <Button className='custom-button' variant='dark' 
+                                onClick={()=> DeleteInviteMessage({Inviter: _message.inviter, Invited_member:_message.invitedMember})}>메세지 지우기</Button>
                         
                         
                         </ListGroupItem>
                     ))}
                     </ListGroup> 
-                    <Button
-                        className='custom-button' 
+                    <hr/>
+                    <Button 
+                        className='custom-button'
                         variant='dark' 
-                        onClick={closeModal} >닫기</Button>
+                        onClick={closeModal} 
+                        >닫기</Button>
                 </Modal>
                 <Row className="justify-content-end">
                     <Button
                     className='custom-button'
-                    variant="#8F8F8F"
-                    style={{ backgroundColor: "#8F8F8F"}}
+                    variant={theme === 'light' ? '#8F8F8F' : '#6D6D6D'}
+                    style={{ backgroundColor:theme === 'light' ? '#8F8F8F' : '#6D6D6D', 
+                    color:theme === 'light' ? '#000000' : '#FFFFFF'}}
                     onClick={handleShow}>
-                        프로필 보기
+                        <strong>
+                            프로필 보기
+                        </strong>
                     </Button>
                     <Offcanvas show={show} onHide={handleClose}>
                         <OffcanvasBody>
-                            <Col xs={3} md={9} span={12} offset={12} lg="5" className="border border-#7B7B7B border-3 rounded-2 p-5"
+                            <Col xs={3} md={9} span={12} offset={12} lg="5" className="border-3 rounded-4 p-5"
                             style={{
-                                backgroundColor: "#7B7B7B",
+                                backgroundColor: theme === 'light' ? "#7B7B7B" : "#595959",
                                 width:"100%", height: "600px"
                                 }}>
                                 <div style={{ textAlign: 'center' }}>
@@ -842,15 +868,17 @@ const MainComponent = () => {
                                 <div className="d-grid gap-4">
                                     <Button 
                                         className='custom-button'
-                                        variant='#CDCDCD'
+                                        variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
                                         onClick={GoProfile}
-                                        style={{ backgroundColor:"#CDCDCD" }}
+                                        style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                                 color:theme === 'light' ? "#000000" : "#FFFFFF"}}
                                     >프로필 설정</Button>
                                     <Button 
                                         className='custom-button'
-                                        variant='#CDCDCD'
+                                        variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
                                         onClick={openMessageBox}
-                                        style={{ backgroundColor:"#CDCDCD" }}
+                                        style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                                 color:theme === 'light' ? "#000000" : "#FFFFFF"}}
                                     >메세지함</Button>
                                     <Button
                                         className='custom-button'
@@ -866,7 +894,7 @@ const MainComponent = () => {
                             </Col>
                         </OffcanvasBody>
                     </Offcanvas>
-                    <Col className="border border-#C3C3C3 border-3 rounded-2 p-5" style={{backgroundColor:"#C3C3C3", height: "975px"}}>
+                    <Col className="border-3 rounded-4 p-5" style={{backgroundColor:theme === 'light' ? "#C3C3C3" : "#999999", height: "975px"}}>
                         <SetRoomComponent
                             stompClient={client.current}
                             onDataUpdate={setIsUpdateTrigger}
@@ -876,8 +904,9 @@ const MainComponent = () => {
                             {chatRoomList.map(room=>(
                                 <ListGroupItem
                                     className='custom-ui'
-                                    style={{ border:'#8F8F8F', 
-                                        backgroundColor:'#8F8F8F',  
+                                    style={{ border:theme === 'light' ? '#8F8F8F' : '#6D6D6D', 
+                                        backgroundColor:theme === 'light' ? '#8F8F8F' : '#6D6D6D',  
+                                        color:theme === 'light' ? "#000000" : "#FFFFFF",
                                         marginBottom: '5px' }}>
                                     <strong>
                                         {room.roomName} | {room.curParticipates} / {room.limitParticipates}
@@ -893,9 +922,9 @@ const MainComponent = () => {
                                         <ListGroup className="list-group-horizontal list-group-flush gap-2">        
                                         {room.roomTags.map(tag=>(
                                             <ListGroupItem 
-                                            style={{border:"#8F8F8F", 
-                                                    backgroundColor:'#8F8F8F', 
-                                                    color:"#4B4B4B",
+                                            style={{border:theme === 'light' ? '#8F8F8F' : '#6D6D6D', 
+                                                    backgroundColor:theme === 'light' ? '#8F8F8F' : '#6D6D6D', 
+                                                    color:theme === 'light' ? "#4B4B4B" : "#2D2D2D",
                                                     fontSize:"12px"}}># {tag.tagName}</ListGroupItem>
                                         ))}
                                         </ListGroup>
@@ -904,8 +933,10 @@ const MainComponent = () => {
                                 <div className="d-flex flex-row gap-2">
                                     <Button
                                     className='btn-sm custom-button' 
-                                    variant="#CDCDCD" 
-                                    style={{ backgroundColor:'#CDCDCD' }} onClick={() => EnterRoom({roomInfo: room})}><strong>입장하기</strong></Button>
+                                    variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"} 
+                                    style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                             color:theme === 'light' ? '#000000' : "#FFFFFF"
+                                            }} onClick={() => EnterRoom({roomInfo: room})}><strong>입장하기</strong></Button>
                                     {room.roomManager === member?.memberNickName && (
                                     <Button
                                     className='btn-sm custom-button'  
@@ -920,12 +951,13 @@ const MainComponent = () => {
                         <br></br>
                         <FormGroup className="d-flex align-items-center justify-content-center">
                             <InputGroup style={{width:"70%"}}>
-                                <Form.Select 
+                                <Form.Select
+                                    className='custom-ui'
                                     onChange={selectMenuHandle} 
                                     value={selectManu}
                                     style={{flex: '1', 
-                                            borderTopLeftRadius: "25px",
-                                            borderBottomLeftRadius: "25px",
+                                            backgroundColor:theme === 'light' ? '#FFFFFF' : "#121212",
+                                            color: theme === 'light' ? '#000000' : "#FFFFFF"
                                         }}
                                 >
                                     {menuList.map((item) => {
@@ -934,32 +966,30 @@ const MainComponent = () => {
                                         </option>;
                                     })}
                                 </Form.Select>
-                                <FormControl 
+                                <FormControl
+                                    className='custom-ui'
                                     type='text' 
                                     value={searchKeyword} 
                                     onChange={GetInputSearchKeyword}
                                     style={{flex: '5',
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}}></FormControl>
+                                    backgroundColor:theme === 'light' ? '#FFFFFF' : "#121212",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF"}}></FormControl>
                                 
                             </InputGroup>
                             {!isSearch && (
-                                <Button
-                                className='custom-button' 
-                                variant="#8F8F8F" style={{ backgroundColor:'#8F8F8F' }} onClick={search}>
+                                <Button className='custom-button' variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                                style={{ backgroundColor:theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                         color: theme === 'light' ? "#000000" : "#FFFFFF"}} onClick={search}>
                                 <strong>
                                     검색
                                 </strong>
                                 </Button>
                             )}
-                            
                             {isSearch && (
-                            <Button
-                                className='custom-button'
-                                variant="#8F8F8F" style={{
-                                    color:"white", 
-                                    backgroundColor:'#8F8F8F'
-                                }} onClick={initSearch}>초기화</Button>
+                            <Button className='custom-button'
+                                variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                                style={{ backgroundColor:theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                color: theme === 'light' ? "#000000" : "#FFFFFF"}} onClick={initSearch}>초기화</Button>
                             )}
                         </FormGroup>
                         <br></br>

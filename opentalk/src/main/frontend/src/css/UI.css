@@ -19,3 +19,11 @@
 .custom-checkbox .form-check-input:focus {
     box-shadow: 0 0 0 0.25rem rgba(#8F8F8F, 0.25); /* 포커스 시 그림자 색 변경 */
 }
+
+.light-theme::placeholder {
+    color: #000000; /* 라이트 테마에 맞는 placeholder 색상 */
+}
+
+.dark-theme::placeholder {
+    color: #FFFFFF; /* 다크 테마에 맞는 placeholder 색상 */
+}
