@@ -20,3 +20,26 @@
   background-color: #8F8F8F; /* 마우스 호버시 배경색 변경 */
   color:white;
 }
+
+.custom-pagination-dark .page-link {
+  border-radius: 50%;
+  width: 38px; /* 둥근 테두리 적용 */
+}
+
+.custom-pagination-dark .page-item.active .page-link {
+  background-color: #6D6D6D; /* 활성화된 페이지 배경색 변경 */
+  border-color: #6D6D6D;
+  color:white;
+  font-weight: bold;
+}
+
+.custom-pagination-dark .page-item .page-link {
+  background-color: #000000; /* 활성화된 페이지 배경색 변경 */
+  border-color: #000000;
+  color: white;
+}
+
+.custom-pagination-dark .page-link:hover {
+  background-color: #6D6D6D; /* 마우스 호버시 배경색 변경 */
+  color:white;
+}

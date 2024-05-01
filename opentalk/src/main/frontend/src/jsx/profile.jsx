@@ -19,7 +19,7 @@ const Mobile = ({ children }) => {
 }
 
 const ProfileComponent = () => {
-    const {theme, changeTheme} = useContext(themeContext);
+    const { theme } = useContext(themeContext);
     const client = useRef({});
     useEffect(() =>{ 
         const connect = () => {
@@ -180,15 +180,6 @@ const ProfileComponent = () => {
 
     const ChangePasswordPopup = () => {
         setPwPopupOpen(true);
-    }
-
-    const ChangeTheme = () => {
-        if (theme === "light"){
-            changeTheme("dark");
-        }
-        else{
-            changeTheme("light");
-        }
     }
 
     const ChangeNickNameCancle = () => {
@@ -543,12 +534,6 @@ const ProfileComponent = () => {
                                         style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
                                                 color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
                                         onClick={ChangePasswordPopup}>비밀번호 변경</Button>
-                                <Button 
-                                    className = 'custom-button' 
-                                    variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
-                                    style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
-                                    color: theme === 'light' ? '#000000' : '#FFFFFF' }} 
-                                    onClick={ChangeTheme}>테마 바꾸기</Button>
                                 <Button
                                     className='custom-button' 
                                     variant='dark' 
@@ -743,12 +728,6 @@ const ProfileComponent = () => {
                                     style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
                                     color: theme === 'light' ? '#000000' : '#FFFFFF' }} 
                                     onClick={ChangePasswordPopup}>비밀번호 변경</Button>
-                                <Button 
-                                    className = 'custom-button' 
-                                    variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
-                                    style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
-                                    color: theme === 'light' ? '#000000' : '#FFFFFF' }} 
-                                    onClick={ChangeTheme}>테마 바꾸기</Button>
                                 <Button
                                     className = 'custom-button' 
                                     variant='dark' 

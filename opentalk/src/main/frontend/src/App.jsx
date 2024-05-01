@@ -1,6 +1,7 @@
 import { BrowserView, MobileView } from 'react-device-detect';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import React, { useEffect, useContext } from 'react';
+import { Button } from 'react-bootstrap';
 import Login from './jsx/login'
 import Front from './jsx/front'
 import Enroll from './jsx/enroll'
@@ -26,7 +27,7 @@ const App = () => {
       setMobileHeight();
   });
 
-  const {theme} = useContext(themeContext);
+  const {theme, changeTheme} = useContext(themeContext);
 
   return (
     <div>
@@ -45,6 +46,21 @@ const App = () => {
       <Router>
         <div>
           <BrowserView style={{backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212'}}>
+            <Button
+              className='custom-button'
+              variant={theme === 'light' ? "#121212" : "#FFFFFF"}
+              onClick={() => {
+              if (theme === 'light'){
+                changeTheme('dark');
+              }
+              else{
+                changeTheme('light');
+              }
+            }}
+            style={{
+              backgroundColor:theme === 'light' ? "#121212" : "#FFFFFF",
+              color:theme === 'light' ? '#FFFFFF' : "#000000",
+            }}>테마 변경</Button>
             <Routes>
               <Route path="/" element={<Navigate to="/opentalk" />} />
               <Route path="/opentalk/profile" element={<Profile/>}></Route>
@@ -60,6 +76,21 @@ const App = () => {
             </Routes>
           </BrowserView>
           <MobileView style={{backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212'}}>
+          <Button
+              className='custom-button'
+              variant={theme === 'light' ? "#121212" : "#FFFFFF"}
+              onClick={() => {
+              if (theme === 'light'){
+                changeTheme('dark');
+              }
+              else{
+                changeTheme('light');
+              }
+            }}
+            style={{
+              backgroundColor:theme === 'light' ? "#121212" : "#FFFFFF",
+              color:theme === 'light' ? '#FFFFFF' : "#000000",
+            }}>테마 변경</Button>
             <Routes>
               <Route path="/" element={<Navigate to="/opentalk" />} />
               <Route path="/opentalk/profile" element={<ProfileMobile/>}></Route>

@@ -12,6 +12,7 @@ import SockJs from "sockjs-client"
 import { format } from 'date-fns'
 import { useMediaQuery } from 'react-responsive';
 import { themeContext } from './themeContext';
+import '../css/CustomPagination.css'
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 768 })
@@ -998,7 +999,7 @@ const MainComponent = () => {
                             )}
                         </FormGroup>
                         <br></br>
-                        <Pagination className="justify-content-center custom-pagination gap-2">
+                        <Pagination className={`justify-content-center ${theme === 'light' ? 'custom-pagination' : 'custom-pagination-dark'} gap-2`}>
                             <Pagination.First onClick={()=>handlePageChange(1)} />
                             <Pagination.Prev onClick={()=>handlePageChange(page - 1)} />
                             {renderPaginationItems()}
