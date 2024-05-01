@@ -10,7 +10,7 @@ import { useMediaQuery } from 'react-responsive';
 import { themeContext } from './themeContext';
 
 const Desktop = ({ children }) => {
-    const isDesktop = useMediaQuery({ minWidth: 768, maxWidth:1920 })
+    const isDesktop = useMediaQuery({ minWidth: 768 })
     return isDesktop ? children : null
 }
 const Mobile = ({ children }) => {
