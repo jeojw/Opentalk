@@ -46,7 +46,7 @@ const App = () => {
             <Route path = "/opentalk/main" element={<Main/>}></Route>
           </Routes>
         </BrowserView>
-        <MobileView>
+        <MobileView style={{backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212'}}>
           <Routes>
             <Route path="/" element={<Navigate to="/opentalk" />} />
             <Route path="/opentalk/profile" element={<ProfileMobile/>}></Route>
