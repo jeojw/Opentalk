@@ -208,6 +208,8 @@ export const SetRoomComponent = ({stompClient}) =>{
                             borderBottomLeftRadius: '25px',
                             borderTopRightRadius: '25px',
                             borderBottomRightRadius: '25px',
+                            position:'relative',
+                            top: "70px"
                         }
                     }}>
                     <Row>
@@ -348,6 +350,8 @@ export const SetRoomComponent = ({stompClient}) =>{
                             borderBottomLeftRadius: '25px',
                             borderTopRightRadius: '25px',
                             borderBottomRightRadius: '25px',
+                            position:'relative',
+                            top: "70px"
                         }
                     }}>
                     <Row>

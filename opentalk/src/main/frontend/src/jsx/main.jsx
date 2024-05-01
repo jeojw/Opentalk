@@ -601,7 +601,7 @@ const MainComponent = () => {
    return (
     <div>
         <Desktop>
-            <Container style={{ minHeight: '100vh'}}>
+            <Container style={{position:"relative", bottom:"-5px", minHeight:"100vh"}}>
                 <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
                             content: {
                                 backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
@@ -611,6 +611,8 @@ const MainComponent = () => {
                                 borderBottomLeftRadius: '25px',
                                 borderTopRightRadius: '25px',
                                 borderBottomRightRadius: '25px',
+                                position:'relative',
+                                top: "70px"
                             }
                         }}>
                     <ListGroup className = 'custom-ui'>
@@ -792,7 +794,7 @@ const MainComponent = () => {
             </Container>
         </Desktop>
         <Mobile>
-            <Container style={{ minHeight: '100vh'}}>
+            <Container style={{position:"relative", bottom:"-5px", minHeight:"100vh"}}>
             <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
                             content: {
                                 backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
@@ -802,6 +804,8 @@ const MainComponent = () => {
                                 borderBottomLeftRadius: '25px',
                                 borderTopRightRadius: '25px',
                                 borderBottomRightRadius: '25px',
+                                position:'relative',
+                                top: "70px"
                             }
                         }}>
                     <ListGroup className = 'custom-ui'>

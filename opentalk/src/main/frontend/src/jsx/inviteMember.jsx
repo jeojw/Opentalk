@@ -80,6 +80,8 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                         borderBottomLeftRadius: '25px',
                         borderTopRightRadius: '25px',
                         borderBottomRightRadius: '25px',
+                        position:'relative',
+                        top: "70px"
                     }
                 }}>
                     <Row>
@@ -91,6 +93,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                                     value={nickName} 
                                     onChange={GetInputNickName}
                                     placeholder='검색할 닉네임을 입력하세요.'
+                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
                                     />
                                 <Button
                                     className='custom-button'
@@ -147,6 +150,8 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                         borderBottomLeftRadius: '25px',
                         borderTopRightRadius: '25px',
                         borderBottomRightRadius: '25px',
+                        position:'relative',
+                        top: "70px"
                     }
                 }}>
                     <Row>
@@ -158,6 +163,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                                     value={nickName} 
                                     onChange={GetInputNickName}
                                     placeholder='검색할 닉네임을 입력하세요.'
+                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
                                     />
                                 <Button
                                     className='custom-button'

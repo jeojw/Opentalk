@@ -33,7 +33,7 @@ const AuthIdComponent = () =>{
 
     return (
         <Container style={{ minHeight: '100vh'}}>
-            <Row>
+            <Row style={{position:"relative", bottom:"-5px"}}>
                 <Col xs lg="3" md={{ span: 3, offset: 4 }} className="border-3 rounded-4 p-5" style={{backgroundColor: theme === 'light' ? "#7B7B7B" : "#595959"}}>
                 <h3 style={{color:"white"}}>아이디 확인하기</h3>
                 <Form>

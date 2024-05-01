@@ -598,7 +598,7 @@ const RoomComponent = () => {
     return(
         <div>
             <Desktop>
-                <Container style={{minHeight: '100vh'}} >
+                <Container style={{position:"relative", bottom:"-5px", minHeight:"100vh"}} >
                     <Container className={`border border-3 rounded-4 p-5`} style={{maxWidth:'850px'}}>
                         <Container style={{maxWidth:'750px' }}>
                             <Row>

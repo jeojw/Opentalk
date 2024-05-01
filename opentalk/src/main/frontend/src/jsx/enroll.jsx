@@ -196,7 +196,7 @@ const EnrollComponent = () =>{
 
     return(
         <Container>
-            <Row>
+            <Row style={{position:"relative", bottom:"-5px"}}>
                 <Col md={{ span: 6, offset: 3 }} className="border-3 rounded-4 p-5" style={{backgroundColor:theme === 'light' ? "#7B7B7B" : "#595959"}}>
                     <h2 style={{color:"white"}}>회원가입</h2>
                     <Form.Label style={{color:"white"}}>아이디</Form.Label>

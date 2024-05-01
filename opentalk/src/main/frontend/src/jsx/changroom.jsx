@@ -205,6 +205,8 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                         borderBottomLeftRadius: '25px',
                         borderTopRightRadius: '25px',
                         borderBottomRightRadius: '25px',
+                        position:'relative',
+                        top: "70px"
                     }
                 }}>
                     <Row>
@@ -334,6 +336,8 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                         borderBottomLeftRadius: '25px',
                         borderTopRightRadius: '25px',
                         borderBottomRightRadius: '25px',
+                        position:'relative',
+                        top: "70px"
                     }
                 }}>
                     <Row>
