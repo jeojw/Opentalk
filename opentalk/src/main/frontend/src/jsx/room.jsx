@@ -8,7 +8,6 @@ import InviteMemberComponent from './inviteMember';
 import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, ListGroupItem, Accordion, Offcanvas, OffcanvasBody } from 'react-bootstrap';
 import { format } from 'date-fns'
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import "../css/CustomPagination.css"
 import { useMediaQuery } from 'react-responsive';
 
 const Desktop = ({ children }) => {
@@ -728,49 +727,33 @@ const RoomComponent = () => {
                                 lg={1} 
                                 style={{ width:'40%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
                                 <h5>참여명단</h5>
-                                <span className='border rounded-pill d-flex align-items-center' 
+                                <span className='border rounded-pill d-flex align-items-center custom-ui' 
                                 style={{backgroundColor: "white",
                                         marginBottom: '6px',
-                                        borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px",
                                         display: 'inline-block',
                                         padding: '0.5rem 1rem'}}>
                                 {roomInformation?.roomManager === myInfo?.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                 {myInfo?.memberNickName}</span>
                                 <hr/>
                                 {otherMember.map((_member, index) => (
-                                    <ListGroup style={{marginBottom: '6px', 
-                                                    borderTopLeftRadius: "25px",
-                                                    borderBottomLeftRadius: "25px",
-                                                    borderTopRightRadius: "25px",
-                                                    borderBottomRightRadius: "25px"}}>
+                                    <ListGroup className='custom-ui' style={{ marginBottom: '6px'}}>
                                         {_member?.memberNickName !== myInfo?.memberNickName && (
                                             <ListGroupItem>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
                                                 <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                                 {_member?.memberNickName}
                                                 <div style={{width:"4px", display:"inline-block"}}/>
                                                 {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                                                <Button className="btn-sm"
+                                                <Button className="btn-sm custom-button"
                                                 variant='dark' 
                                                 onClick={() => ForcedExit(_member)} 
                                                 style={{
                                                     width:"75px",
-                                                    borderTopLeftRadius: "25px",
-                                                    borderBottomLeftRadius: "25px",
-                                                    borderTopRightRadius: "25px",
-                                                    borderBottomRightRadius: "25px"
                                                 }}>강퇴하기</Button>
                                                 )}
                                                 <div style={{width:"4px", display:"inline-block"}}/>
                                                 {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                                                    <Button className="btn-sm" variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
+                                                    <Button className="btn-sm custom-button" variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
                                                         backgroundColor: "#C3C3C3",
-                                                        borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                        borderTopRightRadius: "25px",
-                                                        borderBottomRightRadius: "25px"
                                                     }}>방장위임</Button>
                                                 )}
                                             </ListGroupItem>
@@ -786,25 +769,18 @@ const RoomComponent = () => {
                                     className="d-flex align-items-center justify-content-center"
                                     onSubmit={(event)=>handleSubmit(event)}>
                                     <InputGroup style={{width:"500px", height:"45px"}}>
-                                        <Form.Control type="text" 
+                                        <Form.Control 
+                                            className='custom-ui'
+                                            type="text" 
                                             value={chat} 
                                             placeholder='채팅 내용을 입력해 주세요.' 
                                             onChange={handleChange}
-                                            onKeyDown={handleKeyDown}
-                                            style={{borderTopLeftRadius: "25px",
-                                                    borderBottomLeftRadius: "25px",
-                                                    borderTopRightRadius: "25px",
-                                                    borderBottomRightRadius: "25px"}} />            
+                                            onKeyDown={handleKeyDown}/>            
                                     </InputGroup>
                                     <div style={{width:"7px", display:"inline-block"}}/>
-                                    <Button className='btn-lg' 
+                                    <Button className='btn-lg custom-button' 
                                     variant='#C3C3C3' 
-                                    style={{  backgroundColor:"#C3C3C3", 
-                                            borderTopLeftRadius: "25px",
-                                            borderBottomLeftRadius: "25px",
-                                            borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px"
-                                        }} 
+                                    style={{  backgroundColor:"#C3C3C3", }} 
                                     onClick={() => publishChat(chat)}><strong>전송</strong></Button>          
                                 </FormGroup>
                             </Col>
@@ -812,32 +788,19 @@ const RoomComponent = () => {
                     </Container>
                     <br></br>
                     <FormGroup className="d-flex align-items-center justify-content-center gap-3">
-                        <Button className='btn-lg' 
-                        variant="dark" 
-                        style={{ borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px",
-                                borderTopRightRadius: "25px",
-                                borderBottomRightRadius: "25px"}} onClick={ExitRoom}>나가기</Button>
+                        <Button className='btn-lg custom-button' 
+                            variant="dark" 
+                            onClick={ExitRoom}>나가기</Button>
                             {role === "ROLE_MANAGER" && (
-                            <Button className='btn-lg'
+                            <Button className='btn-lg custom-button'
                                 variant='#B9B9B9' 
-                                style={{  backgroundColor:"#B9B9B9", 
-                                        borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"
-                                        }} 
+                                style={{  backgroundColor:"#B9B9B9", }} 
                                 onClick={()=>setShowChangeModal(true)}>설정 변경</Button>
                             )} 
                             {role === "ROLE_MANAGER" && (
-                                <Button className='btn-lg' 
+                                <Button className='btn-lg custom-button' 
                                 variant='#B9B9B9'
-                                style={{  backgroundColor:"#B9B9B9", 
-                                        borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"
-                                    }} 
+                                style={{  backgroundColor:"#B9B9B9", }} 
                                 onClick={()=>setShowInviteModal(true)}>초대하기</Button>
                             )}
                         <ChangRoomComponent room_Id={room_Id} stompClient={client.current} curParticipates={curParticipates}
@@ -859,49 +822,33 @@ const RoomComponent = () => {
                                     xl={1}
                                     lg={1} 
                                     style={{ width:'100%', height:'400px', overflowY: 'auto', maxHeight: '400px', backgroundColor:"#C3C3C3" }}>
-                                    <span className='border rounded-pill d-flex align-items-center' 
+                                    <span className='border rounded-pill d-flex align-items-center custom-ui' 
                                     style={{backgroundColor: "white",
                                             marginBottom: '6px',
-                                            borderTopLeftRadius: "25px",
-                                            borderBottomLeftRadius: "25px",
-                                            borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px",
                                             display: 'inline-block',
                                             padding: '0.5rem 1rem'}}>
                                     {roomInformation?.roomManager === myInfo?.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                     {myInfo?.memberNickName}</span>
                                     <hr/>
                                     {otherMember.map((_member, index) => (
-                                        <ListGroup style={{marginBottom: '6px', 
-                                                        borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                        borderTopRightRadius: "25px",
-                                                        borderBottomRightRadius: "25px"}}>
+                                        <ListGroup className='custom-ui' style={{ marginBottom: '6px' }}>
                                             {_member?.memberNickName !== myInfo?.memberNickName && (
                                                 <ListGroupItem>{_member?.memberNickName !== myInfo?.memberNickName && roomInformation.roomManager ===_member.memberNickName && 
                                                     <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                                     {_member?.memberNickName}
                                                     <div style={{width:"4px", display:"inline-block"}}/>
                                                     {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                                                    <Button className="btn-sm"
+                                                    <Button className="btn-sm custom-button"
                                                     variant='dark' 
                                                     onClick={() => ForcedExit(_member)} 
                                                     style={{
                                                         width:"75px",
-                                                        borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                        borderTopRightRadius: "25px",
-                                                        borderBottomRightRadius: "25px"
                                                     }}>강퇴하기</Button>
                                                     )}
                                                     <div style={{width:"4px", display:"inline-block"}}/>
                                                     {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                                                        <Button className="btn-sm" variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
+                                                        <Button className="btn-sm custom-button" variant="#C3C3C3" onClick={() => AuthMandate(_member)} style={{
                                                             backgroundColor: "#C3C3C3",
-                                                            borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"
                                                         }}>방장위임</Button>
                                                     )}
                                                 </ListGroupItem>
@@ -915,26 +862,17 @@ const RoomComponent = () => {
                         <FormGroup className="d-flex align-items-center justify-content-center gap-3">
                             <div className='d-grid gap-2'>
                                 <Button
-                                className='btn-sm'
+                                className='btn-sm custom-button'
                                 variant="dark" 
-                                style={{ borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px",
-                                        width:"300px"}} onClick={ExitRoom}>나가기</Button>
+                                style={{ width:"300px" }} onClick={ExitRoom}>나가기</Button>
                                 <hr/>
                                 {role === "ROLE_MANAGER" && (
                                     <div className="d-grid">
                                         <Button 
-                                        className='btn-sm'
+                                        className='btn-sm custom-button'
                                         variant='#B9B9B9' 
                                         style={{  backgroundColor:"#B9B9B9", 
-                                                borderTopLeftRadius: "25px",
-                                                borderBottomLeftRadius: "25px",
-                                                borderTopRightRadius: "25px",
-                                                borderBottomRightRadius: "25px",
-                                                width: "100%"
-                                                }} 
+                                                    width: "100%"}} 
                                         onClick={()=>{
                                             setShowOffcanvas(false);
                                             setShowChangeModal(true);
@@ -943,14 +881,9 @@ const RoomComponent = () => {
                                 )} 
                                 {role === "ROLE_MANAGER" && (
                                     <div className="d-grid">
-                                        <Button className='btn-sm'
+                                        <Button className='btn-sm custom-button'
                                         variant='#B9B9B9'
-                                        style={{backgroundColor:"#B9B9B9", 
-                                                borderTopLeftRadius: "25px",
-                                                borderBottomLeftRadius: "25px",
-                                                borderTopRightRadius: "25px",
-                                                borderBottomRightRadius: "25px"
-                                                }} 
+                                        style={{ backgroundColor:"#B9B9B9", }} 
                                         onClick={()=>{
                                             setShowOffcanvas(false);
                                             setShowInviteModal(true);
@@ -962,13 +895,9 @@ const RoomComponent = () => {
                         </FormGroup>
                         <hr/>
                         <Button
-                        className='btn-sm' 
+                        className='btn-sm custom-button' 
                         variant='#C3C3C3'
-                        style={{backgroundColor: "#C3C3C3",
-                                borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px",
-                                borderTopRightRadius: "25px",
-                                borderBottomRightRadius: "25px"}}
+                        style={{ backgroundColor: "#C3C3C3" }}
                         onClick={handleCloseOffcanvas}>
                             닫기
                         </Button>
@@ -984,13 +913,10 @@ const RoomComponent = () => {
                             style={{backgroundColor:"#C3C3C3", height:"60px"}}>
                             {/* Option Chaining!!! */}
                             <h3>{roomInformation?.roomName}</h3> 
-                            <Button 
+                            <Button
+                            className='custom-button'
                             variant='#898989'
-                            style={{backgroundColor: "#898989",
-                                    borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px",
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}}
+                            style={{ backgroundColor: "#898989" }}
                             onClick={handleShowOffcanvas}>
                             설정
                             </Button>

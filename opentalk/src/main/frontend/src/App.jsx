@@ -12,6 +12,8 @@ import AuthId from './jsx/authId'
 import Room from './jsx/room'
 import Profile from './jsx/profile'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './css/UI.css'
+import './css/CustomPagination.css'
 
 const App = () => {
   const setMobileHeight = () => {

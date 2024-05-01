@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, InputGroup, FormControl } from 'react-bootstrap';
 
@@ -8,6 +8,13 @@ const FindMemberPassword = () =>{
     const [authNum, setAuthNum] = useState();
     const [inputNum, setInputNum] = useState();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() =>{
+        if (!location.state || !location.state.memberId){
+            navigate("/opentalk");
+        }
+    }, [])
 
     const GetInputEmail = (event) =>{
         setMemberEmail(event.target.value);
@@ -54,23 +61,29 @@ const FindMemberPassword = () =>{
                 <Form>
                     <Form.Label style={{color:"white"}}>이메일</Form.Label>
                     <InputGroup>
-                        <FormControl type='email' value={memberEmail} onChange={GetInputEmail}
-                        style={{borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px"
-                                }}></FormControl>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
-                                                        borderTopRightRadius: "25px",
-                                                        borderBottomRightRadius: "25px"}} onClick={CheckMail}>인증번호 받기</Button>
+                        <FormControl
+                            className='custom-ui'
+                            type='email' value={memberEmail} onChange={GetInputEmail}
+                        ></FormControl>
+                        <Button
+                            className='custom-button'
+                            variant='#CDCDCD' 
+                            style={{ backgroundColor:"#CDCDCD" }} 
+                            onClick={CheckMail}>인증번호 받기</Button>
                     </InputGroup>
                     <Form.Label style={{color:"white"}}>인증번호</Form.Label>
                     <InputGroup>
-                        <FormControl type='text' value={inputNum} onChange={GetInputNum}
-                        style={{borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px"
-                                }}></FormControl>
-                        <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
-                                                        borderTopRightRadius: "25px",
-                                                        borderBottomRightRadius: "25px"}} onClick={CheckAuth}>인증하기</Button>
+                        <FormControl
+                            className='custom-ui'
+                            type='text' 
+                            value={inputNum} 
+                            onChange={GetInputNum}
+                        ></FormControl>
+                        <Button 
+                            className='custom-button'
+                            variant='#CDCDCD' 
+                            style={{ backgroundColor:"#CDCDCD" }} 
+                            onClick={CheckAuth}>인증하기</Button>
                     </InputGroup>
                 </Form>
                 </Col>

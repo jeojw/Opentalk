@@ -185,16 +185,10 @@ export const SetRoomComponent = ({stompClient}) =>{
             <Desktop>
                 <div className="d-grid gap-2 btn-lg">
                     <Button 
-                    className='btn-lg'
-                    variant="#8F8F8F" 
-                    style={{
-                            backgroundColor:'#8F8F8F', 
-                            borderTopLeftRadius: "25px",
-                            borderBottomLeftRadius: "25px",
-                            borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px"
-                    }} 
-                    onClick={openModal}>
+                        className='btn-lg custom-button'
+                        variant="#8F8F8F" 
+                        style={{ backgroundColor:'#8F8F8F' }} 
+                        onClick={openModal}>
                         <strong>방 생성하기</strong>
                     </Button>
                 </div>
@@ -210,135 +204,116 @@ export const SetRoomComponent = ({stompClient}) =>{
                     <Row>
                         <Col>
                             <InputGroup>
-                                <InputGroup.Text style={{backgroundColor:'#8F8F8F',
-                                                        borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                        }}><strong>방 이름</strong></InputGroup.Text>
+                                <InputGroup.Text
+                                    className='custom-ui' 
+                                    style={{ backgroundColor:'#8F8F8F' }}><strong>방 이름</strong>
+                                </InputGroup.Text>
                                 <FormControl 
+                                    className='custom-ui'
                                     type='text' 
                                     value={roomName} 
                                     onChange={GetInputName}
-                                    placeholder='한 글자 이상의 방 이름을 입력해 주세요.'
-                                    style={{borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
                             <InputGroup>
-                                <InputGroup.Text style={{backgroundColor:'#8F8F8F',
-                                                        borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                        }}><strong>인원수</strong></InputGroup.Text>
-                                <FormControl 
+                                <InputGroup.Text
+                                    className='custom-ui' 
+                                    style={{ backgroundColor:'#8F8F8F' }}><strong>인원수</strong>
+                                </InputGroup.Text>
+                                <FormControl
+                                    className='custom-ui'
                                     type="number"
                                     min={3} 
                                     max={20} 
                                     value={participants} 
                                     onChange={GetInputParticipates}
-                                    style={{borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
                             <InputGroup className='d-flex flex-row gap-1'>
-                                <InputGroup.Text style={{backgroundColor:'#8F8F8F',
-                                                        borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                        }}><strong>비밀번호</strong></InputGroup.Text>
+                                <InputGroup.Text
+                                    className='custom-ui'
+                                    style={{ backgroundColor:'#8F8F8F' }}><strong>비밀번호</strong>
+                                </InputGroup.Text>
                                 <Form.Check 
+                                    className='custom-checkbox'
                                     type='checkbox' 
                                     checked={existLock} 
                                     onChange={GetCheckExistPw}
                                     style={{zoom:1.6}}
                                 />
-                                <FormControl 
+                                <FormControl
+                                    className='custom-ui' 
                                     type='password' 
                                     value={password} 
                                     onChange={GetInputPassword} 
                                     disabled={!existLock}
                                     placeholder='비밀번호를 입력해주세요.'
-                                    style={{borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
                             <InputGroup>
-                                <FormControl 
+                                <FormControl
+                                    className='custom-ui' 
                                     type="text"
                                     value={info} 
                                     placeholder='방 소개문 입력' 
                                     onChange={GetInputInfo}
-                                    style={{borderTopLeftRadius: "25px",
-                                            borderBottomLeftRadius: "25px",
-                                            borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
                             <InputGroup>
                                 <FormControl 
+                                    className='custom-ui'
                                     type='text' 
                                     value={tag}
                                     placeholder='태그 입력' 
                                     onChange={GetInputTag}
-                                    style={{borderTopLeftRadius: "25px",
-                                            borderBottomLeftRadius: "25px",}}
                                 ></FormControl>
-                                <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F', 
-                                                                borderTopRightRadius: "25px",
-                                                                borderBottomRightRadius: "25px"
-                                                                }} onClick={()=>AppendTag(tag)}><strong>태그 추가</strong></Button>
+                                <Button 
+                                    className='custom-button'
+                                    variant="#8F8F8F" 
+                                    style={{ backgroundColor:'#8F8F8F' }} 
+                                    onClick={()=>AppendTag(tag)}><strong>태그 추가</strong></Button>
                             </InputGroup>
 
-                            <ListGroup className="list-group list-group-horizontal">
+                            <ListGroup className="custom-ui list-group list-group-horizontal">
                                 {tags.map((t)=> (
-                                    <ListGroupItem 
-                                    style={{borderTopLeftRadius: "25px",
-                                            borderBottomLeftRadius: "25px",
-                                            borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px"
-                                            }}>#{t.tagName} 
-                                            <Button 
-                                                className='btn-sm'
-                                                variant='dark' 
-                                                onClick={()=>tagDelete(t)} 
-                                                style={{borderTopLeftRadius: "25px",
-                                                    borderBottomLeftRadius: "25px",
-                                                    borderTopRightRadius: "25px",
-                                                    borderBottomRightRadius: "25px"
-                                                }}
-                                            >삭제</Button></ListGroupItem>
+                                    <ListGroupItem
+                                        className='custom-ui'
+                                    >#{t.tagName} 
+                                    <Button 
+                                        className='btn-sm custom-button'
+                                        variant='dark' 
+                                        onClick={()=>tagDelete(t)} 
+                                    >삭제</Button></ListGroupItem>
                                 ))}
                             </ListGroup>
                             <br></br>
                             <div className='d-flex flex-row gap-2'>
-                                <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F', 
-                                                            borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"}} onClick={MakeRoom}><strong>방 생성하기</strong></Button>
-                                <Button variant="dark" style={{color:'#FFFFFF', 
-                                                            borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"}} onClick={closeModal}>생성 취소</Button>
+                                <Button
+                                    className='custom-button'
+                                    variant="#8F8F8F" 
+                                    style={{ backgroundColor:'#8F8F8F' }} 
+                                    onClick={MakeRoom}><strong>방 생성하기</strong></Button>
+                                <Button
+                                    className='custom-button' 
+                                    variant="dark" 
+                                    style={{color:'#FFFFFF' }} 
+                                    onClick={closeModal}>생성 취소</Button>
                             </div>
                         </Col>
                     </Row>
                 </Modal>
             </Desktop>
             <Mobile>
-                <div className='d-grid btn-sm'>
+                <div className="d-grid gap-2 btn-lg">
                     <Button 
-                    variant="#8F8F8F" 
-                    style={{
-                            backgroundColor:'#8F8F8F', 
-                            borderTopLeftRadius: "25px",
-                            borderBottomLeftRadius: "25px",
-                            borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px"
-                    }} 
-                    onClick={openModal}>
+                        className='btn-lg custom-button'
+                        variant="#8F8F8F" 
+                        style={{ backgroundColor:'#8F8F8F' }} 
+                        onClick={openModal}>
                         <strong>방 생성하기</strong>
                     </Button>
                 </div>
@@ -347,137 +322,111 @@ export const SetRoomComponent = ({stompClient}) =>{
                     onRequestClose={closeModal}
                     style={{
                         content: {
-                            width: '400x', // 원하는 너비로 설정
+                            width: '350px', // 원하는 너비로 설정
                             height: '400px', // 원하는 높이로 설정
                         }
                     }}>
                     <Row>
                         <Col>
                             <InputGroup>
-                                <InputGroup.Text style={{backgroundColor:'#8F8F8F',
-                                                        borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                        }}><strong>방 이름</strong></InputGroup.Text>
+                                <InputGroup.Text
+                                    className='custom-ui' 
+                                    style={{ backgroundColor:'#8F8F8F' }}><strong>방 이름</strong>
+                                </InputGroup.Text>
                                 <FormControl 
+                                    className='custom-ui'
                                     type='text' 
                                     value={roomName} 
                                     onChange={GetInputName}
-                                    placeholder='한 글자 이상의 방 이름을 입력해 주세요.'
-                                    style={{borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
                             <InputGroup>
-                                <InputGroup.Text style={{backgroundColor:'#8F8F8F',
-                                                        borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                        }}><strong>인원수</strong></InputGroup.Text>
-                                <FormControl 
+                                <InputGroup.Text
+                                    className='custom-ui' 
+                                    style={{ backgroundColor:'#8F8F8F' }}><strong>인원수</strong>
+                                </InputGroup.Text>
+                                <FormControl
+                                    className='custom-ui'
                                     type="number"
                                     min={3} 
                                     max={20} 
                                     value={participants} 
-                                    style={{borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px"}}
+                                    onChange={GetInputParticipates}
                                 ></FormControl>
-                                <Button
-                                    variant='#B9B9B9' 
-                                    onClick={incrementParticipants} style={{
-                                    backgroundColor:"#B9B9B9"
-                                }}>+</Button>
-                                <Button
-                                    variant="dark" 
-                                    onClick={decrementParticipants} style={{
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px",
-                                    width:"40px"
-                                }}>-</Button>
                             </InputGroup>
                             <br></br>
                             <InputGroup className='d-flex flex-row gap-1'>
-                                <InputGroup.Text style={{backgroundColor:'#8F8F8F',
-                                                        borderTopLeftRadius: "25px",
-                                                        borderBottomLeftRadius: "25px",
-                                                        }}><strong>비밀번호</strong></InputGroup.Text>
+                                <InputGroup.Text
+                                    className='custom-ui'
+                                    style={{ backgroundColor:'#8F8F8F' }}><strong>비밀번호</strong>
+                                </InputGroup.Text>
                                 <Form.Check 
+                                    className='custom-checkbox'
                                     type='checkbox' 
                                     checked={existLock} 
                                     onChange={GetCheckExistPw}
                                     style={{zoom:1.6}}
                                 />
-                                <FormControl 
+                                <FormControl
+                                    className='custom-ui' 
                                     type='password' 
                                     value={password} 
                                     onChange={GetInputPassword} 
                                     disabled={!existLock}
                                     placeholder='비밀번호를 입력해주세요.'
-                                    style={{borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
                             <InputGroup>
-                                <FormControl 
+                                <FormControl
+                                    className='custom-ui' 
                                     type="text"
                                     value={info} 
                                     placeholder='방 소개문 입력' 
                                     onChange={GetInputInfo}
-                                    style={{borderTopLeftRadius: "25px",
-                                            borderBottomLeftRadius: "25px",
-                                            borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
                             <InputGroup>
                                 <FormControl 
+                                    className='custom-ui'
                                     type='text' 
                                     value={tag}
                                     placeholder='태그 입력' 
                                     onChange={GetInputTag}
-                                    style={{borderTopLeftRadius: "25px",
-                                            borderBottomLeftRadius: "25px",}}
                                 ></FormControl>
-                                <Button variant="#8F8F8F" 
-                                    style={{backgroundColor:'#8F8F8F', 
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"
-                                    }} onClick={()=>AppendTag(tag)}><strong>태그 추가</strong></Button>
+                                <Button 
+                                    className='custom-button'
+                                    variant="#8F8F8F" 
+                                    style={{ backgroundColor:'#8F8F8F' }} 
+                                    onClick={()=>AppendTag(tag)}><strong>태그 추가</strong></Button>
                             </InputGroup>
 
-                            <ListGroup className="list-group list-group-horizontal">
+                            <ListGroup className="custom-ui list-group list-group-horizontal">
                                 {tags.map((t)=> (
-                                    <ListGroupItem 
-                                    style={{borderTopLeftRadius: "25px",
-                                            borderBottomLeftRadius: "25px",
-                                            borderTopRightRadius: "25px",
-                                            borderBottomRightRadius: "25px"
-                                            }}>#{t.tagName} 
-                                            <Button 
-                                                className='btn-sm'
-                                                variant='dark' 
-                                                onClick={()=>tagDelete(t)} 
-                                                style={{borderTopLeftRadius: "25px",
-                                                    borderBottomLeftRadius: "25px",
-                                                    borderTopRightRadius: "25px",
-                                                    borderBottomRightRadius: "25px"
-                                                }}
-                                            >삭제</Button></ListGroupItem>
+                                    <ListGroupItem
+                                        className='custom-ui'
+                                    >#{t.tagName} 
+                                    <Button 
+                                        className='btn-sm custom-button'
+                                        variant='dark' 
+                                        onClick={()=>tagDelete(t)} 
+                                    >삭제</Button></ListGroupItem>
                                 ))}
                             </ListGroup>
                             <br></br>
                             <div className='d-flex flex-row gap-2'>
-                                <Button variant="#8F8F8F" style={{backgroundColor:'#8F8F8F', 
-                                                            borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"}} onClick={MakeRoom}><strong>방 생성하기</strong></Button>
-                                <Button variant="dark" style={{color:'#FFFFFF', 
-                                                            borderTopLeftRadius: "25px",
-                                                            borderBottomLeftRadius: "25px",
-                                                            borderTopRightRadius: "25px",
-                                                            borderBottomRightRadius: "25px"}} onClick={closeModal}>생성 취소</Button>
+                                <Button
+                                    className='custom-button'
+                                    variant="#8F8F8F" 
+                                    style={{ backgroundColor:'#8F8F8F' }} 
+                                    onClick={MakeRoom}><strong>방 생성하기</strong></Button>
+                                <Button
+                                    className='custom-button' 
+                                    variant="dark" 
+                                    style={{color:'#FFFFFF' }} 
+                                    onClick={closeModal}>생성 취소</Button>
                             </div>
                         </Col>
                     </Row>

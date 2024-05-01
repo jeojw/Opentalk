@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, FormControl } from 'react-bootstrap';
@@ -20,7 +20,7 @@ const AuthIdComponent = () =>{
         axios.post(checkUrl, data)
         .then((res) => {
             if (res.data){
-                navigate("/opentalk/findPw")
+                navigate("/opentalk/findPw", {state: {memberId: memberId}})
             }
             else{
                 window.alert("존재하지 않는 아이디입니다.")
@@ -36,19 +36,19 @@ const AuthIdComponent = () =>{
                 <h3 style={{color:"white"}}>아이디 확인하기</h3>
                 <Form>
                     <Form.Label style={{color:"white"}}>아이디</Form.Label>
-                    <FormControl type='text' value={memberId} onChange={GetInputId}
-                    style={{borderTopLeftRadius: "25px",
-                            borderBottomLeftRadius: "25px",
-                            borderTopRightRadius: "25px",
-                            borderBottomRightRadius: "25px"}}></FormControl>
+                    <FormControl
+                        className='custom-ui' 
+                        type='text' 
+                        value={memberId} 
+                        onChange={GetInputId}
+                    ></FormControl>
                     <br></br>
                     <div className="d-grid gap-2">
-                        <Button variant='#CDCDCD' 
-                        style={{backgroundColor:"#CDCDCD", 
-                                borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px",
-                                borderTopRightRadius: "25px",
-                                borderBottomRightRadius: "25px"}} onClick={AuthId}>확인하기</Button>
+                        <Button
+                            className='custom-button' 
+                            variant='#CDCDCD' 
+                            style={{ backgroundColor:"#CDCDCD" }} 
+                            onClick={AuthId}>확인하기</Button>
                     </div>
                 </Form>
                 </Col>

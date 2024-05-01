@@ -1,0 +1,21 @@
+.custom-button{
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+.custom-ui{
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+.custom-checkbox .form-check-input:checked {
+    background-color: #8F8F8F; /* 체크된 상태의 배경색 변경 */
+    border-color: #8F8F8F; /* 체크된 상태의 테두리색 변경 */
+}
+
+.custom-checkbox .form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(#8F8F8F, 0.25); /* 포커스 시 그림자 색 변경 */
+}

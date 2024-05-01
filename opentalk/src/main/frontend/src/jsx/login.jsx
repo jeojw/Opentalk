@@ -67,59 +67,52 @@ const LoginComponent = () => {
                     <Form onSubmit={CheckLogin}>
                         <FormGroup>
                             <Form.Label style={{color:"white"}}><strong>아이디</strong></Form.Label>
-                            <Form.Control type="text" placeholder="아이디를 입력하세요" value={memberId} onChange={(e) => setMemberId(e.target.value)}
-                            style={{borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px",
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}} />
+                            <Form.Control
+                                className='custom-ui'
+                                type="text" 
+                                placeholder="아이디를 입력하세요" 
+                                value={memberId} onChange={(e) => setMemberId(e.target.value)} />
                         </FormGroup>
                         <FormGroup>
                             <Form.Label style={{color:"white"}}><strong>비밀번호</strong></Form.Label>
-                            <Form.Control type="password" placeholder="비밀번호를 입력하세요" value={memberPw} onChange={(e) => setMemberPw(e.target.value)} 
-                            style={{borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px",
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}}/>
+                            <Form.Control 
+                                className='custom-ui' 
+                                type="password" 
+                                placeholder="비밀번호를 입력하세요" 
+                                value={memberPw} 
+                                onChange={(e) => setMemberPw(e.target.value)} />
                         </FormGroup>
                         <hr/>
                         <div className="d-grid gap-2">
-                            <Button variant='#CDCDCD' 
-                            style={{backgroundColor:"#CDCDCD", 
-                                    borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px",
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"
-                                    }} onClick={CheckLogin} size='4'>로그인</Button>
-                            <Button variant='#E0E0E0' 
-                            style={{backgroundColor:"#E0E0E0", 
-                                    borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px",
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/enroll")}>회원가입</Button>
-                            <Button variant='warning' 
-                            style={{borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px",
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}} onClick={() => setIsForget(prevState => !prevState)}>계정을 잊어버리셨나요?</Button>
+                            <Button
+                                className='custom-button' 
+                                variant='#CDCDCD' 
+                                style={{ backgroundColor:"#CDCDCD" }} 
+                                onClick={CheckLogin} size='4'>로그인</Button>
+                            <Button
+                                className='custom-button' 
+                                variant='#E0E0E0' 
+                                style={{ backgroundColor:"#E0E0E0" }} 
+                                onClick={() => navigate("/opentalk/enroll")}>회원가입</Button>
+                            <Button
+                                className='custom-button' 
+                                variant='warning' 
+                                onClick={() => setIsForget(prevState => !prevState)}>계정을 잊어버리셨나요?</Button>
                             {isForget && (
                             <div className="d-grid gap-2">
-                                <Button variant='warning' 
-                                style={{borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/findId")}>아이디 찾기</Button>
-                                <Button variant='warning' 
-                                style={{borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk/authId")}>비밀번호 찾기</Button>
+                                <Button
+                                    className='custom-button' 
+                                    variant='warning' 
+                                    onClick={() => navigate("/opentalk/findId")}>아이디 찾기</Button>
+                                <Button
+                                    className='custom-button'  
+                                    variant='warning' 
+                                    onClick={() => navigate("/opentalk/authId")}>비밀번호 찾기</Button>
                             </div>
                             )}
                             <Button variant='dark' 
-                            style={{borderTopLeftRadius: "25px",
-                                    borderBottomLeftRadius: "25px",
-                                    borderTopRightRadius: "25px",
-                                    borderBottomRightRadius: "25px"}} onClick={() => navigate("/opentalk")}>시작화면으로</Button>
+                                className='custom-button'
+                                onClick={() => navigate("/opentalk")}>시작화면으로</Button>
                         </div>
                     </Form>
                 </Col>

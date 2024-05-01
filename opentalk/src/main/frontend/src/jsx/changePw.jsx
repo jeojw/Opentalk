@@ -14,6 +14,9 @@ const ChangePasswordComponent = () =>{
         if (location.state && location.state.memberEmail){
             setMemberEmail(location.state.memberEmail);
         }
+        else{
+            navigate("/opentalk")
+        }
     }, []);
 
     const GetInputPassword = (e) => {
@@ -55,27 +58,27 @@ const ChangePasswordComponent = () =>{
                     <h3 style={{color:"white"}}>비밀번호 변경하기</h3>
                     <Form>
                         <Form.Label style={{color:"white"}}>새 비밀번호</Form.Label>
-                        <Form.Control type='password' value={newPassword} onChange={GetInputPassword}
-                        style={{borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px",
-                                borderTopRightRadius: "25px",
-                                borderBottomRightRadius: "25px"}}></Form.Control>
+                        <Form.Control
+                            className='custom-ui' 
+                            type='password' 
+                            value={newPassword} 
+                            onChange={GetInputPassword}
+                        ></Form.Control>
                         <Form.Label style={{color:"white"}}>비밀번호 확인</Form.Label>
-                        <Form.Control type='password' value={checkPassword} onChange={GetInputCheckPassword}
-                        style={{borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px",
-                                borderTopRightRadius: "25px",
-                                borderBottomRightRadius: "25px"}}></Form.Control>
+                        <Form.Control
+                            className='custom-ui'  
+                            type='password' 
+                            value={checkPassword} 
+                            onChange={GetInputCheckPassword}
+                        ></Form.Control>
                     </Form>
                     <br></br>
                     <div className="d-grid gap-2">
-                        <Button variant='#CDCDCD' 
-                        style={{backgroundColor:"#CDCDCD",
-                                borderTopLeftRadius: "25px",
-                                borderBottomLeftRadius: "25px",
-                                borderTopRightRadius: "25px",
-                                borderBottomRightRadius: "25px"}} 
-                                onClick={ChangePassword}>변경하기</Button>
+                        <Button 
+                            className='custom-button'
+                            variant='#CDCDCD' 
+                            style={{ backgroundColor:"#CDCDCD" }} 
+                            onClick={ChangePassword}>변경하기</Button>
                     </div>
                 </Col>
             </Row>

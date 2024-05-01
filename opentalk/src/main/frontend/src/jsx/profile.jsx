@@ -7,6 +7,7 @@ import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useMediaQuery } from 'react-responsive';
+import "../css/UI.css"
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 768, maxWidth:1920 })
@@ -359,33 +360,24 @@ const ProfileComponent = () => {
                             ></img>
                             <br></br>
                             <br></br>
-                            <ListGroup>
-                                <ListGroupItem style={{
-                                        border:'#CDCDCD', 
-                                        backgroundColor:"#CDCDCD",  
-                                        marginBottom: '5px',
-                                        borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"
-                                    }}>이름 <hr/><strong>{member.memberName}</strong></ListGroupItem>
-                                <ListGroupItem style={{
-                                        border:'#CDCDCD', 
-                                        backgroundColor:"#CDCDCD",  
-                                        marginBottom: '5px',
-                                        borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"
-                                    }}>닉네임 <hr/><strong>{member.memberNickName}</strong></ListGroupItem>
-                                <ListGroupItem style={{
-                                        border:'#CDCDCD', 
-                                        backgroundColor:"#CDCDCD",
-                                        borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"
-                                    }}>이메일 <hr/><strong>{member.memberEmail}</strong></ListGroupItem>
+                            <ListGroup className='custom-ui'>
+                                <ListGroupItem 
+                                    className='custom-ui' style={{
+                                    border:'#CDCDCD', 
+                                    backgroundColor:"#CDCDCD",  
+                                    marginBottom: '5px',
+                                }}>이름 <hr/><strong>{member.memberName}</strong></ListGroupItem>
+                                <ListGroupItem
+                                    className='custom-ui' 
+                                    style={{
+                                    border:'#CDCDCD', 
+                                    backgroundColor:"#CDCDCD",  
+                                    marginBottom: '5px',
+                                }}>닉네임 <hr/><strong>{member.memberNickName}</strong></ListGroupItem>
+                                <ListGroupItem 
+                                    className='custom-ui' 
+                                    style={{ border:'#CDCDCD', 
+                                            backgroundColor:"#CDCDCD",}}>이메일 <hr/><strong>{member.memberEmail}</strong></ListGroupItem>
                             </ListGroup>
                             <hr/>
                             <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}
@@ -397,22 +389,11 @@ const ProfileComponent = () => {
                             }}>
                                 <img src={uploadPreview} />
                                 <hr/>
-                                <FormControl type='file' accept='image/*' onChange={onChangeImageUpload} 
-                                                        style={{borderTopLeftRadius: "50px",
-                                                                borderBottomLeftRadius: "50px",
-                                                                borderTopRightRadius: "50px",
-                                                                borderBottomRightRadius: "50px"}}></FormControl>
+                                <FormControl className='custom-ui' type='file' accept='image/*' onChange={onChangeImageUpload}></FormControl>
                                 <br/>
-                                <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
-                                                                borderTopLeftRadius: "50px",
-                                                                borderBottomLeftRadius: "50px",
-                                                                borderTopRightRadius: "50px",
-                                                                borderBottomRightRadius: "50px"}} onClick={ChangeImg}>변경하기</Button>
+                                <Button className='custom-button' variant='#CDCDCD' style={{ backgroundColor:"#CDCDCD" }} onClick={ChangeImg}>변경하기</Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
-                                <Button variant='dark' style={{borderTopLeftRadius: "50px",
-                                                                borderBottomLeftRadius: "50px",
-                                                                borderTopRightRadius: "50px",
-                                                                borderBottomRightRadius: "50px"}}  onClick={ChangeImgCancle}>변경취소</Button>
+                                <Button className='custom-button' variant='dark' onClick={ChangeImgCancle}>변경취소</Button>
                             </Modal>
                             <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}
                             style={{
@@ -434,16 +415,13 @@ const ProfileComponent = () => {
                                                 borderBottomRightRadius: "50px",}}></Form.Control>
                                 </InputGroup>
                                 <br></br>
-                                <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
-                                                                borderTopLeftRadius: "50px",
-                                                                borderBottomLeftRadius: "50px",
-                                                                borderTopRightRadius: "50px",
-                                                                borderBottomRightRadius: "50px"}} onClick={ChangeNickName}><strong>변경하기</strong></Button>
+                                <Button 
+                                    className='custom-button'
+                                    variant='#CDCDCD' 
+                                    style={{backgroundColor:"#CDCDCD"}} 
+                                    onClick={ChangeNickName}><strong>변경하기</strong></Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
-                                <Button variant='dark' style={{borderTopLeftRadius: "50px",
-                                                                borderBottomLeftRadius: "50px",
-                                                                borderTopRightRadius: "50px",
-                                                                borderBottomRightRadius: "50px"}}onClick={ChangeNickNameCancle}>변경 취소</Button>
+                                <Button className='custom-button' variant='dark' onClick={ChangeNickNameCancle}>변경 취소</Button>
                             </Modal>
                             <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}
                             style={{
@@ -498,49 +476,32 @@ const ProfileComponent = () => {
                                         }}></Form.Control>
                                 </InputGroup>
                                 <br></br>
-                                <Button variant='#CDCDCD' style={{
-                                            backgroundColor:"#CDCDCD", 
-                                            borderTopLeftRadius: "50px",
-                                            borderBottomLeftRadius: "50px",
-                                            borderTopRightRadius: "50px",
-                                            borderBottomRightRadius: "50px"
-                                        }} onClick={ChangePassword}><strong>변경하기</strong></Button>
+                                <Button 
+                                    className='custom-button' 
+                                    variant='#CDCDCD' 
+                                    style={{ backgroundColor:"#CDCDCD" }} 
+                                    onClick={ChangePassword}><strong>변경하기</strong></Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
-                                <Button variant='dark' style={{
-                                            borderTopLeftRadius: "50px",
-                                            borderBottomLeftRadius: "50px",
-                                            borderTopRightRadius: "50px",
-                                            borderBottomRightRadius: "50px"
-                                        }} onClick={ChangePasswordCancle}>변경 취소</Button>
+                                <Button className='custom-button' variant='dark'onClick={ChangePasswordCancle}>변경 취소</Button>
                             </Modal>
                             <div className="d-grid gap-2">
-                                <Button variant='#CDCDCD' style={{
-                                            backgroundColor:"#CDCDCD", 
-                                            borderTopLeftRadius: "50px",
-                                            borderBottomLeftRadius: "50px",
-                                            borderTopRightRadius: "50px",
-                                            borderBottomRightRadius: "50px"
-                                        }} onClick={ChangeImgPopup}>프로필 이미지 변경</Button>
-                                <Button variant='#CDCDCD' style={{
-                                            backgroundColor:"#CDCDCD", 
-                                            borderTopLeftRadius: "50px",
-                                            borderBottomLeftRadius: "50px",
-                                            borderTopRightRadius: "50px",
-                                            borderBottomRightRadius: "50px"
-                                        }} onClick={ChangeNickNamePopup}>닉네임 변경</Button>
-                                <Button variant='#CDCDCD' style={{
-                                            backgroundColor:"#CDCDCD", 
-                                            borderTopLeftRadius: "50px",
-                                            borderBottomLeftRadius: "50px",
-                                            borderTopRightRadius: "50px",
-                                            borderBottomRightRadius: "50px"
-                                        }} onClick={ChangePasswordPopup}>비밀번호 변경</Button>
-                                <Button variant='dark' style={{
-                                            borderTopLeftRadius: "50px",
-                                            borderBottomLeftRadius: "50px",
-                                            borderTopRightRadius: "50px",
-                                            borderBottomRightRadius: "50px"
-                                        }} onClick={() => {
+                                <Button 
+                                    className='custom-button' 
+                                    variant='#CDCDCD'
+                                    style={{ backgroundColor:"#CDCDCD" }} 
+                                    onClick={ChangeImgPopup}>프로필 이미지 변경</Button>
+                                <Button className='custom-button' 
+                                        variant='#CDCDCD'
+                                        style={{ backgroundColor:"#CDCDCD" }}  
+                                        onClick={ChangeNickNamePopup}>닉네임 변경</Button>
+                                <Button className='custom-button' 
+                                        variant='#CDCDCD'
+                                        style={{ backgroundColor:"#CDCDCD" }}  
+                                        onClick={ChangePasswordPopup}>비밀번호 변경</Button>
+                                <Button
+                                    className='custom-button' 
+                                    variant='dark' 
+                                    onClick={() => {
                                     navigate("/opentalk/main")
                                     window.URL.revokeObjectURL(curImgUrl);
                                 }}>이전 페이지</Button>
@@ -562,33 +523,24 @@ const ProfileComponent = () => {
                             ></img>
                             <br></br>
                             <br></br>
-                            <ListGroup>
-                                <ListGroupItem style={{
-                                        border:'#CDCDCD', 
-                                        backgroundColor:"#CDCDCD",  
-                                        marginBottom: '5px',
-                                        borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"
-                                    }}>이름 <hr/><strong>{member.memberName}</strong></ListGroupItem>
-                                <ListGroupItem style={{
-                                        border:'#CDCDCD', 
-                                        backgroundColor:"#CDCDCD",  
-                                        marginBottom: '5px',
-                                        borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"
-                                    }}>닉네임 <hr/><strong>{member.memberNickName}</strong></ListGroupItem>
-                                <ListGroupItem style={{
-                                        border:'#CDCDCD', 
-                                        backgroundColor:"#CDCDCD",
-                                        borderTopLeftRadius: "25px",
-                                        borderBottomLeftRadius: "25px",
-                                        borderTopRightRadius: "25px",
-                                        borderBottomRightRadius: "25px"
-                                    }}>이메일 <hr/><strong>{member.memberEmail}</strong></ListGroupItem>
+                            <ListGroup className='custom-ui'>
+                                <ListGroupItem 
+                                    className='custom-ui' style={{
+                                    border:'#CDCDCD', 
+                                    backgroundColor:"#CDCDCD",  
+                                    marginBottom: '5px',
+                                }}>이름 <hr/><strong>{member.memberName}</strong></ListGroupItem>
+                                <ListGroupItem
+                                    className='custom-ui' 
+                                    style={{
+                                    border:'#CDCDCD', 
+                                    backgroundColor:"#CDCDCD",  
+                                    marginBottom: '5px',
+                                }}>닉네임 <hr/><strong>{member.memberNickName}</strong></ListGroupItem>
+                                <ListGroupItem 
+                                    className='custom-ui' 
+                                    style={{ border:'#CDCDCD', 
+                                            backgroundColor:"#CDCDCD",}}>이메일 <hr/><strong>{member.memberEmail}</strong></ListGroupItem>
                             </ListGroup>
                             <hr/>
                             <Modal isOpen={imgPopupOpen} onRequestClose={ChangeImgCancle}
@@ -600,26 +552,11 @@ const ProfileComponent = () => {
                             }}>
                                 <img src={uploadPreview} />
                                 <hr/>
-                                <FormControl type='file' accept='image/*' 
-                                onChange={onChangeImageUpload} 
-                                                        
-                                style={{borderTopLeftRadius: "50px",
-                                        borderBottomLeftRadius: "50px",
-                                        borderTopRightRadius: "50px",
-                                        borderBottomRightRadius: "50px"}}></FormControl>
+                                <FormControl className='custom-ui' type='file' accept='image/*' onChange={onChangeImageUpload}></FormControl>
                                 <br/>
-                                <Button variant='#CDCDCD' 
-                                style={{backgroundColor:"#CDCDCD", 
-                                        borderTopLeftRadius: "50px",
-                                        borderBottomLeftRadius: "50px",
-                                        borderTopRightRadius: "50px",
-                                        borderBottomRightRadius: "50px"}} onClick={ChangeImg}>변경하기</Button>
+                                <Button className='custom-button' variant='#CDCDCD' style={{ backgroundColor:"#CDCDCD" }} onClick={ChangeImg}>변경하기</Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
-                                <Button variant='dark' 
-                                style={{borderTopLeftRadius: "50px",
-                                        borderBottomLeftRadius: "50px",
-                                        borderTopRightRadius: "50px",
-                                        borderBottomRightRadius: "50px"}}  onClick={ChangeImgCancle}>변경취소</Button>
+                                <Button className='custom-button' variant='dark' onClick={ChangeImgCancle}>변경취소</Button>
                             </Modal>
                             <Modal isOpen={nickPopupOpen} onRequestClose={ChangeNickNameCancle}
                             style={{
@@ -641,16 +578,13 @@ const ProfileComponent = () => {
                                                 borderBottomRightRadius: "50px",}}></Form.Control>
                                 </InputGroup>
                                 <br></br>
-                                <Button variant='#CDCDCD' style={{backgroundColor:"#CDCDCD", 
-                                                                borderTopLeftRadius: "50px",
-                                                                borderBottomLeftRadius: "50px",
-                                                                borderTopRightRadius: "50px",
-                                                                borderBottomRightRadius: "50px"}} onClick={ChangeNickName}><strong>변경하기</strong></Button>
+                                <Button 
+                                    className='custom-button'
+                                    variant='#CDCDCD' 
+                                    style={{backgroundColor:"#CDCDCD"}} 
+                                    onClick={ChangeNickName}><strong>변경하기</strong></Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
-                                <Button variant='dark' style={{borderTopLeftRadius: "50px",
-                                                                borderBottomLeftRadius: "50px",
-                                                                borderTopRightRadius: "50px",
-                                                                borderBottomRightRadius: "50px"}}onClick={ChangeNickNameCancle}>변경 취소</Button>
+                                <Button className='custom-button' variant='dark' onClick={ChangeNickNameCancle}>변경 취소</Button>
                             </Modal>
                             <Modal isOpen={pwPopupOpen} onRequestClose={ChangePasswordCancle}
                             style={{
@@ -705,49 +639,33 @@ const ProfileComponent = () => {
                                         }}></Form.Control>
                                 </InputGroup>
                                 <br></br>
-                                <Button variant='#CDCDCD' style={{
-                                            backgroundColor:"#CDCDCD", 
-                                            borderTopLeftRadius: "50px",
-                                            borderBottomLeftRadius: "50px",
-                                            borderTopRightRadius: "50px",
-                                            borderBottomRightRadius: "50px"
-                                        }} onClick={ChangePassword}><strong>변경하기</strong></Button>
+                                <Button 
+                                    className='custom-button' 
+                                    variant='#CDCDCD' 
+                                    style={{ backgroundColor:"#CDCDCD" }} 
+                                    onClick={ChangePassword}><strong>변경하기</strong></Button>
                                 <div style={{width:"4px", display:"inline-block"}}/>
-                                <Button variant='dark' style={{
-                                            borderTopLeftRadius: "50px",
-                                            borderBottomLeftRadius: "50px",
-                                            borderTopRightRadius: "50px",
-                                            borderBottomRightRadius: "50px"
-                                        }} onClick={ChangePasswordCancle}>변경 취소</Button>
+                                <Button className='custom-button' variant='dark'onClick={ChangePasswordCancle}>변경 취소</Button>
                             </Modal>
                             <div className="d-grid gap-2">
-                                <Button variant='#CDCDCD' style={{
-                                            backgroundColor:"#CDCDCD", 
-                                            borderTopLeftRadius: "50px",
-                                            borderBottomLeftRadius: "50px",
-                                            borderTopRightRadius: "50px",
-                                            borderBottomRightRadius: "50px"
-                                        }} onClick={ChangeImgPopup}>프로필 이미지 변경</Button>
-                                <Button variant='#CDCDCD' style={{
-                                            backgroundColor:"#CDCDCD", 
-                                            borderTopLeftRadius: "50px",
-                                            borderBottomLeftRadius: "50px",
-                                            borderTopRightRadius: "50px",
-                                            borderBottomRightRadius: "50px"
-                                        }} onClick={ChangeNickNamePopup}>닉네임 변경</Button>
-                                <Button variant='#CDCDCD' style={{
-                                            backgroundColor:"#CDCDCD", 
-                                            borderTopLeftRadius: "50px",
-                                            borderBottomLeftRadius: "50px",
-                                            borderTopRightRadius: "50px",
-                                            borderBottomRightRadius: "50px"
-                                        }} onClick={ChangePasswordPopup}>비밀번호 변경</Button>
-                                <Button variant='dark' style={{
-                                            borderTopLeftRadius: "50px",
-                                            borderBottomLeftRadius: "50px",
-                                            borderTopRightRadius: "50px",
-                                            borderBottomRightRadius: "50px"
-                                        }} onClick={() => {
+                                <Button 
+                                    className = 'custom-button' 
+                                    variant='#CDCDCD' 
+                                    style={{ backgroundColor:"#CDCDCD" }} 
+                                    onClick={ChangeImgPopup}>프로필 이미지 변경</Button>
+                                <Button className = 'custom-button' 
+                                    variant='#CDCDCD' 
+                                    style={{ backgroundColor:"#CDCDCD" }} 
+                                    onClick={ChangeNickNamePopup}>닉네임 변경</Button>
+                                <Button 
+                                    className = 'custom-button' 
+                                    variant='#CDCDCD' 
+                                    style={{ backgroundColor:"#CDCDCD" }}  
+                                    onClick={ChangePasswordPopup}>비밀번호 변경</Button>
+                                <Button
+                                    className = 'custom-button' 
+                                    variant='dark' 
+                                    onClick={() => {
                                     navigate("/opentalk/main")
                                     window.URL.revokeObjectURL(curImgUrl);
                                 }}>이전 페이지</Button>
