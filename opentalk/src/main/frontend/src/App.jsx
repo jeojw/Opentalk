@@ -66,7 +66,6 @@ const App = () => {
       <Router>
         <div>
           <BrowserView style={{backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212'}}>
-            
             <Routes>
               <Route path="/" element={<Navigate to="/opentalk" />} />
               <Route path="/opentalk/profile" element={<Profile/>}></Route>
@@ -82,21 +81,6 @@ const App = () => {
             </Routes>
           </BrowserView>
           <MobileView style={{backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212'}}>
-          <Button
-              className='custom-button'
-              variant={theme === 'light' ? "#121212" : "#FFFFFF"}
-              onClick={() => {
-              if (theme === 'light'){
-                changeTheme('dark');
-              }
-              else{
-                changeTheme('light');
-              }
-            }}
-            style={{
-              backgroundColor:theme === 'light' ? "#121212" : "#FFFFFF",
-              color:theme === 'light' ? '#FFFFFF' : "#000000",
-            }}>테마 변경</Button>
             <Routes>
               <Route path="/" element={<Navigate to="/opentalk" />} />
               <Route path="/opentalk/profile" element={<ProfileMobile/>}></Route>
