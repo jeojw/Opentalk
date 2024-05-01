@@ -349,7 +349,7 @@ const ProfileComponent = () => {
     return(
         <div>
             <Desktop>
-                <Container style={{position:"relative", bottom:"-5px", minHeight:"100vh"}}>
+                <Container style={{minHeight:"100vh"}}>
                     <Row style={{ textAlign: 'center' }}>
                         <Col md={{ span: 3, offset: 4}} className={`border-${theme === 'light' ? "#7B7B7B" : "#595959"} border-3 rounded-5 p-5`} 
                                 style={{backgroundColor: theme === 'light' ? "#7B7B7B" : "#595959"}}>
@@ -547,7 +547,7 @@ const ProfileComponent = () => {
                 </Container>
             </Desktop>
             <Mobile>
-                <Container style={{position:"relative", bottom:"-5px", minHeight:"100vh"}}>
+                <Container style={{minHeight:"100vh"}}>
                     <Row style={{ textAlign: 'center' }}>
                         <Col md={{ span: 3, offset: 4}} className="border-3 rounded-5 p-5" style={{backgroundColor: theme === 'light' ? "#7B7B7B" : "#595959"}}>
                             <img 

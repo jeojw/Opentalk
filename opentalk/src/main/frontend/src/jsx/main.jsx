@@ -602,7 +602,7 @@ const MainComponent = () => {
    return (
     <div>
         <Desktop>
-            <Container style={{position:"relative", bottom:"-5px", minHeight:"100vh"}}>
+            <Container style={{minHeight:"100vh"}}>
                 <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
                             content: {
                                 backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
