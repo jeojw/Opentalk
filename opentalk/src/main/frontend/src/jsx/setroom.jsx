@@ -20,7 +20,7 @@ export const SetRoomComponent = ({stompClient}) =>{
 
     const [isOpen, setIsOpen] = useState(false);
     const [roomName, setRoomName] = useState("");
-    const [participants, setParticipants] = useState(3);
+    const [participants, setParticipants] = useState(2);
     const [existLock, setExistLock] = useState(false);
     const [password, setPassword] = useState("");
     const [manager, setManger] = useState();
@@ -40,11 +40,11 @@ export const SetRoomComponent = ({stompClient}) =>{
     };
 
     const decrementParticipants = () => {
-        if (participants > 3) {
+        if (participants > 2) {
             setParticipants(participants - 1);
         }
         else{
-            window.alert("방의 인원수는 최소 3명부터 가능합니다.");
+            window.alert("방의 인원수는 최소 2명부터 가능합니다.");
         }
     };
 
@@ -86,7 +86,7 @@ export const SetRoomComponent = ({stompClient}) =>{
         }
     }
     const GetInputParticipates = (event) => {
-        if (event.target.value >= 3){
+        if (event.target.value >= 2){
             if (event.target.value > 20){
                 window.alert("방의 인원수는 최대 20명까지 가능합니다.");
             }
@@ -95,7 +95,7 @@ export const SetRoomComponent = ({stompClient}) =>{
             }
         }
         else{
-            window.alert("방의 인원수는 최소 3명부터 가능합니다.");
+            window.alert("방의 인원수는 최소 2명부터 가능합니다.");
         }
     }
     const GetInputPassword = (event) => {
@@ -236,7 +236,7 @@ export const SetRoomComponent = ({stompClient}) =>{
                                 <FormControl
                                     className='custom-ui'
                                     type='number'
-                                    min={3}
+                                    min={2}
                                     max={20}
                                     value={participants} 
                                     onChange={GetInputParticipates}
@@ -377,7 +377,7 @@ export const SetRoomComponent = ({stompClient}) =>{
                                 <FormControl
                                     className='custom-ui'
                                     type='number'
-                                    min={3}
+                                    min={2}
                                     max={20}
                                     value={participants} 
                                     onChange={GetInputParticipates}
