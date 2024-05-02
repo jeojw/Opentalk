@@ -762,7 +762,7 @@ const RoomComponent = () => {
                                                         onClick={() => ForcedExit(_member)} 
                                                         style={{
                                                             backgroundColor: theme === 'light' ? 'dark' : '#333333',
-                                                            color: theme === 'light' ? '#000000' : '#FFFFFF',
+                                                            color: '#FFFFFF',
                                                             width:"75px",
                                                         }}>강퇴하기</Button>
                                                     )}
