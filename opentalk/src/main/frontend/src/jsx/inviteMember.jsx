@@ -93,7 +93,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                                     value={nickName} 
                                     onChange={GetInputNickName}
                                     placeholder='검색할 닉네임을 입력하세요.'
-                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                    style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                     />
                                 <Button
                                     className='custom-button'

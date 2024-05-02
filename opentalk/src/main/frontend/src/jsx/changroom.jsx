@@ -221,7 +221,7 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                                     type='text' 
                                     value={roomName} 
                                     onChange={GetInputName}
-                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                    style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
@@ -237,7 +237,7 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                                     max={20}
                                     value={participants} 
                                     onChange={GetInputParticipates}
-                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                    style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
@@ -260,7 +260,7 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                                     onChange={GetInputPassword} 
                                     disabled={!existLock}
                                     placeholder='비밀번호를 입력해주세요.'
-                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                    style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
@@ -271,7 +271,7 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                                     value={info}
                                     placeholder='방 소개문 입력'
                                     onChange={GetInputInfo}
-                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                    style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
@@ -282,7 +282,7 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                                     value={tag}
                                     placeholder='태그 입력'
                                     onChange={GetInputTag}
-                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                    style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                 ></FormControl>
                                 <Button
                                     className='custom-button'
@@ -297,7 +297,7 @@ const ChangRoomComponent = ({room_Id, stompClient, curParticipates, showModal, s
                                 {tags?.map((t)=> (
                                     <ListGroupItem 
                                         className='custom-ui'
-                                        style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                        style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                     >#{t.tagName} 
                                     <Button
                                         className='btn-sm custom-button' 

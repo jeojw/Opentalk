@@ -224,7 +224,7 @@ export const SetRoomComponent = ({stompClient}) =>{
                                     type='text' 
                                     value={roomName}
                                     onChange={GetInputName}
-                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                    style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
@@ -240,7 +240,7 @@ export const SetRoomComponent = ({stompClient}) =>{
                                     max={20}
                                     value={participants} 
                                     onChange={GetInputParticipates}
-                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                    style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
@@ -263,7 +263,7 @@ export const SetRoomComponent = ({stompClient}) =>{
                                     onChange={GetInputPassword} 
                                     disabled={!existLock}
                                     placeholder='비밀번호를 입력해주세요.'
-                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                    style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
@@ -274,7 +274,7 @@ export const SetRoomComponent = ({stompClient}) =>{
                                     value={info} 
                                     placeholder='방 소개문 입력' 
                                     onChange={GetInputInfo}
-                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                    style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                 ></FormControl>
                             </InputGroup>
                             <br></br>
@@ -285,7 +285,7 @@ export const SetRoomComponent = ({stompClient}) =>{
                                     value={tag}
                                     placeholder='태그 입력' 
                                     onChange={GetInputTag}
-                                    style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                    style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                 ></FormControl>
                                 <Button
                                     className='custom-button'
@@ -300,7 +300,7 @@ export const SetRoomComponent = ({stompClient}) =>{
                                 {tags.map((t)=> (
                                     <ListGroupItem
                                         className='custom-ui'
-                                        style={{backgroundColor:theme === 'light' ? '#000000' : "#B9B9B9"}}
+                                        style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}
                                     >#{t.tagName} 
                                     <Button 
                                         className='btn-sm custom-button'
