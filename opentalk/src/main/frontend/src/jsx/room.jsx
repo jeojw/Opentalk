@@ -5,7 +5,9 @@ import * as StompJs from "@stomp/stompjs";
 import SockJs from "sockjs-client"
 import ChangRoomComponent from './changroom';
 import InviteMemberComponent from './inviteMember';
-import { Container, Row, Col, Button, Form, FormGroup, InputGroup, ListGroup, ListGroupItem, Accordion, Offcanvas, OffcanvasBody } from 'react-bootstrap';
+import { Container, Row, Col, Button, Form, FormGroup, 
+        InputGroup, ListGroup, ListGroupItem, Accordion, 
+        Offcanvas, OffcanvasBody, Dropdown, DropdownButton } from 'react-bootstrap';
 import { format } from 'date-fns'
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { useMediaQuery } from 'react-responsive';
@@ -756,26 +758,43 @@ const RoomComponent = () => {
                                                     <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                                     {_member?.memberNickName}
                                                     <div style={{width:"4px", display:"inline-block"}}/>
-                                                    {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                                                    <Button className="btn-sm custom-button"
-                                                        variant={theme === 'light' ? 'dark' : '#333333'} 
-                                                        onClick={() => ForcedExit(_member)} 
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle
+                                                        className='custom-button'
+                                                        variant={theme === 'light' ? "#C3C3C3" : "#999999"}
                                                         style={{
-                                                            backgroundColor: theme === 'light' ? 'dark' : '#333333',
-                                                            color: '#FFFFFF',
-                                                            width:"75px",
-                                                        }}>강퇴하기</Button>
-                                                    )}
-                                                    <div style={{width:"4px", display:"inline-block"}}/>
-                                                    {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                                                        <Button 
-                                                            className="btn-sm custom-button" 
-                                                            variant={theme === 'light' ? "#C3C3C3" : "#999999"} 
-                                                            onClick={() => AuthMandate(_member)} style={{
-                                                                backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
-                                                                color: theme === 'light' ? "#000000" : "#FFFFFF"
-                                                            }}>방장위임</Button>
-                                                    )}
+                                                            backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                                            color: theme === 'light' ? "#000000" : "#FFFFFF"
+                                                        }}
+                                                        size="sm">
+                                                            메뉴
+                                                        </Dropdown.Toggle>
+                                                        <Dropdown.Menu>
+                                                            <Dropdown.Item >
+                                                                {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
+                                                                <Button className="btn-sm custom-button"
+                                                                    variant={theme === 'light' ? 'dark' : '#333333'} 
+                                                                    onClick={() => ForcedExit(_member)} 
+                                                                    style={{
+                                                                        backgroundColor: theme === 'light' ? 'dark' : '#333333',
+                                                                        color: '#FFFFFF',
+                                                                        width:"75px",
+                                                                    }}>강퇴하기</Button>
+                                                                )}
+                                                            </Dropdown.Item>
+                                                            <Dropdown.Item>
+                                                            {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
+                                                            <Button 
+                                                                className="btn-sm custom-button" 
+                                                                variant={theme === 'light' ? "#C3C3C3" : "#999999"} 
+                                                                onClick={() => AuthMandate(_member)} style={{
+                                                                    backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                                                    color: theme === 'light' ? "#000000" : "#FFFFFF"
+                                                                }}>방장위임</Button>
+                                                            )}
+                                                            </Dropdown.Item>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
                                                 </ListGroupItem>
                                             )}
                                         </ListGroup>
@@ -878,23 +897,43 @@ const RoomComponent = () => {
                                                     <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                                     {_member?.memberNickName}
                                                     <div style={{width:"4px", display:"inline-block"}}/>
-                                                    {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
-                                                    <Button className="btn-sm custom-button"
-                                                    variant={theme === 'light' ? 'dark' : '#333333'}
-                                                    onClick={() => ForcedExit(_member)} 
-                                                    style={{
-                                                        width:"75px",
-                                                    }}>강퇴하기</Button>
-                                                    )}
-                                                    <div style={{width:"4px", display:"inline-block"}}/>
-                                                    {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
-                                                        <Button className="btn-sm custom-button" 
+                                                    <Dropdown>
+                                                        <Dropdown.Toggle
+                                                        className='custom-button'
+                                                        variant={theme === 'light' ? "#C3C3C3" : "#999999"} 
+                                                        style={{
+                                                            backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                                            color: theme === 'light' ? "#000000" : "#FFFFFF"
+                                                        }}
+                                                        size="sm">
+                                                            메뉴
+                                                        </Dropdown.Toggle>
+                                                        <Dropdown.Menu>
+                                                            <Dropdown.Item style={{}}>
+                                                                {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
+                                                                <Button className="btn-sm custom-button"
+                                                                    variant={theme === 'light' ? 'dark' : '#333333'} 
+                                                                    onClick={() => ForcedExit(_member)} 
+                                                                    style={{
+                                                                        backgroundColor: theme === 'light' ? 'dark' : '#333333',
+                                                                        color: '#FFFFFF',
+                                                                        width:"75px",
+                                                                    }}>강퇴하기</Button>
+                                                                )}
+                                                            </Dropdown.Item>
+                                                            <Dropdown.Item>
+                                                            {role === "ROLE_MANAGER" &&roomInformation.manager !==_member.memberNickName  && _member.memberNickName !== myInfo.memberNickName && (
+                                                            <Button 
+                                                                className="btn-sm custom-button" 
                                                                 variant={theme === 'light' ? "#C3C3C3" : "#999999"} 
                                                                 onClick={() => AuthMandate(_member)} style={{
                                                                     backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
-                                                                    color: theme === 'light' ? '#000000' : "#FFFFFF"
+                                                                    color: theme === 'light' ? "#000000" : "#FFFFFF"
                                                                 }}>방장위임</Button>
-                                                    )}
+                                                            )}
+                                                            </Dropdown.Item>
+                                                        </Dropdown.Menu>
+                                                    </Dropdown>
                                                 </ListGroupItem>
                                             )}
                                         </ListGroup>
