@@ -22,32 +22,36 @@ const ProfileComponent = () => {
     const { theme } = useContext(themeContext);
     const client = useRef({});
     useEffect(() =>{ 
-        const connect = () => {
-            client.current = new StompJs.Client({
-                webSocketFactory: () => new SockJs('/ws'),
-                connectHeaders: {
-                    "auth-token": "spring-chat-auth-token",
-                },
-                debug: function (str) {
-                    console.log(str);
-                },
-                reconnectDelay: 5000,
-                heartbeatIncoming: 4000,
-                heartbeatOutgoing: 4000,
-                onConnect: () => {
-                    client.current.subscribe(`/sub/chat/changeNickName`, ({body}) => {
-                        if (JSON.parse(body).nickName === "system"){
-                            queryClient.invalidateQueries("allChatRooms");
+        const connect = async () => {
+            try{
+                    client.current = new StompJs.Client({
+                        webSocketFactory: () => new SockJs('/ws'),
+                        connectHeaders: {
+                            "auth-token": "spring-chat-auth-token",
+                        },
+                        debug: function (str) {
+                            console.log(str);
+                        },
+                        reconnectDelay: 5000,
+                        heartbeatIncoming: 4000,
+                        heartbeatOutgoing: 4000,
+                        onConnect: () => {
+                            client.current.subscribe(`/sub/chat/changeNickName`, ({body}) => {
+                                if (JSON.parse(body).nickName === "system"){
+                                    queryClient.invalidateQueries("allChatRooms");
+                                }
+                            });
+                        },
+                        onStompError: (frame) => {
+                            console.error(frame);
                         }
                     });
-                },
-                onStompError: (frame) => {
-                    console.error(frame);
-                }
-            });
-            client.current.activate(); 
+                    await client.current.activate(); 
+            } catch (error){
+                    console.log(error);
+            }
+        }
             
-        };
         const disconnect = () => {
             client.current.deactivate();
         };

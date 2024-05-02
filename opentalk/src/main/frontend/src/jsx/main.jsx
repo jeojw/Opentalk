@@ -30,61 +30,64 @@ const MainComponent = () => {
     const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
 
     useEffect(() =>{ 
-        const connect = () => {
-            client.current = new StompJs.Client({
-                webSocketFactory: () => new SockJs('/ws'),
-                connectHeaders: {
-                    "auth-token": "spring-chat-auth-token",
-                },
-                debug: function (str) {
-                    console.log(str);
-                },
-                reconnectDelay: 5000,
-                heartbeatIncoming: 4000,
-                heartbeatOutgoing: 4000,
-                onConnect: () => {
-                    client.current.subscribe('/sub/chat/enterRoomResponse', ({body}) =>{
-                        if (JSON.parse(body).nickName === "system"){
-                            queryClient.invalidateQueries("allChatRooms");
-                        }
-                    })
-                    client.current.subscribe('/sub/chat/exitRoomResponse', ({body}) =>{
-                        if (JSON.parse(body).nickName === "system"){
-                            queryClient.invalidateQueries("allChatRooms");
-                        }
-                    })
-                    client.current.subscribe(`/sub/chat/changeRoom`, ({body}) => {
-                        if (JSON.parse(body).nickName === "system"){
-                            queryClient.invalidateQueries("allChatRooms");
-                        }
-                    });
-                    client.current.subscribe(`/sub/chat/deleteRoom`, ({body}) => {
-                        if (JSON.parse(body).nickName === "system"){
-                            queryClient.invalidateQueries("allChatRooms");
-                        }
-                    });
-                    client.current.subscribe(`/sub/chat/createRoom`, ({body}) => {
-                        if (JSON.parse(body).nickName === "system"){
-                            queryClient.invalidateQueries("allChatRooms");
-                        }
-                    });
-                    client.current.subscribe(`/sub/chat/changeNickName`, ({body}) => {
-                        if (JSON.parse(body).nickName === "system"){
-                            queryClient.invalidateQueries("allChatRooms");
-                        }
-                    });
-                    client.current.subscribe(`/sub/chat/authMandateResponse`, ({body}) => {
-                        if (JSON.parse(body).nickName === "system"){
-                            queryClient.invalidateQueries("allChatRooms");
-                        }
-                    });
-                },
-                onStompError: (frame) => {
-                    console.error(frame);
-                }
-            });
-            client.current.activate();
-            
+        const connect = async () => {
+            try{
+                client.current = new StompJs.Client({
+                    webSocketFactory: () => new SockJs('/ws'),
+                    connectHeaders: {
+                        "auth-token": "spring-chat-auth-token",
+                    },
+                    debug: function (str) {
+                        console.log(str);
+                    },
+                    reconnectDelay: 5000,
+                    heartbeatIncoming: 4000,
+                    heartbeatOutgoing: 4000,
+                    onConnect: () => {
+                        client.current.subscribe('/sub/chat/enterRoomResponse', ({body}) =>{
+                            if (JSON.parse(body).nickName === "system"){
+                                queryClient.invalidateQueries("allChatRooms");
+                            }
+                        })
+                        client.current.subscribe('/sub/chat/exitRoomResponse', ({body}) =>{
+                            if (JSON.parse(body).nickName === "system"){
+                                queryClient.invalidateQueries("allChatRooms");
+                            }
+                        })
+                        client.current.subscribe(`/sub/chat/changeRoom`, ({body}) => {
+                            if (JSON.parse(body).nickName === "system"){
+                                queryClient.invalidateQueries("allChatRooms");
+                            }
+                        });
+                        client.current.subscribe(`/sub/chat/deleteRoom`, ({body}) => {
+                            if (JSON.parse(body).nickName === "system"){
+                                queryClient.invalidateQueries("allChatRooms");
+                            }
+                        });
+                        client.current.subscribe(`/sub/chat/createRoom`, ({body}) => {
+                            if (JSON.parse(body).nickName === "system"){
+                                queryClient.invalidateQueries("allChatRooms");
+                            }
+                        });
+                        client.current.subscribe(`/sub/chat/changeNickName`, ({body}) => {
+                            if (JSON.parse(body).nickName === "system"){
+                                queryClient.invalidateQueries("allChatRooms");
+                            }
+                        });
+                        client.current.subscribe(`/sub/chat/authMandateResponse`, ({body}) => {
+                            if (JSON.parse(body).nickName === "system"){
+                                queryClient.invalidateQueries("allChatRooms");
+                            }
+                        });
+                    },
+                    onStompError: (frame) => {
+                        console.error(frame);
+                    }
+                });
+                await client.current.activate();
+            } catch (error) {
+                console.error("Error connecting to WebSocket:", error);
+            }
         };
         const disconnect = () => {
             client.current.deactivate();

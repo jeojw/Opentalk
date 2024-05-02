@@ -489,27 +489,30 @@ const RoomComponent = () => {
         });
     };
     useEffect(() =>{ 
-        const connect = () => {
-            client.current = new StompJs.Client({
-                webSocketFactory: () => new SockJs('/ws'),
-                connectHeaders: {
-                    "auth-token": "spring-chat-auth-token",
-                },
-                debug: function (str) {
-                    console.log(str);
-                },
-                reconnectDelay: 5000,
-                heartbeatIncoming: 4000,
-                heartbeatOutgoing: 4000,
-                onConnect: () => {
-                    subscribe();
-                },
-                onStompError: (frame) => {
-                    console.error(frame);
-                }
-            });
-            client.current.activate(); 
-            
+        const connect = async () => {
+            try{
+                client.current = new StompJs.Client({
+                    webSocketFactory: () => new SockJs('/ws'),
+                    connectHeaders: {
+                        "auth-token": "spring-chat-auth-token",
+                    },
+                    debug: function (str) {
+                        console.log(str);
+                    },
+                    reconnectDelay: 5000,
+                    heartbeatIncoming: 4000,
+                    heartbeatOutgoing: 4000,
+                    onConnect: () => {
+                        subscribe();
+                    },
+                    onStompError: (frame) => {
+                        console.error(frame);
+                    }
+                });
+                await client.current.activate(); 
+            } catch(error){
+                console.log(error);
+            }
         };
     
         const disconnect = () => {

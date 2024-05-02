@@ -61,7 +61,6 @@ public class AuthController {
     public ResponseEntity<?> reissue(@RequestHeader("Cookie") String requestRefreshToken,
                                      @RequestHeader("Authorization") String requestAccessToken) {
         AuthDto.TokenDto reissuedTokenDto = authService.reissue(requestAccessToken, requestRefreshToken.split("=")[1]);
-        System.out.print("쿠키 토큰" + requestRefreshToken.split("=")[1]);
         if (reissuedTokenDto != null) { // 토큰 재발급 성공
             // RT 저장
                 ResponseCookie responseCookie = ResponseCookie.from("refresh-token", reissuedTokenDto.getRefreshToken())
