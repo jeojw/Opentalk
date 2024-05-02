@@ -409,7 +409,9 @@ const MainComponent = () => {
                     }
                 } catch(error) {
                     console.log(error);
-                    setIsReissue(false); 
+                    window.alert("다시 로그인하여 주십시오.")
+                    localStorage.removeItem('token');
+                    navigate("/opentalk/login");
                 }
             }
             reissueToken();
