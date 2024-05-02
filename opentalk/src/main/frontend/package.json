@@ -42,7 +42,7 @@
     "react-useinterval": "^1.0.2",
     "sharp": "^0.33.3",
     "socket.io-client": "^4.7.5",
-    "sockjs-client": "^1.6.1",
+    "sockjs-client": "^1.5.1",
     "styled-components": "^6.1.8",
     "styled-reset": "^4.5.2",
     "text-encoding": "^0.7.0",
