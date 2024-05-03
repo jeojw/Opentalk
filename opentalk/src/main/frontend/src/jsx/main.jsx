@@ -79,6 +79,11 @@ const MainComponent = () => {
                                 queryClient.invalidateQueries("allChatRooms");
                             }
                         });
+                        client.current.subscribe(`/sub/chat/personalMessage`, ({body}) => {
+                            if (JSON.parse(body).nickName === "system"){
+                                queryClient.invalidateQueries("allPersonalMessages");
+                            }
+                        });
                     },
                     onStompError: (frame) => {
                         console.error(frame);
@@ -107,7 +112,6 @@ const MainComponent = () => {
         {value: "tags", name: "태그"},
     ];
 
-    const [isUpdateTrigger, setIsUpdateTrigger] = useState(false);
     const [allChatRoomList, setAllChatRoomList] = useState([]);
 
     const [chatRoomList, setChatRoomList] = useState([]);
@@ -120,8 +124,12 @@ const MainComponent = () => {
 
     const [pageLength , setPageLength] = useState(0);
 
-    const [isMessageBoxOpen, setIsMessageBoxOpen] = useState(false);
-    const [messageList, setMessageList] = useState([]);
+    const [isInviteMessageBoxOpen, setIsInviteMessageBoxOpen] = useState(false);
+    const [isPersonalMessageBoxOpen, setIsPersonalMessageBoxOpen] = useState(false);
+    const [showPersonalMessageForm, setShowPersonalMessageForm] = useState(false);
+
+    const [inviteMessageList, setInviteMessageList] = useState([]);
+    const [personalMessageList, setPersonalMessageList] = useState([]);
 
     const [show, setShow] = useState(false);
 
@@ -151,7 +159,7 @@ const MainComponent = () => {
 
     const queryClient = useQueryClient();
 
-    const { data: allChatRooms, isLoading, isError, isFetching, isFetched } = useQuery({
+    const { data: allChatRooms, isLoading: roomIsLoading, isError: roomIsError, isFetching: roomIsFetching, isFetched: roomIsFetched } = useQuery({
         queryKey:['allChatRooms'],
         queryFn: async () => {
             try{
@@ -167,13 +175,59 @@ const MainComponent = () => {
         refetchOnWindowFocus: true,
         refetchOnReconnect: true,
     })
-    
+
     useEffect(() => {
-        if (allChatRooms && !isLoading && !isError && !isFetching && isFetched) {
+        if (allChatRooms && !roomIsLoading && !roomIsError && !roomIsFetching && roomIsFetched) {
             setAllChatRoomList(allChatRooms);
             setPageLength(allChatRooms.length);
         }
-    }, [allChatRooms, isLoading, isError, isFetching, isFetched]);
+    }, [allChatRooms, roomIsLoading, roomIsError, roomIsFetching, roomIsFetched]);
+
+    const { data: allPersonalMessages, isLoading: PMIsLoading, isError: PMIsError, isFetching: PMIsFetching, isFetched: PMIsFetched } = useQuery({
+        queryKey:['allPersonalMessages'],
+        queryFn: async () =>{
+            try{
+                const messageResponse = await axios.get(`/api/opentalk/member/allPersonalMessages/${member?.memberNickName}`);
+                return messageResponse.data;
+            } catch (error){
+                console.log(error);
+            }
+        },
+        cacheTime: 30000,
+        staleTime: 5000,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+    }, [member?.memberNickName])
+
+    useEffect(() =>{
+        if (allPersonalMessages && !PMIsLoading && !PMIsError && !PMIsFetching && PMIsFetched){
+            setPersonalMessageList(allPersonalMessages);
+        }
+    }, [allPersonalMessages, PMIsLoading, PMIsError, PMIsFetching, PMIsFetched])
+
+    const { data: allInvitelMessages, isLoading: IMIsLoading, isError: IMIsError, isFetching: IMIsFetching, isFetched: IMIsFetched } = useQuery({
+        queryKey:['allInviteMessages'],
+        queryFn: async () =>{
+            try{
+                const messageResponse = await axios.get(`/api/opentalk/member/allInviteMessages/${member?.memberNickName}`);
+                return messageResponse.data;
+            } catch (error){
+                console.log(error);
+            }
+        },
+        cacheTime: 30000,
+        staleTime: 5000,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+    }, [member?.memberNickName])
+
+    useEffect(() => {
+        if (allInvitelMessages && !IMIsLoading && !IMIsError && !IMIsFetching && IMIsFetched){
+            setInviteMessageList(allInvitelMessages);
+        }
+    }, [allInvitelMessages, IMIsLoading, IMIsError, IMIsFetching, IMIsFetched])
 
     const { mutate: mutateDeleteRoom } = useMutation(async ({roomInfo}) => {
         if (window.confirm("방을 삭제하시겠습니까?")){
@@ -326,7 +380,7 @@ const MainComponent = () => {
         }
     });
 
-    const { mutate: mutateEnterInviteRoom } = useMutation(async ({roomId, Inviter}) => {
+    const { mutate: mutateEnterInviteRoom } = useMutation(async ({message}) => {
         if (window.confirm("입장하시겠습니까?")){
             if (!localStorage.getItem("token")){
                 window.alert("이미 로그아웃 되었습니다.");
@@ -336,7 +390,7 @@ const MainComponent = () => {
                 try{
                     const findRoom = '/api/opentalk/oneRoom';
                     const data = new FormData();
-                    data.append("roomId", roomId);
+                    data.append("roomId", message.roomId);
                     const roomRes = await axios.post(findRoom, data);
                     if (roomRes.status === 200){
                         try{
@@ -344,15 +398,11 @@ const MainComponent = () => {
                             const enterUrl = '/api/opentalk/enterInvitedRoom';
                             currentRole = ChatRoomRole.PARTICIPATE;
                             setRole(currentRole);
-                            const data = new FormData();
-                            data.append("roomId", roomId);
-                            data.append("memberId", member.memberId);
-                            data.append("inviter", Inviter);
                             
-                            const res = await axios.post(enterUrl, data);
+                            const res = await axios.post(enterUrl, message);
                             
                             if (res.data === "Success"){
-                                client.current.subscribe(`/sub/chat/${roomId}`, ({body}) => {
+                                client.current.subscribe(`/sub/chat/${message.roomId}`, ({body}) => {
                                     if (JSON.parse(body).member.memberNickName === "system"){
                                         queryClient.invalidateQueries("allChatRooms");
                                     }
@@ -376,7 +426,7 @@ const MainComponent = () => {
                                     message: ""
                                 })})
         
-                                navigate(`/opentalk/room/${roomId}`);
+                                navigate(`/opentalk/room/${message.roomId}`);
                             }
                             else{
                                 window.alert("인원수가 가득 차 방에 입장할 수 없습니다!");
@@ -508,22 +558,25 @@ const MainComponent = () => {
         mutateEnterRoom({roomInfo});
     }
 
-    const EnterInvitedRoom = ({roomId, Inviter}) => {
-        mutateEnterInviteRoom({roomId, Inviter});
+    const EnterInvitedRoom = ({message}) => {
+        mutateEnterInviteRoom({message:message});
     }
 
     const ChangRoom = ({roomInfo}) => {
         mutateChangRoom({roomInfo});
     }
 
-    const DeleteInviteMessage = ({Inviter, Invited_member}) => {
+    const DeleteInviteMessage = ({inviteId}) => {
         const deleteUrl = '/api/opentalk/member/deleteMessage';
         const data = new FormData();
-        data.append("inviter", Inviter);
-        data.append("invitedMember", Invited_member);
+        data.append("inviteId", inviteId);
+        console.log(inviteId);
         axios.post(deleteUrl, data)
         .then((res) =>{
-            setIsUpdateTrigger(prevState => !prevState);
+            if (res.status === 200){
+                queryClient.invalidateQueries("allInviteMessages")
+            }
+            
         })
         .catch((error) => console.log(error));
     }
@@ -563,32 +616,15 @@ const MainComponent = () => {
         
     };
 
-    const openMessageBox = () => {
+    const openInviteMessageBox = () => {
         setShow(false);
-        setIsMessageBoxOpen(true);
+        setIsInviteMessageBoxOpen(true);
     }
 
-    const closeModal = () => {
-        setIsMessageBoxOpen(false);
+    const openPersonalMessageBox = () => {
+        setShow(false);
+        setIsPersonalMessageBoxOpen(true);
     }
-
-    useEffect(() => {
-        const fetchAllMessages = async () => {
-            if (localStorage.getItem("token")){
-                const url = "/api/opentalk/member/allInviteMessages"
-                try{
-                    const data = new FormData();
-                    data.append("memberNickName", member.memberNickName);
-                    const response = await axios.post(url, data);
-                    setMessageList(response.data);
-                } catch (error){
-                    console.log(error);
-                }
-            }
-        }
-
-        fetchAllMessages();
-    },[isMessageBoxOpen, isUpdateTrigger])
 
     const renderPaginationItems = () => {
         const paginationItems = [];
@@ -602,13 +638,31 @@ const MainComponent = () => {
         }
     
         return paginationItems;
-      };
+    };
+
+    const deletePersonalMessage = async ({message_id, caller, receiver, message}) =>{
+        const deleteUrl = '/api/opentalk/room/deletePersonalMessage';
+        try{
+            console.log(personalMessageList);
+            const res = await axios.post(deleteUrl, {
+                messageId:message_id,
+                receiver:receiver,
+                caller:caller,
+                message:message
+            })
+            if (res.status === 200){
+                queryClient.invalidateQueries("allPersonalMessages");
+            }
+        } catch(error){
+            console.log(error);
+        }
+    }
 
    return (
     <div>
         <Desktop>
             <Container style={{minHeight:"100vh"}}>
-                <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
+                <Modal isOpen={isInviteMessageBoxOpen} onRequestClose={() => setIsInviteMessageBoxOpen(false)} style={{
                             content: {
                                 backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                                 width: '1000px', // 원하는 너비로 설정
@@ -622,7 +676,7 @@ const MainComponent = () => {
                             }
                         }}>
                     <ListGroup className = 'custom-ui'>
-                    {messageList.map((_message) => (
+                    {inviteMessageList.map((_message) => (
                         <ListGroupItem
                             style={{backgroundColor:theme === 'light' ? '#8F8F8F' : '#6D6D6D',
                                     color:theme === 'light' ? '#000000' : '#FFFFFF'}}><strong>{_message.roomName}</strong>
@@ -634,10 +688,10 @@ const MainComponent = () => {
                             variant="#8F8F8F" 
                             style={{ backgroundColor:theme === 'light' ? '#B6B6B6' : '#8D8D8D', 
                                      color:theme === 'light' ? '#000000' : '#FFFFFF'}} 
-                                onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}><strong>입장하기</strong></Button>
+                                onClick={()=> EnterInvitedRoom({message:_message})}><strong>입장하기</strong></Button>
                         <div style={{width:"4px", display:"inline-block"}}/>
                         <Button className='custom-button' variant='dark' 
-                                onClick={()=> DeleteInviteMessage({Inviter: _message.inviter, Invited_member:_message.invitedMember})}>메세지 지우기</Button>
+                                onClick={()=> DeleteInviteMessage({inviteId:_message.inviteId})}>메세지 지우기</Button>
                         
                         
                         </ListGroupItem>
@@ -647,8 +701,67 @@ const MainComponent = () => {
                     <Button 
                         className='custom-button'
                         variant='dark' 
-                        onClick={closeModal} 
+                        onClick={()=>setIsInviteMessageBoxOpen(false)} 
                         >닫기</Button>
+                </Modal>
+                <Modal isOpen={isPersonalMessageBoxOpen} onRequestClose={() => setIsPersonalMessageBoxOpen(false)} style={{
+                            content: {
+                                backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
+                                width: '1000px', // 원하는 너비로 설정
+                                height: '600px', // 원하는 높이로 설정
+                                borderTopLeftRadius: '25px',
+                                borderBottomLeftRadius: '25px',
+                                borderTopRightRadius: '25px',
+                                borderBottomRightRadius: '25px',
+                                position:'relative',
+                                top: "70px"
+                            }
+                        }}>
+                    <ListGroup className = 'custom-ui'>
+                    {personalMessageList.map((_message) => (
+                        <ListGroupItem
+                        style={{backgroundColor:theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                color:theme === 'light' ? '#000000' : '#FFFFFF'}}><strong>{_message.caller}</strong>
+
+                        <hr/>{_message.message}
+                        <hr/>
+                        <Button
+                            className='custom-button'
+                            variant="#8F8F8F" 
+                            style={{ backgroundColor:theme === 'light' ? '#B6B6B6' : '#8D8D8D', 
+                                    color:theme === 'light' ? '#000000' : '#FFFFFF'}} 
+                            onClick={()=>setShowPersonalMessageForm(true)}
+                                ><strong>답장하기</strong></Button>
+                        <div style={{width:"4px", display:"inline-block"}}/>
+                        <Button className='custom-button' variant='dark' 
+                                onClick={()=> deletePersonalMessage({message_id: _message.messageId, 
+                                                                    caller: _message.caller,
+                                                                    receiver: _message.receiver,
+                                                                    message: _message.message})}>확인</Button>
+                        
+                        
+                        </ListGroupItem>
+                    ))}
+                    </ListGroup> 
+                    <hr/>
+                    <div className='d-flex flex-row gap-2'>
+                        <Button 
+                            className='custom-button'
+                            variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+                            style={{backgroundColor: theme === 'light' ? '#CDCDCD' : '#A0A0A0'}} 
+                            onClick={()=>{
+                                setIsPersonalMessageBoxOpen(false)
+                            }} 
+                        >쪽지 보내기</Button>
+                        <Button 
+                        className='custom-button'
+                        variant='dark' 
+                        onClick={()=>setIsPersonalMessageBoxOpen(false)} 
+                        >닫기</Button>
+                    </div>
+                </Modal>
+                <Modal>
+
                 </Modal>
                 <Row className="justify-content-end">
                     <Col xs={3} md={9} span={12} offset={12} lg="5" className="border-3 rounded-4 p-5"
@@ -683,10 +796,17 @@ const MainComponent = () => {
                                 <Button 
                                     className="btn-lg custom-button" 
                                     variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
-                                    onClick={openMessageBox}
+                                    onClick={openInviteMessageBox}
                                     style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
                                              color:theme === 'light' ? '#000000' : '#FFFFFF'}}
-                                >메세지함</Button>
+                                >초대함</Button>
+                                <Button 
+                                    className="btn-lg custom-button" 
+                                    variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+                                    onClick={openPersonalMessageBox}
+                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                                             color:theme === 'light' ? '#000000' : '#FFFFFF'}}
+                                >쪽지함</Button>
                                 <Button 
                                     className="btn-lg custom-button" 
                                     variant="dark" 
@@ -698,7 +818,6 @@ const MainComponent = () => {
                     <Col className="border-3 rounded-4 p-5" style={{backgroundColor:theme === 'light' ? "#C3C3C3" : '#999999', height: "975px"}}>
                         <SetRoomComponent
                             stompClient={client.current}
-                            onDataUpdate={setIsUpdateTrigger}
                         />
                         <br></br>
                         <ListGroup className='custom-ui'>
@@ -801,7 +920,7 @@ const MainComponent = () => {
         </Desktop>
         <Mobile>
             <Container style={{minHeight:"100vh"}}>
-            <Modal isOpen={isMessageBoxOpen} onRequestClose={closeModal} style={{
+            <Modal isOpen={isInviteMessageBoxOpen} onRequestClose={()=>setIsInviteMessageBoxOpen(false)} style={{
                             content: {
                                 backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
                                 width: '300px', // 원하는 너비로 설정
@@ -815,7 +934,7 @@ const MainComponent = () => {
                             }
                         }}>
                     <ListGroup className = 'custom-ui'>
-                    {messageList.map((_message) => (
+                    {inviteMessageList.map((_message) => (
                         <ListGroupItem
                             style={{backgroundColor:theme === 'light' ? '#8F8F8F' : '#6D6D6D',
                                     color:theme === 'light' ? '#000000' : '#FFFFFF'}}><strong>{_message.roomName}</strong>
@@ -840,7 +959,53 @@ const MainComponent = () => {
                     <Button 
                         className='custom-button'
                         variant='dark' 
-                        onClick={closeModal} 
+                        onClick={()=>setIsInviteMessageBoxOpen(false)} 
+                        >닫기</Button>
+                </Modal>
+                <Modal isOpen={isPersonalMessageBoxOpen} onRequestClose={() => setIsPersonalMessageBoxOpen(false)} style={{
+                            content: {
+                                backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
+                                width: '300px', // 원하는 너비로 설정
+                                height: '600px', // 원하는 높이로 설정
+                                borderTopLeftRadius: '25px',
+                                borderBottomLeftRadius: '25px',
+                                borderTopRightRadius: '25px',
+                                borderBottomRightRadius: '25px',
+                                position:'relative',
+                                top: "70px"
+                            }
+                        }}>
+                    <ListGroup className = 'custom-ui'>
+                    {personalMessageList.map((_message) => (
+                        <ListGroupItem
+                        style={{backgroundColor:theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                color:theme === 'light' ? '#000000' : '#FFFFFF'}}><strong>{_message.caller}</strong>
+
+                        <hr/>{_message.message}
+                        <hr/>
+                        <Button
+                            className='custom-button'
+                            variant="#8F8F8F" 
+                            style={{ backgroundColor:theme === 'light' ? '#B6B6B6' : '#8D8D8D', 
+                                    color:theme === 'light' ? '#000000' : '#FFFFFF'}}
+                                onClick={()=>setShowPersonalMessageForm(true)}
+                                ><strong>답장하기</strong></Button>
+                        <div style={{width:"4px", display:"inline-block"}}/>
+                        <Button className='custom-button' variant='dark' 
+                                onClick={()=> deletePersonalMessage({message_id: _message.messageId, 
+                                                                    caller: _message.caller,
+                                                                    receiver: _message.receiver,
+                                                                    message: _message.message})}>확인</Button>
+                        
+                        
+                        </ListGroupItem>
+                    ))}
+                    </ListGroup> 
+                    <hr/>
+                    <Button 
+                        className='custom-button'
+                        variant='dark' 
+                        onClick={()=>setIsPersonalMessageBoxOpen(false)} 
                         >닫기</Button>
                 </Modal>
                 <Row className="justify-content-end">
@@ -859,7 +1024,7 @@ const MainComponent = () => {
                             <Col xs={3} md={9} span={12} offset={12} lg="5" className="border-3 rounded-4 p-5"
                             style={{
                                 backgroundColor: theme === 'light' ? "#7B7B7B" : "#595959",
-                                width:"100%", height: "600px"
+                                width:"100%", height: "700px"
                                 }}>
                                 <div style={{ textAlign: 'center' }}>
                                     <img alt="프로필 이미지" 
@@ -887,10 +1052,17 @@ const MainComponent = () => {
                                     <Button 
                                         className='custom-button'
                                         variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
-                                        onClick={openMessageBox}
+                                        onClick={openInviteMessageBox}
                                         style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
                                                  color:theme === 'light' ? "#000000" : "#FFFFFF"}}
-                                    >메세지함</Button>
+                                    >초대함</Button>
+                                    <Button 
+                                        className='custom-button'
+                                        variant={theme === 'light' ? "#CDCDCD" : "#A0A0A0"}
+                                        onClick={openPersonalMessageBox}
+                                        style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
+                                                 color:theme === 'light' ? "#000000" : "#FFFFFF"}}
+                                    >쪽지함</Button>
                                     <Button
                                         className='custom-button'
                                         variant="dark" 
@@ -908,7 +1080,6 @@ const MainComponent = () => {
                     <Col className="border-3 rounded-4 p-5" style={{backgroundColor:theme === 'light' ? "#C3C3C3" : "#999999", height: "975px"}}>
                         <SetRoomComponent
                             stompClient={client.current}
-                            onDataUpdate={setIsUpdateTrigger}
                         />
                         <br></br>
                         <ListGroup className='custom-ui'>
@@ -969,7 +1140,7 @@ const MainComponent = () => {
                                     style={{flex: '1', 
                                             backgroundColor:theme === 'light' ? '#FFFFFF' : "#121212",
                                             color: theme === 'light' ? '#000000' : "#FFFFFF"
-                                        }}
+                                    }}
                                 >
                                     {menuList.map((item) => {
                                         return <option value={item.value} key={item.value}>

@@ -32,6 +32,8 @@ public class ChatRoomService {
     private final InviteMessageRepository inviteMessageRepository;
     private final MemberInviteRepository memberInviteRepository;
 
+    private final PersonalMessageRepository personalMessageRepository;
+
     private final BCryptPasswordEncoder passwordEncoder;
 
     @PersistenceContext
@@ -200,12 +202,11 @@ public class ChatRoomService {
         return "Fail";
     }
 
-    public String enterInvitedRoom(String roomId, String memberId, String inviter){
-        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(roomId);
-        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(memberId);
+    public String enterInvitedRoom(InviteDto inviteDto){
+        Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(inviteDto.getRoomId());
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberNickName(inviteDto.getInvitedMember());
         if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
             if (getParticipates(chatRoomEntity.get().getRoomId()) < chatRoomEntity.get().getLimitParticipates()){
-                System.out.print("입장성공");
                 ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
                         .chatroom(chatRoomEntity.get())
                         .member(memberEntity.get())
@@ -214,10 +215,10 @@ public class ChatRoomService {
                     chatRoomMemberRepository.deleteMember(chatRoomEntity.get().getId(), memberEntity.get().getId());
                 }
                 chatRoomMemberRepository.save(chatRoomMemberEntity);
-                Optional<InviteEntity> inviteEntity = inviteMessageRepository.getInviteMessage(inviter, memberEntity.get().getMemberNickName());
+                Optional<InviteEntity> inviteEntity = inviteMessageRepository.getInviteMessage(inviteDto.getInviteId());
                 if (inviteEntity.isPresent()){
                     memberInviteRepository.deleteEntity(inviteEntity.get().getId(), memberEntity.get().getId());
-                    inviteMessageRepository.deleteMessage(memberEntity.get().getMemberNickName(), inviter);
+                    inviteMessageRepository.deleteMessage(inviteDto.getInviteId());
                 }
                 return "Success";
             }
@@ -354,9 +355,15 @@ public class ChatRoomService {
 
     public String InviteMember(InviteDto inviteDto){
         Optional<MemberEntity> member = memberRepository.findByMemberNickName(inviteDto.getInvitedMember());
+        Optional<MemberEntity> inviter = memberRepository.findByMemberNickName(inviteDto.getInviter());
         Optional<ChatRoomEntity> chatRoom = chatRoomRepository.findByRoomId(inviteDto.getRoomId());
-        if (member.isPresent() && chatRoom.isPresent()) {
-            if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoom.get().getId(), member.get().getId()), BigInteger.ONE)){
+        if (member.isPresent() && chatRoom.isPresent() && inviter.isPresent()) {
+            if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoom.get().getId(),
+                                                                            member.get().getId()), BigInteger.ONE) ||
+                Objects.equals(inviteMessageRepository.isExistMessage(chatRoom.get().getRoomId(),
+                                                        inviter.get().getMemberId(),
+                                                        member.get().getMemberId()),
+                                                        BigInteger.ONE)){
                 return "Fail";
             }
             else {
@@ -370,5 +377,20 @@ public class ChatRoomService {
             }
         }
         return "Fail";
+    }
+
+    public void sendPMInRoom(PersonalMessageDto messageDto){
+        PersonalMessageEntity personalMessageEntity = PersonalMessageEntity.builder()
+                .messageId(messageDto.getMessageId())
+                .receiver(messageDto.getReceiver())
+                .caller(messageDto.getCaller())
+                .message(messageDto.getMessage())
+                .build();
+        personalMessageRepository.save(personalMessageEntity);
+    }
+
+    public void deletePMInRoom(PersonalMessageDto messageDto){
+        Optional<PersonalMessageEntity> message = personalMessageRepository.getMessage(messageDto.getMessageId());
+        message.ifPresent(personalMessageRepository::delete);
     }
 }

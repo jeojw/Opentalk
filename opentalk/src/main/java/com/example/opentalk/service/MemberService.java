@@ -2,9 +2,11 @@ package com.example.opentalk.service;
 
 import com.example.opentalk.dto.AuthDto;
 import com.example.opentalk.dto.InviteDto;
+import com.example.opentalk.dto.PersonalMessageDto;
 import com.example.opentalk.entity.ChatRoomEntity;
 import com.example.opentalk.entity.InviteEntity;
 import com.example.opentalk.entity.MemberEntity;
+import com.example.opentalk.entity.PersonalMessageEntity;
 import com.example.opentalk.repository.*;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.WriteChannel;
@@ -35,6 +37,7 @@ public class MemberService {
     private final BCryptPasswordEncoder encoder;
     private final InviteMessageRepository inviteMessageRepository;
     private final MemberInviteRepository memberInviteRepository;
+    private  final PersonalMessageRepository personalMessageRepository;
 
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
@@ -198,6 +201,7 @@ public class MemberService {
         if (list.isPresent()){
             for (InviteEntity entity : list.get()){
                 returnList.add(InviteDto.builder()
+                                .inviteId(entity.getInviteId())
                                 .roomId(entity.getRoomId())
                                 .roomName(entity.getRoomName())
                                 .inviter(entity.getInviter())
@@ -210,12 +214,42 @@ public class MemberService {
     }
 
     @Transactional
-    public void removeInviteMessages(String inviter, String invitedMember){
-        Optional<InviteEntity> message = inviteMessageRepository.getInviteMessage(inviter, invitedMember);
-        Optional<MemberEntity> InvitedEntity = memberRepository.findByMemberNickName(invitedMember);
-        if (InvitedEntity.isPresent() && message.isPresent()){
-            memberInviteRepository.deleteEntity(message.get().getId(), InvitedEntity.get().getId());
-            inviteMessageRepository.deleteMessage(invitedMember, inviter);
+    public List<PersonalMessageDto> getAllPersonalMessages(String memberNickName){
+        Optional<MemberEntity> member = memberRepository.findByMemberNickName(memberNickName);
+        Optional<List<PersonalMessageEntity>> messageEntities = personalMessageRepository.getAllMessages(memberNickName);
+        List<PersonalMessageDto> messages = new ArrayList<>();
+        if (member.isPresent() && messageEntities.isPresent()){
+            for (PersonalMessageEntity entity : messageEntities.get()){
+                messages.add(PersonalMessageDto.builder()
+                                .messageId(entity.getMessageId())
+                                .receiver(entity.getReceiver())
+                                .caller(entity.getCaller())
+                                .message(entity.getMessage())
+                        .build());
+            }
+            return messages;
         }
+        return null;
+    }
+
+    @Transactional
+    public void removeInviteMessages(String inviteId){
+        Optional<InviteEntity> message = inviteMessageRepository.getInviteMessage(inviteId);
+        if (message.isPresent()){
+            Optional<MemberEntity> member = memberRepository.findByMemberNickName(message.get().getInvitedMember());
+            if (member.isPresent()) {
+                memberInviteRepository.deleteEntity(message.get().getId(), member.get().getId());
+                inviteMessageRepository.delete(message.get());
+            }
+        }
+    }
+
+    @Transactional
+    public void sendPersonalMessage(PersonalMessageDto personalMessageDto){
+        PersonalMessageEntity personalMessageEntity = PersonalMessageEntity.builder()
+                .receiver(personalMessageDto.getReceiver())
+                .caller(personalMessageDto.getCaller())
+                .message(personalMessageDto.getMessage())
+                .build();
     }
 }

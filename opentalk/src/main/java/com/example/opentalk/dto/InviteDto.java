@@ -1,20 +1,26 @@
 package com.example.opentalk.dto;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 @Getter
-@Builder
-@NoArgsConstructor
+@Data
 public class InviteDto {
+    private String inviteId = UUID.randomUUID().toString();
     private String roomId;
     private String roomName;
     private String inviter;
     private String message;
     private String invitedMember;
 
-    public InviteDto(String roomId, String roomName, String inviter, String message, String invitedMember){
+    InviteDto() {}
+
+    @Builder
+    public InviteDto(String inviteId, String roomId, String roomName, String inviter, String message, String invitedMember){
+        this.inviteId = inviteId;
         this.roomId = roomId;
         this.roomName = roomName;
         this.inviter = inviter;

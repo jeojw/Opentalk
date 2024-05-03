@@ -67,10 +67,8 @@ public class RoomController {
     }
 
     @PostMapping("/api/opentalk/enterInvitedRoom")
-    public ResponseEntity<String> enterInvitedRoom(@RequestParam("roomId") String roomId,
-                                                   @RequestParam("memberId") String memberId,
-                                                   @RequestParam("inviter") String inviter){
-        return ResponseEntity.ok(chatRoomService.enterInvitedRoom(roomId, memberId, inviter));
+    public ResponseEntity<String> enterInvitedRoom(@RequestBody @Valid InviteDto inviteDto){
+        return ResponseEntity.ok(chatRoomService.enterInvitedRoom(inviteDto));
     }
 
     @PostMapping("/api/opentalk/exitRoom")
@@ -124,4 +122,13 @@ public class RoomController {
         return ResponseEntity.ok(chatRoomService.isExistInRoom(roomId, memberId));
     }
 
+    @PostMapping("/api/opentalk/room/sendPersonalMessage")
+    public void sendPMInRoom(@RequestBody @Valid PersonalMessageDto messageDto){
+        chatRoomService.sendPMInRoom(messageDto);
+    }
+
+    @PostMapping("/api/opentalk/room/deletePersonalMessage")
+    public void deletePMInRoom(@RequestBody @Valid PersonalMessageDto messageDto){
+        chatRoomService.deletePMInRoom(messageDto);
+    }
 }

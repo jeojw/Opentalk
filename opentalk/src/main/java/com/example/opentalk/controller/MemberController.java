@@ -3,6 +3,7 @@ package com.example.opentalk.controller;
 import com.example.opentalk.RuntimeException;
 import com.example.opentalk.dto.AuthDto;
 import com.example.opentalk.dto.InviteDto;
+import com.example.opentalk.dto.PersonalMessageDto;
 import com.example.opentalk.service.AuthService;
 import com.example.opentalk.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -71,13 +73,22 @@ public class MemberController {
         return ResponseEntity.ok(memberService.changePassword(memberEmail, exPassword, newPassword));
     }
 
-    @PostMapping("/api/opentalk/member/allInviteMessages")
-    public ResponseEntity<List<InviteDto>> allInviteMessages(@RequestParam("memberNickName") String memberNickName){
+    @GetMapping("/api/opentalk/member/allInviteMessages/{memberNickName}")
+    public ResponseEntity<List<InviteDto>> allInviteMessages(@PathVariable("memberNickName") String memberNickName){
         return ResponseEntity.ok(memberService.getAllInviteMessages(memberNickName));
     }
 
     @PostMapping("/api/opentalk/member/deleteMessage")
-    public void deleteMessage(@RequestParam("inviter") String inviter, @RequestParam("invitedMember") String invitedMember){
-        memberService.removeInviteMessages(inviter, invitedMember);
+    public void deleteMessage(@RequestParam("inviteId") String inviteId){
+        memberService.removeInviteMessages(inviteId);
+    }
+
+    @GetMapping("/api/opentalk/member/allPersonalMessages/{memberNickName}")
+    public ResponseEntity<List<PersonalMessageDto>> allPersonalMessages(@PathVariable("memberNickName") String memberNickName){
+        return ResponseEntity.ok(memberService.getAllPersonalMessages(memberNickName));
+    }
+
+    public void sendPersonalMessage(@RequestBody @Valid PersonalMessageDto personalMessageDto){
+        memberService.sendPersonalMessage(personalMessageDto);
     }
 }

@@ -18,6 +18,9 @@ public class InviteEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String inviteId;
+
     @Column(name = "room_id", nullable = false)
     private String roomId;
 
@@ -38,7 +41,8 @@ public class InviteEntity {
     private List<MemberInviteEntity> memberInviteEntity = new ArrayList<>();
 
     @Builder
-    public InviteEntity(String roomId, String roomName, String message, String inviter, String invitedMember){
+    public InviteEntity(String inviteId, String roomId, String roomName, String message, String inviter, String invitedMember){
+        this.inviteId = inviteId;
         this.roomId = roomId;
         this.roomName = roomName;
         this.message = message;
@@ -48,6 +52,7 @@ public class InviteEntity {
 
     public static InviteEntity toInviteEntity(InviteDto inviteDto){
         return InviteEntity.builder()
+                .inviteId(inviteDto.getInviteId())
                 .roomId(inviteDto.getRoomId())
                 .roomName(inviteDto.getRoomName())
                 .message(inviteDto.getMessage())

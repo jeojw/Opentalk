@@ -12,6 +12,7 @@ import { format } from 'date-fns'
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { useMediaQuery } from 'react-responsive';
 import { themeContext } from './themeContext';
+import Modal from 'react-modal';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 768 })
@@ -36,6 +37,12 @@ const RoomComponent = () => {
     const [showOffcanvas, setShowOffcanvas] = useState(false);
     const [showInviteModal, setShowInviteModal] = useState(false);
     const [showChangeModal, setShowChangeModal] = useState(false);
+    const [personalMessageList, setPersonalMessageList] = useState([]);
+    const [showPMModal, setShowPMModal] = useState(false);
+    const [isOpenMessageForm, setIsOpenMessageForm] = useState(false);
+
+    const [personalMessage, setPersonalMessage] = useState("");
+    const [receiver, setReceiver] = useState("");
 
     const [isReissue, setIsReissue] = useState(false);
 
@@ -168,7 +175,34 @@ const RoomComponent = () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const { data: roomData, isLoading, isError, isFetching, isFetched} = useQuery({
+    const { data: allPersonalMessages, isLoading: PMIsLoading, isError: PMIsError, isFetching: PMIsFetching, isFetched: PMIsFetched } = useQuery({
+        queryKey:['allPersonalMessages'],
+        queryFn: async () =>{
+            try{
+                const messageResponse = await axios.get(`/api/opentalk/member/allPersonalMessages/${myInfo?.memberNickName}`);
+                return messageResponse.data;
+            } catch (error){
+                console.log(error);
+            }
+        },
+        cacheTime: 30000,
+        staleTime: 5000,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+    }, [myInfo?.memberNickName])
+
+    useEffect(() =>{
+        if (allPersonalMessages && !PMIsLoading && !PMIsError && !PMIsFetching && PMIsFetched){
+            setPersonalMessageList(allPersonalMessages);
+        }
+    }, [allPersonalMessages, PMIsLoading, PMIsError, PMIsFetching, PMIsFetched])
+
+    const { data: roomData, 
+        isLoading: roomIsLoading, 
+        isError: roomIsError, 
+        isFetching: roomIsFetching, 
+        isFetched: roomIsFetched} = useQuery({
         queryKey:['roomData'], 
         queryFn: async () => {
             try{
@@ -368,13 +402,13 @@ const RoomComponent = () => {
     });
 
     useEffect(() => {
-        if (roomData && !isLoading && !isError && !isFetching && isFetched) {
+        if (roomData && !roomIsLoading && !roomIsError && !roomIsFetching && roomIsFetched) {
             setRoomInformation(roomData.chatroom);
             setOtherMember(roomData.chatroom.members);
             setRole(roomData.role);
             setCurParticipates(roomData.chatroom.curParticipates);
         }
-    }, [roomData]);
+    }, [roomData, roomIsLoading, roomIsError, roomIsFetching, roomIsFetched]);
 
     useEffect(() => {
         const fetchInfo = async () => {
@@ -489,6 +523,11 @@ const RoomComponent = () => {
                 queryClient.invalidateQueries("allChatRooms");
             }
         });
+        client.current.subscribe('/sub/chat/personalMessage', ({body}) => {
+            if (JSON.parse(body).nickName === "system"){
+                queryClient.invalidateQueries("allPersonalMessages");
+            }
+        })
     };
     useEffect(() =>{ 
         const connect = async () => {
@@ -600,9 +639,95 @@ const RoomComponent = () => {
         }
     }
 
+    const sendPersonalMessage = async ({caller, receiver, message}) =>{
+        const sendUrl = '/api/opentalk/room/sendPersonalMessage';
+        try{
+            const res = await axios.post(sendUrl, {
+                receiver: receiver,
+                caller: caller,
+                message: message
+            })
+            if (res.status === 200){
+                window.alert("쪽지를 보냈습니다.");
+            }
+        } catch(error){
+            console.log(error);
+        }
+    }
+
+    const deletePersonalMessage = async ({message_id, caller, receiver, message}) =>{
+        const deleteUrl = '/api/opentalk/room/deletePersonalMessage';
+        try{
+            console.log(personalMessageList);
+            const res = await axios.post(deleteUrl, {
+                messageId:message_id,
+                receiver:receiver,
+                caller:caller,
+                message:message
+            })
+            if (res.status === 200){
+                queryClient.invalidateQueries("allPersonalMessages");
+            }
+        } catch(error){
+            console.log(error);
+        }
+    }
+
     return(
         <div>
             <Desktop>
+                <Modal 
+                    isOpen={showPMModal} 
+                    onRequestClose={()=>setShowPMModal(false)}
+                    style={{
+                        content: {
+                            backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
+                            width: '1000px', // 원하는 너비로 설정
+                            height: '600px', // 원하는 높이로 설정
+                            borderTopLeftRadius: '25px',
+                            borderBottomLeftRadius: '25px',
+                            borderTopRightRadius: '25px',
+                            borderBottomRightRadius: '25px',
+                            position:'relative',
+                            top: "70px"
+                        }
+                    }}>
+                    <ListGroup className = 'custom-ui'>
+                    {personalMessageList.map((_message) => (
+                        <ListGroupItem
+                            style={{backgroundColor:theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                    color:theme === 'light' ? '#000000' : '#FFFFFF'}}><strong>{_message.caller}</strong>
+                        <hr/>{_message.message}
+                        <hr/>
+                        <div className='d-flex flex-row gap-2'>
+                            <Button
+                                className='custom-button'
+                                variant={theme === 'light' ? "#C3C3C3" : "#999999"}
+                                style={{ backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                color: theme === 'light' ? '#000000' : "#FFFFFF" }}
+                                onClick={()=>setIsOpenMessageForm(true)}><strong>답장하기</strong></Button>
+                            <Button 
+                                className='custom-button' 
+                                variant='dark'
+                                onClick={() => deletePersonalMessage({
+                                    message_id: _message.messageId,
+                                    caller: _message.caller,
+                                    receiver: _message.receiver,
+                                    message: _message.message
+                                })}
+                            >확인</Button>
+                        </div>
+                        
+                        </ListGroupItem>
+                    ))}
+                    </ListGroup> 
+                    <hr/>
+                    <Button 
+                        className='custom-button'
+                        variant='dark' 
+                        onClick={()=>setShowPMModal(false)} 
+                        >닫기</Button>
+                </Modal>
                 <Container style={{minHeight:"100vh"}}>
                     <Container className={`border border-3 rounded-4 p-5`} style={{maxWidth:'850px'}}>
                         <Container style={{maxWidth:'750px'}}>
@@ -758,6 +883,62 @@ const RoomComponent = () => {
                                                     <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                                     {_member?.memberNickName}
                                                     <div style={{width:"4px", display:"inline-block"}}/>
+                                                    <Modal 
+                                                        isOpen={isOpenMessageForm} 
+                                                        onRequestClose={()=>setIsOpenMessageForm(false)}
+                                                        style={{
+                                                            content: {
+                                                                backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
+                                                                width: '700px', // 원하는 너비로 설정
+                                                                height: '300px', // 원하는 높이로 설정
+                                                                borderTopLeftRadius: '25px',
+                                                                borderBottomLeftRadius: '25px',
+                                                                borderTopRightRadius: '25px',
+                                                                borderBottomRightRadius: '25px',
+                                                                position:'relative',
+                                                                top: "70px"
+                                                            }
+                                                        }}>
+                                                        <Form>
+                                                        수신자: <strong>{_member?.memberNickName}</strong>
+                                                        </Form>
+                                                        <hr/>
+                                                        <Form.Control 
+                                                            className='=custom-ui'
+                                                            type="text" 
+                                                            placeholder='메세지 내용을 입력하세요.'
+                                                            value={personalMessage}
+                                                            onChange={(e) => setPersonalMessage(e.target.value)}
+                                                            style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}>
+                                                        </Form.Control>
+                                                        <br></br>
+                                                        <div className='d-flex flex-row gap-2'>
+                                                            <Button 
+                                                                className='custom-button'
+                                                                variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                                                                style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                                                color: theme === 'light' ? '#000000' : "#FFFFFF" }}
+                                                                onClick={()=>{sendPersonalMessage({
+                                                                    caller: myInfo?.memberNickName,
+                                                                    receiver: _member?.memberNickName,
+                                                                    message: personalMessage
+                                                                })
+                                                                client.current.publish({
+                                                                    destination: '/pub/chat/personalMessage',
+                                                                    body: JSON.stringify({
+                                                                        nickName: "system",
+                                                                        message: ``,
+                                                                    })
+                                                                });}} 
+                                                                >보내기</Button>
+                                                            <Button 
+                                                                className='custom-button'
+                                                                variant='dark' 
+                                                                onClick={()=>setIsOpenMessageForm(false)} 
+                                                                >닫기</Button>
+                                                        </div>
+                                                        
+                                                    </Modal>
                                                     <Dropdown>
                                                         <Dropdown.Toggle
                                                         className='custom-button'
@@ -770,7 +951,15 @@ const RoomComponent = () => {
                                                             메뉴
                                                         </Dropdown.Toggle>
                                                         <Dropdown.Menu>
-                                                            <Dropdown.Item >
+                                                            <Dropdown.Item>
+                                                                <Button className="btn-sm custom-button"
+                                                                    variant={theme === 'light' ? "#C3C3C3" : "#999999"} 
+                                                                    onClick={()=>setIsOpenMessageForm(true)} style={{
+                                                                        backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                                                        color: theme === 'light' ? "#000000" : "#FFFFFF"
+                                                                    }}>쪽지 보내기</Button>
+                                                            </Dropdown.Item>
+                                                            <Dropdown.Item>
                                                                 {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
                                                                 <Button className="btn-sm custom-button"
                                                                     variant={theme === 'light' ? 'dark' : '#333333'} 
@@ -778,7 +967,6 @@ const RoomComponent = () => {
                                                                     style={{
                                                                         backgroundColor: theme === 'light' ? 'dark' : '#333333',
                                                                         color: '#FFFFFF',
-                                                                        width:"75px",
                                                                     }}>강퇴하기</Button>
                                                                 )}
                                                             </Dropdown.Item>
@@ -837,6 +1025,13 @@ const RoomComponent = () => {
                                 style={{backgroundColor:theme === 'light' ? 'dark' : '#333333',
                                         color: "#FFFFFF"}}
                                 onClick={ExitRoom}>나가기</Button>
+                                <Button className='btn-lg custom-button'
+                                    variant={theme === 'light' ? "#B9B9B9" : "#8C8C8C"}
+                                    style={{  
+                                        backgroundColor: theme === 'light' ? "#B9B9B9" : "#8C8C8C", 
+                                        color: theme === 'light' ? '#000000' : '#FFFFFF'
+                                    }} 
+                                    onClick={()=>setShowPMModal(true)}>쪽지함</Button>
                                 {role === "ROLE_MANAGER" && (
                                     <Button className='btn-lg custom-button'
                                     variant={theme === 'light' ? "#B9B9B9" : "#8C8C8C"}
@@ -863,6 +1058,61 @@ const RoomComponent = () => {
                 </Container>
             </Desktop>
             <Mobile>
+                <Modal 
+                    isOpen={showPMModal} 
+                    onRequestClose={()=>setShowPMModal(false)}
+                    style={{
+                        content: {
+                            backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
+                            width: '350px', // 원하는 너비로 설정
+                            height: '600px', // 원하는 높이로 설정
+                            borderTopLeftRadius: '25px',
+                            borderBottomLeftRadius: '25px',
+                            borderTopRightRadius: '25px',
+                            borderBottomRightRadius: '25px',
+                            position:'relative',
+                            top: "70px"
+                        }
+                    }}>
+                    <ListGroup className = 'custom-ui'>
+                    {personalMessageList.map((_message) => (
+                        <ListGroupItem
+                            style={{backgroundColor:theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                    color:theme === 'light' ? '#000000' : '#FFFFFF'}}><strong>{_message.caller}</strong>
+                        <hr/>{_message.message}
+                        <hr/>
+                        <div className='d-flex flex-row gap-2'>
+                            <Button
+                                className='custom-button'
+                                variant={theme === 'light' ? "#C3C3C3" : "#999999"}
+                                style={{ backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                color: theme === 'light' ? '#000000' : "#FFFFFF" }}
+                                onClick={()=>{
+                                    setReceiver(_message.caller);
+                                    setIsOpenMessageForm(true)
+                                }}><strong>답장하기</strong></Button>
+                            <Button 
+                                className='custom-button' 
+                                variant='dark'
+                                onClick={() => deletePersonalMessage({
+                                    message_id: _message.messageId,
+                                    caller: _message.caller,
+                                    receiver: _message.receiver,
+                                    message: _message.message
+                                })}
+                            >확인</Button>
+                        </div>
+                        
+                        </ListGroupItem>
+                    ))}
+                    </ListGroup> 
+                    <hr/>
+                    <Button 
+                        className='custom-button'
+                        variant='dark' 
+                        onClick={()=>setShowPMModal(false)} 
+                        >닫기</Button>
+                </Modal>
             <Offcanvas show={showOffcanvas} onHide={handleCloseOffcanvas}>
                 <OffcanvasBody style={{backgroundColor: theme === 'light' ? "#FFFFFF" : "#121212"}}>
                     <Accordion defaultActiveKey="0">
@@ -888,7 +1138,7 @@ const RoomComponent = () => {
                                     {roomInformation?.roomManager === myInfo?.memberNickName && <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/manager.png`} width={20}></img>}
                                     {myInfo?.memberNickName}</span>
                                     <hr/>
-                                    {otherMember.map((_member, index) => (
+                                    {otherMember.map((_member) => (
                                         <ListGroup className='custom-ui' style={{ marginBottom: '6px' }}>
                                             {_member?.memberNickName !== myInfo?.memberNickName && (
                                                 <ListGroupItem style={{ backgroundColor: theme === "light" ? '#FFFFFF' : '#121212',
@@ -910,6 +1160,18 @@ const RoomComponent = () => {
                                                         </Dropdown.Toggle>
                                                         <Dropdown.Menu>
                                                             <Dropdown.Item style={{}}>
+                                                                <Button className="btn-sm custom-button"
+                                                                    variant={theme === 'light' ? "#C3C3C3" : "#999999"} 
+                                                                    onClick={()=>{
+                                                                        setReceiver(_member?.memberNickName);
+                                                                        setShowOffcanvas(false);
+                                                                        setIsOpenMessageForm(true)
+                                                                    }} style={{
+                                                                        backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
+                                                                        color: theme === 'light' ? "#000000" : "#FFFFFF"
+                                                                    }}>쪽지 보내기</Button>
+                                                            </Dropdown.Item>
+                                                            <Dropdown.Item>
                                                                 {role === "ROLE_MANAGER" && roomInformation.roomManager !==_member.memberNickName && (
                                                                 <Button className="btn-sm custom-button"
                                                                     variant={theme === 'light' ? 'dark' : '#333333'} 
@@ -950,6 +1212,16 @@ const RoomComponent = () => {
                                 style={{ backgroundColor:theme === 'light' ? 'dark' : '#333333',
                                         color:"#FFFFFF",
                                         width:"300px" }} onClick={ExitRoom}>나가기</Button>
+                                <Button className='btn-sm custom-button'
+                                    variant={theme === 'light' ? "#B9B9B9" : "#8C8C8C"}
+                                    style={{  
+                                        backgroundColor: theme === 'light' ? "#B9B9B9" : "#8C8C8C", 
+                                        color: theme === 'light' ? '#000000' : '#FFFFFF'
+                                    }} 
+                                    onClick={()=>{
+                                        setShowOffcanvas(false);
+                                        setShowPMModal(true)
+                                    }}>쪽지함</Button>
                                 <hr/>
                                 {role === "ROLE_MANAGER" && (
                                     <div className="d-grid">
@@ -992,6 +1264,62 @@ const RoomComponent = () => {
                         </Button>
                     </OffcanvasBody>
                 </Offcanvas>
+                <Modal 
+                    isOpen={isOpenMessageForm} 
+                    onRequestClose={()=>setIsOpenMessageForm(false)}
+                    style={{
+                        content: {
+                            backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
+                            width: '400px', // 원하는 너비로 설정
+                            height: '300px', // 원하는 높이로 설정
+                            borderTopLeftRadius: '25px',
+                            borderBottomLeftRadius: '25px',
+                            borderTopRightRadius: '25px',
+                            borderBottomRightRadius: '25px',
+                            position:'relative',
+                            top: "70px"
+                        }
+                    }}>
+                    <Form>
+                    수신자: <strong>{receiver}</strong>
+                    </Form>
+                    <hr/>
+                    <Form.Control 
+                        className='=custom-ui'
+                        type="text" 
+                        placeholder='메세지 내용을 입력하세요.'
+                        value={personalMessage}
+                        onChange={(e) => setPersonalMessage(e.target.value)}
+                        style={{backgroundColor:theme === 'light' ? '#FFFFFF' : "#B9B9B9"}}>
+                    </Form.Control>
+                    <br></br>
+                    <div className='d-flex flex-row gap-2'>
+                        <Button 
+                            className='custom-button'
+                            variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                            style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                            color: theme === 'light' ? '#000000' : "#FFFFFF" }}
+                            onClick={()=>{sendPersonalMessage({
+                                caller: myInfo?.memberNickName,
+                                receiver: receiver,
+                                message: personalMessage
+                            })
+                            client.current.publish({
+                                destination: '/pub/chat/personalMessage',
+                                body: JSON.stringify({
+                                    nickName: "system",
+                                    message: ``,
+                                })
+                            });}} 
+                            >보내기</Button>
+                        <Button 
+                            className='custom-button'
+                            variant='dark' 
+                            onClick={()=>setIsOpenMessageForm(false)} 
+                            >닫기</Button>
+                    </div>
+                    
+                </Modal>
                 <InviteMemberComponent roomInfo = {roomInformation} showModal={showInviteModal} setShowModal={setShowInviteModal}/>
                 <ChangRoomComponent room_Id={room_Id} stompClient={client.current} curParticipates={curParticipates}
                                     showModal={showChangeModal} setShowModal={setShowChangeModal}/>
