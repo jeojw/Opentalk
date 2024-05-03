@@ -14,7 +14,7 @@ const Mobile = ({ children }) => {
     return isMobile ? children : null
 }
 
-const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
+const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo}) => {
     const { theme } = useContext(themeContext);
 
     const [nickName, setNickName] = useState("");
@@ -110,22 +110,24 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                             {searchList && searchList.length > 0 && (
                                 <ListGroup className='custom-ui'>
                                     {searchList.map((_member) => (
-                                        <ListGroupItem 
+                                        _member.memberNickName !== myInfo.memberNickName && (
+                                            <ListGroupItem 
                                             className='custom-ui'
                                             style={{ backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
                                                      color: theme === 'light' ? '#000000' : '#FFFFFF',
                                                     marginBottom: '7px',
                                                     }}><strong>{_member.memberNickName}</strong>
-                                        <hr style={{
-                                            backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
-                                            border: `1px solid ${theme == 'light' ? "#808080" : '#666666'}`}}/>
-                                        <Button
-                                        className='btn-sm custom-button' 
-                                        variant='#8F8F8F' 
-                                        style={{ backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D',
-                                        color: theme === 'light' ? '#000000' : '#FFFFFF' }}
-                                        onClick={() => InviteMember(_member.memberNickName)}>
-                                        <strong>초대</strong></Button></ListGroupItem>
+                                            <hr style={{
+                                                backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
+                                                border: `1px solid ${theme == 'light' ? "#808080" : '#666666'}`}}/>
+                                            <Button
+                                            className='btn-sm custom-button' 
+                                            variant='#8F8F8F' 
+                                            style={{ backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                            color: theme === 'light' ? '#000000' : '#FFFFFF' }}
+                                            onClick={() => InviteMember(_member.memberNickName)}>
+                                            <strong>초대</strong></Button></ListGroupItem>
+                                        )
                                     ))}
                                     <hr/>
                                 </ListGroup>
@@ -180,22 +182,24 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
                             {searchList && searchList.length > 0 && (
                                 <ListGroup className='custom-ui'>
                                 {searchList.map((_member) => (
-                                    <ListGroupItem 
+                                    _member.memberNickName !== myInfo.memberNickName && (
+                                        <ListGroupItem 
                                         className='custom-ui'
                                         style={{ backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
                                                     color: theme === 'light' ? '#000000' : '#FFFFFF',
                                                 marginBottom: '7px',
                                                 }}><strong>{_member.memberNickName}</strong>
-                                    <hr style={{
-                                        backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
-                                        border: `1px solid ${theme == 'light' ? "#808080" : '#666666'}`}}/>
-                                    <Button
-                                    className='btn-sm custom-button' 
-                                    variant='#8F8F8F' 
-                                    style={{ backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D',
-                                    color: theme === 'light' ? '#000000' : '#FFFFFF' }}
-                                    onClick={() => InviteMember(_member.memberNickName)}>
-                                    <strong>초대</strong></Button></ListGroupItem>
+                                        <hr style={{
+                                            backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
+                                            border: `1px solid ${theme == 'light' ? "#808080" : '#666666'}`}}/>
+                                        <Button
+                                        className='btn-sm custom-button' 
+                                        variant='#8F8F8F' 
+                                        style={{ backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                        color: theme === 'light' ? '#000000' : '#FFFFFF' }}
+                                        onClick={() => InviteMember(_member.memberNickName)}>
+                                        <strong>초대</strong></Button></ListGroupItem>
+                                    )
                                 ))}
                                 <hr/>
                             </ListGroup>

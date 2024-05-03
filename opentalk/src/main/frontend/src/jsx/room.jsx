@@ -1053,7 +1053,7 @@ const RoomComponent = () => {
                                 )}
                             <ChangRoomComponent room_Id={room_Id} stompClient={client.current} curParticipates={curParticipates}
                             showModal={showChangeModal} setShowModal={setShowChangeModal}/>
-                            <InviteMemberComponent roomInfo = {roomInformation} showModal={showInviteModal} setShowModal={setShowInviteModal}/>
+                            <InviteMemberComponent roomInfo = {roomInformation} showModal={showInviteModal} setShowModal={setShowInviteModal} myInfo={myInfo}/>
                         </FormGroup>
                     </Container>
                 </Container>
@@ -1321,7 +1321,7 @@ const RoomComponent = () => {
                         >닫기</Button>
                     </div>
                 </Modal>
-                <InviteMemberComponent roomInfo = {roomInformation} showModal={showInviteModal} setShowModal={setShowInviteModal}/>
+                <InviteMemberComponent roomInfo = {roomInformation} showModal={showInviteModal} setShowModal={setShowInviteModal} myInfo={myInfo}/>
                 <ChangRoomComponent room_Id={room_Id} stompClient={client.current} curParticipates={curParticipates}
                                     showModal={showChangeModal} setShowModal={setShowChangeModal}/>
                 <Container style={{maxWidth:'767px'}}>
