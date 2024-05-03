@@ -151,8 +151,8 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                             zIndex: 2
                         }
                     }}>
-                    <Form>
-                    수신자: <strong>{receiver}</strong>
+                    <Form style={{color: theme === 'light' ? "#000000" : "#FFFFFF"}}>
+                        수신자: <strong>{receiver}</strong>
                     </Form>
                     <hr/>
                     <Form.Control 
@@ -181,7 +181,8 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                                     nickName: "system",
                                     message: ``,
                                 })
-                            });}} 
+                            });
+                            setPersonalMessage("");}} 
                             >보내기</Button>
                         <Button 
                             className='custom-button'
@@ -276,8 +277,8 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                             top: "70px"
                         }
                     }}>
-                    <Form>
-                    수신자: <strong>{receiver}</strong>
+                    <Form style={{color: theme === 'light' ? "#000000" : "#FFFFFF"}}>
+                        수신자: <strong>{receiver}</strong>
                     </Form>
                     <hr/>
                     <Form.Control 
@@ -306,7 +307,8 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                                     nickName: "system",
                                     message: ``,
                                 })
-                            });}} 
+                            });
+                            setPersonalMessage("");}} 
                             >보내기</Button>
                         <Button 
                             className='custom-button'

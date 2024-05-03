@@ -899,9 +899,9 @@ const RoomComponent = () => {
                                                                 top: "70px"
                                                             }
                                                         }}>
-                                                        <Form>
-                                                        수신자: <strong>{_member?.memberNickName}</strong>
-                                                        </Form>
+                                                        <Form.Label style={{color: theme === 'light' ? "#000000" : "#FFFFFF"}}>
+                                                            수신자: <strong>{_member?.memberNickName}</strong>
+                                                        </Form.Label>
                                                         <hr/>
                                                         <Form.Control 
                                                             className='=custom-ui'
@@ -922,14 +922,15 @@ const RoomComponent = () => {
                                                                     caller: myInfo?.memberNickName,
                                                                     receiver: _member?.memberNickName,
                                                                     message: personalMessage
-                                                                })
+                                                                });
                                                                 client.current.publish({
                                                                     destination: '/pub/chat/personalMessage',
                                                                     body: JSON.stringify({
                                                                         nickName: "system",
                                                                         message: ``,
                                                                     })
-                                                                });}} 
+                                                                });
+                                                                setPersonalMessage("");}} 
                                                                 >보내기</Button>
                                                             <Button 
                                                                 className='custom-button'
@@ -1280,9 +1281,9 @@ const RoomComponent = () => {
                             top: "70px"
                         }
                     }}>
-                    <Form>
-                    수신자: <strong>{receiver}</strong>
-                    </Form>
+                    <Form.Label style={{color: theme === 'light' ? "#000000" : "#FFFFFF"}}>
+                        수신자: <strong>{receiver}</strong>
+                    </Form.Label>
                     <hr/>
                     <Form.Control 
                         className='=custom-ui'
@@ -1310,7 +1311,8 @@ const RoomComponent = () => {
                                     nickName: "system",
                                     message: ``,
                                 })
-                            });}} 
+                            });
+                            setPersonalMessage("");}} 
                             >보내기</Button>
                         <Button 
                             className='custom-button'
