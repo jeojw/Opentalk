@@ -7,7 +7,6 @@ import java.util.UUID;
 @Data
 @Getter
 @Setter
-@Builder
 public class PersonalMessageDto {
     private String messageId = UUID.randomUUID().toString();
     private String receiver;
