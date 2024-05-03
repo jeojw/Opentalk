@@ -705,7 +705,16 @@ const RoomComponent = () => {
                                 variant={theme === 'light' ? "#C3C3C3" : "#999999"}
                                 style={{ backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
                                 color: theme === 'light' ? '#000000' : "#FFFFFF" }}
-                                onClick={()=>setIsOpenMessageForm(true)}><strong>답장하기</strong></Button>
+                                onClick={()=>{
+                                    setIsOpenMessageForm(true);
+                                    client.current.publish({
+                                        destination: '/pub/chat/personalMessage',
+                                        body: JSON.stringify({
+                                            nickName: "system",
+                                            message: ``,
+                                        })
+                                    });
+                                }}><strong>답장하기</strong></Button>
                             <Button 
                                 className='custom-button' 
                                 variant='dark'
@@ -1090,7 +1099,14 @@ const RoomComponent = () => {
                                 color: theme === 'light' ? '#000000' : "#FFFFFF" }}
                                 onClick={()=>{
                                     setReceiver(_message.caller);
-                                    setIsOpenMessageForm(true)
+                                    setIsOpenMessageForm(true);
+                                    client.current.publish({
+                                        destination: '/pub/chat/personalMessage',
+                                        body: JSON.stringify({
+                                            nickName: "system",
+                                            message: ``,
+                                        })
+                                    });
                                 }}><strong>답장하기</strong></Button>
                             <Button 
                                 className='custom-button' 
