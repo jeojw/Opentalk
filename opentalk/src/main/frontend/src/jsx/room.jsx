@@ -1316,9 +1316,8 @@ const RoomComponent = () => {
                             className='custom-button'
                             variant='dark' 
                             onClick={()=>setIsOpenMessageForm(false)} 
-                            >닫기</Button>
+                        >닫기</Button>
                     </div>
-                    
                 </Modal>
                 <InviteMemberComponent roomInfo = {roomInformation} showModal={showInviteModal} setShowModal={setShowInviteModal}/>
                 <ChangRoomComponent room_Id={room_Id} stompClient={client.current} curParticipates={curParticipates}

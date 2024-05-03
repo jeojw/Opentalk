@@ -35,9 +35,14 @@ public class MemberController {
         return ResponseEntity.ok(memberService.changeImage(memberId, newImg));
     }
 
-    @PostMapping("/api/opentalk/member/searchNickName")
+    @PostMapping("/api/opentalk/member/searchNickNameInRoom")
     public ResponseEntity<List<AuthDto.ResponseDto>> searchMember(@RequestParam("roomId") String roomId, @RequestParam("nickName") String nickName){
-        return ResponseEntity.ok(memberService.searchMember(roomId, nickName));
+        return ResponseEntity.ok(memberService.searchMemberInRoom(roomId, nickName));
+    }
+
+    @PostMapping("/api/opentalk/member/searchNickNameInMain")
+    public ResponseEntity<List<AuthDto.ResponseDto>> searchMember(@RequestParam("nickName") String nickName){
+        return ResponseEntity.ok(memberService.searchMemberInMain(nickName));
     }
 
     @PostMapping("/api/opentalk/member/findId")

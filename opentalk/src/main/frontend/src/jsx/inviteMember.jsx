@@ -31,7 +31,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal}) => {
     }
 
     const SearchByNickName = (keyword) => {
-        const searchUrl = "/api/opentalk/member/searchNickName"
+        const searchUrl = "/api/opentalk/member/searchNickNameInRoom"
         const data = new FormData();
         data.append("roomId", roomInfo.roomId);
         data.append("nickName", keyword);

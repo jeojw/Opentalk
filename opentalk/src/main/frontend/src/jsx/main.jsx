@@ -13,6 +13,7 @@ import { format } from 'date-fns'
 import { useMediaQuery } from 'react-responsive';
 import { themeContext } from './themeContext';
 import '../css/CustomPagination.css'
+import PersonalMessageComponent from './personalMessage';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 768 })
@@ -126,6 +127,7 @@ const MainComponent = () => {
 
     const [isInviteMessageBoxOpen, setIsInviteMessageBoxOpen] = useState(false);
     const [isPersonalMessageBoxOpen, setIsPersonalMessageBoxOpen] = useState(false);
+    const [searchMemberModalOpen, setSearchMemberModalOpen] = useState(false);
     const [showPersonalMessageForm, setShowPersonalMessageForm] = useState(false);
 
     const [inviteMessageList, setInviteMessageList] = useState([]);
@@ -751,17 +753,15 @@ const MainComponent = () => {
                             style={{backgroundColor: theme === 'light' ? '#CDCDCD' : '#A0A0A0'}} 
                             onClick={()=>{
                                 setIsPersonalMessageBoxOpen(false)
+                                setSearchMemberModalOpen(true);
                             }} 
                         >쪽지 보내기</Button>
                         <Button 
-                        className='custom-button'
-                        variant='dark' 
-                        onClick={()=>setIsPersonalMessageBoxOpen(false)} 
+                            className='custom-button'
+                            variant='dark' 
+                            onClick={()=>setIsPersonalMessageBoxOpen(false)} 
                         >닫기</Button>
                     </div>
-                </Modal>
-                <Modal>
-
                 </Modal>
                 <Row className="justify-content-end">
                     <Col xs={3} md={9} span={12} offset={12} lg="5" className="border-3 rounded-4 p-5"
@@ -917,6 +917,12 @@ const MainComponent = () => {
                     </Col>
                 </Row>
             </Container>
+            <PersonalMessageComponent showModal={searchMemberModalOpen} 
+            setShowModal={setSearchMemberModalOpen}
+            showPMModal={showPersonalMessageForm}
+            setShowPMModal={setShowPersonalMessageForm}
+            stompClient={client.current}
+            myInfo={member}/>
         </Desktop>
         <Mobile>
             <Container style={{minHeight:"100vh"}}>
@@ -955,12 +961,12 @@ const MainComponent = () => {
                         </ListGroupItem>
                     ))}
                     </ListGroup> 
-                    <hr/>
+                    <hr/>       
                     <Button 
                         className='custom-button'
                         variant='dark' 
                         onClick={()=>setIsInviteMessageBoxOpen(false)} 
-                        >닫기</Button>
+                    >닫기</Button>
                 </Modal>
                 <Modal isOpen={isPersonalMessageBoxOpen} onRequestClose={() => setIsPersonalMessageBoxOpen(false)} style={{
                             content: {
@@ -1002,11 +1008,22 @@ const MainComponent = () => {
                     ))}
                     </ListGroup> 
                     <hr/>
-                    <Button 
-                        className='custom-button'
-                        variant='dark' 
-                        onClick={()=>setIsPersonalMessageBoxOpen(false)} 
-                        >닫기</Button>
+                    <div className='d-flex flex-row gap-2'>
+                        <Button 
+                            className='custom-button'
+                            variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+                            style={{backgroundColor: theme === 'light' ? '#CDCDCD' : '#A0A0A0'}} 
+                            onClick={()=>{
+                                setIsPersonalMessageBoxOpen(false)
+                                setSearchMemberModalOpen(true);
+                            }} 
+                        >쪽지 보내기</Button>
+                        <Button 
+                            className='custom-button'
+                            variant='dark' 
+                            onClick={()=>setIsPersonalMessageBoxOpen(false)} 
+                            >닫기</Button>
+                    </div>
                 </Modal>
                 <Row className="justify-content-end">
                     <Button
@@ -1185,6 +1202,13 @@ const MainComponent = () => {
                     </Col>
                 </Row>
             </Container>
+            <PersonalMessageComponent 
+            showModal={searchMemberModalOpen} 
+            setShowModal={setSearchMemberModalOpen}
+            showPMModal={showPersonalMessageForm} 
+            setShowPMModal={setShowPersonalMessageForm}
+            stompClient={client.current}
+            myInfo={member}/>
         </Mobile>
     </div>
 

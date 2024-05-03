@@ -150,7 +150,7 @@ public class MemberService {
     }
 
     @Transactional
-    public List<AuthDto.ResponseDto> searchMember(String roomId, String nickName){
+    public List<AuthDto.ResponseDto> searchMemberInRoom(String roomId, String nickName){
         Optional<ChatRoomEntity> chatRoom = chatRoomRepository.findByRoomId(roomId);
         List<Optional<MemberEntity>> list = memberRepository.searchByMemberNickName(nickName);
         List<AuthDto.ResponseDto> returnList = new ArrayList<>();
@@ -167,6 +167,21 @@ public class MemberService {
                     }
                 }
             }
+        }
+        return returnList;
+    }
+
+    @Transactional
+    public List<AuthDto.ResponseDto> searchMemberInMain(String nickName){
+        List<Optional<MemberEntity>> list = memberRepository.searchByMemberNickName(nickName);
+        List<AuthDto.ResponseDto> returnList = new ArrayList<>();
+        for (Optional<MemberEntity> member : list) {
+            member.ifPresent(memberEntity -> returnList.add(AuthDto.ResponseDto.builder()
+                    .memberId(memberEntity.getMemberId())
+                    .memberName(memberEntity.getMemberName())
+                    .memberNickName(memberEntity.getMemberNickName())
+                    .imgUrl(memberEntity.getImgUrl())
+                    .build()));
         }
         return returnList;
     }
