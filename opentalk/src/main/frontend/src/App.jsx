@@ -17,6 +17,7 @@ import './css/UI.css'
 import './css/CustomPagination.css'
 import { themeContext } from './jsx/themeContext';
 
+
 const App = () => {
   const setMobileHeight = () => {
     let vh = window.innerHeight * 0.01;
@@ -40,7 +41,7 @@ const App = () => {
                 width:'100%', 
                 height:'60px'}}>
       <strong>
-        <div id="opentalkTitle">
+        <div id="opentalkTitle" onClick={() => window.location.href = '/opentalk'} style={{cursor:'pointer'}}>
           OpenTalk
         </div>
       </strong>
