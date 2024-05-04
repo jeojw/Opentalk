@@ -16,8 +16,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/UI.css'
 import './css/CustomPagination.css'
 import { themeContext } from './jsx/themeContext';
+import firebase from 'firebase';
+import 'firebase/analytics';
+import'firebase/messaging';
+import { firebaseConfig } from './firebase/firebaseConfig';
+
+const app = firebase.initializeApp(firebaseConfig);
 
 const App = () => {
+
   const setMobileHeight = () => {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`)

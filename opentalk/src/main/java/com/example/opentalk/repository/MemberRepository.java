@@ -43,6 +43,18 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 
     @Modifying
     @Transactional
+    @Query(value = "UPDATE Opentalk.open_talk_member SET firebase_token = :FT WHERE member_id =:memberId",
+            nativeQuery = true)
+    void generateFT(@Param("FT") String FT, @Param("memberId") String memberId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE Opentalk.open_talk_member SET firebase_token = '' WHERE member_id =:memberId",
+        nativeQuery = true)
+    void deleteFT(@Param("memberId") String memberId);
+
+    @Modifying
+    @Transactional
     @Query(value = "UPDATE Opentalk.open_talk_member SET member_password = :newPassword WHERE member_email = :memberEmail",
             nativeQuery = true)
     void ChangePw(@Param("memberEmail") String memberEmail, @Param("newPassword") String newPassword);

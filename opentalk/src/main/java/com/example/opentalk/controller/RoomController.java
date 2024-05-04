@@ -121,14 +121,4 @@ public class RoomController {
     public ResponseEntity<Boolean> isExistInRoom(@PathVariable String roomId, @PathVariable String memberId){
         return ResponseEntity.ok(chatRoomService.isExistInRoom(roomId, memberId));
     }
-
-    @PostMapping("/api/opentalk/room/sendPersonalMessage")
-    public void sendPMInRoom(@RequestBody @Valid PersonalMessageDto messageDto){
-        chatRoomService.sendPMInRoom(messageDto);
-    }
-
-    @PostMapping("/api/opentalk/room/deletePersonalMessage")
-    public void deletePMInRoom(@RequestBody @Valid PersonalMessageDto messageDto){
-        chatRoomService.deletePMInRoom(messageDto);
-    }
 }

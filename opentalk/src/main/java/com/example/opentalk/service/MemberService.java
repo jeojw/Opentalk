@@ -37,7 +37,8 @@ public class MemberService {
     private final BCryptPasswordEncoder encoder;
     private final InviteMessageRepository inviteMessageRepository;
     private final MemberInviteRepository memberInviteRepository;
-    private  final PersonalMessageRepository personalMessageRepository;
+    private final PersonalMessageRepository personalMessageRepository;
+    private final FCMService fcmService;
 
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
@@ -265,6 +266,15 @@ public class MemberService {
                 .receiver(personalMessageDto.getReceiver())
                 .caller(personalMessageDto.getCaller())
                 .message(personalMessageDto.getMessage())
+                .messageId(personalMessageDto.getMessageId())
                 .build();
+        personalMessageRepository.save(personalMessageEntity);
+        fcmService.sendReceiveMessage(personalMessageDto.getReceiver());
+    }
+
+    @Transactional
+    public void deletePersonalMessage(PersonalMessageDto messageDto) {
+        Optional<PersonalMessageEntity> message = personalMessageRepository.getMessage(messageDto.getMessageId());
+        message.ifPresent(personalMessageRepository::delete);
     }
 }

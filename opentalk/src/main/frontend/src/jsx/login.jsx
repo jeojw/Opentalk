@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import { Form, Button, Container, Row, Col, FormGroup } from 'react-bootstrap';
 import { themeContext } from './themeContext';
+import firebase from 'firebase';
 
 const LoginComponent = () => {
     const { theme } = useContext(themeContext);
@@ -18,7 +19,7 @@ const LoginComponent = () => {
         }
     },[])
     
-    const CheckLogin = (e) => {
+    const CheckLogin = async (e) => {
         const checkloginUrl = '/api/opentalk/auth/login'
 
         if (memberId === ""){
@@ -28,9 +29,11 @@ const LoginComponent = () => {
             window.alert("비밀번호를 입력해주세요.");
         }
         else{
+            const fcmToken = await firebase.messaging().getToken();
             axios.post(checkloginUrl, {
                 memberId: memberId,
                 memberPassword: memberPw,
+                fcmToken: fcmToken
             })
             .then((res) => {
                 if (res.status === 200){

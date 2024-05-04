@@ -14,11 +14,13 @@ public class AuthDto {
     public static class LoginDto {
         private String memberId;
         private String memberPassword;
+        private String fcmToken;
 
         @Builder
-        public LoginDto(String memberId, String memberPassword) {
+        public LoginDto(String memberId, String memberPassword, String fcmToken) {
             this.memberId = memberId;
             this.memberPassword = memberPassword;
+            this.fcmToken = fcmToken;
         }
     }
 
