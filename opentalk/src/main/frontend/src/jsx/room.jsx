@@ -7,7 +7,7 @@ import ChangRoomComponent from './changroom';
 import InviteMemberComponent from './inviteMember';
 import { Container, Row, Col, Button, Form, FormGroup, 
         InputGroup, ListGroup, ListGroupItem, Accordion, 
-        Offcanvas, OffcanvasBody, Dropdown, DropdownButton } from 'react-bootstrap';
+        Offcanvas, OffcanvasBody, Dropdown } from 'react-bootstrap';
 import { format } from 'date-fns'
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { useMediaQuery } from 'react-responsive';
@@ -575,29 +575,27 @@ const RoomComponent = () => {
                 isExiting = false;
             }, 1000);
         }
-        
     };
 
     const exitWindow = (event) => {
-        event.preventDefault();
+        window.history.pushState(null, "", window.location.href)
         ExitRoom_Unload();
+        event.preventDefault();
     };
 
     useEffect(() => {
-        (async () => {
-            window.history.pushState(null, "", window.location.href);
-            window.addEventListener("popstate", preventGoBack);
-        })();
+        window.history.pushState(null, "", window.location.href);
+        window.addEventListener("popstate", preventGoBack);
+
         return () => {
             window.removeEventListener("popstate", preventGoBack);
         };
     },[roomInformation, myInfo, role]);
 
     useEffect(() => {
-        (async () => {
-            window.history.pushState(null, "", window.location.href);
-            window.addEventListener("beforeunload", exitWindow);
-        })();
+        window.history.pushState(null, "", window.location.href);
+        window.addEventListener("beforeunload", exitWindow);
+
         return () => {
             window.removeEventListener("beforeunload", exitWindow);
         };

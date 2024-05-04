@@ -17,7 +17,6 @@ import './css/UI.css'
 import './css/CustomPagination.css'
 import { themeContext } from './jsx/themeContext';
 
-
 const App = () => {
   const setMobileHeight = () => {
     let vh = window.innerHeight * 0.01;

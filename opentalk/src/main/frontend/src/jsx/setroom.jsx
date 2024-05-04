@@ -382,6 +382,24 @@ export const SetRoomComponent = ({stompClient}) =>{
                                     value={participants} 
                                     onChange={GetInputParticipates}
                                 ></FormControl>
+                                <Button
+                                className='custom-button'
+                                variant={theme === 'light' ? "#8F8F8F" : "#6D6D6D"}
+                                    style={{ backgroundColor: theme === 'light' ? "#8F8F8F" : "#6D6D6D",
+                                    color: theme === 'light' ? '#000000' : "#FFFFFF" }}
+                                onClick={incrementParticipants}>
+                                    <strong>
+                                    +
+                                    </strong>
+                                </Button>
+                                <Button
+                                className='custom-button'
+                                variant="dark"
+                                onClick={decrementParticipants}>
+                                    <strong>
+                                    -
+                                    </strong>
+                                </Button>
                             </InputGroup>
                             <br></br>
                             <InputGroup className='d-flex flex-row gap-1'>
