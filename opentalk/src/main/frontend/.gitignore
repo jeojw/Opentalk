@@ -26,5 +26,4 @@ yarn-error.log*
 firebase-messaging-sw.js
 firebaseConfig.js
 
-localhost-key.pem
-localhost.pem
+*.pem

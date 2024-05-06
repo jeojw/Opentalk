@@ -48,7 +48,7 @@
   },
   "proxy": "http://localhost:8081",
   "scripts": {
-    "start_local": "set HTTPS=true && set SSL_CRT_FILE=localhost.pem && set SSL_KEY_FILE=localhost-key.pem && set PORT=8000 && react-scripts start",
+    "start_local": "set HTTPS=true&&set SSL_CRT_FILE=cert.pem&&set SSL_KEY_FILE=key.pem&&set PORT=8000 && react-scripts start",
     "start_server": "export PORT=8000 && ./node_modules/.bin/react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
