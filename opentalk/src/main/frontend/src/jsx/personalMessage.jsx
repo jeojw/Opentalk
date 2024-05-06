@@ -45,7 +45,7 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
     }
 
     const sendPersonalMessage = async ({caller, receiver, message}) =>{
-        const sendUrl = '/api/opentalk/room/sendPersonalMessage';
+        const sendUrl = '/api/opentalk/member/sendPersonalMessage';
         try{
             const res = await axios.post(sendUrl, {
                 receiver: receiver,

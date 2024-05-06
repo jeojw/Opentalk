@@ -378,19 +378,4 @@ public class ChatRoomService {
         }
         return "Fail";
     }
-
-    public void sendPMInRoom(PersonalMessageDto messageDto){
-        PersonalMessageEntity personalMessageEntity = PersonalMessageEntity.builder()
-                .messageId(messageDto.getMessageId())
-                .receiver(messageDto.getReceiver())
-                .caller(messageDto.getCaller())
-                .message(messageDto.getMessage())
-                .build();
-        personalMessageRepository.save(personalMessageEntity);
-    }
-
-    public void deletePMInRoom(PersonalMessageDto messageDto){
-        Optional<PersonalMessageEntity> message = personalMessageRepository.getMessage(messageDto.getMessageId());
-        message.ifPresent(personalMessageRepository::delete);
-    }
 }
