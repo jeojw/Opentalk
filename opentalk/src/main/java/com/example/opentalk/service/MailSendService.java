@@ -10,7 +10,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Random;
 
 @Service
-public class    MailSendService {
+public class MailSendService {
     @Autowired
     private JavaMailSender mailSender;
     @Autowired
