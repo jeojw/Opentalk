@@ -29,11 +29,9 @@ const LoginComponent = () => {
             window.alert("비밀번호를 입력해주세요.");
         }
         else{
-            const fcmToken = await firebase.messaging().getToken();
             axios.post(checkloginUrl, {
                 memberId: memberId,
                 memberPassword: memberPw,
-                fcmToken: fcmToken
             })
             .then((res) => {
                 if (res.status === 200){

@@ -8,7 +8,6 @@
     "@testing-library/react": "^14.2.2",
     "@testing-library/user-event": "^14.5.2",
     "@types/react-js-pagination": "^3.0.7",
-    "antd": "^5.16.5",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
     "browser-image-compression": "^2.0.2",
@@ -16,10 +15,8 @@
     "date-fns": "^3.6.0",
     "date-fns-tz": "^3.1.3",
     "express": "^4.19.2",
-    "firebase": "^10.11.1",
     "history": "^5.3.0",
     "http-proxy-middleware": "^2.0.6",
-    "mdb-react-ui-kit": "^8.0.0",
     "react": "^18.2.0",
     "react-beforeunload": "^2.6.0",
     "react-bootstrap": "^2.10.2",
@@ -29,8 +26,6 @@
     "react-device-detect": "^2.2.3",
     "react-devtools": "^5.1.0",
     "react-dom": "^18.2.0",
-    "react-image-file-resizer": "^0.4.8",
-    "react-infinite-scroller": "^1.2.6",
     "react-js-pagination": "^3.0.3",
     "react-modal": "^3.16.1",
     "react-paginate": "^8.2.0",
@@ -41,11 +36,7 @@
     "react-select": "^5.8.0",
     "react-session-api": "^1.1.0",
     "react-useinterval": "^1.0.2",
-    "sharp": "^0.33.3",
-    "socket.io-client": "^4.7.5",
     "sockjs-client": "^1.5.1",
-    "styled-components": "^6.1.8",
-    "styled-reset": "^4.5.2",
     "text-encoding": "^0.7.0",
     "web-vitals": "^3.5.2",
     "ws": "^8.16.0"
@@ -79,7 +70,6 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@types/firebase": "^3.2.1",
     "@types/sockjs-client": "^1.5.4"
   }
 }
