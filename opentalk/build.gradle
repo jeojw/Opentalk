@@ -61,8 +61,6 @@ dependencies {
 	implementation 'commons-fileupload:commons-fileupload:1.4'
 
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
-
-	implementation 'com.google.firebase:firebase-admin:9.1.1'
 }
 tasks.named('test') {
 	useJUnitPlatform()
