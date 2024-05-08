@@ -135,9 +135,6 @@ public class AuthService {
         String requestAccessToken = resolveToken(requestAccessTokenInHeader);
         String principal = getPrincipal(requestAccessToken);
 
-        memberRepository.deleteFT(principal);
-        redisService.deleteValues("FT(" + SERVER + "):" + principal);
-
         // Redis에 저장되어 있는 RT 삭제
         String refreshTokenInRedis = redisService.getValues("RT(" + SERVER + "):" + principal);
         if (refreshTokenInRedis != null) {
