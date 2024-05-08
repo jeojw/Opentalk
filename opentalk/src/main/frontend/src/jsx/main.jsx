@@ -654,7 +654,6 @@ const MainComponent = () => {
     const deletePersonalMessage = async ({message_id, caller, receiver, message}) =>{
         const deleteUrl = '/api/opentalk/member/deletePersonalMessage';
         try{
-            console.log(personalMessageList);
             const res = await axios.post(deleteUrl, {
                 messageId:message_id,
                 receiver:receiver,
@@ -1012,17 +1011,17 @@ const MainComponent = () => {
                             variant="#8F8F8F" 
                             style={{ backgroundColor:theme === 'light' ? '#B6B6B6' : '#8D8D8D', 
                                     color:theme === 'light' ? '#000000' : '#FFFFFF'}}
-                                onClick={()=>{
-                                    setShowPersonalMessageForm(true);
-                                    client.current.publish({
-                                        destination: '/pub/chat/personalMessage',
-                                        body: JSON.stringify({
-                                            nickName: "system",
-                                            message: ``,
-                                        })
-                                    });
-                                }}
-                                ><strong>답장하기</strong></Button>
+                            onClick={()=>{
+                                setShowPersonalMessageForm(true);
+                                client.current.publish({
+                                    destination: '/pub/chat/personalMessage',
+                                    body: JSON.stringify({
+                                        nickName: "system",
+                                        message: ``,
+                                    })
+                                });
+                            }}
+                            ><strong>답장하기</strong></Button>
                         <div style={{width:"4px", display:"inline-block"}}/>
                         <Button className='custom-button' variant='dark' 
                                 onClick={()=> deletePersonalMessage({message_id: _message.messageId, 
