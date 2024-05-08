@@ -655,6 +655,13 @@ const RoomComponent = () => {
             })
             if (res.status === 200){
                 window.alert("쪽지를 보냈습니다.");
+                client.current.publish({
+                    destination: '/pub/chat/personalMessage',
+                    body: JSON.stringify({
+                        nickName: "system",
+                        message: ``,
+                    })
+                });
                 const sendAlarmUrl = "/api/opentalk/member/sendAlarmMessage"
                 try {
                     const alarmResponse = await axios.post(sendAlarmUrl, {
@@ -663,10 +670,13 @@ const RoomComponent = () => {
                         alarmMessage: "새로운 쪽지가 도착했습니다."
                     })
                     if (alarmResponse.status === 200){
-                        client.current.publish({destination: '/pub/chat/alarmMessage', body: JSON.stringify({
-                            nickName: "system",
-                            message: ``,
-                        })})
+                        client.current.publish({
+                            destination: '/pub/chat/alarmMessage', 
+                            body: JSON.stringify({
+                                nickName: "system",
+                                message: ``,
+                            })
+                        })
                     }
                     
                 } catch (error){
@@ -954,20 +964,6 @@ const RoomComponent = () => {
                                                                     caller: myInfo?.memberNickName,
                                                                     receiver: _member?.memberNickName,
                                                                     message: personalMessage
-                                                                });
-                                                                client.current.publish({
-                                                                    destination: '/pub/chat/personalMessage',
-                                                                    body: JSON.stringify({
-                                                                        nickName: "system",
-                                                                        message: ``,
-                                                                    })
-                                                                });
-                                                                client.current.publish({
-                                                                    destination: '/pub/chat/alarmMessage',
-                                                                    body: JSON.stringify({
-                                                                        nickName: "system",
-                                                                        message: ``,
-                                                                    })
                                                                 });
                                                                 setPersonalMessage("");}}
                                                                 >보내기</Button>
@@ -1352,20 +1348,6 @@ const RoomComponent = () => {
                                 receiver: receiver,
                                 message: personalMessage
                             })
-                            client.current.publish({
-                                destination: '/pub/chat/personalMessage',
-                                body: JSON.stringify({
-                                    nickName: "system",
-                                    message: ``,
-                                })
-                            });
-                            client.current.publish({
-                                destination: '/pub/chat/alarmMessage',
-                                body: JSON.stringify({
-                                    nickName: "system",
-                                    message: ``,
-                                })
-                            });
                             setPersonalMessage("");}} 
                             >보내기</Button>
                         <Button 

@@ -54,6 +54,13 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
             })
             if (res.status === 200){
                 window.alert("쪽지를 보냈습니다.");
+                stompClient.publish({
+                    destination: '/pub/chat/personalMessage',
+                    body: JSON.stringify({
+                        nickName: "system",
+                        message: ``,
+                    })
+                });
                 const sendAlarmUrl = "/api/opentalk/member/sendAlarmMessage"
                 try {
                     const alarmResponse = await axios.post(sendAlarmUrl, {
@@ -197,13 +204,6 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                                 receiver: receiver,
                                 message: personalMessage
                             })
-                            stompClient.publish({
-                                destination: '/pub/chat/personalMessage',
-                                body: JSON.stringify({
-                                    nickName: "system",
-                                    message: ``,
-                                })
-                            });
                             setPersonalMessage("");}} 
                             >보내기</Button>
                         <Button 
@@ -328,13 +328,6 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                                 receiver: receiver,
                                 message: personalMessage
                             })
-                            stompClient.publish({
-                                destination: '/pub/chat/personalMessage',
-                                body: JSON.stringify({
-                                    nickName: "system",
-                                    message: ``,
-                                })
-                            });
                             setPersonalMessage("");}} 
                             >보내기</Button>
                         <Button 
