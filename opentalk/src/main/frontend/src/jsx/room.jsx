@@ -654,7 +654,7 @@ const RoomComponent = () => {
     }
 
     const deletePersonalMessage = async ({message_id, caller, receiver, message}) =>{
-        const deleteUrl = '/api/opentalk/room/deletePersonalMessage';
+        const deleteUrl = '/api/opentalk/member/deletePersonalMessage';
         try{
             console.log(personalMessageList);
             const res = await axios.post(deleteUrl, {
