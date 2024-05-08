@@ -19,12 +19,16 @@ import { themeContext } from './jsx/themeContext';
 import { alarmContext } from './jsx/alarmContext';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
+import useSound from 'use-sound';
+import alarmSound from './MP_Door Bell.mp3'
 
 const App = () => {
   const { alarms, setAlarms } = useContext(alarmContext);
   const queryClient = useQueryClient();
   const token = localStorage.getItem("token");
   const [member, setMember] = useState();
+
+  const [play] = useSound(alarmSound);
 
   const setMobileHeight = () => {
     let vh = window.innerHeight * 0.01;

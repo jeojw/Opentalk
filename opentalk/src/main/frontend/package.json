@@ -38,6 +38,7 @@
     "react-useinterval": "^1.0.2",
     "sockjs-client": "^1.5.1",
     "text-encoding": "^0.7.0",
+    "use-sound": "^4.0.1",
     "web-vitals": "^3.5.2",
     "ws": "^8.16.0"
   },

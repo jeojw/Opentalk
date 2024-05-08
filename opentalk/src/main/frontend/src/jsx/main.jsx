@@ -12,7 +12,7 @@ import SockJs from "sockjs-client"
 import { format } from 'date-fns'
 import { useMediaQuery } from 'react-responsive';
 import { themeContext } from './themeContext';
-import { alarmContext } from './alarmContext';
+import { soundContext } from './soundContext';
 import '../css/CustomPagination.css'
 import PersonalMessageComponent from './personalMessage';
 
@@ -27,6 +27,7 @@ const Mobile = ({ children }) => {
 
 const MainComponent = () => {
     const {theme} = useContext(themeContext);
+    const {play} = useContext(soundContext);
     const client = useRef({});
 
     const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
@@ -90,6 +91,7 @@ const MainComponent = () => {
                         client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
                             if (JSON.parse(body).nickName === "system"){
                                 queryClient.invalidateQueries("allAlarmMessage");
+                                play();
                             }
                         });
                     },

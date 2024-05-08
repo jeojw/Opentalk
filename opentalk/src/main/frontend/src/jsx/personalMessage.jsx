@@ -62,10 +62,13 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                         alarmMessage: "새로운 쪽지가 도착했습니다."
                     })
                     if (alarmResponse.status === 200){
-                        stompClient.publish({destination: 'pub/chat/alarmMessage', body: JSON.stringify({
-                            nickName: "system",
-                            message: ``,
-                        })})
+                        stompClient.publish({
+                            destination: '/pub/chat/alarmMessage', 
+                            body: JSON.stringify({
+                                nickName: "system",
+                                message: ``,
+                            })
+                        })
                     }
                     
                 } catch (error){

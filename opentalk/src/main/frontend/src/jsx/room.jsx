@@ -12,6 +12,7 @@ import { format } from 'date-fns'
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { useMediaQuery } from 'react-responsive';
 import { themeContext } from './themeContext';
+import { soundContext } from './soundContext';
 import Modal from 'react-modal';
 
 const Desktop = ({ children }) => {
@@ -24,6 +25,7 @@ const Mobile = ({ children }) => {
 }
 const RoomComponent = () => {
     const {theme} = useContext(themeContext);
+    const {play} = useContext(soundContext);
 
     const [roomInformation, setRoomInformation] = useState();
     const [myInfo, setMyInfo] = useState();
@@ -531,6 +533,7 @@ const RoomComponent = () => {
         client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
             if (JSON.parse(body).nickName === "system"){
                 queryClient.invalidateQueries("allAlarmMessage");
+                play();
             }
         });
     };
