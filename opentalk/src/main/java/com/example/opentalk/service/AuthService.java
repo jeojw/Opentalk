@@ -50,9 +50,6 @@ public class AuthService {
                 .authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        memberRepository.generateFT(loginDto.getFcmToken(), loginDto.getMemberId());
-        redisService.setValues("FT(" + SERVER + "):" + loginDto.getMemberId(), loginDto.getFcmToken());
-
         return generateToken(SERVER, authentication.getName(), getAuthorities(authentication));
     }
 
