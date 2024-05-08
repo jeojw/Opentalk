@@ -289,7 +289,7 @@ const MainComponent = () => {
                 currentRole = ChatRoomRole.PARTICIPATE;
             }
             setRole(currentRole);
-            if (!roomInfo.existLock){
+            if ((!roomInfo.existLock) || (roomInfo.existLock && roomInfo.roomManager === member.memberNickName)){
                 try{
                     const res = await axios.post(enterUrl, {
                         chatroom: roomInfo, 
@@ -331,7 +331,7 @@ const MainComponent = () => {
                     console.log(error);
                 }
             }
-            else{
+            else if (roomInfo.existLock && roomInfo.roomManager !== member.memberNickName){
                 const inputPassword = window.prompt("비밀번호를 입력해주세요.");
                 
                 if (inputPassword === ""){
