@@ -38,7 +38,6 @@ public class MemberService {
     private final InviteMessageRepository inviteMessageRepository;
     private final MemberInviteRepository memberInviteRepository;
     private final PersonalMessageRepository personalMessageRepository;
-    private final FCMService fcmService;
 
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
@@ -269,7 +268,6 @@ public class MemberService {
                 .messageId(personalMessageDto.getMessageId())
                 .build();
         personalMessageRepository.save(personalMessageEntity);
-        fcmService.sendReceiveMessage(personalMessageDto.getReceiver());
     }
 
     @Transactional

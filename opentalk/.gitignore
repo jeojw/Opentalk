@@ -19,6 +19,7 @@ bin/
 **/application.properties
 **/*.ppk
 ancient-medium-416905-45a44d3d1d5a.json
+**/gradle.properties
 
 ### IntelliJ IDEA ###
 .idea
@@ -39,3 +40,4 @@ out/
 ### VS Code ###
 .vscode/
 node_modules
+

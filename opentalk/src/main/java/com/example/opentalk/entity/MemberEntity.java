@@ -33,8 +33,6 @@ public class MemberEntity {
     private UserRole authority;
     @Column(nullable = false)
     private String imgUrl;
-    @Column
-    private String firebaseToken;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
     private List<ChatRoomMemberEntity> rooms;
@@ -54,7 +52,7 @@ public class MemberEntity {
     public MemberEntity(String memberId,
                         String memberPassword, String memberName,
                         String memberNickName, String memberEmail,
-                        UserRole authority, String imgUrl, String firebaseToken){
+                        UserRole authority, String imgUrl){
         this.memberId = memberId;
         this.memberPassword = memberPassword;
         this.memberName = memberName;
@@ -62,7 +60,6 @@ public class MemberEntity {
         this.memberEmail = memberEmail;
         this.authority = authority;
         this.imgUrl = imgUrl;
-        this.firebaseToken = firebaseToken;
     }
     public static MemberEntity toMemberEntity(AuthDto.ResponseDto memberResponseDto){
         return MemberEntity.builder()

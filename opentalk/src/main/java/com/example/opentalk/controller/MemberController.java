@@ -5,7 +5,6 @@ import com.example.opentalk.dto.AuthDto;
 import com.example.opentalk.dto.InviteDto;
 import com.example.opentalk.dto.PersonalMessageDto;
 import com.example.opentalk.service.AuthService;
-import com.example.opentalk.service.FCMService;
 import com.example.opentalk.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final AuthService authService;
-    private final FCMService fcmService;
 
     @GetMapping("/api/opentalk/member/me")
     public ResponseEntity<AuthDto.ResponseDto> getMyMemberInfo(@RequestHeader("Authorization") String authorizationHeader) throws RuntimeException {
@@ -103,15 +101,5 @@ public class MemberController {
     @PostMapping("/api/opentalk/member/deletePersonalMessage")
     public void deletePersonalMessage(@RequestBody @Valid PersonalMessageDto messageDto){
         memberService.deletePersonalMessage(messageDto);
-    }
-
-    @PostMapping("/api/opentalk/member/sendReceiveMessage")
-    public void sendReceiveMessage(@RequestParam("memberNickName") String memberNickName){
-        fcmService.sendReceiveMessage(memberNickName);
-    }
-
-    @PostMapping("/api/opentalk/member/sendInviteMessage")
-    public void sendInviteMessage(@RequestParam("memberNickName") String memberNickName){
-        fcmService.sendInviteMessage(memberNickName);
     }
 }

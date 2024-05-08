@@ -3,7 +3,6 @@ import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
 import { Form, Button, Container, Row, Col, FormGroup } from 'react-bootstrap';
 import { themeContext } from './themeContext';
-import firebase from 'firebase';
 
 const LoginComponent = () => {
     const { theme } = useContext(themeContext);
