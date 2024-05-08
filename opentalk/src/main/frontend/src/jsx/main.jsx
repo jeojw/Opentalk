@@ -12,6 +12,7 @@ import SockJs from "sockjs-client"
 import { format } from 'date-fns'
 import { useMediaQuery } from 'react-responsive';
 import { themeContext } from './themeContext';
+import { alarmContext } from './alarmContext';
 import '../css/CustomPagination.css'
 import PersonalMessageComponent from './personalMessage';
 
@@ -83,6 +84,12 @@ const MainComponent = () => {
                         client.current.subscribe(`/sub/chat/personalMessage`, ({body}) => {
                             if (JSON.parse(body).nickName === "system"){
                                 queryClient.invalidateQueries("allPersonalMessages");
+                            }
+                        });
+
+                        client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
+                            if (JSON.parse(body).nickName === "system"){
+                                queryClient.invalidateQueries("allAlarmMessage");
                             }
                         });
                     },

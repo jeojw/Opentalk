@@ -4,6 +4,7 @@ import App from './App';
 import { CookiesProvider } from 'react-cookie';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import ThemeProvider from './jsx/themeContext';
+import AlarmProvider from './jsx/alarmContext';
 
 const queryClient = new QueryClient();
 
@@ -14,7 +15,9 @@ root.render(
     <CookiesProvider>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-          <App />
+          <AlarmProvider>
+            <App />
+          </AlarmProvider>
         </ThemeProvider>
       </QueryClientProvider>
     </CookiesProvider>

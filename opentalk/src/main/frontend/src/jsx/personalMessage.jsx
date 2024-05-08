@@ -54,6 +54,23 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
             })
             if (res.status === 200){
                 window.alert("쪽지를 보냈습니다.");
+                const sendAlarmUrl = "/api/opentalk/member/sendAlarmMessage"
+                try {
+                    const alarmResponse = await axios.post(sendAlarmUrl, {
+                        memberNickName: receiver,
+                        alarmType: "PERSONAL",
+                        alarmMessage: "새로운 쪽지가 도착했습니다."
+                    })
+                    if (alarmResponse.status === 200){
+                        stompClient.publish({destination: 'pub/chat/alarmMessage', body: JSON.stringify({
+                            nickName: "system",
+                            message: ``,
+                        })})
+                    }
+                    
+                } catch (error){
+                    console.log(error);
+                }
             }
         } catch(error){
             console.log(error);

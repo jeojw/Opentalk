@@ -1,12 +1,10 @@
 package com.example.opentalk.service;
 
+import com.example.opentalk.dto.AlarmMessageDto;
 import com.example.opentalk.dto.AuthDto;
 import com.example.opentalk.dto.InviteDto;
 import com.example.opentalk.dto.PersonalMessageDto;
-import com.example.opentalk.entity.ChatRoomEntity;
-import com.example.opentalk.entity.InviteEntity;
-import com.example.opentalk.entity.MemberEntity;
-import com.example.opentalk.entity.PersonalMessageEntity;
+import com.example.opentalk.entity.*;
 import com.example.opentalk.repository.*;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.WriteChannel;
@@ -38,6 +36,7 @@ public class MemberService {
     private final InviteMessageRepository inviteMessageRepository;
     private final MemberInviteRepository memberInviteRepository;
     private final PersonalMessageRepository personalMessageRepository;
+    private final AlarmMessageRepository alarmMessageRepository;
 
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
@@ -207,6 +206,42 @@ public class MemberService {
         }
         else
             return false;
+    }
+
+    @Transactional
+    public List<AlarmMessageDto> getAllAlarmMessages(String memberNickName){
+        List<AlarmMessageDto> returnList = new ArrayList<>();
+        Optional<List<AlarmMessageEntity>> list = alarmMessageRepository.getAllAlarmMessages(memberNickName);
+        if (list.isPresent()){
+            for (AlarmMessageEntity entity: list.get()){
+                returnList.add(AlarmMessageDto.builder()
+                                .messageId(entity.getMessageId())
+                                .alarmType(entity.getAlarmType())
+                                .memberNickName(entity.getMemberNickName())
+                                .alarmMessage(entity.getAlarmMessage())
+                                .build());
+            }
+            return returnList;
+        }
+        return null;
+    }
+
+    @Transactional
+    public void sendAlarmMessage(AlarmMessageDto alarmMessageDto){
+        AlarmMessageEntity entity = AlarmMessageEntity.builder()
+                .messageId(alarmMessageDto.getMessageId())
+                .memberNickName(alarmMessageDto.getMemberNickName())
+                .alarmType(alarmMessageDto.getAlarmType())
+                .alarmMessage(alarmMessageDto.getAlarmMessage())
+                .build();
+
+        alarmMessageRepository.save(entity);
+    }
+
+    @Transactional
+    public void deleteAlarmMessage(String messageId){
+        Optional<AlarmMessageEntity> entity = alarmMessageRepository.getAlarmMessage(messageId);
+        entity.ifPresent(alarmMessageEntity -> alarmMessageRepository.deleteMessage(alarmMessageEntity.getMessageId()));
     }
 
     @Transactional

@@ -102,6 +102,12 @@ public class StompChatController {
         template.convertAndSend("/sub/chat/personalMessage", message);
     }
 
+    @MessageMapping("/chat/alarmMessage")
+    public void alarmMessage(SystemMessageDto message){
+        message.setMessage(message.getMessage());
+        template.convertAndSend("/sub/chat/alarmMessage", message);
+    }
+
     @EventListener(SessionConnectedEvent.class)
     public void onConnect(SessionConnectedEvent event){
         String sessionId = event.getMessage().getHeaders().get("simpSessionId").toString();

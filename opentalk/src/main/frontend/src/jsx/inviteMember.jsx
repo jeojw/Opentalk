@@ -14,7 +14,7 @@ const Mobile = ({ children }) => {
     return isMobile ? children : null
 }
 
-const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo}) => {
+const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo, stompClient}) => {
     const { theme } = useContext(themeContext);
 
     const [nickName, setNickName] = useState("");
@@ -42,28 +42,47 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo}) => {
         .catch((error) => console.log(error));
     }
 
-    const InviteMember = (member) => {
+    const InviteMember = async (member) => {
         if (window.confirm("초대하시겠습니까?")){
             let message = window.prompt("초대 메세지를 입력해 주십시오.");
             const inviteUrl = "/api/opentalk/invite"
             if (message === ""){
                 message = "우리 같이 이야기해 보아요."
             }
-            axios.post(inviteUrl, {
-                roomId: roomInfo.roomId,
-                roomName: roomInfo.roomName,
-                inviter: roomInfo.roomManager,
-                message: message,
-                invitedMember: member
-            })
-            .then((res)=>{
+            try {
+                const res = await axios.post(inviteUrl, {
+                    roomId: roomInfo.roomId,
+                    roomName: roomInfo.roomName,
+                    inviter: roomInfo.roomManager,
+                    message: message,
+                    invitedMember: member
+                });
                 if (res.data !== "Success"){
                     window.alert("이미 초대한 유저입니다.");
                 }
                 else{
                     window.alert("초대되었습니다.");
+                    const sendAlarmUrl = "/api/opentalk/member/sendAlarmMessage"
+                    try {
+                        const alarmResponse = await axios.post(sendAlarmUrl, {
+                            memberNickName: member,
+                            alarmType: "INVITE",
+                            alarmMessage: "새로운 초대 메세지가 도착했습니다."
+                        })
+                        if (alarmResponse.status === 200){
+                            stompClient.publish({destination: 'pub/chat/alarmMessage', body: JSON.stringify({
+                                nickName: "system",
+                                message: ``,
+                            })})
+                        }
+                        
+                    } catch (error){
+                        console.log(error);
+                    }
                 }
-            }).catch((error) => console.log(error));
+            } catch (error){
+                console.log(error);
+            }
         }
     }
 

@@ -528,6 +528,11 @@ const RoomComponent = () => {
                 queryClient.invalidateQueries("allPersonalMessages");
             }
         })
+        client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
+            if (JSON.parse(body).nickName === "system"){
+                queryClient.invalidateQueries("allAlarmMessage");
+            }
+        });
     };
     useEffect(() =>{ 
         const connect = async () => {
@@ -647,6 +652,23 @@ const RoomComponent = () => {
             })
             if (res.status === 200){
                 window.alert("쪽지를 보냈습니다.");
+                const sendAlarmUrl = "/api/opentalk/member/sendAlarmMessage"
+                try {
+                    const alarmResponse = await axios.post(sendAlarmUrl, {
+                        memberNickName: receiver,
+                        alarmType: "PERSONAL",
+                        alarmMessage: "새로운 쪽지가 도착했습니다."
+                    })
+                    if (alarmResponse.status === 200){
+                        client.current.publish({destination: 'pub/chat/alarmMessage', body: JSON.stringify({
+                            nickName: "system",
+                            message: ``,
+                        })})
+                    }
+                    
+                } catch (error){
+                    console.log(error);
+                }
             }
         } catch(error){
             console.log(error);
@@ -937,7 +959,14 @@ const RoomComponent = () => {
                                                                         message: ``,
                                                                     })
                                                                 });
-                                                                setPersonalMessage("");}} 
+                                                                client.current.publish({
+                                                                    destination: '/pub/chat/alarmMessage',
+                                                                    body: JSON.stringify({
+                                                                        nickName: "system",
+                                                                        message: ``,
+                                                                    })
+                                                                });
+                                                                setPersonalMessage("");}}
                                                                 >보내기</Button>
                                                             <Button 
                                                                 className='custom-button'
@@ -1060,7 +1089,8 @@ const RoomComponent = () => {
                                 )}
                             <ChangRoomComponent room_Id={room_Id} stompClient={client.current} curParticipates={curParticipates}
                             showModal={showChangeModal} setShowModal={setShowChangeModal}/>
-                            <InviteMemberComponent roomInfo = {roomInformation} showModal={showInviteModal} setShowModal={setShowInviteModal} myInfo={myInfo}/>
+                            <InviteMemberComponent roomInfo = {roomInformation} showModal={showInviteModal} setShowModal={setShowInviteModal} myInfo={myInfo}
+                            stompClient={client.current}/>
                         </FormGroup>
                     </Container>
                 </Container>
@@ -1326,6 +1356,13 @@ const RoomComponent = () => {
                                     message: ``,
                                 })
                             });
+                            client.current.publish({
+                                destination: '/pub/chat/alarmMessage',
+                                body: JSON.stringify({
+                                    nickName: "system",
+                                    message: ``,
+                                })
+                            });
                             setPersonalMessage("");}} 
                             >보내기</Button>
                         <Button 
@@ -1335,7 +1372,8 @@ const RoomComponent = () => {
                         >닫기</Button>
                     </div>
                 </Modal>
-                <InviteMemberComponent roomInfo = {roomInformation} showModal={showInviteModal} setShowModal={setShowInviteModal} myInfo={myInfo}/>
+                <InviteMemberComponent roomInfo = {roomInformation} showModal={showInviteModal} setShowModal={setShowInviteModal} myInfo={myInfo}
+                stompClient={client.current}/>
                 <ChangRoomComponent room_Id={room_Id} stompClient={client.current} curParticipates={curParticipates}
                                     showModal={showChangeModal} setShowModal={setShowChangeModal}/>
                 <Container style={{maxWidth:'767px'}}>

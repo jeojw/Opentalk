@@ -1,7 +1,7 @@
 import { BrowserView, MobileView } from 'react-device-detect';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import React, { useEffect, useContext } from 'react';
-import { Button } from 'react-bootstrap';
+import React, { useEffect, useContext, useState } from 'react';
+import { Button, Dropdown, DropdownItem } from 'react-bootstrap';
 import Login from './jsx/login'
 import Front from './jsx/front'
 import Enroll from './jsx/enroll'
@@ -16,12 +16,81 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/UI.css'
 import './css/CustomPagination.css'
 import { themeContext } from './jsx/themeContext';
+import { alarmContext } from './jsx/alarmContext';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
+import axios from 'axios';
 
 const App = () => {
+  const { alarms, setAlarms } = useContext(alarmContext);
+  const queryClient = useQueryClient();
+  const token = localStorage.getItem("token");
+  const [member, setMember] = useState();
 
   const setMobileHeight = () => {
     let vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`)
+  }
+
+  useEffect(() => {
+    const fetchMyInfo = async () => {
+        if (token){
+            await axios.get('/api/opentalk/member/me', {
+                headers: {
+                    Authorization: token,
+                }
+            }).then((res) => {
+                if (res.status === 200){
+                    setMember(res.data);
+                }
+            }).catch((error) => console.log(error));
+        }
+    }    
+    fetchMyInfo();
+}, [token]);
+
+  const { data: allAlarmMessage, isLoading: alarmIsLoading, isError: alarmIsError, isFetching: alarmIsFetching, isFetched: alarmIsFetched } = useQuery({
+    queryKey:['allAlarmMessage'],
+    queryFn: async () => {
+        try{
+            const alarmResponse = await axios.get(`/api/opentalk/member/allAlarmMessages/${member?.memberNickName}`);
+            return alarmResponse.data;
+        } catch(error){
+            console.log(error);
+        }
+    },
+    cacheTime: 30000,
+    staleTime: 5000,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+})
+
+useEffect(() => {
+  if (allAlarmMessage && !alarmIsLoading && !alarmIsError && !alarmIsFetching && alarmIsFetched){
+    setAlarms(allAlarmMessage);
+  };
+}, [allAlarmMessage, alarmIsLoading, alarmIsError, alarmIsFetching, alarmIsFetched]);
+
+  const { mutate: mutateDeleteMessaage } = useMutation(async({messageId}) => {
+    const deleteUrl = "/api/opentalk/member/deleteAlarmMessage";
+    const data = new FormData();
+    data.append("messageId", messageId);
+    try{
+      const res = await axios.post(deleteUrl, data);
+      if (res.status === 200){
+        queryClient.invalidateQueries('allAlarmMessage');
+      }
+    } catch(error){
+      console.log(error);
+    }
+  }, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('allAlarmMessage');
+    }
+  })
+
+  const deleteMessage = ({messageId}) =>{
+    mutateDeleteMessaage({messageId:messageId});
   }
 
   useEffect(() => {
@@ -45,6 +114,43 @@ const App = () => {
           OpenTalk
         </div>
       </strong>
+      {localStorage.getItem("token") !== null && (
+        <Dropdown style={{
+          position:'absolute',
+          bottom: '10px',
+          right: '110px'
+        }}>
+          <Dropdown.Toggle
+          className='custom-ui'
+          variant={theme === 'light' ? "#FFFFFF" : "#121212"} style={{
+          backgroundColor:theme === 'light' ? "#FFFFFF" : "#121212",
+          color:theme === 'light' ? "#000000" : '#FFFFFF',
+        }}>
+            알림함
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+          {alarms.map((_message, index) => {
+            return (
+              <DropdownItem>
+                <strong>{_message.alarmMessage}</strong>
+                <><hr />
+                <br></br>
+                <br></br>
+                <Button
+                className='custom-button'
+                variant='dark'
+                onClick={() => deleteMessage({messageId:_message.messageId})}
+                style={{
+                  position: 'absolute',
+                  bottom: '15px',
+                  right: '10px'
+                }}>확인</Button></>
+              </DropdownItem>
+            )
+          })}
+          </Dropdown.Menu>
+        </Dropdown>
+      )}
       <Button
         className='custom-button'
         variant={theme === 'light' ? "#121212" : "#FFFFFF"}

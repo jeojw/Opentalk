@@ -1,6 +1,7 @@
 package com.example.opentalk.controller;
 
 import com.example.opentalk.RuntimeException;
+import com.example.opentalk.dto.AlarmMessageDto;
 import com.example.opentalk.dto.AuthDto;
 import com.example.opentalk.dto.InviteDto;
 import com.example.opentalk.dto.PersonalMessageDto;
@@ -101,5 +102,20 @@ public class MemberController {
     @PostMapping("/api/opentalk/member/deletePersonalMessage")
     public void deletePersonalMessage(@RequestBody @Valid PersonalMessageDto messageDto){
         memberService.deletePersonalMessage(messageDto);
+    }
+
+    @GetMapping("/api/opentalk/member/allAlarmMessages/{memberNickName}")
+    public ResponseEntity<List<AlarmMessageDto>> allAlarmMessages(@PathVariable("memberNickName") String memberNickName){
+        return ResponseEntity.ok(memberService.getAllAlarmMessages(memberNickName));
+    }
+
+    @PostMapping("/api/opentalk/member/sendAlarmMessage")
+    public void sendAlarmMessage(@RequestBody @Valid AlarmMessageDto alarmMessageDto){
+        memberService.sendAlarmMessage(alarmMessageDto);
+    }
+
+    @PostMapping("/api/opentalk/member/deleteAlarmMessage")
+    public void deleteAlarmMessage(@RequestParam("messageId") String messageId){
+        memberService.deleteAlarmMessage(messageId);
     }
 }
