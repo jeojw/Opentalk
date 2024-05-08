@@ -663,7 +663,7 @@ const RoomComponent = () => {
                         alarmMessage: "새로운 쪽지가 도착했습니다."
                     })
                     if (alarmResponse.status === 200){
-                        client.current.publish({destination: 'pub/chat/alarmMessage', body: JSON.stringify({
+                        client.current.publish({destination: '/pub/chat/alarmMessage', body: JSON.stringify({
                             nickName: "system",
                             message: ``,
                         })})
