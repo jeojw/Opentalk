@@ -135,7 +135,7 @@ useEffect(() => {
             )}
           </Dropdown.Toggle>
           <Dropdown.Menu>
-          {alarms.map((_message, index) => {
+          {alarms.map((_message) => {
             return (
               <DropdownItem>
                 <strong>{_message.alarmMessage}</strong>

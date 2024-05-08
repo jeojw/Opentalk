@@ -270,7 +270,10 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                                                 variant='#8F8F8F' 
                                                 style={{ backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D',
                                                 color: theme === 'light' ? '#000000' : '#FFFFFF' }}
-                                                onClick={() => setShowPMModal(true)}>
+                                                onClick={() => {
+                                                    setShowPMModal(true);
+                                                    setReceiver(_member.memberNickName);
+                                                }}>
                                             <strong>쪽지 보내기</strong></Button></ListGroupItem>
                                         )
                                     ))}
