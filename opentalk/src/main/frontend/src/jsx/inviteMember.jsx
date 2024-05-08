@@ -70,7 +70,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo, stomp
                             alarmMessage: "새로운 초대 메세지가 도착했습니다."
                         })
                         if (alarmResponse.status === 200){
-                            stompClient.publish({destination: 'pub/chat/alarmMessage', body: JSON.stringify({
+                            stompClient.publish({destination: '/pub/chat/alarmMessage', body: JSON.stringify({
                                 nickName: "system",
                                 message: ``,
                             })})
