@@ -126,7 +126,9 @@ useEffect(() => {
           backgroundColor:theme === 'light' ? "#FFFFFF" : "#121212",
           color:theme === 'light' ? "#000000" : '#FFFFFF',
         }}>
-            알림함
+            알림함{alarms.length !== 0 && (
+              <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/alarm.png`} width={10} style={{position:"absolute", top:"18px", right:"16px"}}></img>
+            )}
           </Dropdown.Toggle>
           <Dropdown.Menu>
           {alarms.map((_message, index) => {
