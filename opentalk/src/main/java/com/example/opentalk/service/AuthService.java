@@ -50,9 +50,6 @@ public class AuthService {
                 .authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        memberRepository.generateFT(loginDto.getFcmToken(), loginDto.getMemberId());
-        redisService.setValues("FT(" + SERVER + "):" + loginDto.getMemberId(), loginDto.getFcmToken());
-
         return generateToken(SERVER, authentication.getName(), getAuthorities(authentication));
     }
 
@@ -137,9 +134,6 @@ public class AuthService {
     public void logout(String requestAccessTokenInHeader) {
         String requestAccessToken = resolveToken(requestAccessTokenInHeader);
         String principal = getPrincipal(requestAccessToken);
-
-        memberRepository.deleteFT(principal);
-        redisService.deleteValues("FT(" + SERVER + "):" + principal);
 
         // Redis에 저장되어 있는 RT 삭제
         String refreshTokenInRedis = redisService.getValues("RT(" + SERVER + "):" + principal);
