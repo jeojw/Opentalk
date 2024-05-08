@@ -132,13 +132,13 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo, stomp
                                         _member.memberNickName !== myInfo.memberNickName && (
                                             <ListGroupItem 
                                             className='custom-ui'
-                                            style={{ backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
+                                            style={{ backgroundColor: theme === 'light' ? "#CDCDCD" : '#A0A0A0',
                                                      color: theme === 'light' ? '#000000' : '#FFFFFF',
                                                     marginBottom: '7px',
                                                     }}><strong>{_member.memberNickName}</strong>
                                             <hr style={{
-                                                backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
-                                                border: `1px solid ${theme == 'light' ? "#808080" : '#666666'}`}}/>
+                                                backgroundColor: theme === 'light' ? "#CDCDCD" : '#A0A0A0',
+                                                border: `1px solid ${theme === 'light' ? "#808080" : '#666666'}`}}/>
                                             <Button
                                             className='btn-sm custom-button' 
                                             variant='#8F8F8F' 
@@ -204,13 +204,13 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo, stomp
                                     _member.memberNickName !== myInfo.memberNickName && (
                                         <ListGroupItem 
                                         className='custom-ui'
-                                        style={{ backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
+                                        style={{ backgroundColor: theme === 'light' ? "#CDCDCD" : '#A0A0A0',
                                                     color: theme === 'light' ? '#000000' : '#FFFFFF',
                                                 marginBottom: '7px',
                                                 }}><strong>{_member.memberNickName}</strong>
                                         <hr style={{
-                                            backgroundColor: theme == 'light' ? "#CDCDCD" : '#A0A0A0',
-                                            border: `1px solid ${theme == 'light' ? "#808080" : '#666666'}`}}/>
+                                            backgroundColor: theme === 'light' ? "#CDCDCD" : '#A0A0A0',
+                                            border: `1px solid ${theme === 'light' ? "#808080" : '#666666'}`}}/>
                                         <Button
                                         className='btn-sm custom-button' 
                                         variant='#8F8F8F' 
