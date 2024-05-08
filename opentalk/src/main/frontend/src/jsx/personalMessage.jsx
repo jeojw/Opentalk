@@ -294,7 +294,7 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                     style={{
                         content: {
                             backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
-                            width: '400px', // 원하는 너비로 설정
+                            width: '330px', // 원하는 너비로 설정
                             height: '300px', // 원하는 높이로 설정
                             borderTopLeftRadius: '25px',
                             borderBottomLeftRadius: '25px',
