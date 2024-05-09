@@ -120,7 +120,7 @@ const MainComponent = () => {
                             }
                         });
                         client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
-                            if (JSON.parse(body).nickName === "system"){
+                            if (JSON.parse(body).nickName === member?.memberNickName){
                                 queryClient.invalidateQueries("allAlarmMessage");
                                 play();
                             }
@@ -1073,7 +1073,7 @@ const MainComponent = () => {
                             className='custom-button'
                             variant='dark' 
                             onClick={()=>setIsPersonalMessageBoxOpen(false)} 
-                            >닫기</Button>
+                        >닫기</Button>
                     </div>
                 </Modal>
                 <Row className="justify-content-end">

@@ -54,6 +54,7 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
             })
             if (res.status === 200){
                 window.alert("쪽지를 보냈습니다.");
+                setShowPMModal(false);
                 stompClient.publish({
                     destination: '/pub/chat/personalMessage',
                     body: JSON.stringify({
@@ -72,7 +73,7 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                         stompClient.publish({
                             destination: '/pub/chat/alarmMessage', 
                             body: JSON.stringify({
-                                nickName: "system",
+                                nickName: receiver,
                                 message: ``,
                             })
                         })

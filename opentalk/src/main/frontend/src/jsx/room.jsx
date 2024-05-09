@@ -687,6 +687,7 @@ const RoomComponent = () => {
             })
             if (res.status === 200){
                 window.alert("쪽지를 보냈습니다.");
+                setIsOpenMessageForm(false);
                 client.current.publish({
                     destination: '/pub/chat/personalMessage',
                     body: JSON.stringify({

@@ -19,7 +19,7 @@ import { themeContext } from './jsx/themeContext';
 import { alarmContext } from './jsx/alarmContext';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
-import { ReactNotifications, Store } from 'react-notifications-component';
+import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css'
 
 const App = () => {
@@ -72,7 +72,7 @@ const App = () => {
       setAlarms(allAlarmMessage);
     };
   }, [allAlarmMessage, alarmIsLoading, alarmIsError, alarmIsFetching, alarmIsFetched]);
-  
+
   const { mutate: mutateDeleteMessaage } = useMutation(async({messageId}) => {
     const deleteUrl = "/api/opentalk/member/deleteAlarmMessage";
     const data = new FormData();
