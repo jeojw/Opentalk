@@ -25,6 +25,9 @@ const Mobile = ({ children }) => {
     return isMobile ? children : null
 }
 const RoomComponent = () => {
+    const [myInfo, setMyInfo] = useState();
+    const [isReissue, setIsReissue] = useState(false);
+    
     useEffect(() => {
         if (isReissue){
             const reissueToken = async () =>{
@@ -105,7 +108,6 @@ const RoomComponent = () => {
     const {play} = useContext(soundContext);
 
     const [roomInformation, setRoomInformation] = useState();
-    const [myInfo, setMyInfo] = useState();
     const [chatList, setChatList] = useState([]);
     const [preChatList, setPreChatList] = useState([]);
     const [chat, setChat] = useState("");
@@ -122,8 +124,6 @@ const RoomComponent = () => {
 
     const [personalMessage, setPersonalMessage] = useState("");
     const [receiver, setReceiver] = useState("");
-
-    const [isReissue, setIsReissue] = useState(false);
 
     const handleShowOffcanvas = () => {
         setShowOffcanvas(true);

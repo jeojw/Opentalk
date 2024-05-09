@@ -27,6 +27,10 @@ const Mobile = ({ children }) => {
 }
 
 const MainComponent = () => {
+    const [member, setMember] = useState();
+    const [curImgUrl, setCurImgUrl] = useState(null);
+    const [isReissue, setIsReissue] = useState(false);
+    
     useEffect(() => {
         if (isReissue){
             const reissueToken = async () =>{
@@ -270,16 +274,11 @@ const MainComponent = () => {
             setPage(page);
     }
 
-    const [member, setMember] = useState();
     const [role, setRole] = useState();
     
     const [selectManu, setSelectManu] = useState("default");
     const [searchKeyword, setSearchKeyword] = useState("");
     const navigate = useNavigate();
-
-    const [curImgUrl, setCurImgUrl] = useState(null);
-
-    const [isReissue, setIsReissue] = useState(false);
 
     const queryClient = useQueryClient();
 
