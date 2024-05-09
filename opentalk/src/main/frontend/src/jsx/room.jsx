@@ -616,7 +616,7 @@ const RoomComponent = () => {
         connect();
         
         return () => disconnect();
-    }, []);
+    }, [myInfo?.memberNickName]);
 
     let isExiting = false;
 

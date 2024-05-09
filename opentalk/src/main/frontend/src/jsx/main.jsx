@@ -228,7 +228,7 @@ const MainComponent = () => {
         };
         connect();
         return ()=>disconnect();
-    }, []);
+    }, [member?.memberNickName]);
 
     const ChatRoomRole = {
         PARTICIPATE: 'ROLE_PARTICIPATE',
