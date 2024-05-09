@@ -27,7 +27,7 @@ const Mobile = ({ children }) => {
 const RoomComponent = () => {
     const [myInfo, setMyInfo] = useState();
     const [isReissue, setIsReissue] = useState(false);
-    
+
     useEffect(() => {
         if (isReissue){
             const reissueToken = async () =>{
@@ -786,13 +786,13 @@ const RoomComponent = () => {
                                 style={{ backgroundColor: theme === 'light' ? "#C3C3C3" : "#999999",
                                 color: theme === 'light' ? '#000000' : "#FFFFFF" }}
                                 onClick={()=>{
+                                    setReceiver(_message.caller);
                                     setIsOpenMessageForm(true);
-                                    client.current.publish({
-                                        destination: '/pub/chat/personalMessage',
-                                        body: JSON.stringify({
-                                            nickName: "system",
-                                            message: ``,
-                                        })
+                                    deletePersonalMessage({
+                                        message_id: _message.messageId,
+                                        caller: _message.caller,
+                                        receiver: _message.receiver,
+                                        message: _message.message
                                     });
                                 }}><strong>답장하기</strong></Button>
                             <Button 
@@ -1174,12 +1174,11 @@ const RoomComponent = () => {
                                 onClick={()=>{
                                     setReceiver(_message.caller);
                                     setIsOpenMessageForm(true);
-                                    client.current.publish({
-                                        destination: '/pub/chat/personalMessage',
-                                        body: JSON.stringify({
-                                            nickName: "system",
-                                            message: ``,
-                                        })
+                                    deletePersonalMessage({
+                                        message_id: _message.messageId,
+                                        caller: _message.caller,
+                                        receiver: _message.receiver,
+                                        message: _message.message
                                     });
                                 }}><strong>답장하기</strong></Button>
                             <Button 

@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import axios from 'axios'
 import Modal from 'react-modal';
 import { Row, Col, Button, FormControl, ListGroup, ListGroupItem, InputGroup, Form} from 'react-bootstrap'
@@ -14,7 +14,10 @@ const Mobile = ({ children }) => {
     return isMobile ? children : null
 }
 
-const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShowPMModal, stompClient, myInfo}) =>{
+const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShowPMModal, stompClient, myInfo, returnReceiver}) =>{
+    useEffect(() =>{
+        setReceiver(returnReceiver);
+    }, [returnReceiver])
     const { theme } = useContext(themeContext);
     
     const [receiver, setReceiver] = useState("");
@@ -132,7 +135,7 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                             {searchList && searchList.length > 0 && (
                                 <ListGroup className='custom-ui'>
                                     {searchList.map((_member) => (
-                                         _member.memberNickName !== myInfo.memberNickName && (
+                                        _member.memberNickName !== myInfo.memberNickName && (
                                             <ListGroupItem 
                                             className='custom-ui'
                                             style={{ backgroundColor: theme === 'light' ? "#CDCDCD" : '#A0A0A0',
@@ -143,16 +146,16 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                                                 backgroundColor: theme === 'light' ? "#CDCDCD" : '#A0A0A0',
                                                 border: `1px solid ${theme === 'light' ? "#808080" : '#666666'}`}}/>
                                             <Button
-                                            className='btn-sm custom-button' 
-                                            variant='#8F8F8F' 
-                                            style={{ backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D',
-                                            color: theme === 'light' ? '#000000' : '#FFFFFF' }}
-                                            onClick={() => {
-                                                setShowPMModal(true);
-                                                setReceiver(_member.memberNickName);
-                                            }}>
+                                                className='btn-sm custom-button' 
+                                                variant='#8F8F8F' 
+                                                style={{ backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D',
+                                                color: theme === 'light' ? '#000000' : '#FFFFFF' }}
+                                                onClick={() => {
+                                                    setShowPMModal(true);
+                                                    setReceiver(_member.memberNickName);
+                                                }}>
                                             <strong>쪽지 보내기</strong></Button></ListGroupItem>
-                                         )
+                                        )
                                     ))}
                                     <hr/>
                                 </ListGroup>

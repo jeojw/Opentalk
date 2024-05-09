@@ -30,6 +30,8 @@ const MainComponent = () => {
     const [member, setMember] = useState();
     const [curImgUrl, setCurImgUrl] = useState(null);
     const [isReissue, setIsReissue] = useState(false);
+
+    const [returnReceiver, setReturnReceiver] = useState();
     
     useEffect(() => {
         if (isReissue){
@@ -786,12 +788,13 @@ const MainComponent = () => {
                                     color:theme === 'light' ? '#000000' : '#FFFFFF'}} 
                             onClick={()=>{
                                 setShowPersonalMessageForm(true);
+                                setReturnReceiver(_message.caller);
                                 deletePersonalMessage({message_id: _message.messageId, 
                                     caller: _message.caller,
                                     receiver: _message.receiver,
                                     message: _message.message})
                             }}
-                                ><strong>답장하기</strong></Button>
+                            ><strong>답장하기</strong></Button>
                         <div style={{width:"4px", display:"inline-block"}}/>
                         <Button className='custom-button' variant='dark' 
                                 onClick={()=> deletePersonalMessage({message_id: _message.messageId, 
@@ -980,7 +983,8 @@ const MainComponent = () => {
             showPMModal={showPersonalMessageForm}
             setShowPMModal={setShowPersonalMessageForm}
             stompClient={client.current}
-            myInfo={member}/>
+            myInfo={member}
+            returnReceiver={returnReceiver}/>
         </Desktop>
         <Mobile>
             <Container style={{minHeight:"100vh"}}>
@@ -1054,6 +1058,7 @@ const MainComponent = () => {
                                     color:theme === 'light' ? '#000000' : '#FFFFFF'}}
                             onClick={()=>{
                                 setShowPersonalMessageForm(true);
+                                setReturnReceiver(_message.caller);
                                 deletePersonalMessage({message_id: _message.messageId, 
                                     caller: _message.caller,
                                     receiver: _message.receiver,
@@ -1272,7 +1277,8 @@ const MainComponent = () => {
             showPMModal={showPersonalMessageForm} 
             setShowPMModal={setShowPersonalMessageForm}
             stompClient={client.current}
-            myInfo={member}/>
+            myInfo={member}
+            returnReceiver={returnReceiver}/>
         </Mobile>
     </div>
 
