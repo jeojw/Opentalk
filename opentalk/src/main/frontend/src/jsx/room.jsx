@@ -1148,8 +1148,8 @@ const RoomComponent = () => {
                     style={{
                         content: {
                             backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
-                            width: '350px', // 원하는 너비로 설정
-                            height: '600px', // 원하는 높이로 설정
+                            width: '340px', // 원하는 너비로 설정
+                            height: '500px', // 원하는 높이로 설정
                             borderTopLeftRadius: '25px',
                             borderBottomLeftRadius: '25px',
                             borderTopRightRadius: '25px',
@@ -1360,7 +1360,7 @@ const RoomComponent = () => {
                     style={{
                         content: {
                             backgroundColor:theme === 'light' ? '#FFFFFF' : '#121212',
-                            width: '400px', // 원하는 너비로 설정
+                            width: '340px', // 원하는 너비로 설정
                             height: '300px', // 원하는 높이로 설정
                             borderTopLeftRadius: '25px',
                             borderBottomLeftRadius: '25px',
