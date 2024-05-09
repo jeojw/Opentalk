@@ -120,7 +120,7 @@ const MainComponent = () => {
                             }
                         });
                         client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
-                            if (JSON.parse(body).nickName === member?.memberNickName){
+                            if (JSON.parse(body).nickName === "system"){
                                 queryClient.invalidateQueries("allAlarmMessage");
                                 play();
                             }
