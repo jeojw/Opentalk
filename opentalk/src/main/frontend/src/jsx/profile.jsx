@@ -140,7 +140,7 @@ const ProfileComponent = () => {
                 } 
             }
             else{
-                navigate("/opentalk");
+                navigate("/");
             }
         },  
         cacheTime: 30000,

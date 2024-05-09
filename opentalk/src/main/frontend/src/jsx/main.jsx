@@ -27,6 +27,86 @@ const Mobile = ({ children }) => {
 }
 
 const MainComponent = () => {
+    useEffect(() => {
+        if (isReissue){
+            const reissueToken = async () =>{
+                const reissueUrl = "/api/opentalk/auth/reissue";
+                try{
+                    const reissueRes = await axios.post(reissueUrl, null, {
+                        headers:{
+                            'Authorization': localStorage.getItem("token"),
+                        },
+                    })
+                    if (reissueRes.status === 200){
+                        localStorage.setItem("token", reissueRes.headers['authorization']);
+                    }
+                } catch(error) {
+                    console.log(error);
+                    window.alert("다시 로그인하여 주십시오.")
+                    localStorage.removeItem('token');
+                    navigate("/opentalk/login");
+                }
+            }
+            reissueToken();
+        }
+    }, [isReissue])
+
+    useEffect(() => {
+        const validateToken = async () =>{
+            try{
+                const url = "/api/opentalk/auth/validate";
+                const response = await axios.post(url, null, {
+                    headers: {
+                        Authorization: localStorage.getItem("token")
+                    }
+                });
+                if (response.data === true){
+                    setIsReissue(true);
+                }
+                else{
+                    setIsReissue(false);
+                }
+            } catch(error){
+                setIsReissue(true);
+            }
+        }
+        validateToken();
+    }, []);
+
+    const { data: myInfo, isLoading, isError, isFetching, isFetched} = useQuery({
+        queryKey:['myInfo'], 
+        queryFn: async () => {
+            if (localStorage.getItem("token")){
+                try {
+                    const response = await axios.get('/api/opentalk/member/me', {
+                        headers: {
+                            authorization: localStorage.getItem("token"),
+                        }
+                    });
+                    return response.data;
+                } catch (error) {
+                    console.error(error);
+                } 
+            }
+            else{
+                navigate("/");
+            }
+        },  
+        cacheTime: 30000,
+        staleTime: 5000,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+    }, []);
+
+    useEffect(() => {
+        if (myInfo && !isLoading && !isError && !isFetching && isFetched){
+            setMember(myInfo);
+            setCurImgUrl(myInfo.imgUrl);
+        }
+    }, [myInfo, isLoading, isError, isFetching, isFetched]);
+
+
     const {theme} = useContext(themeContext);
     const {play} = useContext(soundContext);
     const client = useRef({});
@@ -84,8 +164,7 @@ const MainComponent = () => {
                             }
                         });
                         client.current.subscribe(`/sub/chat/inviteMessage`, ({body}) => {
-                            if (JSON.parse(body).nickName === member?.memberNickName ||
-                                JSON.parse(body).message === "새 초대 메세지가 도착했습니다."){
+                            if (JSON.parse(body).nickName === member?.memberNickName){
                                 console.log(member?.memberNickName);
                                 queryClient.invalidateQueries("allInviteMessages");
                                 Store.addNotification({
@@ -104,8 +183,7 @@ const MainComponent = () => {
                             }
                         });
                         client.current.subscribe(`/sub/chat/personalMessage`, ({body}) => {
-                            if (JSON.parse(body).nickName === member?.memberNickName ||
-                                JSON.parse(body).message === "새 쪽지가 도착했습니다."){
+                            if (JSON.parse(body).nickName === member?.memberNickName){
                                 console.log(member?.memberNickName);
                                 queryClient.invalidateQueries("allPersonalMessages");
                                 Store.addNotification({
@@ -492,74 +570,6 @@ const MainComponent = () => {
             queryClient.invalidateQueries("allChatRooms");
         }
     });
-
-    useEffect(() => {
-        if (isReissue){
-            const reissueToken = async () =>{
-                const reissueUrl = "/api/opentalk/auth/reissue";
-                try{
-                    const reissueRes = await axios.post(reissueUrl, null, {
-                        headers:{
-                            'Authorization': localStorage.getItem("token"),
-                        },
-                    })
-                    if (reissueRes.status === 200){
-                        localStorage.setItem("token", reissueRes.headers['authorization']);
-                    }
-                } catch(error) {
-                    console.log(error);
-                    window.alert("다시 로그인하여 주십시오.")
-                    localStorage.removeItem('token');
-                    navigate("/opentalk/login");
-                }
-            }
-            reissueToken();
-        }
-    }, [isReissue])
-
-    useEffect(() => {
-        const validateToken = async () =>{
-            try{
-                const url = "/api/opentalk/auth/validate";
-                const response = await axios.post(url, null, {
-                    headers: {
-                        Authorization: localStorage.getItem("token")
-                    }
-                });
-                if (response.data === true){
-                    setIsReissue(true);
-                }
-                else{
-                    setIsReissue(false);
-                }
-            } catch(error){
-                setIsReissue(true);
-            }
-        }
-        validateToken();
-    }, []);
-
-    useEffect(() => {
-        const fetchMyInfo = async () => {
-            if (localStorage.getItem("token")){
-                await axios.get('/api/opentalk/member/me', {
-                    headers: {
-                        Authorization: localStorage.getItem("token"),
-                    }
-                }).then((res) => {
-                    if (res.status === 200){
-                        setCurImgUrl(res.data.imgUrl);
-                        setMember(res.data);
-                    }
-                }).catch((error) => console.log(error));
-            }
-            else{
-                navigate("/");
-            }
-        }    
-        fetchMyInfo();
-    }, []);
-
 
     useEffect(() => {
         setChatRoomList(allChatRoomList.slice(indexOfFirstPost, indexOfLastPost))

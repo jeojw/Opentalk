@@ -25,30 +25,6 @@ const Mobile = ({ children }) => {
     return isMobile ? children : null
 }
 const RoomComponent = () => {
-    const {theme} = useContext(themeContext);
-    const {play} = useContext(soundContext);
-
-    const [roomInformation, setRoomInformation] = useState();
-    const [myInfo, setMyInfo] = useState();
-    const [chatList, setChatList] = useState([]);
-    const [preChatList, setPreChatList] = useState([]);
-    const [chat, setChat] = useState("");
-    const [role, setRole] = useState();
-    const [curParticipates, setCurParticipates] = useState(0)
-    const [otherMember, setOtherMember] = useState([]);
-
-    const [showOffcanvas, setShowOffcanvas] = useState(false);
-    const [showInviteModal, setShowInviteModal] = useState(false);
-    const [showChangeModal, setShowChangeModal] = useState(false);
-    const [personalMessageList, setPersonalMessageList] = useState([]);
-    const [showPMModal, setShowPMModal] = useState(false);
-    const [isOpenMessageForm, setIsOpenMessageForm] = useState(false);
-
-    const [personalMessage, setPersonalMessage] = useState("");
-    const [receiver, setReceiver] = useState("");
-
-    const [isReissue, setIsReissue] = useState(false);
-
     useEffect(() => {
         if (isReissue){
             const reissueToken = async () =>{
@@ -93,6 +69,61 @@ const RoomComponent = () => {
         validateToken();
     }, []);
 
+    const { data: myInfoData, isLoading, isError, isFetching, isFetched} = useQuery({
+        queryKey:['myInfo'], 
+        queryFn: async () => {
+            if (localStorage.getItem("token")){
+                try {
+                    const response = await axios.get('/api/opentalk/member/me', {
+                        headers: {
+                            authorization: localStorage.getItem("token"),
+                        }
+                    });
+                    return response.data;
+                } catch (error) {
+                    console.error(error);
+                } 
+            }
+            else{
+                navigate("/");
+            }
+        },  
+        cacheTime: 30000,
+        staleTime: 5000,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+    }, []);
+
+    useEffect(() => {
+        if (myInfoData && !isLoading && !isError && !isFetching && isFetched){
+            setMyInfo(myInfoData);
+        }
+    }, [myInfoData, isLoading, isError, isFetching, isFetched]);
+
+    const {theme} = useContext(themeContext);
+    const {play} = useContext(soundContext);
+
+    const [roomInformation, setRoomInformation] = useState();
+    const [myInfo, setMyInfo] = useState();
+    const [chatList, setChatList] = useState([]);
+    const [preChatList, setPreChatList] = useState([]);
+    const [chat, setChat] = useState("");
+    const [role, setRole] = useState();
+    const [curParticipates, setCurParticipates] = useState(0)
+    const [otherMember, setOtherMember] = useState([]);
+
+    const [showOffcanvas, setShowOffcanvas] = useState(false);
+    const [showInviteModal, setShowInviteModal] = useState(false);
+    const [showChangeModal, setShowChangeModal] = useState(false);
+    const [personalMessageList, setPersonalMessageList] = useState([]);
+    const [showPMModal, setShowPMModal] = useState(false);
+    const [isOpenMessageForm, setIsOpenMessageForm] = useState(false);
+
+    const [personalMessage, setPersonalMessage] = useState("");
+    const [receiver, setReceiver] = useState("");
+
+    const [isReissue, setIsReissue] = useState(false);
 
     const handleShowOffcanvas = () => {
         setShowOffcanvas(true);
@@ -414,25 +445,6 @@ const RoomComponent = () => {
     }, [roomData, roomIsLoading, roomIsError, roomIsFetching, roomIsFetched]);
 
     useEffect(() => {
-        const fetchInfo = async () => {
-            if (localStorage.getItem("token")){
-                try{
-                    const myselfResponse = await axios.get(`/api/opentalk/member/me`, {
-                        headers: {authorization: localStorage.getItem("token")}
-                    });
-                    setMyInfo(myselfResponse.data);
-                } catch (error){
-                    console.log(error);
-                }
-            }
-            else{
-                navigate("/opentalk");
-            }
-        }
-        fetchInfo();
-    }, []);
-
-    useEffect(() => {
         const isExistInRoom = async () => {
             try{
                 const response = await axios.get(`/api/opentalk/isExistInRoom/${room_Id}/${myInfo.memberNickName}`);
@@ -527,8 +539,7 @@ const RoomComponent = () => {
             }
         });
         client.current.subscribe(`/sub/chat/inviteMessage`, ({body}) => {
-            if (JSON.parse(body).nickName === myInfo?.memberNickName ||
-                JSON.parse(body).message === "새 초대 메세지가 도착했습니다."){
+            if (JSON.parse(body).nickName === myInfo?.memberNickName){
                 console.log(myInfo?.memberNickName);
                 queryClient.invalidateQueries("allInviteMessages");
                 Store.addNotification({
@@ -547,8 +558,7 @@ const RoomComponent = () => {
             }
         });
         client.current.subscribe('/sub/chat/personalMessage', ({body}) => {
-            if (JSON.parse(body).nickName === myInfo?.memberNickName ||
-                JSON.parse(body).message === "새 쪽지가 도착했습니다."){
+            if (JSON.parse(body).nickName === myInfo?.memberNickName){
                 console.log(myInfo?.memberNickName);
                 queryClient.invalidateQueries("allPersonalMessages");
                 Store.addNotification({
