@@ -17,7 +17,8 @@ const Mobile = ({ children }) => {
 const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShowPMModal, stompClient, myInfo, returnReceiver}) =>{
     useEffect(() =>{
         setReceiver(returnReceiver);
-    }, [returnReceiver])
+    }, [returnReceiver]);
+    
     const { theme } = useContext(themeContext);
     
     const [receiver, setReceiver] = useState("");

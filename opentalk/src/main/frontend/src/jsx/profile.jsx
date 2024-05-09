@@ -24,29 +24,29 @@ const ProfileComponent = () => {
     useEffect(() =>{ 
         const connect = async () => {
             try{
-                    client.current = new StompJs.Client({
-                        webSocketFactory: () => new SockJs('/ws'),
-                        connectHeaders: {
-                            "auth-token": "spring-chat-auth-token",
-                        },
-                        debug: function (str) {
-                            console.log(str);
-                        },
-                        reconnectDelay: 5000,
-                        heartbeatIncoming: 4000,
-                        heartbeatOutgoing: 4000,
-                        onConnect: () => {
-                            client.current.subscribe(`/sub/chat/changeNickName`, ({body}) => {
-                                if (JSON.parse(body).nickName === "system"){
-                                    queryClient.invalidateQueries("allChatRooms");
-                                }
-                            });
-                        },
-                        onStompError: (frame) => {
-                            console.error(frame);
-                        }
-                    });
-                    await client.current.activate(); 
+                client.current = new StompJs.Client({
+                    webSocketFactory: () => new SockJs('/ws'),
+                    connectHeaders: {
+                        "auth-token": "spring-chat-auth-token",
+                    },
+                    debug: function (str) {
+                        console.log(str);
+                    },
+                    reconnectDelay: 5000,
+                    heartbeatIncoming: 4000,
+                    heartbeatOutgoing: 4000,
+                    onConnect: () => {
+                        client.current.subscribe(`/sub/chat/changeNickName`, ({body}) => {
+                            if (JSON.parse(body).nickName === "system"){
+                                queryClient.invalidateQueries("allChatRooms");
+                            }
+                        });
+                    },
+                    onStompError: (frame) => {
+                        console.error(frame);
+                    }
+                });
+                await client.current.activate(); 
             } catch (error){
                     console.log(error);
             }

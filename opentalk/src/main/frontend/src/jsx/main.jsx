@@ -1014,7 +1014,7 @@ const MainComponent = () => {
                             variant="#8F8F8F" 
                             style={{ backgroundColor:theme === 'light' ? '#B6B6B6' : '#8D8D8D', 
                                      color:theme === 'light' ? '#000000' : '#FFFFFF'}} 
-                                onClick={()=> EnterInvitedRoom({roomId:_message.roomId, Inviter: _message.inviter})}><strong>입장하기</strong></Button>
+                                onClick={()=> EnterInvitedRoom({message:_message})}><strong>입장하기</strong></Button>
                         <div style={{width:"4px", display:"inline-block"}}/>
                         <Button className='custom-button' variant='dark' 
                                 onClick={()=> DeleteInviteMessage({Inviter: _message.inviter, Invited_member:_message.invitedMember})}>메세지 지우기</Button>
