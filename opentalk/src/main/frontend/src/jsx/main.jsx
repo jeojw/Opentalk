@@ -1017,7 +1017,7 @@ const MainComponent = () => {
                                 onClick={()=> EnterInvitedRoom({message:_message})}><strong>입장하기</strong></Button>
                         <div style={{width:"4px", display:"inline-block"}}/>
                         <Button className='custom-button' variant='dark' 
-                                onClick={()=> DeleteInviteMessage({Inviter: _message.inviter, Invited_member:_message.invitedMember})}>메세지 지우기</Button>
+                                onClick={()=> DeleteInviteMessage({inviteId:_message.inviteId})}>메세지 지우기</Button>
                         
                         
                         </ListGroupItem>
