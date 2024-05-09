@@ -96,6 +96,12 @@ public class StompChatController {
         template.convertAndSend("/sub/chat/" + chatMessage.getChatRoom().getRoomId(), chatMessage);
     }
 
+    @MessageMapping("/chat/inviteMessage")
+    public void inviteMessage(SystemMessageDto message){
+        message.setMessage(message.getMessage());
+        template.convertAndSend("/sub/chat/inviteMessage", message);
+    }
+
     @MessageMapping("/chat/personalMessage")
     public void personalMessage(SystemMessageDto message){
         message.setMessage(message.getMessage());

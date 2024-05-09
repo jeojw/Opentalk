@@ -61,7 +61,14 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo, stomp
                     window.alert("이미 초대한 유저입니다.");
                 }
                 else{
-                    window.alert("초대되었습니다.");
+                    window.alert("초대했습니다.");
+                    stompClient.publish({
+                        destination: '/pub/chat/inviteMessage', 
+                        body: JSON.stringify({
+                            nickName: member,
+                            message: ``,
+                        })
+                    })
                     const sendAlarmUrl = "/api/opentalk/member/sendAlarmMessage"
                     try {
                         const alarmResponse = await axios.post(sendAlarmUrl, {
@@ -70,10 +77,13 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo, stomp
                             alarmMessage: "새로운 초대 메세지가 도착했습니다."
                         })
                         if (alarmResponse.status === 200){
-                            stompClient.publish({destination: '/pub/chat/alarmMessage', body: JSON.stringify({
-                                nickName: "system",
-                                message: ``,
-                            })})
+                            stompClient.publish({
+                                destination: '/pub/chat/alarmMessage', 
+                                body: JSON.stringify({
+                                    nickName: "system",
+                                    message: ``,
+                                })
+                            })
                         }
                         
                     } catch (error){

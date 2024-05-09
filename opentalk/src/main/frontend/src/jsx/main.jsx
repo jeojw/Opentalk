@@ -15,6 +15,7 @@ import { themeContext } from './themeContext';
 import { soundContext } from './soundContext';
 import '../css/CustomPagination.css'
 import PersonalMessageComponent from './personalMessage';
+import { Store } from 'react-notifications-component';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 768 })
@@ -82,12 +83,42 @@ const MainComponent = () => {
                                 queryClient.invalidateQueries("allChatRooms");
                             }
                         });
-                        client.current.subscribe(`/sub/chat/personalMessage`, ({body}) => {
-                            if (JSON.parse(body).nickName === "system"){
-                                queryClient.invalidateQueries("allPersonalMessages");
+                        client.current.subscribe(`/sub/chat/inviteMessage`, ({body}) => {
+                            if (JSON.parse(body).nickName === member?.memberNickName){
+                                queryClient.invalidateQueries("allInviteMessages");
+                                Store.addNotification({
+                                    title: "새 초대 메세지",
+                                    message: "새 초대 메세지가 도착했습니다.",
+                                    type: "info",
+                                    insert: "top", 
+                                    container: "top-right",
+                                    animationIn: ["animate__animated", "animate__fadeIn"],
+                                    animationOut: ["animate__animated", "animate__fadeOut"],
+                                    dismiss: {
+                                        duration: 5000,
+                                        onScreen: true
+                                    }
+                                })
                             }
                         });
-
+                        client.current.subscribe(`/sub/chat/personalMessage`, ({body}) => {
+                            if (JSON.parse(body).nickName === member?.memberNickName){
+                                queryClient.invalidateQueries("allPersonalMessages");
+                                Store.addNotification({
+                                    title: "새 쪽지",
+                                    message: "새 쪽지가 도착했습니다.",
+                                    type: "info",
+                                    insert: "top", 
+                                    container: "top-right",
+                                    animationIn: ["animate__animated", "animate__fadeIn"],
+                                    animationOut: ["animate__animated", "animate__fadeOut"],
+                                    dismiss: {
+                                        duration: 5000,
+                                        onScreen: true
+                                    }
+                                })
+                            }
+                        });
                         client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
                             if (JSON.parse(body).nickName === "system"){
                                 queryClient.invalidateQueries("allAlarmMessage");
@@ -742,13 +773,10 @@ const MainComponent = () => {
                                     color:theme === 'light' ? '#000000' : '#FFFFFF'}} 
                             onClick={()=>{
                                 setShowPersonalMessageForm(true);
-                                client.current.publish({
-                                    destination: '/pub/chat/personalMessage',
-                                    body: JSON.stringify({
-                                        nickName: "system",
-                                        message: ``,
-                                    })
-                                });
+                                deletePersonalMessage({message_id: _message.messageId, 
+                                    caller: _message.caller,
+                                    receiver: _message.receiver,
+                                    message: _message.message})
                             }}
                                 ><strong>답장하기</strong></Button>
                         <div style={{width:"4px", display:"inline-block"}}/>
@@ -1013,13 +1041,10 @@ const MainComponent = () => {
                                     color:theme === 'light' ? '#000000' : '#FFFFFF'}}
                             onClick={()=>{
                                 setShowPersonalMessageForm(true);
-                                client.current.publish({
-                                    destination: '/pub/chat/personalMessage',
-                                    body: JSON.stringify({
-                                        nickName: "system",
-                                        message: ``,
-                                    })
-                                });
+                                deletePersonalMessage({message_id: _message.messageId, 
+                                    caller: _message.caller,
+                                    receiver: _message.receiver,
+                                    message: _message.message})
                             }}
                             ><strong>답장하기</strong></Button>
                         <div style={{width:"4px", display:"inline-block"}}/>

@@ -57,7 +57,7 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                 stompClient.publish({
                     destination: '/pub/chat/personalMessage',
                     body: JSON.stringify({
-                        nickName: "system",
+                        nickName: receiver,
                         message: ``,
                     })
                 });

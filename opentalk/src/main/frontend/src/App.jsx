@@ -19,6 +19,8 @@ import { themeContext } from './jsx/themeContext';
 import { alarmContext } from './jsx/alarmContext';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
+import { ReactNotifications, Store } from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css'
 
 const App = () => {
   const { alarms, setAlarms } = useContext(alarmContext);
@@ -65,12 +67,12 @@ const App = () => {
     refetchOnReconnect: true,
 })
 
-useEffect(() => {
-  if (allAlarmMessage && !alarmIsLoading && !alarmIsError && !alarmIsFetching && alarmIsFetched){
-    setAlarms(allAlarmMessage);
-  };
-}, [allAlarmMessage, alarmIsLoading, alarmIsError, alarmIsFetching, alarmIsFetched]);
-
+  useEffect(() => {
+    if (allAlarmMessage && !alarmIsLoading && !alarmIsError && !alarmIsFetching && alarmIsFetched){
+      setAlarms(allAlarmMessage);
+    };
+  }, [allAlarmMessage, alarmIsLoading, alarmIsError, alarmIsFetching, alarmIsFetched]);
+  
   const { mutate: mutateDeleteMessaage } = useMutation(async({messageId}) => {
     const deleteUrl = "/api/opentalk/member/deleteAlarmMessage";
     const data = new FormData();
@@ -94,13 +96,14 @@ useEffect(() => {
   }
 
   useEffect(() => {
-      setMobileHeight();
+    setMobileHeight();
   });
 
   const {theme, changeTheme} = useContext(themeContext);
 
   return (
     <div>
+      <ReactNotifications />
       <h1 
         className='border border-2'
         style={{position:'relative', 
@@ -114,7 +117,7 @@ useEffect(() => {
           OpenTalk
         </div>
       </strong>
-      {localStorage.getItem("token") !== null && (
+      {token !== null && (
         <Dropdown style={{
           position:'absolute',
           bottom: '10px',
@@ -128,6 +131,7 @@ useEffect(() => {
         }}>
             알림함{alarms.length !== 0 && (
               <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/alarm.png`} width={10} style={{position:"absolute", top:"18px", right:"16px"}}></img>
+              
             )}
           </Dropdown.Toggle>
           <Dropdown.Menu>
