@@ -42,7 +42,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo, stomp
         .catch((error) => console.log(error));
     }
 
-    const InviteMember = async (member) => {
+    const InviteMember = async ({memberNickName}) => {
         if (window.confirm("초대하시겠습니까?")){
             let message = window.prompt("초대 메세지를 입력해 주십시오.");
             const inviteUrl = "/api/opentalk/invite"
@@ -55,7 +55,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo, stomp
                     roomName: roomInfo.roomName,
                     inviter: roomInfo.roomManager,
                     message: message,
-                    invitedMember: member
+                    invitedMember: memberNickName
                 });
                 if (res.data !== "Success"){
                     window.alert("이미 초대한 유저입니다.");
@@ -65,14 +65,14 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo, stomp
                     stompClient.publish({
                         destination: '/pub/chat/inviteMessage', 
                         body: JSON.stringify({
-                            nickName: member,
+                            nickName: memberNickName,
                             message: ``,
                         })
                     })
                     const sendAlarmUrl = "/api/opentalk/member/sendAlarmMessage"
                     try {
                         const alarmResponse = await axios.post(sendAlarmUrl, {
-                            memberNickName: member,
+                            memberNickName: memberNickName,
                             alarmType: "INVITE",
                             alarmMessage: "새로운 초대 메세지가 도착했습니다."
                         })
@@ -81,7 +81,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo, stomp
                                 destination: '/pub/chat/alarmMessage', 
                                 body: JSON.stringify({
                                     nickName: "system",
-                                    message: ``,
+                                    message: `새 초대 메세지가 도착했습니다.`,
                                 })
                             })
                         }
@@ -154,7 +154,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo, stomp
                                             variant='#8F8F8F' 
                                             style={{ backgroundColor: theme === 'light' ? '#8F8F8F' : '#6D6D6D',
                                             color: theme === 'light' ? '#000000' : '#FFFFFF' }}
-                                            onClick={() => InviteMember(_member.memberNickName)}>
+                                            onClick={() => InviteMember({memberNickName: _member.memberNickName})}>
                                             <strong>초대</strong></Button></ListGroupItem>
                                         )
                                     ))}

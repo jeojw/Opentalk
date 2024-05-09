@@ -84,7 +84,8 @@ const MainComponent = () => {
                             }
                         });
                         client.current.subscribe(`/sub/chat/inviteMessage`, ({body}) => {
-                            if (JSON.parse(body).nickName === member?.memberNickName){
+                            if (JSON.parse(body).nickName === member?.memberNickName ||
+                                JSON.parse(body).message === "새 초대 메세지가 도착했습니다."){
                                 console.log(member?.memberNickName);
                                 queryClient.invalidateQueries("allInviteMessages");
                                 Store.addNotification({
@@ -103,7 +104,8 @@ const MainComponent = () => {
                             }
                         });
                         client.current.subscribe(`/sub/chat/personalMessage`, ({body}) => {
-                            if (JSON.parse(body).nickName === member?.memberNickName){
+                            if (JSON.parse(body).nickName === member?.memberNickName ||
+                                JSON.parse(body).message === "새 쪽지가 도착했습니다."){
                                 console.log(member?.memberNickName);
                                 queryClient.invalidateQueries("allPersonalMessages");
                                 Store.addNotification({

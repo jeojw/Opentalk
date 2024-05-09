@@ -527,7 +527,8 @@ const RoomComponent = () => {
             }
         });
         client.current.subscribe(`/sub/chat/inviteMessage`, ({body}) => {
-            if (JSON.parse(body).nickName === myInfo?.memberNickName){
+            if (JSON.parse(body).nickName === myInfo?.memberNickName ||
+                JSON.parse(body).message === "새 초대 메세지가 도착했습니다."){
                 console.log(myInfo?.memberNickName);
                 queryClient.invalidateQueries("allInviteMessages");
                 Store.addNotification({
@@ -546,7 +547,8 @@ const RoomComponent = () => {
             }
         });
         client.current.subscribe('/sub/chat/personalMessage', ({body}) => {
-            if (JSON.parse(body).nickName === myInfo?.memberNickName){
+            if (JSON.parse(body).nickName === myInfo?.memberNickName ||
+                JSON.parse(body).message === "새 쪽지가 도착했습니다."){
                 console.log(myInfo?.memberNickName);
                 queryClient.invalidateQueries("allPersonalMessages");
                 Store.addNotification({
@@ -694,7 +696,7 @@ const RoomComponent = () => {
                     destination: '/pub/chat/personalMessage',
                     body: JSON.stringify({
                         nickName: receiver,
-                        message: ``,
+                        message: `새 쪽지가 도착했습니다.`,
                     })
                 });
                 const sendAlarmUrl = "/api/opentalk/member/sendAlarmMessage"
@@ -709,7 +711,7 @@ const RoomComponent = () => {
                             destination: '/pub/chat/alarmMessage', 
                             body: JSON.stringify({
                                 nickName: "system",
-                                message: ``,
+                                message: `새 알람이 도착했습니다.`,
                             })
                         })
                     }
