@@ -84,6 +84,7 @@ public class MemberService {
         Optional<String> curImg = memberRepository.returnCurImg(memberId);
 
         if (memberOptional.isPresent()) {
+            MemberEntity member = memberOptional.get();
             InputStream keyFile = ResourceUtils.getURL(keyFileName).openStream();
             System.out.print(keyFileName);
 
@@ -114,7 +115,7 @@ public class MemberService {
                     ex.printStackTrace();
                 }
                 memberOptional.get().setImgUrl(imgUrl);
-                memberRepository.save(memberOptional.get());
+                memberRepository.save(member);
             }
 
             return true;
@@ -153,15 +154,17 @@ public class MemberService {
         Optional<ChatRoomEntity> chatRoom = chatRoomRepository.findByRoomId(roomId);
         List<Optional<MemberEntity>> list = memberRepository.searchByMemberNickName(nickName);
         List<AuthDto.ResponseDto> returnList = new ArrayList<>();
+        MemberEntity member;
         if (chatRoom.isPresent()) {
-            for (Optional<MemberEntity> member : list) {
-                if (member.isPresent()){
-                    if (!Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoom.get().getId(), member.get().getId()), BigInteger.ONE)){
+            for (Optional<MemberEntity> optionalMember : list) {
+                if (optionalMember.isPresent()){
+                    member = optionalMember.get();
+                    if (!Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoom.get().getId(), member.getId()), BigInteger.ONE)){
                         returnList.add(AuthDto.ResponseDto.builder()
-                                .memberId(member.get().getMemberId())
-                                .memberName(member.get().getMemberName())
-                                .memberNickName(member.get().getMemberNickName())
-                                .imgUrl(member.get().getImgUrl())
+                                .memberId(member.getMemberId())
+                                .memberName(member.getMemberName())
+                                .memberNickName(member.getMemberNickName())
+                                .imgUrl(member.getImgUrl())
                                 .build());
                     }
                 }
@@ -284,12 +287,14 @@ public class MemberService {
 
     @Transactional
     public void removeInviteMessages(String inviteId){
-        Optional<InviteEntity> message = inviteMessageRepository.getInviteMessage(inviteId);
-        if (message.isPresent()){
-            Optional<MemberEntity> member = memberRepository.findByMemberNickName(message.get().getInvitedMember());
-            if (member.isPresent()) {
-                memberInviteRepository.deleteEntity(message.get().getId(), member.get().getId());
-                inviteMessageRepository.delete(message.get());
+        Optional<InviteEntity> optionalMessage = inviteMessageRepository.getInviteMessage(inviteId);
+        if (optionalMessage.isPresent()){
+            InviteEntity message = optionalMessage.get();
+            Optional<MemberEntity> optionalMember = memberRepository.findByMemberNickName(message.getInvitedMember());
+            if (optionalMember.isPresent()) {
+                MemberEntity member = optionalMember.get();
+                memberInviteRepository.deleteEntity(message.getId(), member.getId());
+                inviteMessageRepository.delete(message);
             }
         }
     }
