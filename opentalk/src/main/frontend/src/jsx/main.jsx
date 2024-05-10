@@ -106,10 +106,13 @@ const MainComponent = () => {
     }, []);
 
     useEffect(() => {
-        if (myInfo && !isLoading && !isError && !isFetching && isFetched){
-            setMember(myInfo);
-            setCurImgUrl(myInfo.imgUrl);
+        const fetchData = async () => {
+            if (myInfo && !isLoading && !isError && !isFetching && isFetched){
+                setMember(myInfo);
+                setCurImgUrl(myInfo.imgUrl);
+            }
         }
+        fetchData();
     }, [myInfo, isLoading, isError, isFetching, isFetched]);
 
 
@@ -607,19 +610,19 @@ const MainComponent = () => {
         setIsSearch(false);
     }
 
-    const deleteRoom = ({roomInfo}) => {
+    const deleteRoom = async ({roomInfo}) => {
         mutateDeleteRoom({roomInfo});
     }
 
-    const EnterRoom = ({roomInfo}) => {
+    const EnterRoom = async ({roomInfo}) => {
         mutateEnterRoom({roomInfo});
     }
 
-    const EnterInvitedRoom = ({message}) => {
+    const EnterInvitedRoom = async ({message}) => {
         mutateEnterInviteRoom({message:message});
     }
 
-    const ChangRoom = ({roomInfo}) => {
+    const ChangRoom = async ({roomInfo}) => {
         mutateChangRoom({roomInfo});
     }
 
@@ -651,9 +654,9 @@ const MainComponent = () => {
         );
     }
 
-    const LogOut = () => {
+    const LogOut = async () => {
         if (localStorage.getItem("token")){
-            axios.post("/api/opentalk/auth/logout", {}, {
+            await axios.post("/api/opentalk/auth/logout", {}, {
                 headers: { 
                     Authorization: localStorage.getItem("token"),
                 }

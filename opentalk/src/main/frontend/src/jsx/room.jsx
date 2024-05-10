@@ -477,7 +477,7 @@ const RoomComponent = () => {
     
     
   
-    const publishChat = (chat) => {
+    const publishChat = async (chat) => {
         if (!client.current.connected) return;
 
         if (chat === ""){
@@ -487,7 +487,7 @@ const RoomComponent = () => {
             const curTime = new Date();
             const utc = curTime.getTime() + (curTime.getTimezoneOffset() * 60 * 1000);
             const kr_Time = new Date(utc + (KR_TIME_DIFF));
-            axios.post('/api/opentalk/saveChat', {
+            await axios.post('/api/opentalk/saveChat', {
                 chatRoom: roomInformation,
                 member: myInfo,
                 message: chat,
@@ -663,29 +663,29 @@ const RoomComponent = () => {
         event.preventDefault();
     }
 
-    const AuthMandate = (roomMember) => {
+    const AuthMandate = async (roomMember) => {
         if (window.confirm(`${roomMember.memberNickName}님에게 방장을 넘기시겠습니까?`)){
             mutateAuthMandate(roomMember);
         }
     }
 
-    const ForcedExit = (roomMember) => {
+    const ForcedExit = async (roomMember) => {
         if (window.confirm(`정말 ${roomMember.memberNickName}님을 강제퇴장 시키겠습니까?`)){
             mutateForcedExit(roomMember);
         }
     }
 
-    const ExitRoom_Unload = () => {
+    const ExitRoom_Unload = async () => {
         mutateExitRoom_Unload();
     }
 
-    const ExitRoom = () => {
+    const ExitRoom = async () => {
         if (window.confirm("방을 나가시겠습니까?")){
             mutateExitRoom();
         }
     }
 
-    const handleKeyDown = (event) => {
+    const handleKeyDown = async (event) => {
         if (event.key === 'Enter'){
             publishChat(chat);
         }

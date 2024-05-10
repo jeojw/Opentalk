@@ -151,11 +151,13 @@ const ProfileComponent = () => {
     }, []);
 
     useEffect(() => {
-        if (myInfo && !isLoading && !isError && !isFetching && isFetched){
-            setMember(myInfo);
-            setCurImgUrl(myInfo.imgUrl);
+        const fetchData = async () =>{
+            if (myInfo && !isLoading && !isError && !isFetching && isFetched){
+                setMember(myInfo);
+                setCurImgUrl(myInfo.imgUrl);
+            }
         }
-        
+        fetchData(); 
     }, [myInfo, isLoading, isError, isFetching, isFetched]);
 
     const GetExPassword = (event) =>{
@@ -272,11 +274,11 @@ const ProfileComponent = () => {
         }
     })
 
-    const ChangeImg = () => {
+    const ChangeImg = async () => {
         mutateChangeImg();
     }
 
-    const ChangePassword = () =>{
+    const ChangePassword = async () =>{
         if (newPassword.length <= 0){
             window.alert("한 글자 이상의 비밀번호를 입력해 주십시오.");
         }
@@ -289,7 +291,7 @@ const ProfileComponent = () => {
             PwData.append("memberEmail", member.memberEmail);
             PwData.append("exPassword", exPassword);
             PwData.append("newPassword", newPassword);
-            axios.post(checkUrl, PwData,{
+            await axios.post(checkUrl, PwData,{
                 headers: {Authorization: localStorage.getItem("token")}
             })
             .then((res)=>{
@@ -346,7 +348,7 @@ const ProfileComponent = () => {
                 queryClient.invalidateQueries("myInfo");
         }});
 
-    const ChangeNickName = () =>{
+    const ChangeNickName = async () =>{
         mutateChangeNickName();
     }
     

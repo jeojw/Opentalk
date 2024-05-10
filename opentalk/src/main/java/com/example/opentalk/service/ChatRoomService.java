@@ -98,13 +98,16 @@ public class ChatRoomService {
     }
 
     public boolean authMandate(ManagerChangeDto managerChangeDto){
-        Optional<MemberEntity> manager = memberRepository.findByMemberNickName(managerChangeDto.getManager());
-        Optional<MemberEntity> newManager = memberRepository.findByMemberNickName(managerChangeDto.getNewManager());
-        Optional<ChatRoomEntity> chatroom = chatRoomRepository.findByRoomId(managerChangeDto.getRoomId());
-        if (manager.isPresent() && newManager.isPresent() && chatroom.isPresent()){
-            chatRoomMemberRepository.setManager(chatroom.get().getId(), newManager.get().getId());
-            chatRoomMemberRepository.setParticipate(chatroom.get().getId(), manager.get().getId());
-            chatRoomRepository.updateManager(chatroom.get().getRoomId(), newManager.get().getMemberNickName());
+        Optional<MemberEntity> optionalManager = memberRepository.findByMemberNickName(managerChangeDto.getManager());
+        Optional<MemberEntity> optionalNewManager = memberRepository.findByMemberNickName(managerChangeDto.getNewManager());
+        Optional<ChatRoomEntity> optionalChatroom = chatRoomRepository.findByRoomId(managerChangeDto.getRoomId());
+        if (optionalManager.isPresent() && optionalNewManager.isPresent() && optionalChatroom.isPresent()){
+            MemberEntity manager = optionalManager.get();
+            MemberEntity newManager = optionalNewManager.get();
+            ChatRoomEntity chatroom = optionalChatroom.get();
+            chatRoomMemberRepository.setManager(chatroom.getId(), newManager.getId());
+            chatRoomMemberRepository.setParticipate(chatroom.getId(), manager.getId());
+            chatRoomRepository.updateManager(chatroom.getRoomId(), newManager.getMemberNickName());
 
             return true;
         }
@@ -114,6 +117,7 @@ public class ChatRoomService {
     public boolean changeRoomOption(ChatRoomRequestDto chatRoomRequestDto){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(chatRoomRequestDto.getRoomId());
         if (chatRoomEntity.isPresent()){
+            ChatRoomEntity chatRoom = chatRoomEntity.get();
             String newPassword = "";
             if (!chatRoomRequestDto.getRoomPassword().isEmpty()){
                 newPassword = passwordEncoder.encode(chatRoomRequestDto.getRoomPassword());
@@ -125,7 +129,7 @@ public class ChatRoomService {
                     chatRoomRequestDto.getRoomName(),
                     chatRoomRequestDto.getRoomId());
 
-            chatRoomHashtagRepository.deleteByChatroom(chatRoomEntity.get().getId());
+            chatRoomHashtagRepository.deleteByChatroom(chatRoom.getId());
 
             for (HashTagDTO tag : chatRoomRequestDto.getRoomTags()){
                 HashTagEntity tagEntity = HashTagEntity.toHashTagEntity(tag);
@@ -136,7 +140,7 @@ public class ChatRoomService {
                     hashTagRepository.save(tagEntity);
                 }
                 ChatRoomHashtagEntity roomHashtagEntity = ChatRoomHashtagEntity.builder()
-                        .chatroom(chatRoomEntity.get())
+                        .chatroom(chatRoom)
                         .hashtag(tagEntity)
                         .build();
                 chatRoomHashtagRepository.save(roomHashtagEntity);
@@ -157,8 +161,10 @@ public class ChatRoomService {
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(chatMessageEntity.getMember().getMemberId());
 
         if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
-            chatMessageRepository.saveChat(chatRoomEntity.get().getId(),
-                    memberEntity.get().getId(),
+            ChatRoomEntity chatRoom = chatRoomEntity.get();
+            MemberEntity member = memberEntity.get();
+            chatMessageRepository.saveChat(chatRoom.getId(),
+                    member.getId(),
                     chatMessageEntity.getTimeStamp(),
                     chatMessageEntity.getMessage());
         }
@@ -168,11 +174,12 @@ public class ChatRoomService {
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(roomId);
 
         if (chatRoomEntity.isPresent()){
-
-            Optional<List<ChatMessageEntity>> chatLogs= chatMessageRepository.chatLog(chatRoomEntity.get().getId());
+            ChatRoomEntity chatRoom = chatRoomEntity.get();
+            Optional<List<ChatMessageEntity>> optionalChatLogs= chatMessageRepository.chatLog(chatRoom.getId());
             List<ChatMessageDTO> chatMessageDTOS = new ArrayList<>();
-            if (chatLogs.isPresent()) {
-                for (ChatMessageEntity chat : chatLogs.get()) {
+            if (optionalChatLogs.isPresent()) {
+                List<ChatMessageEntity> chatLogs = optionalChatLogs.get();
+                for (ChatMessageEntity chat : chatLogs) {
                     chatMessageDTOS.add(ChatMessageDTO.toChatMessageDTO(chat));
                 }
                 return chatMessageDTOS;
@@ -184,9 +191,10 @@ public class ChatRoomService {
     public String deleteRoom(String room_id){
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(room_id);
         if (chatRoomEntity.isPresent()){
+            ChatRoomEntity chatRoom = chatRoomEntity.get();
             List<Optional<ChatRoomHashtagEntity>> chatRoomHashtagEntityList =
-                    chatRoomHashtagRepository.findByRoomId(chatRoomEntity.get().getId());
-            List<Optional<String>> memberList = chatRoomMemberRepository.findMembers(chatRoomEntity.get().getId());
+                    chatRoomHashtagRepository.findByRoomId(chatRoom.getId());
+            List<Optional<String>> memberList = chatRoomMemberRepository.findMembers(chatRoom.getId());
             if (!memberList.isEmpty()){
                 return "Fail";
             }
@@ -194,8 +202,8 @@ public class ChatRoomService {
                 for (Optional<ChatRoomHashtagEntity> room : chatRoomHashtagEntityList){
                     room.ifPresent(chatRoomHashtagRepository::delete);
                 }
-                chatMessageRepository.deleteLog(chatRoomEntity.get().getId());
-                chatRoomRepository.deleteById(chatRoomEntity.get().getId());
+                chatMessageRepository.deleteLog(chatRoom.getId());
+                chatRoomRepository.deleteById(chatRoom.getId());
                 return "Success";
             }
         }
@@ -206,18 +214,21 @@ public class ChatRoomService {
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(inviteDto.getRoomId());
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberNickName(inviteDto.getInvitedMember());
         if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
-            if (getParticipates(chatRoomEntity.get().getRoomId()) < chatRoomEntity.get().getLimitParticipates()){
+            ChatRoomEntity chatRoom = chatRoomEntity.get();
+            MemberEntity member = memberEntity.get();
+            if (getParticipates(chatRoom.getRoomId()) < chatRoom.getLimitParticipates()){
                 ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
-                        .chatroom(chatRoomEntity.get())
-                        .member(memberEntity.get())
+                        .chatroom(chatRoom)
+                        .member(member)
                         .build();
-                if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoomEntity.get().getId(), memberEntity.get().getId()), BigInteger.ONE)){
-                    chatRoomMemberRepository.deleteMember(chatRoomEntity.get().getId(), memberEntity.get().getId());
+                if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoom.getId(), member.getId()), BigInteger.ONE)){
+                    chatRoomMemberRepository.deleteMember(chatRoom.getId(), member.getId());
                 }
                 chatRoomMemberRepository.save(chatRoomMemberEntity);
                 Optional<InviteEntity> inviteEntity = inviteMessageRepository.getInviteMessage(inviteDto.getInviteId());
                 if (inviteEntity.isPresent()){
-                    memberInviteRepository.deleteEntity(inviteEntity.get().getId(), memberEntity.get().getId());
+                    InviteEntity invite = inviteEntity.get();
+                    memberInviteRepository.deleteEntity(invite.getId(), member.getId());
                     inviteMessageRepository.deleteMessage(inviteDto.getInviteId());
                 }
                 return "Success";
@@ -230,13 +241,15 @@ public class ChatRoomService {
         Optional<ChatRoomEntity> chatRoomEntity = chatRoomRepository.getRoom(chatRoomMemberDTO.getChatroom().getRoomId());
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId());
         if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
-            if (getParticipates(chatRoomEntity.get().getRoomId()) != chatRoomEntity.get().getLimitParticipates()){
+            ChatRoomEntity chatroom = chatRoomEntity.get();
+            MemberEntity member = memberEntity.get();
+            if (getParticipates(chatroom.getRoomId()) != chatroom.getLimitParticipates()){
                 ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
-                        .chatroom(chatRoomEntity.get())
-                        .member(memberEntity.get())
+                        .chatroom(chatroom)
+                        .member(member)
                         .build();
-                if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoomEntity.get().getId(), memberEntity.get().getId()), BigInteger.ONE)){
-                    chatRoomMemberRepository.deleteMember(chatRoomEntity.get().getId(), memberEntity.get().getId());
+                if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatroom.getId(), member.getId()), BigInteger.ONE)){
+                    chatRoomMemberRepository.deleteMember(chatroom.getId(), member.getId());
                 }
                 chatRoomMemberRepository.save(chatRoomMemberEntity);
                 return "Success";
@@ -251,12 +264,16 @@ public class ChatRoomService {
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId());
         if (chatRoomEntity.isPresent() && memberEntity.isPresent()){
             if (passwordEncoder.matches(inputPw, chatRoomEntity.get().getRoomPassword())){
-                if (getParticipates(chatRoomEntity.get().getRoomId()) != chatRoomEntity.get().getLimitParticipates()){
+                ChatRoomEntity chatroom = chatRoomEntity.get();
+                MemberEntity member = memberEntity.get();
+                if (getParticipates(chatroom.getRoomId()) != chatroom.getLimitParticipates()){
                     ChatRoomMemberEntity chatRoomMemberEntity = ChatRoomMemberEntity.builder()
-                            .chatroom(chatRoomEntity.get())
-                            .member(memberEntity.get())
+                            .chatroom(chatroom)
+                            .member(member)
                             .build();
-
+                    if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatroom.getId(), member.getId()), BigInteger.ONE)){
+                        chatRoomMemberRepository.deleteMember(chatroom.getId(), member.getId());
+                    }
                     chatRoomMemberRepository.save(chatRoomMemberEntity);
                     return "Success";
                 }
@@ -301,23 +318,18 @@ public class ChatRoomService {
     public List<ChatRoomDTO> searchRooms(SearchDto searchDto){
         List<ChatRoomEntity> chatRoomEntityList = new ArrayList<>();
         List<ChatRoomDTO> chatRoomDTOList = new ArrayList<>();
-        System.out.print("Type: " + searchDto.getType());
-        if (searchDto.getType().equals("title")){
-            chatRoomEntityList = chatRoomRepository.searchRoomsByTitle(searchDto.getKeyword());
-            System.out.print("List:" + chatRoomEntityList);
-        }
-        else if (searchDto.getType().equals("manager")) {
-            chatRoomEntityList = chatRoomRepository.searchRoomsByManager(searchDto.getKeyword());
-        }
-        else if (searchDto.getType().equals("tags")){
-            Optional<Long> tag_id = hashTagRepository.returnTagId(searchDto.getKeyword());
-            if (tag_id.isPresent()){
-                List<Optional<Long>> chatroomList = chatRoomHashtagRepository.findByRoomTag(tag_id.get());
-                for (Optional<Long> roomId : chatroomList){
-                    if (roomId.isPresent()){
-                        if (chatRoomRepository.searchRoomsByTags(roomId.get()).isPresent()) {
-                            chatRoomEntityList.add(chatRoomRepository.searchRoomsByTags(roomId.get()).get());
-                        }
+        switch (searchDto.getType()) {
+            case "title" -> {
+                chatRoomEntityList = chatRoomRepository.searchRoomsByTitle(searchDto.getKeyword());
+                System.out.print("List:" + chatRoomEntityList);
+            }
+            case "manager" -> chatRoomEntityList = chatRoomRepository.searchRoomsByManager(searchDto.getKeyword());
+            case "tags" -> {
+                Optional<Long> tagIdOptional = hashTagRepository.returnTagId(searchDto.getKeyword());
+                if (tagIdOptional.isPresent()) {
+                    List<Optional<Long>> chatroomList = chatRoomHashtagRepository.findByRoomTag(tagIdOptional.get());
+                    for (Optional<Long> roomIdOptional : chatroomList) {
+                        roomIdOptional.flatMap(chatRoomRepository::searchRoomsByTags).ifPresent(chatRoomEntityList::add);
                     }
                 }
             }
@@ -335,34 +347,38 @@ public class ChatRoomService {
 
     public boolean forcedExistRoom(ChatRoomMemberDTO chatRoomMemberDTO){
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(chatRoomMemberDTO.getMember().getMemberId());
-        System.out.println(memberEntity);
         if (memberEntity.isPresent()){
-            chatRoomMemberRepository.forcedExitRoom(memberEntity.get().getId());
+            MemberEntity member = memberEntity.get();
+            chatRoomMemberRepository.forcedExitRoom(member.getId());
             return true;
         }
         return false;
     }
 
     public boolean isExistInRoom(String roomId, String nickName){
-        Optional<MemberEntity> member = memberRepository.findByMemberNickName(nickName);
-        Optional<ChatRoomEntity> room = chatRoomRepository.findByRoomId(roomId);
-        if (member.isPresent() && room.isPresent()){
-            System.out.print("isExist: " + chatRoomMemberRepository.existByRoomMemberId(room.get().getId(), member.get().getId()));
-            return Objects.equals(chatRoomMemberRepository.existByRoomMemberId(room.get().getId(), member.get().getId()), BigInteger.ONE);
+        Optional<MemberEntity> optionalMember = memberRepository.findByMemberNickName(nickName);
+        Optional<ChatRoomEntity> optionalRoom = chatRoomRepository.findByRoomId(roomId);
+        if (optionalMember.isPresent() && optionalRoom.isPresent()){
+            MemberEntity member = optionalMember.get();
+            ChatRoomEntity room = optionalRoom.get();
+            return Objects.equals(chatRoomMemberRepository.existByRoomMemberId(room.getId(), member.getId()), BigInteger.ONE);
         }
         return false;
     }
 
     public String InviteMember(InviteDto inviteDto){
-        Optional<MemberEntity> member = memberRepository.findByMemberNickName(inviteDto.getInvitedMember());
-        Optional<MemberEntity> inviter = memberRepository.findByMemberNickName(inviteDto.getInviter());
-        Optional<ChatRoomEntity> chatRoom = chatRoomRepository.findByRoomId(inviteDto.getRoomId());
-        if (member.isPresent() && chatRoom.isPresent() && inviter.isPresent()) {
-            if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoom.get().getId(),
-                                                                            member.get().getId()), BigInteger.ONE) ||
-                Objects.equals(inviteMessageRepository.isExistMessage(chatRoom.get().getRoomId(),
-                                                        inviter.get().getMemberId(),
-                                                        member.get().getMemberId()),
+        Optional<MemberEntity> optionalMember = memberRepository.findByMemberNickName(inviteDto.getInvitedMember());
+        Optional<MemberEntity> optionalInviter = memberRepository.findByMemberNickName(inviteDto.getInviter());
+        Optional<ChatRoomEntity> optionalChatRoom = chatRoomRepository.findByRoomId(inviteDto.getRoomId());
+        if (optionalMember.isPresent() && optionalChatRoom.isPresent() && optionalInviter.isPresent()) {
+            ChatRoomEntity chatRoom = optionalChatRoom.get();
+            MemberEntity member = optionalMember.get();
+            MemberEntity inviter = optionalInviter.get();
+            if (Objects.equals(chatRoomMemberRepository.existByRoomMemberId(chatRoom.getId(),
+                                                                            member.getId()), BigInteger.ONE) ||
+                Objects.equals(inviteMessageRepository.isExistMessage(chatRoom.getRoomId(),
+                                                        inviter.getMemberId(),
+                                                        member.getMemberId()),
                                                         BigInteger.ONE)){
                 return "Fail";
             }
@@ -370,7 +386,7 @@ public class ChatRoomService {
                 InviteEntity inviteEntity = InviteEntity.toInviteEntity(inviteDto);
                 inviteMessageRepository.save(inviteEntity);
                 memberInviteRepository.save(MemberInviteEntity.builder()
-                        .member(member.get())
+                        .member(member)
                         .message(inviteEntity)
                         .build());
                 return "Success";
