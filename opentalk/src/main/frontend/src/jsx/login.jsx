@@ -28,23 +28,22 @@ const LoginComponent = () => {
             window.alert("비밀번호를 입력해주세요.");
         }
         else{
-            axios.post(checkloginUrl, {
-                memberId: memberId,
-                memberPassword: memberPw,
-            })
-            .then((res) => {
+            try{
+                const res = await axios.post(checkloginUrl, {
+                    memberId: memberId,
+                    memberPassword: memberPw,
+                });
                 if (res.status === 200){
                     localStorage.setItem("token", res.headers['authorization']);
                     navigate("/opentalk/main");
                 }
-            })
-            .catch((error)=>{
+            } catch(error){
                 if (error.response && error.response.status === 401) {
                     alert("아이디 혹은 비밀번호가 잘못되었습니다.");
                 } else {
                     console.error('Error:', error);
                 }
-            });
+            }
         }
         
     }
