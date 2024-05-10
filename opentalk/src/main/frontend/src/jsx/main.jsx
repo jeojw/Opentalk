@@ -1218,7 +1218,7 @@ const MainComponent = () => {
                         </ListGroup>
                         <br></br>
                         <FormGroup className="d-flex align-items-center justify-content-center">
-                            <InputGroup style={{width:"70%"}}>
+                            <InputGroup style={{width:"80%"}}>
                                 <Form.Select
                                     className='custom-ui'
                                     onChange={selectMenuHandle} 

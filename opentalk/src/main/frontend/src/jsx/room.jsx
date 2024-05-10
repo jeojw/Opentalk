@@ -1546,7 +1546,7 @@ const RoomComponent = () => {
                             <FormGroup 
                                 className="d-flex align-items-center justify-content-center"
                                 onSubmit={(event)=>handleSubmit(event)}>
-                                <InputGroup style={{width:"500px", height:"45px"}}>
+                                <InputGroup style={{width:"400px", height:"35px"}}>
                                     <Form.Control
                                         className={`${theme === 'light' ? 'light-theme' : 'dark-theme'} custom-ui`}
                                         type="text" 
@@ -1556,14 +1556,15 @@ const RoomComponent = () => {
                                         onKeyDown={handleKeyDown}
                                         style={{backgroundColor: theme === 'light' ? "#FFFFFF" : '#121212',
                                                 color: theme === 'light' ? "#000000" : '#FFFFFF'}} />      
-                                    <Button 
-                                        className='custom-button'
-                                        variant={theme === 'light' ? "#C3C3C3" : '#999999'}
-                                        style={{backgroundColor: theme === 'light' ? "#C3C3C3" : '#999999',
-                                                color: theme === 'light' ? "#000000" : "#FFFFFF",
-                                               }} 
-                                    onClick={() => publishChat(chat)}><strong>전송</strong></Button>      
+                                    
                                 </InputGroup>
+                                <Button 
+                                    className='custom-button'
+                                    variant={theme === 'light' ? "#C3C3C3" : '#999999'}
+                                    style={{backgroundColor: theme === 'light' ? "#C3C3C3" : '#999999',
+                                            color: theme === 'light' ? "#000000" : "#FFFFFF",
+                                            }} 
+                                onClick={() => publishChat(chat)}><strong>전송</strong></Button>
                             </FormGroup>
                         </Col>
                     </Row>
