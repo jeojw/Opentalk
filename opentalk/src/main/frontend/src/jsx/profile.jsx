@@ -8,6 +8,8 @@ import SockJs from "sockjs-client"
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useMediaQuery } from 'react-responsive';
 import { themeContext } from './themeContext';
+import { soundContext } from './soundContext';
+import { Store } from 'react-notifications-component';
 
 const Desktop = ({ children }) => {
     const isDesktop = useMediaQuery({ minWidth: 768 })
@@ -19,7 +21,50 @@ const Mobile = ({ children }) => {
 }
 
 const ProfileComponent = () => {
+    const [member, setMember] = useState('');
+    
+    const navigate = useNavigate();
+    
+    const queryClient = useQueryClient();
+
+    const { data: myInfo, isLoading, isError, isFetching, isFetched} = useQuery({
+        queryKey:['myInfo'], 
+        queryFn: async () => {
+            if (localStorage.getItem("token")){
+                try {
+                    const response = await axios.get('/api/opentalk/member/me', {
+                        headers: {
+                            authorization: localStorage.getItem("token"),
+                        }
+                    });
+                    return response.data;
+                } catch (error) {
+                    console.error(error);
+                } 
+            }
+            else{
+                navigate("/");
+            }
+        },  
+        cacheTime: 30000,
+        staleTime: 5000,
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () =>{
+            if (myInfo && !isLoading && !isError && !isFetching && isFetched){
+                setMember(myInfo);
+                setCurImgUrl(myInfo.imgUrl);
+            }
+        }
+        fetchData(); 
+    }, [myInfo, isLoading, isError, isFetching, isFetched]);
+
     const { theme } = useContext(themeContext);
+    const {play, volume, setMute, setSound} = useContext(soundContext);
     const client = useRef({});
     useEffect(() =>{ 
         const connect = async () => {
@@ -41,6 +86,52 @@ const ProfileComponent = () => {
                                 queryClient.invalidateQueries("allChatRooms");
                             }
                         });
+                        client.current.subscribe(`/sub/chat/inviteMessage`, ({body}) => {
+                            if (JSON.parse(body).nickName === member?.memberNickName){
+                                console.log(member?.memberNickName);
+                                queryClient.invalidateQueries("allInviteMessages");
+                                Store.addNotification({
+                                    title: "새 초대 메세지",
+                                    message: "새 초대 메세지가 도착했습니다.",
+                                    type: "info",
+                                    insert: "top", 
+                                    container: "top-right",
+                                    animationIn: ["animate__animated", "animate__fadeIn"],
+                                    animationOut: ["animate__animated", "animate__fadeOut"],
+                                    dismiss: {
+                                        duration: 5000,
+                                        onScreen: true
+                                    }
+                                })
+                            }
+                        });
+                        client.current.subscribe(`/sub/chat/personalMessage`, ({body}) => {
+                            if (JSON.parse(body).nickName === member?.memberNickName){
+                                console.log(member?.memberNickName);
+                                queryClient.invalidateQueries("allPersonalMessages");
+                                Store.addNotification({
+                                    title: "새 쪽지",
+                                    message: "새 쪽지가 도착했습니다.",
+                                    type: "info",
+                                    insert: "top", 
+                                    container: "top-right",
+                                    animationIn: ["animate__animated", "animate__fadeIn"],
+                                    animationOut: ["animate__animated", "animate__fadeOut"],
+                                    dismiss: {
+                                        duration: 5000,
+                                        onScreen: true
+                                    }
+                                })
+                            }
+                        });
+                        client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
+                            if (JSON.parse(body).nickName === "system"){
+                                queryClient.invalidateQueries("allAlarmMessage");
+                                if (volume === 1){
+                                    play();
+                                }
+                            }
+                        });
                     },
                     onStompError: (frame) => {
                         console.error(frame);
@@ -57,9 +148,7 @@ const ProfileComponent = () => {
         };
         connect();
         return () => disconnect();
-    }, []);
-
-    const [member, setMember] = useState('');
+    }, [member?.memberNickName]);
 
     const [pwPopupOpen, setPwPopupOpen] = useState(false);
     const [nickPopupOpen, setNickPopupOpen] = useState(false);
@@ -119,46 +208,6 @@ const ProfileComponent = () => {
         }
         validateToken();
     }, []);
-
-    const navigate = useNavigate();
-    
-    const queryClient = useQueryClient();
-
-    const { data: myInfo, isLoading, isError, isFetching, isFetched} = useQuery({
-        queryKey:['myInfo'], 
-        queryFn: async () => {
-            if (localStorage.getItem("token")){
-                try {
-                    const response = await axios.get('/api/opentalk/member/me', {
-                        headers: {
-                            authorization: localStorage.getItem("token"),
-                        }
-                    });
-                    return response.data;
-                } catch (error) {
-                    console.error(error);
-                } 
-            }
-            else{
-                navigate("/");
-            }
-        },  
-        cacheTime: 30000,
-        staleTime: 5000,
-        refetchOnMount: true,
-        refetchOnWindowFocus: true,
-        refetchOnReconnect: true,
-    }, []);
-
-    useEffect(() => {
-        const fetchData = async () =>{
-            if (myInfo && !isLoading && !isError && !isFetching && isFetched){
-                setMember(myInfo);
-                setCurImgUrl(myInfo.imgUrl);
-            }
-        }
-        fetchData(); 
-    }, [myInfo, isLoading, isError, isFetching, isFetched]);
 
     const GetExPassword = (event) =>{
         setExPassword(event.target.value);
@@ -540,6 +589,21 @@ const ProfileComponent = () => {
                                         style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
                                                 color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
                                         onClick={ChangePasswordPopup}>비밀번호 변경</Button>
+                                {volume === 1 && (
+                                    <Button className='custom-button' 
+                                    variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                                            color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
+                                    onClick={setMute}>음소거</Button>
+                                )}
+                                {volume === 0 && (
+                                    <Button className='custom-button' 
+                                    variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                                            color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
+                                    onClick={setSound}>음소거 해제</Button>
+                                )}
+                                        
                                 <Button
                                     className='custom-button' 
                                     variant='dark' 
@@ -734,6 +798,20 @@ const ProfileComponent = () => {
                                     style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
                                     color: theme === 'light' ? '#000000' : '#FFFFFF' }} 
                                     onClick={ChangePasswordPopup}>비밀번호 변경</Button>
+                                {volume === 1 && (
+                                    <Button className='custom-button' 
+                                    variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                                            color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
+                                    onClick={setMute}>음소거</Button>
+                                )}
+                                {volume === 0 && (
+                                    <Button className='custom-button' 
+                                    variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                                            color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
+                                    onClick={setSound}>음소거 해제</Button>
+                                )}
                                 <Button
                                     className = 'custom-button' 
                                     variant='dark' 

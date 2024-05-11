@@ -117,7 +117,7 @@ const MainComponent = () => {
 
 
     const {theme} = useContext(themeContext);
-    const {play} = useContext(soundContext);
+    const {play, volume} = useContext(soundContext);
     const client = useRef({});
 
     const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
@@ -213,7 +213,9 @@ const MainComponent = () => {
                         client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
                             if (JSON.parse(body).nickName === "system"){
                                 queryClient.invalidateQueries("allAlarmMessage");
-                                play();
+                                if (volume === 1){
+                                    play();
+                                }
                             }
                         });
                     },

@@ -105,7 +105,7 @@ const RoomComponent = () => {
     }, [myInfoData, isLoading, isError, isFetching, isFetched]);
 
     const {theme} = useContext(themeContext);
-    const {play} = useContext(soundContext);
+    const {play, volume} = useContext(soundContext);
 
     const [roomInformation, setRoomInformation] = useState();
     const [chatList, setChatList] = useState([]);
@@ -579,7 +579,9 @@ const RoomComponent = () => {
         client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
             if (JSON.parse(body).nickName === "system"){
                 queryClient.invalidateQueries("allAlarmMessage");
-                play();
+                if (volume === 1){
+                    play();
+                }
             }
         });
     };
