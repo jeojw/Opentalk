@@ -22,7 +22,7 @@ const Mobile = ({ children }) => {
 
 const ProfileComponent = () => {
     const [member, setMember] = useState('');
-    
+
     const navigate = useNavigate();
     
     const queryClient = useQueryClient();
@@ -64,7 +64,7 @@ const ProfileComponent = () => {
     }, [myInfo, isLoading, isError, isFetching, isFetched]);
 
     const { theme } = useContext(themeContext);
-    const {play, volume, setMute, setSound} = useContext(soundContext);
+    const {play, volume} = useContext(soundContext);
     const client = useRef({});
     useEffect(() =>{ 
         const connect = async () => {
@@ -589,21 +589,6 @@ const ProfileComponent = () => {
                                         style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
                                                 color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
                                         onClick={ChangePasswordPopup}>비밀번호 변경</Button>
-                                {volume === 1 && (
-                                    <Button className='custom-button' 
-                                    variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
-                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
-                                            color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
-                                    onClick={setMute}>음소거</Button>
-                                )}
-                                {volume === 0 && (
-                                    <Button className='custom-button' 
-                                    variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
-                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
-                                            color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
-                                    onClick={setSound}>음소거 해제</Button>
-                                )}
-                                        
                                 <Button
                                     className='custom-button' 
                                     variant='dark' 
@@ -798,20 +783,6 @@ const ProfileComponent = () => {
                                     style={{ backgroundColor:theme === 'light' ? "#CDCDCD" : "#A0A0A0",
                                     color: theme === 'light' ? '#000000' : '#FFFFFF' }} 
                                     onClick={ChangePasswordPopup}>비밀번호 변경</Button>
-                                {volume === 1 && (
-                                    <Button className='custom-button' 
-                                    variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
-                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
-                                            color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
-                                    onClick={setMute}>음소거</Button>
-                                )}
-                                {volume === 0 && (
-                                    <Button className='custom-button' 
-                                    variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
-                                    style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
-                                            color:theme === 'light' ? '#000000' : '#FFFFFF'}}  
-                                    onClick={setSound}>음소거 해제</Button>
-                                )}
                                 <Button
                                     className = 'custom-button' 
                                     variant='dark' 

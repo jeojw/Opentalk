@@ -1548,7 +1548,7 @@ const RoomComponent = () => {
                             <FormGroup 
                                 className="d-flex align-items-center justify-content-center"
                                 onSubmit={(event)=>handleSubmit(event)}>
-                                <InputGroup style={{width:"400px", height:"35px"}}>
+                                <InputGroup style={{width:"310px", height:"35px"}}>
                                     <Form.Control
                                         className={`${theme === 'light' ? 'light-theme' : 'dark-theme'} custom-ui`}
                                         type="text" 

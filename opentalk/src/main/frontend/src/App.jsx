@@ -21,9 +21,11 @@ import { useQuery, useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css'
+import { soundContext } from './jsx/soundContext';
 
 const App = () => {
   const { alarms, setAlarms } = useContext(alarmContext);
+  const {volume, setMute, setSound} = useContext(soundContext);
   const queryClient = useQueryClient();
   const token = localStorage.getItem("token");
   const [member, setMember] = useState();
@@ -117,11 +119,38 @@ const App = () => {
           OpenTalk
         </div>
       </strong>
+      {token !== null &&
+      volume === 1 ? (
+        <Button className='custom-button' 
+        variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+        style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                color:theme === 'light' ? '#000000' : '#FFFFFF',
+                position:'absolute',
+                bottom: '10px',
+                right: '150px'}}  
+        onClick={setMute}><img alt="소리 이미지" src={`${process.env.PUBLIC_URL}/${theme === "light" ? "speaker_on_lightmode.png" : "speaker_on_darkmode.png"}`} 
+        width={30}
+        style={{position:"relative", bottom:"3px"}}
+        ></img>
+        </Button>
+      ) : (
+        <Button className='custom-button' 
+        variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
+        style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
+                color:theme === 'light' ? '#000000' : '#FFFFFF',
+                position:'absolute',
+                bottom: '10px',
+                right: '150px'}}  
+        onClick={setSound}><img alt="음소거 이미지" src={`${process.env.PUBLIC_URL}/${theme === "light" ? "speaker_off_lightmode.png" : "speaker_off_darkmode.png"}`} 
+        width={30}
+        style={{position:"relative", bottom:"3px"}}
+        ></img></Button>
+      )}
       {token !== null && (
         <Dropdown style={{
           position:'absolute',
           bottom: '10px',
-          right: '110px'
+          right: '87px'
         }}>
           <Dropdown.Toggle
           className='custom-ui'
@@ -129,10 +158,13 @@ const App = () => {
           backgroundColor:theme === 'light' ? "#FFFFFF" : "#121212",
           color:theme === 'light' ? "#000000" : '#FFFFFF',
         }}>
-            알림함{alarms.length !== 0 && (
-              <img alt="매니저 이미지" src={`${process.env.PUBLIC_URL}/alarm.png`} width={10} style={{position:"absolute", top:"18px", right:"16px"}}></img>
-              
-            )}
+          {alarms.length !== 0 ? (
+            <img alt="알림 이미지" src={`${process.env.PUBLIC_URL}/${theme === "light" ? "alarm_light.png" : "alarm_dark.png"}`} 
+            width={17} style={{position:"relative"}}></img>
+          ) : (
+            <img alt="알림 이미지" src={`${process.env.PUBLIC_URL}/${theme === "light" ? "alarm_none_light.png" : "alarm_none_dark.png"}`}  
+            width={17} style={{position:"relative"}}></img>
+          )}
           </Dropdown.Toggle>
           <Dropdown.Menu>
           {alarms.map((_message) => {
@@ -157,24 +189,29 @@ const App = () => {
           </Dropdown.Menu>
         </Dropdown>
       )}
-      <Button
-        className='custom-button'
-        variant={theme === 'light' ? "#121212" : "#FFFFFF"}
-        onClick={() => {
-          if (theme === 'light'){
-            changeTheme('dark');
-          }
-          else{
-            changeTheme('light');
-          }
-        }}
-        style={{
-          backgroundColor:theme === 'light' ? "#121212" : "#FFFFFF",
-          color:theme === 'light' ? '#FFFFFF' : "#000000",
-          position:'absolute',
-          bottom: '10px',
-          right: '0px'
-        }}>테마 변경</Button>
+      {theme === 'light' ? (
+        <img alt='다크모드OFF' src={`${process.env.PUBLIC_URL}/darkmode_OFF.png`} width={75} style={{position:'absolute',
+        bottom: '12px',
+        right: '5px'}}onClick={() => {
+        if (theme === 'light'){
+          changeTheme('dark');
+        }
+        else{
+          changeTheme('light');
+        }
+        }}></img>
+      ) : (
+        <img alt='다크모드ON' src={`${process.env.PUBLIC_URL}/darkmode_ON.png`} width={75} style={{position:'absolute',
+        bottom: '12px',
+        right: '5px'}}onClick={() => {
+        if (theme === 'light'){
+          changeTheme('dark');
+        }
+        else{
+          changeTheme('light');
+        }
+        }}></img>
+      )}
       </h1>
       <Router>
         <div>
