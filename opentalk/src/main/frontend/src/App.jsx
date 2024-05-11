@@ -119,7 +119,7 @@ const App = () => {
           OpenTalk
         </div>
       </strong>
-      {token !== null &&
+      {token !== null && (
       volume === 1 ? (
         <Button className='custom-button' 
         variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
@@ -145,7 +145,7 @@ const App = () => {
         width={30}
         style={{position:"relative", bottom:"3px"}}
         ></img></Button>
-      )}
+      ))}
       {token !== null && (
         <Dropdown style={{
           position:'absolute',
