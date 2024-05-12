@@ -64,7 +64,7 @@ const ProfileComponent = () => {
     }, [myInfo, isLoading, isError, isFetching, isFetched]);
 
     const { theme } = useContext(themeContext);
-    const {play} = useContext(soundContext);
+    const {play, volume} = useContext(soundContext);
     const client = useRef({});
     useEffect(() =>{ 
         const connect = async () => {
@@ -127,7 +127,7 @@ const ProfileComponent = () => {
                         client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
                             if (JSON.parse(body).nickName === "system"){
                                 queryClient.invalidateQueries("allAlarmMessage");
-                                if (localStorage.getItem("volume") === 1){
+                                if (volume === 1){
                                     play();
                                 }
                             }
