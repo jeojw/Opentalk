@@ -6,6 +6,7 @@ export const soundContext = createContext();
 
 const SoundProvider = ({children}) => {
     const [volume, setVolume] = useState(1);
+    window.localStorage.setItem('volume', 1);
     const [play, { stop }] = useSound(alarmSound, {
         volume: volume
     });
@@ -13,10 +14,12 @@ const SoundProvider = ({children}) => {
     const setMute = () => {
         stop();
         setVolume(0);
+        window.localStorage.setItem('volume', 0);
     };
 
     const setSound = () => {
         setVolume(1);
+        window.localStorage.setItem('volume', 1);
     };
 
     return (

@@ -120,7 +120,7 @@ const App = () => {
         </div>
       </strong>
       {token !== null && (
-      volume === 1 ? (
+      localStorage.getItem("volume") === 1 ? (
         <Button className='custom-button' 
         variant={theme === 'light' ? '#CDCDCD' : '#A0A0A0'}
         style={{ backgroundColor:theme === 'light' ? '#CDCDCD' : '#A0A0A0',
