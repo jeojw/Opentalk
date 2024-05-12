@@ -80,7 +80,7 @@ const InviteMemberComponent = ({roomInfo, showModal, setShowModal, myInfo, stomp
                             stompClient.publish({
                                 destination: '/pub/chat/alarmMessage', 
                                 body: JSON.stringify({
-                                    nickName: "system",
+                                    nickName: memberNickName,
                                     message: `새 초대 메세지가 도착했습니다.`,
                                 })
                             })
