@@ -319,10 +319,7 @@ public class ChatRoomService {
         List<ChatRoomEntity> chatRoomEntityList = new ArrayList<>();
         List<ChatRoomDTO> chatRoomDTOList = new ArrayList<>();
         switch (searchDto.getType()) {
-            case "title" -> {
-                chatRoomEntityList = chatRoomRepository.searchRoomsByTitle(searchDto.getKeyword());
-                System.out.print("List:" + chatRoomEntityList);
-            }
+            case "title" -> chatRoomEntityList = chatRoomRepository.searchRoomsByTitle(searchDto.getKeyword());
             case "manager" -> chatRoomEntityList = chatRoomRepository.searchRoomsByManager(searchDto.getKeyword());
             case "tags" -> {
                 Optional<Long> tagIdOptional = hashTagRepository.returnTagId(searchDto.getKeyword());
