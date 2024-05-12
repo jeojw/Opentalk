@@ -5,8 +5,8 @@ import alarmSound from "../MP_Door Bell.mp3";
 export const soundContext = createContext();
 
 const SoundProvider = ({children}) => {
-    const [volume, setVolume] = useState(1);
-    window.localStorage.setItem('volume', 1);
+    const LocalVolume = window.localStorage.setItem('volume', 1);
+    const [volume, setVolume] = useState(LocalVolume);
     const [play, { stop }] = useSound(alarmSound, {
         volume: volume
     });
