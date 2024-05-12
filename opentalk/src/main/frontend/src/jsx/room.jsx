@@ -577,7 +577,7 @@ const RoomComponent = () => {
             }
         })
         client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
-            if (JSON.parse(body).nickName === "system"){
+            if (JSON.parse(body).nickName === myInfo?.memberNickName){
                 queryClient.invalidateQueries("allAlarmMessage");
                 if (volume === 1){
                     play();
@@ -722,7 +722,7 @@ const RoomComponent = () => {
                         client.current.publish({
                             destination: '/pub/chat/alarmMessage', 
                             body: JSON.stringify({
-                                nickName: "system",
+                                nickName: receiver,
                                 message: `새 알람이 도착했습니다.`,
                             })
                         })
