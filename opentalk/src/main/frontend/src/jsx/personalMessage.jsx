@@ -77,7 +77,7 @@ const PersonalMessageComponent = ({showModal, setShowModal, showPMModal, setShow
                         stompClient.publish({
                             destination: '/pub/chat/alarmMessage', 
                             body: JSON.stringify({
-                                nickName: receiver,
+                                nickName: "system",
                                 message: `새 알람이 도착했습니다.`,
                             })
                         })

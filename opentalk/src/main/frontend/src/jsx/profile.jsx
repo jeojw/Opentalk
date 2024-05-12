@@ -125,7 +125,7 @@ const ProfileComponent = () => {
                             }
                         });
                         client.current.subscribe(`/sub/chat/alarmMessage`, ({body}) => {
-                            if (JSON.parse(body).nickName === myInfo?.memberNickName){
+                            if (JSON.parse(body).nickName === "system"){
                                 queryClient.invalidateQueries("allAlarmMessage");
                                 if (volume === 1){
                                     play();
